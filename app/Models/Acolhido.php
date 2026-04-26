@@ -9,6 +9,7 @@ class Acolhido extends Model
     protected $fillable = [
         'user_id',
         'avatar',
+        'nome_completo_paciente',
         'tem_documentacao',
         'data_nascimento',
         'estado_civil',

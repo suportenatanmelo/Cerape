@@ -87,19 +87,19 @@ class AcolhidoForm
                                                     true
                                                 )
                                             ),
-                                        TextInput::make('Nome_da_Mae')
+                                        TextInput::make('nome_da_mae')
                                             ->label('Nome da mãe')
                                             ->placeholder('Campo obrigatório'),
-                                        TextInput::make('Nome_do_Pai')
+                                        TextInput::make('nome_do_pai')
                                             ->label('Nome do pai')
                                             ->placeholder('Campo obrigatório'),
-                                        TextInput::make('Cor_da_Pele')
+                                        TextInput::make('cor_da_pele')
                                             ->label('Cor da pele')
                                             ->required(),
-                                        TextInput::make('Escolaridade')
+                                        TextInput::make('escolaridade')
                                             ->label('Escolaridade')
                                             ->required(),
-                                        TextInput::make('Profissao')
+                                        TextInput::make('profissao                  ')
                                             ->label('Profissão')
                                             ->required(),
                                     ]),
@@ -377,7 +377,7 @@ class AcolhidoForm
                                             ])->columns(2)
                                             ->label('Exames laboratoriais')
                                             ->required(),
-                                        TextInput::make('Outros')
+                                        TextInput::make('outros')
                                             ->label('Outros')
                                             ->required(),
                                     ]),
@@ -427,7 +427,7 @@ class AcolhidoForm
                                                 TextInput::make('Responsavel_pela_Intervencao_do_acolhido')
                                                     ->label('Responsável pela intervenção do acolhido')
                                             ])
-                                            ->visible(fn(Get $get) => $get('tem_filhos') != '1')
+                                            ->visible(fn(Get $get) => $get('tem_filhos') != '0')
 
                                             ->columns(2)
                                             ->columnSpanFull(),

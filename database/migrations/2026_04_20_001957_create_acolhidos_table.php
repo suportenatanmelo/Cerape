@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('estado_civil')->nullable();
 
             $table->string('nome_do_conjuge')->nullable();
-            $table->string('nome_da_mae');
+            $table->string('nome_da_mae')->default('Não informado');
             $table->string('nome_do_pai');
             //--Documentação do paciênte
             $table->boolean('tem_documentacao')->default(false);
