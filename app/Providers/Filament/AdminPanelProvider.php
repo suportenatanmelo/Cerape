@@ -28,7 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-           // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
+
+            // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarFullyCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
             ->colors([
@@ -42,7 +43,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 AccountWidget::class,
-                FilamentInfoWidget::class,
+                //  FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -60,4 +61,3 @@ class AdminPanelProvider extends PanelProvider
             ]);
     }
 }
-
