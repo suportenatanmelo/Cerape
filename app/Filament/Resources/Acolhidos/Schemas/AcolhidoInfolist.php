@@ -10,6 +10,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Storage;
 
+
+
 class AcolhidoInfolist
 {
     public static function configure(Schema $schema): Schema
@@ -26,15 +28,13 @@ class AcolhidoInfolist
                         ->compact()
                         ->schema([
                             ImageEntry::make('avatar')
-                                ->hiddenLabel()
-                                ->getStateUsing(fn ($record): ?string => self::resolveAvatarPath($record?->avatar))
+                                ->label('Foto')
                                 ->disk('public')
-                                ->visibility('public')
                                 ->circular()
-                                ->imageSize(240)
-                                ->defaultImageUrl('https://ui-avatars.com/api/?name=Acolhido&background=e2e8f0&color=0f172a&size=240')
+                                ->height(120)
+                                ->width(120)
                                 ->extraImgAttributes([
-                                    'class' => 'ring-4 ring-white shadow-2xl object-cover',
+                                    'style' => 'object-fit: cover;'
                                 ]),
                             TextEntry::make('nome_completo_paciente')
                                 ->hiddenLabel()
@@ -123,11 +123,11 @@ class AcolhidoInfolist
                         TextEntry::make('quanto_tempo_de_aluguel')
                             ->label('Tempo de aluguel')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->quanto_tempo_de_aluguel)),
+                            ->hidden(fn($record) => blank($record?->quanto_tempo_de_aluguel)),
                         TextEntry::make('em_qual_regiao')
                             ->label('Regiao')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->em_qual_regiao)),
+                            ->hidden(fn($record) => blank($record?->em_qual_regiao)),
                     ]),
 
                 Section::make('Documentacao')
@@ -144,21 +144,21 @@ class AcolhidoInfolist
                         TextEntry::make('razao_caso_nao_tenha_documentacao')
                             ->label('Motivo da ausencia')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->razao_caso_nao_tenha_documentacao)),
+                            ->hidden(fn($record) => blank($record?->razao_caso_nao_tenha_documentacao)),
                         TextEntry::make('documentos_civis')
                             ->label('Documentos civis')
                             ->badge()
                             ->listWithLineBreaks()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->documentos_civis)),
+                            ->hidden(fn($record) => blank($record?->documentos_civis)),
                         TextEntry::make('documentos_outros')
                             ->label('Outros documentos')
                             ->badge()
                             ->listWithLineBreaks()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->documentos_outros)),
+                            ->hidden(fn($record) => blank($record?->documentos_outros)),
                     ]),
 
                 Section::make('Trabalho e encaminhamento')
@@ -182,14 +182,14 @@ class AcolhidoInfolist
                         TextEntry::make('nome_da_empresa_que_trabalha')
                             ->label('Empresa')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->nome_da_empresa_que_trabalha)),
+                            ->hidden(fn($record) => blank($record?->nome_da_empresa_que_trabalha)),
                         IconEntry::make('tem_telefone')
                             ->label('Tem telefone?')
                             ->boolean(),
                         TextEntry::make('numero_do_telefone')
                             ->label('Numero do telefone')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->numero_do_telefone)),
+                            ->hidden(fn($record) => blank($record?->numero_do_telefone)),
                         IconEntry::make('tem_meio_de_encaminhamento')
                             ->label('Tem encaminhamento?')
                             ->boolean(),
@@ -199,16 +199,16 @@ class AcolhidoInfolist
                             ->listWithLineBreaks()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->meio_de_encaminhamento)),
+                            ->hidden(fn($record) => blank($record?->meio_de_encaminhamento)),
                         TextEntry::make('outro_meio_de_encaminhamento_qual')
                             ->label('Outro meio')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->outro_meio_de_encaminhamento_qual)),
+                            ->hidden(fn($record) => blank($record?->outro_meio_de_encaminhamento_qual)),
                         TextEntry::make('indicacao')
                             ->label('Indicacao')
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->indicacao)),
+                            ->hidden(fn($record) => blank($record?->indicacao)),
                     ]),
 
                 Section::make('Saude e medicacoes')
@@ -231,29 +231,29 @@ class AcolhidoInfolist
                             ->listWithLineBreaks()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->qual_sao_as_medicacao)),
+                            ->hidden(fn($record) => blank($record?->qual_sao_as_medicacao)),
                         TextEntry::make('receituario')
                             ->label('Arquivo do receituario')
-                            ->formatStateUsing(fn (string $state): string => 'Ver receituario')
-                            ->url(fn (string $state): string => Storage::disk('public')->url($state), true)
+                            ->formatStateUsing(fn(string $state): string => 'Ver receituario')
+                            ->url(fn(string $state): string => Storage::disk('public')->url($state), true)
                             ->badge()
                             ->color('primary')
                             ->icon('heroicon-o-arrow-top-right-on-square')
                             ->columnSpanFull()
-                            ->helperText(fn (string $state): string => basename($state))
-                            ->hidden(fn ($record) => blank($record?->receituario)),
+                            ->helperText(fn(string $state): string => basename($state))
+                            ->hidden(fn($record) => blank($record?->receituario)),
                         TextEntry::make('exames_laboratoriais')
                             ->label('Exames laboratoriais')
                             ->badge()
                             ->listWithLineBreaks()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->exames_laboratoriais)),
+                            ->hidden(fn($record) => blank($record?->exames_laboratoriais)),
                         TextEntry::make('outros')
                             ->label('Outros exames')
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->outros)),
+                            ->hidden(fn($record) => blank($record?->outros)),
                     ]),
 
                 Section::make('Familia e responsaveis')
@@ -274,36 +274,36 @@ class AcolhidoInfolist
                         TextEntry::make('nome_do_conjuge')
                             ->label('Nome do conjuge')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->nome_do_conjuge)),
+                            ->hidden(fn($record) => blank($record?->nome_do_conjuge)),
                         IconEntry::make('tem_filhos')
                             ->label('Tem filhos?')
                             ->boolean(),
                         TextEntry::make('quantidade_filhos')
                             ->label('Quantidade de filhos')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->quantidade_filhos)),
+                            ->hidden(fn($record) => blank($record?->quantidade_filhos)),
                         TextEntry::make('quem_responsavel_criancas')
                             ->label('Responsavel pelas criancas')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->quem_responsavel_criancas)),
+                            ->hidden(fn($record) => blank($record?->quem_responsavel_criancas)),
                         TextEntry::make('qual_o_nome_dos_filhos')
                             ->label('Nome dos filhos')
                             ->html()
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->qual_o_nome_dos_filhos)),
+                            ->hidden(fn($record) => blank($record?->qual_o_nome_dos_filhos)),
                         TextEntry::make('numero_telefone_filhos')
                             ->label('Telefone dos filhos')
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->numero_telefone_filhos)),
+                            ->hidden(fn($record) => blank($record?->numero_telefone_filhos)),
                         IconEntry::make('pensao_alimenticia')
                             ->label('Pensao alimenticia')
                             ->boolean()
-                            ->hidden(fn ($record) => is_null($record?->pensao_alimenticia)),
+                            ->hidden(fn($record) => is_null($record?->pensao_alimenticia)),
                         IconEntry::make('possui_contato_dos_filhos')
                             ->label('Possui contato com os filhos?')
                             ->boolean()
-                            ->hidden(fn ($record) => is_null($record?->possui_contato_dos_filhos)),
+                            ->hidden(fn($record) => is_null($record?->possui_contato_dos_filhos)),
                         TextEntry::make('responsavel_pela_intervencao_do_acolhido')
                             ->label('Responsavel pela intervencao')
                             ->columnSpanFull(),
@@ -311,7 +311,7 @@ class AcolhidoInfolist
                             ->label('Profissional de referencia')
                             ->columnSpanFull()
                             ->placeholder('-')
-                            ->hidden(fn ($record) => blank($record?->profissional_referencia_acolhido_instituicao)),
+                            ->hidden(fn($record) => blank($record?->profissional_referencia_acolhido_instituicao)),
                     ]),
 
                 Section::make('Controle do cadastro')
@@ -341,11 +341,13 @@ class AcolhidoInfolist
 
         $disk = Storage::disk('public');
 
-        foreach (array_unique([
-            $path,
-            'acolhidos/avatars/' . basename($path),
-            'avatars/' . basename($path),
-        ]) as $candidate) {
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
             if ($disk->exists($candidate)) {
                 return $candidate;
             }

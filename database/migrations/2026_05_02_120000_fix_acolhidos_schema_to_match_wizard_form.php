@@ -8,9 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('acolhidos', function (Blueprint $table) {
-            $table->renameColumn('quant_filhos', 'quantidade_filhos');
-        });
+        if (Schema::hasColumn('acolhidos', 'quant_filhos')) {
+            Schema::table('acolhidos', function (Blueprint $table) {
+                $table->renameColumn('quant_filhos', 'quantidade_filhos');
+            });
+        }
 
         Schema::table('acolhidos', function (Blueprint $table) {
             $table->string('razao_caso_nao_tenha_documentacao')->nullable()->default(null)->change();

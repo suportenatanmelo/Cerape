@@ -9,6 +9,7 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Columns\ImageColumn;
 
 class AcolhidosTable
 {
@@ -17,10 +18,18 @@ class AcolhidosTable
         return $table
             ->columns([
                 TextColumn::make('user.name')
-                    ->label('Usuario responsavel')
+                    ->label('Funcionário responsável')
                     ->searchable(),
+                ImageColumn::make('avatar')
+                    ->label('Foto')
+
+                    ->getStateUsing(
+                        fn($record) => $record->avatar
+                            ? asset('storage/' . $record->avatar)
+                            : null
+                    ),
                 TextColumn::make('nome_completo_paciente')
-                    ->label('Nome completo do paciente')
+                    ->label('Nome do paciente')
                     ->searchable(),
                 TextColumn::make('data_nascimento')
                     ->label('Data de nascimento')
@@ -28,9 +37,6 @@ class AcolhidosTable
                     ->sortable(),
                 TextColumn::make('estado_civil')
                     ->label('Estado civil')
-                    ->searchable(),
-                TextColumn::make('municipio_do_paciente')
-                    ->label('Municipio')
                     ->searchable(),
                 TextColumn::make('numero_do_telefone')
                     ->label('Numero de telefone')
