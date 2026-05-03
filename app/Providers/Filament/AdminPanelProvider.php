@@ -28,6 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->databaseNotifications()
             ->brandLogo(asset('storage/images/logo.png'))
             ->brandLogoHeight('60px')
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
