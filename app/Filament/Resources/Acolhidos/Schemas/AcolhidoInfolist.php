@@ -27,7 +27,7 @@ class AcolhidoInfolist
                         ->schema([
                             ImageEntry::make('avatar')
                                 ->hiddenLabel()
-                                ->state(fn ($record): ?string => self::resolveAvatarPath($record?->avatar))
+                                ->getStateUsing(fn ($record): ?string => self::resolveAvatarPath($record?->avatar))
                                 ->disk('public')
                                 ->visibility('public')
                                 ->circular()

@@ -20,6 +20,7 @@ use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class AcolhidoForm
 {
@@ -42,6 +43,9 @@ class AcolhidoForm
                                             ->searchable()
                                             ->preload()
                                             ->required(),
+                                        TextInput::make('nome_completo_paciente')
+                                            ->label('Nome completo do paciente')
+                                            ->required(),
                                         FileUpload::make('avatar')
                                             ->label('Avatar')
                                             ->avatar()
@@ -51,9 +55,9 @@ class AcolhidoForm
                                             ->visibility('public')
                                             ->maxFiles(1)
                                             ->moveFiles()
-                                            ->preserveFilenames()
                                             ->openable()
                                             ->downloadable()
+                                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
                                             ->getUploadedFileUsing(function (BaseFileUpload $component, string $file): ?array {
                                                 $resolvedPath = self::resolveAvatarPath($file);
 
@@ -74,9 +78,6 @@ class AcolhidoForm
                                                     'url' => $storage->url($resolvedPath),
                                                 ];
                                             })
-                                            ->required(),
-                                        TextInput::make('nome_completo_paciente')
-                                            ->label('Nome completo do paciente')
                                             ->required(),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
@@ -403,9 +404,9 @@ class AcolhidoForm
                                             ])
                                             ->maxFiles(1)
                                             ->moveFiles()
-                                            ->preserveFilenames()
                                             ->openable()
                                             ->downloadable()
+                                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
                                             ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn (Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn (Get $get): bool => self::isYes($get('tem_receituario'))),
@@ -565,5 +566,26 @@ class AcolhidoForm
         }
 
         return $path;
+    }
+
+    private static function makeUploadFileName(TemporaryUploadedFile $file, Get $get): string
+    {
+        $baseName = Str::of((string) $get('nome_completo_paciente'))
+            ->ascii()
+            ->lower()
+            ->replaceMatches('/[^a-z0-9]+/', '_')
+            ->trim('_')
+            ->value();
+
+        if ($baseName === '') {
+            $baseName = 'acolhido';
+        }
+
+        return sprintf(
+            '%s_%s.%s',
+            $baseName,
+            now()->format('Y_m_d_His'),
+            $file->getClientOriginalExtension(),
+        );
     }
 }
