@@ -27,7 +27,7 @@ class AcolhidoResource extends Resource
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::Users;
 
-    protected static ?string $recordTitleAttribute = 'Nome_Completo_Paciente';
+    protected static ?string $recordTitleAttribute = 'nome_completo_paciente';
 
     public static function form(Schema $schema): Schema
     {
@@ -46,32 +46,30 @@ class AcolhidoResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getGloballySearchableAttributes(): array
     {
         return [
-            'Nome_Completo_Paciente',
-            'Nome_da_Mae',
-            'Nome_do_Pai',
-            'Numero_do_Telefone',
+            'nome_completo_paciente',
+            'nome_da_mae',
+            'nome_do_pai',
+            'numero_do_telefone',
         ];
     }
 
     public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
     {
-        return (string) $record->Nome_Completo_Paciente;
+        return (string) $record->nome_completo_paciente;
     }
 
     public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
     {
         return [
-            'Telefone' => $record->Numero_do_Telefone ?: '-',
-            'Município' => $record->Municipio ?: '-',
-            'UF' => $record->UF_Municipio ?: '-',
+            'Telefone' => $record->numero_do_telefone ?: '-',
+            'Municipio' => $record->municipio_do_paciente ?: '-',
+            'UF' => $record->uf_municipio_do_paciente ?: '-',
         ];
     }
 

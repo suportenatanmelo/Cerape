@@ -68,7 +68,7 @@ return new class extends Migration
             //Informacao dos filhos do paciênte
             $table->string('tem_filhos')->default(false);
             $table->string('quem_responsavel_criancas')->nullable();
-            $table->integer('quant_filhos')->nullable();
+            $table->integer('quantidade_filhos')->nullable();
             $table->text('qual_o_nome_dos_filhos')->nullable();
             $table->string('numero_telefone_filhos')->nullable();
             $table->boolean('pensao_alimenticia')->nullable();

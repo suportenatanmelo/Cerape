@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Acolhido extends Model
 {
@@ -10,7 +11,6 @@ class Acolhido extends Model
         'user_id',
         'avatar',
         'nome_completo_paciente',
-        'tem_documentacao',
         'data_nascimento',
         'estado_civil',
         'nome_do_conjuge',
@@ -18,13 +18,12 @@ class Acolhido extends Model
         'nome_do_pai',
         'tem_documentacao',
         'razao_caso_nao_tenha_documentacao',
-        'quais_documentacao',
-        'outros_documentacao',
+        'documentos_civis',
+        'documentos_outros',
         'CEP',
         'endereco_paciente',
         'bairro_do_paciente',
         'municipio_do_paciente',
-        'municipio',
         'uf_municipio_do_paciente',
         'moradia_propria',
         'mora_em_casa_aluguada',
@@ -42,12 +41,14 @@ class Acolhido extends Model
         'outro_meio_de_encaminhamento_qual',
         'indicacao',
         'toma_medicamento',
+        'qual_sao_as_medicacao',
         'tem_receituario',
         'receituario',
         'exames_laboratoriais',
+        'outros',
         'tem_filhos',
         'quem_responsavel_criancas',
-        'quant_filhos',
+        'quantidade_filhos',
         'qual_o_nome_dos_filhos',
         'numero_telefone_filhos',
         'pensao_alimenticia',
@@ -58,7 +59,7 @@ class Acolhido extends Model
 
     protected $casts = [
         'data_nascimento' => 'date',
-        "tem_documentacao" => 'boolean',
+        'tem_documentacao' => 'boolean',
         'moradia_propria' => 'boolean',
         'mora_em_casa_aluguada' => 'boolean',
         'trabalha' => 'boolean',
@@ -66,22 +67,17 @@ class Acolhido extends Model
         'tem_meio_de_encaminhamento' => 'boolean',
         'meio_de_encaminhamento' => 'array',
         'toma_medicamento' => 'boolean',
-        'tem_receituario' => 'boolean',
         'qual_sao_as_medicacao' => 'array',
+        'tem_receituario' => 'boolean',
+        'exames_laboratoriais' => 'array',
         'tem_filhos' => 'boolean',
         'pensao_alimenticia' => 'boolean',
         'possui_contato_dos_filhos' => 'boolean',
-
-        'exames_laboratoriais' => 'array',
-
-        //------------------------------------
         'documentos_civis' => 'array',
         'documentos_outros' => 'array',
-
-
     ];
 
-    public function users()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
