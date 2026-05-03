@@ -28,7 +28,8 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-
+            ->brandLogo(asset('storage/images/logo.png'))
+            ->brandLogoHeight('60px')
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarFullyCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
