@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Profile;
+use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
+use App\Filament\Widgets\AcolhidosCriadosLineChart;
+use App\Filament\Widgets\UsuariosCriadosLineChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -11,7 +14,6 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -47,7 +49,9 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
+                UsuariosCriadosLineChart::class,
+                AcolhidosCriadosLineChart::class,
+                AcolhidoEvolucaoLineChart::class,
                 //  FilamentInfoWidget::class,
             ])
             ->middleware([

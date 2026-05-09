@@ -10,8 +10,8 @@
             <!--[if BLOCK]><![endif]-->                <span
                     class="fi-badge fi-size-xs fi-color fi-color-primary fi-text-color-700 dark:fi-text-color-400"
                 >
-                    2
+                    3
                 </span>
             <!--[if ENDBLOCK]><![endif]-->        </div>
     <!--[if ENDBLOCK]><![endif]--></button>
-</div>
+</div><?php /**PATH C:\laragon\www\cerape\storage\framework\views/8bf79f136709a7de9580b27212e958c8.blade.php ENDPATH**/ ?>

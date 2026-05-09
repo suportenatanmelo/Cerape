@@ -3,14 +3,18 @@
 namespace App\Filament\Resources\SubstanciaPsicoativas;
 
 use App\Filament\Resources\SubstanciaPsicoativas\Pages\ManageSubstanciaPsicoativas;
+use App\Filament\Resources\SubstanciaPsicoativas\Pages\ViewSubstanciaPsicoativa;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\User;
 use App\Support\FilamentDatabaseNotifications;
+use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
@@ -27,6 +31,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 class SubstanciaPsicoativaResource extends Resource
@@ -617,6 +622,12 @@ class SubstanciaPsicoativaResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make(),
+                Action::make('downloadRelatorio')
+                    ->label('Baixar relatorio')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->color('success')
+                    ->action(fn (SubstanciaPsicoativas $record) => static::downloadReportResponse($record)),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -631,7 +642,91 @@ class SubstanciaPsicoativaResource extends Resource
     {
         return [
             'index' => ManageSubstanciaPsicoativas::route('/'),
+            'view' => ViewSubstanciaPsicoativa::route('/{record}'),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getReportData(SubstanciaPsicoativas $record): array
+    {
+        $record->loadMissing('acolhido');
+
+        $sections = [
+            'Identificacao do registro' => [
+                'Acolhido' => $record->acolhido?->nome_completo_paciente,
+                'Substancias registradas' => $record->nome,
+                'Atualizado em' => $record->updated_at,
+            ],
+            'Padrao de uso e consumo' => [
+                'Frequencia de uso' => $record->frequencia,
+                'Quantidade' => $record->quantidade,
+                'Via de administracao' => $record->via_administracao,
+                'Tempo de uso' => $record->tempo_uso,
+                'Ultima vez que utilizou' => $record->ultima_vez,
+                'Observacoes clinicas' => $record->observacoes,
+            ],
+            'Contexto familiar e inicio do uso' => [
+                'Houve dependentes quimicos na familia' => $record->houve_dependentes_quimicos_familia_convivencia,
+                'Nome da pessoa' => $record->nome_pessoa_dependente_familiar,
+                'Influencia de terceiro no inicio do uso' => static::formatChoice($record->influencia_terceiro_inicio_uso),
+                'Tipo de relacao' => $record->tipo_relacao_influencia_terceiro,
+            ],
+            'Historico terapeutico e acolhimento' => [
+                'Participou de grupos de apoio' => $record->participou_grupos_apoio,
+                'Qual grupo de apoio' => $record->qual_grupo_apoio,
+                'Teve internacoes anteriores' => $record->teve_internacoes_anteriores,
+                'Quantas internacoes anteriores' => $record->quantas_internacoes_anteriores,
+                'Onde foram as internacoes' => $record->onde_internacoes_anteriores,
+                'Quando ocorreram' => $record->quando_internacoes_anteriores,
+                'Lembra o tempo de acolhimento anterior' => $record->lembra_tempo_acolhimento_anterior,
+                'Tempo de acolhimento anterior' => $record->tempo_acolhimento_anterior,
+            ],
+            'Aspectos juridicos e institucionais' => [
+                'Esteve em unidade prisional ou similar' => static::formatChoice($record->esteve_unidade_prisional_ou_similar),
+                'Periodo em unidade prisional' => $record->periodo_unidade_prisional,
+                'Motivo relacionado a unidade prisional' => $record->motivo_unidade_prisional,
+                'Processos judiciais em andamento' => $record->processos_judiciais_andamento,
+                'Motivo dos processos em andamento' => $record->motivo_processos_judiciais_andamento,
+                'Processos judiciais anteriores' => $record->processos_judiciais_anteriores,
+                'Motivo dos processos anteriores' => $record->motivo_processos_judiciais_anteriores,
+            ],
+            'Repercussoes ocupacionais, familiares e clinicas' => [
+                'Impactos no trabalho pelo uso de substancias' => static::formatChoice($record->impactos_trabalho_uso_substancias),
+                'Detalhes dos impactos no trabalho' => $record->detalhes_impactos_trabalho_uso_substancias,
+                'Desempregado por uso de substancias' => $record->desempregado_por_uso_substancias,
+                'Tempo de desemprego relacionado ao uso' => static::formatChoice($record->tempo_desemprego_por_uso_substancias),
+                'Impacto no convivio familiar' => $record->impacto_convivio_familiar_uso_substancias,
+                'Detalhes do impacto familiar' => $record->detalhes_impacto_convivio_familiar,
+                'Frequencia do impacto familiar' => static::formatChoice($record->frequencia_impacto_convivio_familiar),
+                'Internacoes hospitalares devido ao uso' => $record->internacoes_hospitalares_uso_substancias,
+                'Quantidade de internacoes hospitalares' => static::formatChoice($record->quantidade_internacoes_hospitalares_uso_substancias),
+                'Detalhes das internacoes hospitalares' => $record->detalhes_internacoes_hospitalares_uso_substancias,
+            ],
+        ];
+
+        return [
+            'record' => $record,
+            'sections' => $sections,
+            'formatValue' => fn (mixed $value): string => static::formatValue($value),
+        ];
+    }
+
+    public static function downloadReportResponse(SubstanciaPsicoativas $record)
+    {
+        $record->loadMissing('acolhido');
+
+        $pdf = Pdf::loadView('pdf.substancia-psicoativa-report', static::getReportData($record))
+            ->setPaper('a4');
+
+        $fileName = 'relatorio-substancia-psicoativa-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            $fileName,
+            ['Content-Type' => 'application/pdf'],
+        );
     }
 
     public static function notifyUsers(SubstanciaPsicoativas $record, string $event): void
@@ -698,6 +793,46 @@ class SubstanciaPsicoativaResource extends Resource
     private static function notificationKey(SubstanciaPsicoativas $record, string $event): string
     {
         return "substancia_psicoativa_{$event}_{$record->getKey()}_" . ($record->updated_at?->timestamp ?? now()->timestamp);
+    }
+
+    private static function formatValue(mixed $value): string
+    {
+        if (is_bool($value)) {
+            return $value ? 'Sim' : 'Nao';
+        }
+
+        if ($value instanceof \Carbon\CarbonInterface) {
+            if ($value->format('H:i:s') === '00:00:00') {
+                return $value->format('d/m/Y');
+            }
+
+            return $value->format('d/m/Y H:i');
+        }
+
+        if (is_array($value)) {
+            return blank($value) ? '-' : implode(', ', array_filter($value));
+        }
+
+        $value = trim(strip_tags((string) $value));
+
+        return $value !== '' ? $value : '-';
+    }
+
+    private static function formatChoice(?string $value): ?string
+    {
+        return match ($value) {
+            'sim' => 'Sim',
+            'nao' => 'Nao',
+            'prefere_nao_informar' => 'Prefere nao informar',
+            '1_vez' => '1 vez',
+            '2_a_3_vezes' => '2 a 3 vezes',
+            '4_a_10_vezes' => '4 a 10 vezes',
+            'mais_de_10_vezes' => 'Mais de 10 vezes',
+            '1_ate_3_anos' => 'De 1 ate 3 anos',
+            '3_ate_10_anos' => 'De 3 ate 10 anos',
+            'mais_de_10_anos' => 'Mais de 10 anos',
+            default => $value,
+        };
     }
 
     private static function impactFrequencyOptions(): array
