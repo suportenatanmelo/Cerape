@@ -127,7 +127,7 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
         foreach (CarbonPeriod::create($start->copy()->startOfMonth(), '1 month', $end->copy()->startOfMonth()) as $date) {
             $key = $date->format('Y-m');
 
-            $labels[] = $date->format('m/Y');
+            $labels[] = $date->translatedFormat('M/Y');
             $values[] = round((float) ($averages[$key] ?? 0), 2);
         }
 

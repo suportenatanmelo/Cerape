@@ -32,7 +32,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::User;
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -56,7 +56,7 @@ class UserResource extends Resource
                                 ->visibility('public')
                                 ->maxFiles(1)
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                                    fn(TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
                                 ),
                             TextInput::make('name')
                                 ->label('Nome completo')
@@ -95,8 +95,8 @@ class UserResource extends Resource
                                 ->label('Senha')
                                 ->password()
                                 ->revealable()
-                                ->required(fn (string $operation): bool => $operation === 'create')
-                                ->dehydrated(fn (?string $state): bool => filled($state))
+                                ->required(fn(string $operation): bool => $operation === 'create')
+                                ->dehydrated(fn(?string $state): bool => filled($state))
                                 ->maxLength(255),
                         ]),
                     ]),

@@ -127,6 +127,10 @@ class ViewAcolhido extends ViewRecord
         }
 
         if ($value instanceof \Carbon\CarbonInterface) {
+            if ($value->format('H:i:s') === '00:00:00') {
+                return $value->format('d/m/Y');
+            }
+
             return $value->format('d/m/Y H:i');
         }
 

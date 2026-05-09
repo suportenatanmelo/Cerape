@@ -6,5 +6,12 @@
 </svg>
 
     <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]-->
-    <!--[if BLOCK]><![endif]--><!--[if ENDBLOCK]><![endif]--></button>
-</div>
+    <!--[if BLOCK]><![endif]-->        <div class="fi-icon-btn-badge-ctn">
+            <!--[if BLOCK]><![endif]-->                <span
+                    class="fi-badge fi-size-xs fi-color fi-color-primary fi-text-color-700 dark:fi-text-color-400"
+                >
+                    2
+                </span>
+            <!--[if ENDBLOCK]><![endif]-->        </div>
+    <!--[if ENDBLOCK]><![endif]--></button>
+</div><?php /**PATH C:\laragon\www\cerape\storage\framework\views/1782fb524cd4e821794c854004241827.blade.php ENDPATH**/ ?>
