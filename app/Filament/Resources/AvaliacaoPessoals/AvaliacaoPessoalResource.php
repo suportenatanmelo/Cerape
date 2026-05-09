@@ -9,6 +9,7 @@ use App\Filament\Resources\AvaliacaoPessoals\Pages\ViewAvaliacaoPessoal;
 use App\Models\Acolhido;
 use App\Models\AvaliacaoPessoal;
 use App\Models\User;
+use App\Support\FilamentDatabaseNotifications;
 use BackedEnum;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -409,21 +410,25 @@ class AvaliacaoPessoalResource extends Resource
             ->get();
 
         if ($usersPendingEvaluation->isNotEmpty()) {
-            Notification::make()
-                ->title('Avaliacao pendente')
-                ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ainda precisa da sua avaliacao.")
-                ->warning()
-                ->icon('heroicon-o-clipboard-document-check')
-                ->sendToDatabase($usersPendingEvaluation);
+            FilamentDatabaseNotifications::send(
+                Notification::make()
+                    ->title('Avaliacao pendente')
+                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ainda precisa da sua avaliacao.")
+                    ->warning()
+                    ->icon('heroicon-o-clipboard-document-check'),
+                $usersPendingEvaluation,
+            );
         }
 
         if ($usersWhoEvaluated->isNotEmpty()) {
-            Notification::make()
-                ->title('Media de avaliacao atualizada')
-                ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ja possui media de todos: " . self::formatScore(self::calculateMediaDeTodos($avaliacao->acolhido_id)) . '.')
-                ->success()
-                ->icon('heroicon-o-chart-bar')
-                ->sendToDatabase($usersWhoEvaluated);
+            FilamentDatabaseNotifications::send(
+                Notification::make()
+                    ->title('Media de avaliacao atualizada')
+                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ja possui media de todos: " . self::formatScore(self::calculateMediaDeTodos($avaliacao->acolhido_id)) . '.')
+                    ->success()
+                    ->icon('heroicon-o-chart-bar'),
+                $usersWhoEvaluated,
+            );
         }
     }
 

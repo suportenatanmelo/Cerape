@@ -31,6 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile(Profile::class, isSimple: false)
             ->databaseNotifications()
+            ->databaseNotificationsPolling('10s')
             ->brandLogo(asset('storage/images/logo.png'))
             ->brandLogoHeight('60px')
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))

@@ -40,13 +40,13 @@ class AvaliacaoPessoalAcolhidoChart extends ChartWidget
             'datasets' => [
                 [
                     'label' => 'Media do usuario',
-                    'data' => $usuarios->map(fn (array $item): float => round((float) $item['media'], 2))->all(),
+                    'data' => $usuarios->map(fn(array $item): float => round((float) $item['media'], 2))->all(),
                     'backgroundColor' => '#d97706',
                     'borderColor' => '#b45309',
                     'borderWidth' => 1,
                 ],
             ],
-            'labels' => $usuarios->map(fn (array $item): string => $item['user']?->name ?? 'Usuario nao informado')->all(),
+            'labels' => $usuarios->map(fn(array $item): string => $item['user']?->name ?? 'Usuario nao informado')->all(),
         ];
     }
 

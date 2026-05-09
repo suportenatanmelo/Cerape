@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Acolhidos\Pages;
 
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
+use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Pages\EditRecord;
@@ -19,6 +20,7 @@ class EditAcolhido extends EditRecord
         return [
             ViewAction::make(),
             DeleteAction::make()
+                ->after(fn () => AcolhidoForm::notifyUsers($this->getRecord(), 'deleted'))
                 ->successNotificationTitle('Acolhido excluido com sucesso'),
         ];
     }
@@ -26,5 +28,10 @@ class EditAcolhido extends EditRecord
     protected function getSavedNotificationTitle(): ?string
     {
         return 'Acolhido atualizado com sucesso';
+    }
+
+    protected function afterSave(): void
+    {
+        AcolhidoForm::notifyUsers($this->getRecord(), 'updated');
     }
 }

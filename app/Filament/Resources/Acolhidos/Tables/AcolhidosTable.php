@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Acolhidos\Tables;
 
+use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -80,7 +81,12 @@ class AcolhidosTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->after(function ($records): void {
+                            foreach ($records as $record) {
+                                AcolhidoForm::notifyUsers($record, 'deleted');
+                            }
+                        }),
                 ]),
             ]);
     }

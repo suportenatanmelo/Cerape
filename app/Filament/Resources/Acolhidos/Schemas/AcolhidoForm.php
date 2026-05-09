@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Acolhidos\Schemas;
 
 use App\Models\Acolhido;
 use App\Models\User;
+use App\Support\FilamentDatabaseNotifications;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Services\CorreiosCepService;
 use Filament\Forms\Components\CheckboxList;
@@ -43,7 +44,10 @@ class AcolhidoForm
         $notification = Notification::make()
             ->title(self::notificationTitle($event))
             ->body(self::notificationBody($acolhido, $event))
-            ->icon(self::notificationIcon($event));
+            ->icon(self::notificationIcon($event))
+            ->viewData([
+                'key' => self::notificationKey($acolhido, $event),
+            ]);
 
         match ($event) {
             'created' => $notification->success(),
@@ -52,7 +56,7 @@ class AcolhidoForm
             default => $notification->info(),
         };
 
-        $notification->sendToDatabase($users, isEventDispatched: true);
+        FilamentDatabaseNotifications::send($notification, $users);
     }
 
     public static function configure(Schema $schema): Schema
@@ -541,12 +545,12 @@ class AcolhidoForm
     private static function notificationTitle(string $event): string
     {
         return match ($event) {
-            'created' => 'Acolhido criado',
-            'updated' => 'Acolhido editado',
-            'deleted' => 'Acolhido excluido',
+            'created' => 'Novo acolhido',
+            'updated' => 'Acolhido atualizado',
+            'deleted' => 'Acolhido removido',
             'restored' => 'Acolhido restaurado',
-            'forceDeleted' => 'Acolhido excluido definitivamente',
-            default => 'Cadastro de acolhido atualizado',
+            'forceDeleted' => 'Acolhido removido em definitivo',
+            default => 'Acolhido atualizado',
         };
     }
 
@@ -556,15 +560,15 @@ class AcolhidoForm
         $responsible = auth()->user()?->name ?: 'Sistema';
 
         $action = match ($event) {
-            'created' => 'foi cadastrado',
-            'updated' => 'teve o cadastro editado',
-            'deleted' => 'foi excluido',
-            'restored' => 'foi restaurado',
-            'forceDeleted' => 'foi excluido definitivamente',
-            default => 'teve o cadastro atualizado',
+            'created' => 'cadastrado',
+            'updated' => 'editado',
+            'deleted' => 'excluido',
+            'restored' => 'restaurado',
+            'forceDeleted' => 'excluido em definitivo',
+            default => 'atualizado',
         };
 
-        return "{$name} {$action}. Responsavel: {$responsible}.";
+        return "{$name} foi {$action} por {$responsible}.";
     }
 
     private static function notificationIcon(string $event): string
@@ -576,6 +580,11 @@ class AcolhidoForm
             'restored' => 'heroicon-o-arrow-path',
             default => 'heroicon-o-bell-alert',
         };
+    }
+
+    private static function notificationKey(Acolhido $acolhido, string $event): string
+    {
+        return "acolhido_{$event}_{$acolhido->getKey()}_" . ($acolhido->updated_at?->timestamp ?? now()->timestamp);
     }
 
     private static function shouldHideQuantoTempoDeAluguel(Get $get): bool

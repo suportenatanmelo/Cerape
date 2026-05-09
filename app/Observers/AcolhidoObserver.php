@@ -12,7 +12,7 @@ class AcolhidoObserver
      */
     public function created(Acolhido $acolhido): void
     {
-        AcolhidoForm::notifyUsers($acolhido, 'created');
+        //
     }
 
     /**
@@ -20,7 +20,7 @@ class AcolhidoObserver
      */
     public function updated(Acolhido $acolhido): void
     {
-        AcolhidoForm::notifyUsers($acolhido, 'updated');
+        //
     }
 
     /**
@@ -28,7 +28,7 @@ class AcolhidoObserver
      */
     public function deleted(Acolhido $acolhido): void
     {
-        AcolhidoForm::notifyUsers($acolhido, 'deleted');
+        //
     }
 
     /**
