@@ -33,6 +33,9 @@ class AcolhidoInfolist
                                 ->circular()
                                 ->height(120)
                                 ->width(120)
+                                ->getStateUsing(
+                                    fn($record): ?string => self::resolveAvatarPath($record->avatar)
+                                )
                                 ->extraImgAttributes([
                                     'style' => 'object-fit: cover;'
                                 ]),
@@ -45,6 +48,9 @@ class AcolhidoInfolist
                                 ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
+                            IconEntry::make('ativo')
+                                ->label('Cadastro ativo')
+                                ->boolean(),
                             TextEntry::make('data_nascimento')
                                 ->label('Nascimento')
                                 ->date(),
@@ -72,6 +78,11 @@ class AcolhidoInfolist
                                     ->badge()
                                     ->color('primary')
                                     ->placeholder('-'),
+                                TextEntry::make('ativo')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->formatStateUsing(fn(bool $state): string => $state ? 'Ativo' : 'Desativado')
+                                    ->color(fn(bool $state): string => $state ? 'success' : 'danger'),
                                 TextEntry::make('data_nascimento')
                                     ->label('Data de nascimento')
                                     ->date(),

@@ -2,16 +2,23 @@
 
 namespace App\Filament\Resources\Acolhidos\Schemas;
 
+
+use App\Models\Acolhido;
+use App\Models\User;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Services\CorreiosCepService;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\BaseFileUpload;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
@@ -25,6 +32,29 @@ use Illuminate\Support\Str;
 
 class AcolhidoForm
 {
+    public static function notifyUsers(Acolhido $acolhido, string $event): void
+    {
+        $users = User::query()->get();
+
+        if ($users->isEmpty()) {
+            return;
+        }
+
+        $notification = Notification::make()
+            ->title(self::notificationTitle($event))
+            ->body(self::notificationBody($acolhido, $event))
+            ->icon(self::notificationIcon($event));
+
+        match ($event) {
+            'created' => $notification->success(),
+            'deleted', 'forceDeleted' => $notification->danger(),
+            'restored' => $notification->success(),
+            default => $notification->info(),
+        };
+
+        $notification->sendToDatabase($users, isEventDispatched: true);
+    }
+
     public static function configure(Schema $schema): Schema
     {
         return $schema
@@ -47,11 +77,21 @@ class AcolhidoForm
                                         TextInput::make('nome_completo_paciente')
                                             ->label('Nome completo do paciente')
                                             ->required(),
+                                        DateTimePicker::make('created_at')
+                                            ->label('Data de criacao do cadastro')
+                                            ->seconds(false)
+                                            ->visibleOn('edit'),
+                                        Toggle::make('ativo')
+                                            ->label('Cadastro ativo')
+                                            ->default(true)
+                                            ->onColor('success')
+                                            ->offColor('danger')
+                                            ->helperText('Desative quando o acolhido nao estiver mais em acompanhamento ativo.'),
                                         FileUpload::make('avatar')
                                             ->label('Foto do Acolhido')
-
                                             ->image()
                                             ->imageEditor()
+                                            ->avatar()
                                             ->disk('public')
                                             ->directory('acolhidos/avatars')
                                             ->visibility('public')
@@ -340,26 +380,27 @@ class AcolhidoForm
 
                                                 $set('qual_sao_as_medicacao', null);
                                             }),
-                                        CheckboxList::make('qual_sao_as_medicacao')
+                                        TagsInput::make('qual_sao_as_medicacao')
                                             ->label('Quais sao as medicacoes psicoativas')
-                                            ->options([
-                                                'Amitriptilina' => 'Amitriptilina',
-                                                'Clomipramina' => 'Clomipramina',
-                                                'Nortriptilina' => 'Nortriptilina',
-                                                'Fluoxetina' => 'Fluoxetina',
-                                                'Bupropiona' => 'Bupropiona',
-                                                'Carbonato de Litio' => 'Carbonato de Litio',
-                                                'Carbamazepina' => 'Carbamazepina',
-                                                'Valproato de Sodio' => 'Valproato de Sodio',
-                                                'Acido Valproico' => 'Acido Valproico',
-                                                'Haloperidol' => 'Haloperidol',
-                                                'Clorpromazina' => 'Clorpromazina',
-                                                'Biperideno' => 'Biperideno',
-                                                'Clonazepam' => 'Clonazepam',
-                                                'Diazepam' => 'Diazepam',
-                                                'Midazolam' => 'Midazolam',
+                                            ->placeholder('Digite a medicaçao e pressione Enter')
+                                            ->suggestions([
+                                                'Amitriptilina',
+                                                'Clomipramina',
+                                                'Nortriptilina',
+                                                'Fluoxetina',
+                                                'Bupropiona',
+                                                'Carbonato de Litio',
+                                                'Carbamazepina',
+                                                'Valproato de Sodio',
+                                                'Acido Valproico',
+                                                'Haloperidol',
+                                                'Clorpromazina',
+                                                'Biperideno',
+                                                'Clonazepam',
+                                                'Diazepam',
+                                                'Midazolam',
                                             ])
-                                            ->columns(2)
+                                            ->reorderable()
                                             ->columnSpanFull()
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('toma_medicamento')))
                                             ->dehydratedWhenHidden(),
@@ -495,6 +536,46 @@ class AcolhidoForm
     private static function shouldHideNomeDoConjuge(Get $get): bool
     {
         return in_array((string) $get('estado_civil'), ['solteiro', 'viuvo'], true);
+    }
+
+    private static function notificationTitle(string $event): string
+    {
+        return match ($event) {
+            'created' => 'Acolhido criado',
+            'updated' => 'Acolhido editado',
+            'deleted' => 'Acolhido excluido',
+            'restored' => 'Acolhido restaurado',
+            'forceDeleted' => 'Acolhido excluido definitivamente',
+            default => 'Cadastro de acolhido atualizado',
+        };
+    }
+
+    private static function notificationBody(Acolhido $acolhido, string $event): string
+    {
+        $name = $acolhido->nome_completo_paciente ?: 'Um acolhido';
+        $responsible = auth()->user()?->name ?: 'Sistema';
+
+        $action = match ($event) {
+            'created' => 'foi cadastrado',
+            'updated' => 'teve o cadastro editado',
+            'deleted' => 'foi excluido',
+            'restored' => 'foi restaurado',
+            'forceDeleted' => 'foi excluido definitivamente',
+            default => 'teve o cadastro atualizado',
+        };
+
+        return "{$name} {$action}. Responsavel: {$responsible}.";
+    }
+
+    private static function notificationIcon(string $event): string
+    {
+        return match ($event) {
+            'created' => 'heroicon-o-user-plus',
+            'updated' => 'heroicon-o-pencil-square',
+            'deleted', 'forceDeleted' => 'heroicon-o-trash',
+            'restored' => 'heroicon-o-arrow-path',
+            default => 'heroicon-o-bell-alert',
+        };
     }
 
     private static function shouldHideQuantoTempoDeAluguel(Get $get): bool

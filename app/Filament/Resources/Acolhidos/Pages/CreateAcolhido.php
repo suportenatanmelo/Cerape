@@ -16,4 +16,9 @@ class CreateAcolhido extends CreateRecord
     {
         return 'Criar Acolhido';
     }
+
+    protected function getCreatedNotificationTitle(): ?string
+    {
+        return 'Acolhido cadastrado com sucesso';
+    }
 }

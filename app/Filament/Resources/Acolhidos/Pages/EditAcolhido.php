@@ -18,7 +18,13 @@ class EditAcolhido extends EditRecord
     {
         return [
             ViewAction::make(),
-            DeleteAction::make(),
+            DeleteAction::make()
+                ->successNotificationTitle('Acolhido excluido com sucesso'),
         ];
+    }
+
+    protected function getSavedNotificationTitle(): ?string
+    {
+        return 'Acolhido atualizado com sucesso';
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Models\Acolhido;
 
 class AcolhidoObserver
@@ -11,7 +12,7 @@ class AcolhidoObserver
      */
     public function created(Acolhido $acolhido): void
     {
-        //
+        AcolhidoForm::notifyUsers($acolhido, 'created');
     }
 
     /**
@@ -19,7 +20,7 @@ class AcolhidoObserver
      */
     public function updated(Acolhido $acolhido): void
     {
-        //
+        AcolhidoForm::notifyUsers($acolhido, 'updated');
     }
 
     /**
@@ -27,7 +28,7 @@ class AcolhidoObserver
      */
     public function deleted(Acolhido $acolhido): void
     {
-        //
+        AcolhidoForm::notifyUsers($acolhido, 'deleted');
     }
 
     /**
@@ -35,7 +36,7 @@ class AcolhidoObserver
      */
     public function restored(Acolhido $acolhido): void
     {
-        //
+        AcolhidoForm::notifyUsers($acolhido, 'restored');
     }
 
     /**
@@ -43,6 +44,6 @@ class AcolhidoObserver
      */
     public function forceDeleted(Acolhido $acolhido): void
     {
-        //
+        AcolhidoForm::notifyUsers($acolhido, 'forceDeleted');
     }
 }

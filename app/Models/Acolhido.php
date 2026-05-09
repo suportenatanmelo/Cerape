@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Acolhido extends Model
 {
     protected $fillable = [
         'user_id',
+        'ativo',
         'avatar',
         'nome_completo_paciente',
         'data_nascimento',
@@ -55,10 +57,13 @@ class Acolhido extends Model
         'possui_contato_dos_filhos',
         'responsavel_pela_intervencao_do_acolhido',
         'profissional_referencia_acolhido_instituicao',
+        'created_at',
     ];
 
     protected $casts = [
+        'created_at' => 'datetime',
         'data_nascimento' => 'date',
+        'ativo' => 'boolean',
         'tem_documentacao' => 'boolean',
         'moradia_propria' => 'boolean',
         'mora_em_casa_aluguada' => 'boolean',
@@ -80,5 +85,10 @@ class Acolhido extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function avaliacoesPessoais(): HasMany
+    {
+        return $this->hasMany(AvaliacaoPessoal::class);
     }
 }

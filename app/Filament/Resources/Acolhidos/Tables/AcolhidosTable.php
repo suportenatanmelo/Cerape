@@ -10,6 +10,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Storage;
 
 class AcolhidosTable
 {
@@ -22,15 +23,20 @@ class AcolhidosTable
                     ->searchable(),
                 ImageColumn::make('avatar')
                     ->label('Foto')
-
+                    ->disk('public')
+                    ->circular()
+                    ->height(48)
+                    ->width(48)
                     ->getStateUsing(
-                        fn($record) => $record->avatar
-                            ? asset('storage/' . $record->avatar)
-                            : null
+                        fn($record): ?string => self::resolveAvatarPath($record->avatar)
                     ),
                 TextColumn::make('nome_completo_paciente')
                     ->label('Nome do paciente')
                     ->searchable(),
+                IconColumn::make('ativo')
+                    ->label('Ativo')
+                    ->boolean()
+                    ->sortable(),
                 TextColumn::make('data_nascimento')
                     ->label('Data de nascimento')
                     ->date()
@@ -77,5 +83,29 @@ class AcolhidosTable
                     DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $path = trim($path);
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
     }
 }
