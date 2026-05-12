@@ -4,26 +4,21 @@ namespace App\Filament\Widgets;
 
 use App\Filament\Resources\AvaliacaoPessoals\AvaliacaoPessoalResource;
 use App\Models\AvaliacaoPessoal;
-use Filament\Widgets\ChartWidget;
+use Filament\Widgets\LineChartWidget;
 
-class AvaliacaoPessoalAcolhidoChart extends ChartWidget
+class AvaliacaoPessoalAcolhidoChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
 
-    protected ?string $heading = 'Medias por usuario avaliador';
+    protected ?string $heading = 'Evolucao das medias por avaliador';
 
-    protected ?string $description = 'Comparativo das medias individuais usadas para formar a Media de todos.';
+    protected ?string $description = 'Visualizacao das medias individuais que compoem a media consolidada do acolhido.';
 
     protected ?string $maxHeight = '320px';
 
     protected int | string | array $columnSpan = 'full';
 
     public ?AvaliacaoPessoal $record = null;
-
-    protected function getType(): string
-    {
-        return 'bar';
-    }
 
     protected function getData(): array
     {
@@ -39,14 +34,17 @@ class AvaliacaoPessoalAcolhidoChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Media do usuario',
+                    'label' => 'Media individual por avaliador',
                     'data' => $usuarios->map(fn(array $item): float => round((float) $item['media'], 2))->all(),
-                    'backgroundColor' => '#d97706',
+                    'backgroundColor' => 'rgba(217, 119, 6, 0.12)',
                     'borderColor' => '#b45309',
-                    'borderWidth' => 1,
+                    'fill' => true,
+                    'tension' => 0.35,
+                    'pointRadius' => 4,
+                    'pointHoverRadius' => 6,
                 ],
             ],
-            'labels' => $usuarios->map(fn(array $item): string => $item['user']?->name ?? 'Usuario nao informado')->all(),
+            'labels' => $usuarios->map(fn (array $item): string => $item['user']?->name ?? 'Usuario nao informado')->all(),
         ];
     }
 
@@ -61,6 +59,12 @@ class AvaliacaoPessoalAcolhidoChart extends ChartWidget
                     'ticks' => [
                         'stepSize' => 0.5,
                     ],
+                ],
+            ],
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'bottom',
                 ],
             ],
         ];

@@ -5,12 +5,14 @@ namespace App\Filament\Resources\AvaliacaoPessoals;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\CreateAvaliacaoPessoal;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\EditAvaliacaoPessoal;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\ListAvaliacaoPessoals;
+use App\Filament\Resources\AvaliacaoPessoals\Pages\RelatorioAvaliacaoPessoal;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\ViewAvaliacaoPessoal;
 use App\Models\Acolhido;
 use App\Models\AvaliacaoPessoal;
 use App\Models\User;
 use App\Support\FilamentDatabaseNotifications;
 use BackedEnum;
+use Carbon\Carbon;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\ImageEntry;
@@ -28,6 +30,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use UnitEnum;
 
@@ -88,7 +91,7 @@ class AvaliacaoPessoalResource extends Resource
                         ]),
                     ]),
                 Section::make('Pontuacao')
-                    ->description('Cada criterio aceita notas de 0 a 3. A media final e calculada automaticamente.')
+                    ->description('Cada criterio aceita apenas notas maiores que 1 e menores ou iguais a 3. A media final e calculada automaticamente.')
                     ->icon('heroicon-o-star')
                     ->schema([
                         Grid::make([
@@ -251,6 +254,7 @@ class AvaliacaoPessoalResource extends Resource
             'index' => ListAvaliacaoPessoals::route('/'),
             'create' => CreateAvaliacaoPessoal::route('/create'),
             'view' => ViewAvaliacaoPessoal::route('/{record}'),
+            'report' => RelatorioAvaliacaoPessoal::route('/{record}/relatorio'),
             'edit' => EditAvaliacaoPessoal::route('/{record}/edit'),
         ];
     }
@@ -261,10 +265,17 @@ class AvaliacaoPessoalResource extends Resource
             ->label($label)
             ->numeric()
             ->step(0.01)
-            ->minValue(0)
+            ->minValue(1.01)
             ->maxValue(3)
-            ->default(0)
+            ->default(null)
             ->required()
+            ->helperText('Informe uma nota maior que 1 e menor ou igual a 3.')
+            ->validationMessages([
+                'required' => 'Preencha a nota de ' . mb_strtolower($label) . '.',
+                'numeric' => 'A nota de ' . mb_strtolower($label) . ' deve ser um numero.',
+                'min' => 'A nota de ' . mb_strtolower($label) . ' deve ser maior que 1.',
+                'max' => 'A nota de ' . mb_strtolower($label) . ' nao pode ser maior que 3.',
+            ])
             ->live(onBlur: true)
             ->afterStateUpdated(fn (Get $get, Set $set): mixed => self::refreshTotal($get, $set))
             ->suffix('/ 3');
@@ -350,19 +361,75 @@ class AvaliacaoPessoalResource extends Resource
             ->latest()
             ->get();
 
-        $usuarios = $avaliacoes
+        $usuarios = self::summarizeEvaluators($avaliacoes);
+        $criteriaAverages = self::calculateCriteriaAverages($avaliacoes);
+        $personalData = self::buildAcolhidoPersonalData($record->acolhido);
+        $periodComparisons = [
+            'semanal' => self::calculatePeriodComparison($record->acolhido_id, 'semanal'),
+            'mensal' => self::calculatePeriodComparison($record->acolhido_id, 'mensal'),
+            'semestral' => self::calculatePeriodComparison($record->acolhido_id, 'semestral'),
+            'anual' => self::calculatePeriodComparison($record->acolhido_id, 'anual'),
+        ];
+        $somaMediasIndividuais = min(3, (float) $usuarios->sum('media'));
+        $logicasMedias = [
+            [
+                'titulo' => 'Logica da media individual de um avaliador',
+                'descricao' => 'Para cada avaliador, a media individual e calculada pela soma das medias finais registradas por esse avaliador para o acolhido, dividida pela quantidade de avaliacoes que ele realizou.',
+                'formula' => 'Media individual = soma das medias finais do avaliador / quantidade de avaliacoes do avaliador',
+            ],
+            [
+                'titulo' => 'Logica da media de todos os avaliadores',
+                'descricao' => 'A media de todos considera a media individual de cada avaliador com o mesmo peso. Primeiro calculamos a media individual de cada profissional. Depois calculamos a media dessas medias individuais.',
+                'formula' => 'Media de todos = soma das medias individuais dos avaliadores / quantidade de avaliadores',
+            ],
+            [
+                'titulo' => 'Regra de apresentacao da soma das medias individuais',
+                'descricao' => 'Nos relatorios, a soma das medias individuais exibida em tela e no PDF nunca ultrapassa 3, respeitando a escala maxima da avaliacao pessoal.',
+                'formula' => 'Soma exibida = menor valor entre 3 e a soma das medias individuais',
+            ],
+        ];
+
+        return [
+            'record' => $record,
+            'acolhido' => $record->acolhido,
+            'avaliacoes' => $avaliacoes,
+            'usuarios' => $usuarios,
+            'personalData' => $personalData,
+            'criteriaAverages' => $criteriaAverages,
+            'mediaDeTodos' => self::calculateMediaDeTodos($record->acolhido_id),
+            'somaMediasIndividuais' => $somaMediasIndividuais,
+            'logicasMedias' => $logicasMedias,
+            'totalAvaliadores' => self::countEvaluators($record->acolhido_id),
+            'totalAvaliacoes' => $avaliacoes->count(),
+            'ultimaAvaliacao' => $avaliacoes->first(),
+            'primeiraAvaliacao' => $avaliacoes->last(),
+            'periodComparisons' => $periodComparisons,
+            'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
+            'formatScore' => fn (float $score): string => self::formatScore($score),
+            'scoreColor' => fn (float $score): string => self::scoreColor($score),
+        ];
+    }
+
+    /**
+     * @param  Collection<int, AvaliacaoPessoal>  $avaliacoes
+     * @return Collection<int, array<string, mixed>>
+     */
+    protected static function summarizeEvaluators(Collection $avaliacoes): Collection
+    {
+        return $avaliacoes
             ->filter(fn (AvaliacaoPessoal $avaliacao): bool => filled($avaliacao->user_id))
             ->groupBy('user_id')
             ->map(function ($avaliacoesDoUsuario) {
                 /** @var \Illuminate\Support\Collection<int, AvaliacaoPessoal> $avaliacoesDoUsuario */
                 $primeiraAvaliacao = $avaliacoesDoUsuario->first();
+                $avaliacoesOrdenadas = $avaliacoesDoUsuario->sortByDesc('created_at')->values();
 
                 return [
                     'user' => $primeiraAvaliacao?->user,
                     'foto' => self::imageDataUri($primeiraAvaliacao?->user?->avatar),
                     'quantidade' => $avaliacoesDoUsuario->count(),
                     'media' => (float) $avaliacoesDoUsuario->avg('Total'),
-                    'ultima_avaliacao' => $avaliacoesDoUsuario->sortByDesc('created_at')->first(),
+                    'ultima_avaliacao' => $avaliacoesOrdenadas->first(),
                     'criterios' => [
                         'Controle' => (float) $avaliacoesDoUsuario->avg('controler'),
                         'Autonomia' => (float) $avaliacoesDoUsuario->avg('autonomia'),
@@ -370,21 +437,159 @@ class AvaliacaoPessoalResource extends Resource
                         'Superacao' => (float) $avaliacoesDoUsuario->avg('superacao'),
                         'Autocuidado' => (float) $avaliacoesDoUsuario->avg('autocuidado'),
                     ],
+                    'avaliacoes' => $avaliacoesOrdenadas,
                 ];
             })
+            ->sortByDesc('media')
             ->values();
+    }
+
+    /**
+     * @param  Collection<int, AvaliacaoPessoal>  $avaliacoes
+     * @return array<string, float>
+     */
+    protected static function calculateCriteriaAverages(Collection $avaliacoes): array
+    {
+        return [
+            'Controle' => (float) $avaliacoes->avg('controler'),
+            'Autonomia' => (float) $avaliacoes->avg('autonomia'),
+            'Transparencia' => (float) $avaliacoes->avg('transparencia'),
+            'Superacao' => (float) $avaliacoes->avg('superacao'),
+            'Autocuidado' => (float) $avaliacoes->avg('autocuidado'),
+        ];
+    }
+
+    /**
+     * @return array<int, array{label: string, value: string}>
+     */
+    protected static function buildAcolhidoPersonalData(?Acolhido $acolhido): array
+    {
+        if (! $acolhido) {
+            return [];
+        }
+
+        $items = [
+            ['label' => 'Nome completo', 'value' => (string) ($acolhido->nome_completo_paciente ?? '-')],
+            ['label' => 'Data de nascimento', 'value' => $acolhido->data_nascimento?->format('d/m/Y') ?? '-'],
+            ['label' => 'Idade', 'value' => $acolhido->data_nascimento?->age ? $acolhido->data_nascimento->age . ' anos' : '-'],
+            ['label' => 'Estado civil', 'value' => (string) ($acolhido->estado_civil ?? '-')],
+            ['label' => 'Escolaridade', 'value' => (string) ($acolhido->escolaridade ?? '-')],
+            ['label' => 'Profissao', 'value' => (string) ($acolhido->profissao ?? '-')],
+            ['label' => 'Telefone', 'value' => (string) ($acolhido->numero_do_telefone ?? '-')],
+            ['label' => 'Municipio / UF', 'value' => trim(((string) ($acolhido->municipio_do_paciente ?? '')) . ' / ' . ((string) ($acolhido->uf_municipio_do_paciente ?? '')), ' /') ?: '-'],
+            ['label' => 'Endereco', 'value' => (string) ($acolhido->endereco_paciente ?? '-')],
+            ['label' => 'Responsavel pela intervencao', 'value' => (string) ($acolhido->responsavel_pela_intervencao_do_acolhido ?? '-')],
+            ['label' => 'Profissional de referencia', 'value' => (string) ($acolhido->profissional_referencia_acolhido_instituicao ?? '-')],
+            ['label' => 'Data de cadastro', 'value' => $acolhido->created_at?->format('d/m/Y H:i') ?? '-'],
+        ];
+
+        return array_values(array_filter(
+            $items,
+            fn (array $item): bool => filled($item['value']) && $item['value'] !== '- / '
+        ));
+    }
+
+    public static function calculateRawAverageForRange(int $acolhidoId, Carbon $start, Carbon $end): float
+    {
+        return (float) (AvaliacaoPessoal::query()
+            ->where('acolhido_id', $acolhidoId)
+            ->whereBetween('created_at', [$start, $end])
+            ->avg('Total') ?? 0);
+    }
+
+    public static function calculateConsolidatedAverageForRange(int $acolhidoId, Carbon $start, Carbon $end): float
+    {
+        $userAverages = AvaliacaoPessoal::query()
+            ->where('acolhido_id', $acolhidoId)
+            ->whereNotNull('user_id')
+            ->whereBetween('created_at', [$start, $end])
+            ->selectRaw('user_id, AVG(`Total`) as media_usuario')
+            ->groupBy('user_id')
+            ->pluck('media_usuario');
+
+        if ($userAverages->isEmpty()) {
+            return 0;
+        }
+
+        return (float) $userAverages->avg();
+    }
+
+    /**
+     * @return array<string, Carbon>
+     */
+    protected static function getPeriodDateRanges(string $period): array
+    {
+        $now = now();
+
+        return match ($period) {
+            'mensal' => [
+                'current_start' => $now->copy()->startOfMonth(),
+                'current_end' => $now->copy()->endOfMonth(),
+                'previous_start' => $now->copy()->subMonthNoOverflow()->startOfMonth(),
+                'previous_end' => $now->copy()->subMonthNoOverflow()->endOfMonth(),
+            ],
+            'semestral' => [
+                'current_start' => $now->copy()->subMonths(5)->startOfMonth(),
+                'current_end' => $now->copy()->endOfMonth(),
+                'previous_start' => $now->copy()->subMonths(11)->startOfMonth(),
+                'previous_end' => $now->copy()->subMonths(6)->endOfMonth(),
+            ],
+            'anual' => [
+                'current_start' => $now->copy()->subMonths(11)->startOfMonth(),
+                'current_end' => $now->copy()->endOfMonth(),
+                'previous_start' => $now->copy()->subMonths(23)->startOfMonth(),
+                'previous_end' => $now->copy()->subMonths(12)->endOfMonth(),
+            ],
+            default => [
+                'current_start' => $now->copy()->subDays(6)->startOfDay(),
+                'current_end' => $now->copy()->endOfDay(),
+                'previous_start' => $now->copy()->subDays(13)->startOfDay(),
+                'previous_end' => $now->copy()->subDays(7)->endOfDay(),
+            ],
+        };
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function calculatePeriodComparison(int $acolhidoId, string $period): array
+    {
+        $ranges = self::getPeriodDateRanges($period);
+        $currentRaw = self::calculateRawAverageForRange($acolhidoId, $ranges['current_start'], $ranges['current_end']);
+        $previousRaw = self::calculateRawAverageForRange($acolhidoId, $ranges['previous_start'], $ranges['previous_end']);
+        $currentConsolidated = self::calculateConsolidatedAverageForRange($acolhidoId, $ranges['current_start'], $ranges['current_end']);
+        $previousConsolidated = self::calculateConsolidatedAverageForRange($acolhidoId, $ranges['previous_start'], $ranges['previous_end']);
 
         return [
-            'record' => $record,
-            'acolhido' => $record->acolhido,
-            'avaliacoes' => $avaliacoes,
-            'usuarios' => $usuarios,
-            'mediaDeTodos' => self::calculateMediaDeTodos($record->acolhido_id),
-            'totalAvaliadores' => self::countEvaluators($record->acolhido_id),
-            'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
-            'formatScore' => fn (float $score): string => self::formatScore($score),
-            'scoreColor' => fn (float $score): string => self::scoreColor($score),
+            'period' => $period,
+            'label' => match ($period) {
+                'mensal' => 'Comparativo mensal',
+                'semestral' => 'Comparativo semestral',
+                'anual' => 'Comparativo anual',
+                default => 'Comparativo semanal',
+            },
+            'current_label' => self::formatRangeLabel($ranges['current_start'], $ranges['current_end']),
+            'previous_label' => self::formatRangeLabel($ranges['previous_start'], $ranges['previous_end']),
+            'raw_current' => $currentRaw,
+            'raw_previous' => $previousRaw,
+            'raw_delta' => $currentRaw - $previousRaw,
+            'consolidated_current' => $currentConsolidated,
+            'consolidated_previous' => $previousConsolidated,
+            'consolidated_delta' => $currentConsolidated - $previousConsolidated,
+            'current_total_evaluations' => AvaliacaoPessoal::query()
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$ranges['current_start'], $ranges['current_end']])
+                ->count(),
+            'previous_total_evaluations' => AvaliacaoPessoal::query()
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$ranges['previous_start'], $ranges['previous_end']])
+                ->count(),
         ];
+    }
+
+    protected static function formatRangeLabel(Carbon $start, Carbon $end): string
+    {
+        return $start->format('d/m/Y') . ' a ' . $end->format('d/m/Y');
     }
 
     public static function notifyUsersAboutEvaluation(AvaliacaoPessoal $avaliacao): void

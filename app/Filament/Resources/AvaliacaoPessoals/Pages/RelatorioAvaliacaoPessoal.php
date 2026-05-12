@@ -4,37 +4,42 @@ namespace App\Filament\Resources\AvaliacaoPessoals\Pages;
 
 use App\Filament\Resources\AvaliacaoPessoals\AvaliacaoPessoalResource;
 use App\Filament\Widgets\AvaliacaoPessoalAcolhidoChart;
+use App\Filament\Widgets\AvaliacaoPessoalPeriodoComparativoChart;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
-use Filament\Actions\EditAction;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Resources\Pages\Concerns\InteractsWithRecord;
+use Filament\Resources\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Str;
 
-class ViewAvaliacaoPessoal extends ViewRecord
+class RelatorioAvaliacaoPessoal extends Page
 {
+    use InteractsWithRecord;
+
     protected static string $resource = AvaliacaoPessoalResource::class;
+
+    protected string $view = 'filament.resources.avaliacao-pessoals.pages.relatorio-avaliacao-pessoal';
+
+    public function mount(int | string $record): void
+    {
+        $this->record = $this->resolveRecord($record);
+    }
 
     public function getTitle(): string | Htmlable
     {
-        return 'Avaliacao do acolhido';
+        return 'Relatorio detalhado da avaliacao pessoal';
     }
 
     public function getBreadcrumb(): string
     {
-        return 'Avaliacao do acolhido';
+        return 'Relatorio detalhado';
     }
 
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('visualizarRelatorio')
-                ->label('Visualizar relatorio')
-                ->icon('heroicon-o-document-chart-bar')
-                ->color('primary')
-                ->url(fn (): string => AvaliacaoPessoalResource::getUrl('report', ['record' => $this->getRecord()])),
             Action::make('downloadRelatorio')
-                ->label('Baixar relatorio')
+                ->label('Baixar PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->action(function () {
@@ -52,13 +57,18 @@ class ViewAvaliacaoPessoal extends ViewRecord
                         ['Content-Type' => 'application/pdf'],
                     );
                 }),
-            EditAction::make(),
+            Action::make('voltar')
+                ->label('Voltar para avaliacao')
+                ->icon('heroicon-o-arrow-left')
+                ->color('gray')
+                ->url(fn (): string => AvaliacaoPessoalResource::getUrl('view', ['record' => $this->getRecord()])),
         ];
     }
 
     protected function getHeaderWidgets(): array
     {
         return [
+            AvaliacaoPessoalPeriodoComparativoChart::class,
             AvaliacaoPessoalAcolhidoChart::class,
         ];
     }
@@ -66,5 +76,10 @@ class ViewAvaliacaoPessoal extends ViewRecord
     public function getHeaderWidgetsColumns(): int | array
     {
         return 1;
+    }
+
+    protected function getViewData(): array
+    {
+        return AvaliacaoPessoalResource::getReportData($this->getRecord());
     }
 }
