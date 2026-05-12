@@ -20,7 +20,7 @@ class SaudeResource extends Resource
 
     protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
 
-    protected static ?string $navigationLabel = 'Saude';
+    protected static ?string $navigationLabel = 'Saúde';
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-heart';
 
