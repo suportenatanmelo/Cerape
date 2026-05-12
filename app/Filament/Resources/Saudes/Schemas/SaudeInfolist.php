@@ -40,13 +40,14 @@ class SaudeInfolist
                             ]),
 
 
-                        Section::make()
+                        Section::make("Uso e dosagem da medicação")
+                            ->icon('')
                             ->schema([
                                 IconEntry::make('usa_medicacao_psicoativa')
-                                    ->label('Uso de medicacao psicoativa')
+                                    ->label('Uso de medicacao psicoativa ')
                                     ->boolean(),
                                 TextEntry::make('nome_medicacao_psicoativa')
-                                    ->label('Nome da medicacao psicoativa')
+                                    ->label('Nome da medicacao psicoativa ou princípio ativo')
                                     ->listWithLineBreaks()
                                     ->placeholder('-'),
                                 TextEntry::make('dosagem_medicacao_psicoativa')
