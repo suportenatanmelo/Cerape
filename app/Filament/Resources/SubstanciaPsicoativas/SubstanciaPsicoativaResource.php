@@ -709,6 +709,7 @@ class SubstanciaPsicoativaResource extends Resource
         return [
             'record' => $record,
             'sections' => $sections,
+            'logoCerape' => static::publicImageDataUri('storage/images/logo.png'),
             'formatValue' => fn (mixed $value): string => static::formatValue($value),
         ];
     }
@@ -852,5 +853,18 @@ class SubstanciaPsicoativaResource extends Resource
             '3_ate_10_anos' => 'De 3 ate 10 anos',
             'mais_de_10_anos' => 'Mais de 10 anos',
         ];
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
 }

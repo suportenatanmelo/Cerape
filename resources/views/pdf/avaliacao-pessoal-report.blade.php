@@ -7,6 +7,8 @@
         * { box-sizing: border-box; }
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
         .page { padding: 20px; }
+        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
+        .brand-logo { display: block; height: auto; max-height: 60px; max-width: 220px; }
         .hero { display: table; width: 100%; }
         .hero-left, .hero-right { display: table-cell; vertical-align: top; }
         .hero-left { width: 150px; padding-right: 14px; }
@@ -42,7 +44,11 @@
         .comparison-title { font-size: 11px; font-weight: bold; margin-bottom: 3px; }
         .comparison-range { color: #6b7280; font-size: 8px; margin-bottom: 6px; }
         .evaluator-card { border: 1px solid #e5e7eb; margin-bottom: 10px; page-break-inside: avoid; }
-        .evaluator-head { background: #f9fafb; border-bottom: 1px solid #e5e7eb; padding: 8px; }
+        .evaluator-head { background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: table; padding: 8px; width: 100%; }
+        .evaluator-photo-wrap, .evaluator-head-content { display: table-cell; vertical-align: middle; }
+        .evaluator-photo-wrap { width: 52px; }
+        .evaluator-photo { border: 1px solid #d1d5db; border-radius: 50%; height: 38px; object-fit: cover; width: 38px; }
+        .evaluator-photo-empty { background: #e5e7eb; border: 1px solid #d1d5db; border-radius: 50%; color: #4b5563; font-size: 11px; font-weight: bold; height: 38px; line-height: 36px; text-align: center; width: 38px; }
         .evaluator-name { font-size: 11px; font-weight: bold; }
         .evaluator-meta { color: #6b7280; font-size: 8px; }
         .evaluator-summary { display: table; width: 100%; }
@@ -57,6 +63,12 @@
 </head>
 <body>
     <div class="page">
+        @if ($logoCerape)
+            <div class="brand-bar">
+                <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
+            </div>
+        @endif
+
         <div class="hero">
             <div class="hero-left">
                 <div class="profile-card">
@@ -177,8 +189,17 @@
         @forelse ($usuarios as $item)
             <div class="evaluator-card">
                 <div class="evaluator-head">
-                    <div class="evaluator-name">{{ $item['user']?->name ?? 'Usuario nao informado' }}</div>
-                    <div class="evaluator-meta">{{ $item['user']?->email ?? '-' }}</div>
+                    <div class="evaluator-photo-wrap">
+                        @if ($item['foto'])
+                            <img src="{{ $item['foto'] }}" class="evaluator-photo" alt="">
+                        @else
+                            <div class="evaluator-photo-empty">{{ str($item['user']?->name ?? '?')->substr(0, 1)->upper() }}</div>
+                        @endif
+                    </div>
+                    <div class="evaluator-head-content">
+                        <div class="evaluator-name">{{ $item['user']?->name ?? 'Usuario nao informado' }}</div>
+                        <div class="evaluator-meta">{{ $item['user']?->email ?? '-' }}</div>
+                    </div>
                 </div>
 
                 <div class="evaluator-summary">

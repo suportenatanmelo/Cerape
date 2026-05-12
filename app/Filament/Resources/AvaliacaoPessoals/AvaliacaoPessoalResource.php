@@ -405,6 +405,7 @@ class AvaliacaoPessoalResource extends Resource
             'primeiraAvaliacao' => $avaliacoes->last(),
             'periodComparisons' => $periodComparisons,
             'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatScore' => fn (float $score): string => self::formatScore($score),
             'scoreColor' => fn (float $score): string => self::scoreColor($score),
         ];
@@ -686,6 +687,19 @@ class AvaliacaoPessoalResource extends Resource
 
         $absolutePath = Storage::disk('public')->path($path);
         $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    public static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
 
         return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }

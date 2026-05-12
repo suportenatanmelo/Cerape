@@ -96,4 +96,9 @@ class Acolhido extends Model
     {
         return $this->hasMany(SubstanciaPsicoativas::class);
     }
+
+    public function saudes(): HasMany
+    {
+        return $this->hasMany(Saude::class);
+    }
 }

@@ -7,6 +7,8 @@
         * { box-sizing: border-box; }
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.45; margin: 0; }
         .page { padding: 28px; }
+        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; padding-bottom: 12px; width: 100%; }
+        .brand-logo { display: block; height: auto; max-height: 62px; max-width: 220px; }
         .header { border-bottom: 2px solid #d97706; padding-bottom: 18px; width: 100%; }
         h1 { font-size: 22px; margin: 0 0 6px; }
         h2 { color: #92400e; font-size: 15px; margin: 22px 0 10px; }
@@ -20,6 +22,12 @@
 </head>
 <body>
     <div class="page">
+        @if ($logoCerape)
+            <div class="brand-bar">
+                <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
+            </div>
+        @endif
+
         <div class="header">
             <h1>Relatorio de substancia psicoativa</h1>
             <div><strong>{{ $record->acolhido?->nome_completo_paciente ?? 'Acolhido nao informado' }}</strong></div>

@@ -116,6 +116,7 @@ class ViewAcolhido extends ViewRecord
             'acolhido' => $acolhido,
             'sections' => $sections,
             'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
         ];
     }
@@ -176,6 +177,19 @@ class ViewAcolhido extends ViewRecord
 
         $absolutePath = Storage::disk('public')->path($path);
         $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
 
         return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
