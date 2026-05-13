@@ -48,4 +48,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(AvaliacaoPessoal::class);
     }
+
+    public function prontuariosEvolucao(): HasMany
+    {
+        return $this->hasMany(ProntuarioEvolucao::class);
+    }
 }

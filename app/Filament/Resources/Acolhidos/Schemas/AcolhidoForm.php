@@ -3,12 +3,13 @@
 namespace App\Filament\Resources\Acolhidos\Schemas;
 
 
+use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Models\Acolhido;
 use App\Models\User;
 use App\Support\FilamentDatabaseNotifications;
+use Filament\Actions\Action;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Services\CorreiosCepService;
-use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DateTimePicker;
@@ -49,6 +50,16 @@ class AcolhidoForm
             ->viewData([
                 'key' => self::notificationKey($acolhido, $event),
             ]);
+
+        if (in_array($event, ['created', 'updated'], true)) {
+            $notification->actions([
+                Action::make('viewAcolhidoProfile')
+                    ->label('Ver perfil')
+                    ->button()
+                    ->markAsRead()
+                    ->url(self::notificationUrl($acolhido), shouldOpenInNewTab: true),
+            ]);
+        }
 
         match ($event) {
             'created' => $notification->success(),
@@ -438,13 +449,15 @@ class AcolhidoForm
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),
-                                        Checkbox::make('exames_laboratoriais')
+                                        Radio::make('exames_laboratoriais')
                                             ->label('Possui exames laboratoriais?')
+                                            ->boolean('Sim', 'Nao')
+                                            ->inline()
                                             ->columnSpanFull()
                                             ->live()
                                             ->default(false)
                                             ->afterStateUpdated(function (mixed $state, Set $set): void {
-                                                if ((bool) $state) {
+                                                if (self::isYes($state)) {
                                                     return;
                                                 }
 
@@ -452,7 +465,7 @@ class AcolhidoForm
                                             }),
                                         TextInput::make('outros')
                                             ->label('Detalhes dos exames')
-                                            ->hidden(fn(Get $get): bool => ! (bool) $get('exames_laboratoriais'))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('exames_laboratoriais')))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
@@ -576,6 +589,11 @@ class AcolhidoForm
     private static function notificationKey(Acolhido $acolhido, string $event): string
     {
         return "acolhido_{$event}_{$acolhido->getKey()}_" . ($acolhido->updated_at?->timestamp ?? now()->timestamp);
+    }
+
+    private static function notificationUrl(Acolhido $acolhido): string
+    {
+        return AcolhidoResource::getUrl('view', ['record' => $acolhido]);
     }
 
     private static function shouldHideQuantoTempoDeAluguel(Get $get): bool

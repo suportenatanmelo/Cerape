@@ -38,9 +38,9 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('60px')
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
-            ->sidebarFullyCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
+            ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Teal,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AvaliacaoPessoals;
 
+use App\Filament\Resources\AvaliacaoPessoals\Pages\AutoAvaliacao;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\CreateAvaliacaoPessoal;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\EditAvaliacaoPessoal;
 use App\Filament\Resources\AvaliacaoPessoals\Pages\ListAvaliacaoPessoals;
@@ -252,6 +253,7 @@ class AvaliacaoPessoalResource extends Resource
     {
         return [
             'index' => ListAvaliacaoPessoals::route('/'),
+            'auto-avaliacao' => AutoAvaliacao::route('/auto-avaliacao'),
             'create' => CreateAvaliacaoPessoal::route('/create'),
             'view' => ViewAvaliacaoPessoal::route('/{record}'),
             'report' => RelatorioAvaliacaoPessoal::route('/{record}/relatorio'),
@@ -636,6 +638,31 @@ class AvaliacaoPessoalResource extends Resource
                 $usersWhoEvaluated,
             );
         }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getAutoEvaluationReportData(): array
+    {
+        $acolhidos = Acolhido::query()
+            ->orderBy('nome_completo_paciente')
+            ->get()
+            ->map(function (Acolhido $acolhido): array {
+                $dias = $acolhido->created_at?->startOfDay()->diffInDays(now()->startOfDay()) ?? 0;
+
+                return [
+                    'matricula' => $acolhido->getKey(),
+                    'nome' => $acolhido->nome_completo_paciente ?? '-',
+                    'dias_na_casa' => $dias,
+                ];
+            });
+
+        return [
+            'acolhidos' => $acolhidos,
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'geradoEm' => now(),
+        ];
     }
 
     public static function scoreColor(float $score): string

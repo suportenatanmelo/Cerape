@@ -101,4 +101,19 @@ class Acolhido extends Model
     {
         return $this->hasMany(Saude::class);
     }
+
+    public function atividadesDesenvolvidas(): HasMany
+    {
+        return $this->hasMany(AtividadeDesenvolvida::class);
+    }
+
+    public function demandasAcolhidos(): HasMany
+    {
+        return $this->hasMany(DemandaAcolhido::class);
+    }
+
+    public function prontuariosEvolucao(): HasMany
+    {
+        return $this->hasMany(ProntuarioEvolucao::class);
+    }
 }

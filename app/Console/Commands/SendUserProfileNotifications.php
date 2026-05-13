@@ -73,45 +73,40 @@ class SendUserProfileNotifications extends Command
         $users = User::query()->get();
 
         if ($users->isNotEmpty()) {
-            Acolhido::query()
+            $birthdayAcolhidos = Acolhido::query()
                 ->where('ativo', true)
                 ->whereNotNull('data_nascimento')
                 ->whereMonth('data_nascimento', now()->month)
                 ->whereDay('data_nascimento', now()->day)
-                ->chunkById(100, function (Collection $acolhidos) use ($users, &$acolhidoBirthdayCount): void {
-                    foreach ($acolhidos as $acolhido) {
-                        $notificationKey = sprintf(
-                            'acolhido_birthday_%s_%s',
-                            $acolhido->getKey(),
-                            now()->toDateString(),
-                        );
+                ->orderBy('nome_completo_paciente')
+                ->get(['id', 'nome_completo_paciente']);
 
-                        $usersToNotify = $users->filter(function (User $user) use ($notificationKey): bool {
-                            return ! $user->notifications()
-                                ->where('data', 'like', '%' . $notificationKey . '%')
-                                ->whereDate('created_at', now()->toDateString())
-                                ->exists();
-                        });
+            if ($birthdayAcolhidos->isNotEmpty()) {
+                $notificationKey = 'acolhido_birthday_team_' . now()->toDateString();
 
-                        if ($usersToNotify->isEmpty()) {
-                            continue;
-                        }
-
-                        FilamentDatabaseNotifications::send(
-                            Notification::make()
-                                ->title('Aniversario de acolhido')
-                                ->body('Hoje e aniversario de ' . $acolhido->nome_completo_paciente . '. A equipe foi avisada.')
-                                ->success()
-                                ->icon('heroicon-o-cake')
-                                ->viewData([
-                                    'key' => $notificationKey,
-                                ]),
-                            $usersToNotify,
-                        );
-
-                        $acolhidoBirthdayCount += $usersToNotify->count();
-                    }
+                $usersToNotify = $users->filter(function (User $user) use ($notificationKey): bool {
+                    return ! $user->notifications()
+                        ->where('data', 'like', '%' . $notificationKey . '%')
+                        ->whereDate('created_at', now()->toDateString())
+                        ->exists();
                 });
+
+                if ($usersToNotify->isNotEmpty()) {
+                    FilamentDatabaseNotifications::send(
+                        Notification::make()
+                            ->title($this->acolhidoBirthdayTitle($birthdayAcolhidos))
+                            ->body($this->acolhidoBirthdayBody($birthdayAcolhidos))
+                            ->success()
+                            ->icon('heroicon-o-cake')
+                            ->viewData([
+                                'key' => $notificationKey,
+                            ]),
+                        $usersToNotify,
+                    );
+
+                    $acolhidoBirthdayCount += $usersToNotify->count();
+                }
+            }
         }
 
         $this->info("Boas-vindas enviadas: {$welcomeCount}");
@@ -119,5 +114,26 @@ class SendUserProfileNotifications extends Command
         $this->info("Aniversarios de acolhidos enviados: {$acolhidoBirthdayCount}");
 
         return self::SUCCESS;
+    }
+
+    private function acolhidoBirthdayTitle(Collection $acolhidos): string
+    {
+        return $acolhidos->count() === 1
+            ? 'Temos aniversariante do dia!'
+            : 'Temos aniversariantes do dia!';
+    }
+
+    private function acolhidoBirthdayBody(Collection $acolhidos): string
+    {
+        $names = $acolhidos
+            ->pluck('nome_completo_paciente')
+            ->filter()
+            ->values();
+
+        if ($names->count() === 1) {
+            return 'Parabens para ' . $names->first() . '! Desejamos um dia especial e cheio de alegria.';
+        }
+
+        return 'Parabens para ' . $names->join(', ', ' e ') . '! Desejamos um dia especial e cheio de alegria.';
     }
 }
