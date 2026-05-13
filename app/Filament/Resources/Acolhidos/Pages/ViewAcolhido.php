@@ -92,8 +92,8 @@ class ViewAcolhido extends ViewRecord
                 'Medicacoes' => $acolhido->qual_sao_as_medicacao,
                 'Tem receituario' => $acolhido->tem_receituario,
                 'Arquivo do receituario' => $acolhido->receituario ? basename((string) $acolhido->receituario) : null,
-                'Exames laboratoriais' => $acolhido->exames_laboratoriais,
-                'Outros exames' => $acolhido->outros,
+                'Possui exames laboratoriais' => $acolhido->exames_laboratoriais,
+                'Detalhes dos exames' => $acolhido->outros,
             ],
             'Familia e responsaveis' => [
                 'Tem filhos' => $acolhido->tem_filhos,

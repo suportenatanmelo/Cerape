@@ -253,15 +253,11 @@ class AcolhidoInfolist
                             ->columnSpanFull()
                             ->helperText(fn(string $state): string => basename($state))
                             ->hidden(fn($record) => blank($record?->receituario)),
-                        TextEntry::make('exames_laboratoriais')
-                            ->label('Exames laboratoriais')
-                            ->badge()
-                            ->listWithLineBreaks()
-                            ->columnSpanFull()
-                            ->placeholder('-')
-                            ->hidden(fn($record) => blank($record?->exames_laboratoriais)),
+                        IconEntry::make('exames_laboratoriais')
+                            ->label('Possui exames laboratoriais?')
+                            ->boolean(),
                         TextEntry::make('outros')
-                            ->label('Outros exames')
+                            ->label('Detalhes dos exames')
                             ->columnSpanFull()
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->outros)),

@@ -8,7 +8,14 @@
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
         .page { padding: 20px; }
         .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
+        .brand-table { display: table; width: 100%; }
+        .brand-logo-cell, .brand-info-cell { display: table-cell; vertical-align: middle; }
+        .brand-logo-cell { width: 235px; padding-right: 14px; }
         .brand-logo { display: block; height: auto; max-height: 60px; max-width: 220px; }
+        .brand-info-cell { text-align: left; }
+        .brand-info { color: #374151; font-family: DejaVu Serif, serif; font-size: 9px; line-height: 1.45; }
+        .brand-info strong { color: #111827; display: block; font-size: 10px; letter-spacing: 0.2px; margin-bottom: 2px; }
+        .brand-info-line { margin: 1px 0; }
         .hero { display: table; width: 100%; }
         .hero-left, .hero-right { display: table-cell; vertical-align: top; }
         .hero-left { width: 150px; padding-right: 14px; }
@@ -62,10 +69,24 @@
     </style>
 </head>
 <body>
+
     <div class="page">
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($logoCerape): ?>
             <div class="brand-bar">
-                <img src="<?php echo e($logoCerape); ?>" class="brand-logo" alt="Logo Cerape">
+                <div class="brand-table">
+                    <div class="brand-logo-cell">
+                        <img src="<?php echo e($logoCerape); ?>" class="brand-logo" alt="Logo Cerape">
+                    </div>
+                    <div class="brand-info-cell">
+                        <div class="brand-info">
+                            <strong>CENTRO DE REABILITAÇÃO DO - CERAPE - CRC</strong>
+                            <div class="brand-info-line">ÁREA RURAL DO PARQUE ALVORADA 3, FAZENDA QUINTAS S/N - LUZIÂNIA - GO</div>
+                            <div class="brand-info-line">CEP N 72.800-010 TELEFONE (61) 3323-5403</div>
+                            <div class="brand-info-line">CNPJ 00.857.994.0002-48</div>
+                            <div class="brand-info-line">agendacerape@gmail.com</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Support\FilamentDatabaseNotifications;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Services\CorreiosCepService;
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DateTimePicker;
@@ -437,31 +438,21 @@ class AcolhidoForm
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),
-                                        CheckboxList::make('exames_laboratoriais')
-                                            ->label('Exames laboratoriais')
-                                            ->options([
-                                                'HIV' => 'HIV',
-                                                'Sifilis' => 'Sifilis',
-                                                'Hepatite B' => 'Hepatite B',
-                                                'Hepatite C' => 'Hepatite C',
-                                                'HTLV' => 'HTLV',
-                                                'Outros' => 'Outros',
-                                            ])
-                                            ->columns(2)
+                                        Checkbox::make('exames_laboratoriais')
+                                            ->label('Possui exames laboratoriais?')
                                             ->columnSpanFull()
                                             ->live()
-                                            ->required()
-                                            ->afterStateUpdated(function (Get $get, Set $set): void {
-                                                if (in_array('Outros', $get('exames_laboratoriais') ?? [], true)) {
+                                            ->default(false)
+                                            ->afterStateUpdated(function (mixed $state, Set $set): void {
+                                                if ((bool) $state) {
                                                     return;
                                                 }
 
                                                 $set('outros', null);
                                             }),
                                         TextInput::make('outros')
-                                            ->label('Outros')
-                                            ->hidden(fn(Get $get): bool => ! in_array('Outros', $get('exames_laboratoriais') ?? [], true))
-                                            ->required(fn(Get $get): bool => in_array('Outros', $get('exames_laboratoriais') ?? [], true))
+                                            ->label('Detalhes dos exames')
+                                            ->hidden(fn(Get $get): bool => ! (bool) $get('exames_laboratoriais'))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
