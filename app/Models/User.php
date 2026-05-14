@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
+use Filament\Models\Contracts\HasAvatar;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +25,7 @@ use Illuminate\Notifications\Notifiable;
     'data_nascimento',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable
+class User extends Authenticatable implements HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -52,5 +53,12 @@ class User extends Authenticatable
     public function prontuariosEvolucao(): HasMany
     {
         return $this->hasMany(ProntuarioEvolucao::class);
+    }
+
+    //class User extends Authenticatable implements HasAvatar
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return asset('storage/' . $this->avatar);
     }
 }
