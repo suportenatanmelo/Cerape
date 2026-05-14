@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\Acolhido;
+use App\Models\DemandaAcolhido;
 use App\Models\SubstanciaPsicoativas;
 use App\Observers\AcolhidoObserver;
+use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
@@ -59,5 +61,6 @@ class AppServiceProvider extends ServiceProvider
 
         Acolhido::observe(AcolhidoObserver::class);
         SubstanciaPsicoativas::observe(SubstanciaPsicoativasObserver::class);
+        DemandaAcolhido::observe(DemandaAcolhidoObserver::class);
     }
 }

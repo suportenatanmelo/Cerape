@@ -39,7 +39,7 @@ class AvaliacaoPessoalResource extends Resource
 {
     protected static ?string $model = AvaliacaoPessoal::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Avaliacoes';
+    protected static string | UnitEnum | null $navigationGroup = 'Avaliaçoes';
 
     protected static ?string $navigationLabel = 'Avaliacoes pessoais';
 
@@ -72,7 +72,7 @@ class AvaliacaoPessoalResource extends Resource
                                 ->preload()
                                 ->live()
                                 ->afterStateUpdated(
-                                    fn (Set $set, mixed $state): mixed => $set('dias_na_casa', self::calculateDiasNaCasa($state))
+                                    fn(Set $set, mixed $state): mixed => $set('dias_na_casa', self::calculateDiasNaCasa($state))
                                 )
                                 ->required(),
                             Select::make('user_id')
@@ -91,7 +91,7 @@ class AvaliacaoPessoalResource extends Resource
                                 ->required(),
                         ]),
                     ]),
-                Section::make('Pontuacao')
+                Section::make('Pontuaçao')
                     ->description('Cada criterio aceita apenas notas maiores que 1 e menores ou iguais a 3. A media final e calculada automaticamente.')
                     ->icon('heroicon-o-star')
                     ->schema([
@@ -134,7 +134,7 @@ class AvaliacaoPessoalResource extends Resource
                             ->circular()
                             ->height(96)
                             ->width(96)
-                            ->getStateUsing(fn (AvaliacaoPessoal $record): ?string => self::resolveAvatarPath($record->acolhido?->avatar)),
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => self::resolveAvatarPath($record->acolhido?->avatar)),
                         TextEntry::make('acolhido.nome_completo_paciente')
                             ->label('Acolhido'),
                         TextEntry::make('user.name')
@@ -160,19 +160,19 @@ class AvaliacaoPessoalResource extends Resource
                         TextEntry::make('Total')
                             ->label('Media final')
                             ->badge()
-                            ->color(fn ($state): string => self::scoreColor((float) $state))
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('media_de_todos')
                             ->label('Media de todos')
                             ->badge()
-                            ->color(fn ($state): string => self::scoreColor((float) $state))
-                            ->getStateUsing(fn (AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id))
-                            ->formatStateUsing(fn ($state): string => self::formatScore((float) $state)),
+                            ->color(fn($state): string => self::scoreColor((float) $state))
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id))
+                            ->formatStateUsing(fn($state): string => self::formatScore((float) $state)),
                         TextEntry::make('total_avaliadores')
                             ->label('Usuarios que avaliaram')
                             ->badge()
                             ->color('primary')
-                            ->getStateUsing(fn (AvaliacaoPessoal $record): int => self::countEvaluators($record->acolhido_id)),
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): int => self::countEvaluators($record->acolhido_id)),
                     ]),
                 Section::make('Analise por usuario')
                     ->description('Resumo consolidado das avaliacoes feitas por cada usuario para este acolhido.')
@@ -181,7 +181,7 @@ class AvaliacaoPessoalResource extends Resource
                         ViewEntry::make('analise_usuarios')
                             ->hiddenLabel()
                             ->view('filament.resources.avaliacao-pessoals.user-analysis')
-                            ->viewData(fn (AvaliacaoPessoal $record): array => self::getReportData($record)),
+                            ->viewData(fn(AvaliacaoPessoal $record): array => self::getReportData($record)),
                     ]),
             ]);
     }
@@ -189,7 +189,7 @@ class AvaliacaoPessoalResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->with(['acolhido', 'user']))
+            ->modifyQueryUsing(fn(Builder $query): Builder => $query->with(['acolhido', 'user']))
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
@@ -206,21 +206,21 @@ class AvaliacaoPessoalResource extends Resource
                 TextColumn::make('Total')
                     ->label('Media')
                     ->badge()
-                    ->color(fn ($state): string => match (true) {
+                    ->color(fn($state): string => match (true) {
                         (float) $state >= 2.5 => 'success',
                         (float) $state >= 1.5 => 'warning',
                         default => 'danger',
                     })
-                    ->formatStateUsing(fn ($state): string => number_format((float) $state, 2, ',', '.') . ' / 3')
+                    ->formatStateUsing(fn($state): string => number_format((float) $state, 2, ',', '.') . ' / 3')
                     ->sortable(),
                 TextColumn::make('media_de_todos')
                     ->label('Media de todos')
                     ->badge()
-                    ->color(fn ($state): string => self::scoreColor((float) $state))
+                    ->color(fn($state): string => self::scoreColor((float) $state))
                     ->getStateUsing(
-                        fn (AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id)
+                        fn(AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id)
                     )
-                    ->formatStateUsing(fn ($state): string => self::formatScore((float) $state)),
+                    ->formatStateUsing(fn($state): string => self::formatScore((float) $state)),
                 TextColumn::make('created_at')
                     ->label('Avaliado em')
                     ->dateTime()
@@ -279,7 +279,7 @@ class AvaliacaoPessoalResource extends Resource
                 'max' => 'A nota de ' . mb_strtolower($label) . ' nao pode ser maior que 3.',
             ])
             ->live(onBlur: true)
-            ->afterStateUpdated(fn (Get $get, Set $set): mixed => self::refreshTotal($get, $set))
+            ->afterStateUpdated(fn(Get $get, Set $set): mixed => self::refreshTotal($get, $set))
             ->suffix('/ 3');
     }
 
@@ -300,7 +300,7 @@ class AvaliacaoPessoalResource extends Resource
     public static function calculateTotal(array $data): float
     {
         return (float) collect(self::scoreFields())
-            ->map(fn (string $field): float => min(3, max(0, (float) ($data[$field] ?? 0))))
+            ->map(fn(string $field): float => min(3, max(0, (float) ($data[$field] ?? 0))))
             ->avg();
     }
 
@@ -408,8 +408,8 @@ class AvaliacaoPessoalResource extends Resource
             'periodComparisons' => $periodComparisons,
             'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
             'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
-            'formatScore' => fn (float $score): string => self::formatScore($score),
-            'scoreColor' => fn (float $score): string => self::scoreColor($score),
+            'formatScore' => fn(float $score): string => self::formatScore($score),
+            'scoreColor' => fn(float $score): string => self::scoreColor($score),
         ];
     }
 
@@ -420,7 +420,7 @@ class AvaliacaoPessoalResource extends Resource
     protected static function summarizeEvaluators(Collection $avaliacoes): Collection
     {
         return $avaliacoes
-            ->filter(fn (AvaliacaoPessoal $avaliacao): bool => filled($avaliacao->user_id))
+            ->filter(fn(AvaliacaoPessoal $avaliacao): bool => filled($avaliacao->user_id))
             ->groupBy('user_id')
             ->map(function ($avaliacoesDoUsuario) {
                 /** @var \Illuminate\Support\Collection<int, AvaliacaoPessoal> $avaliacoesDoUsuario */
@@ -488,7 +488,7 @@ class AvaliacaoPessoalResource extends Resource
 
         return array_values(array_filter(
             $items,
-            fn (array $item): bool => filled($item['value']) && $item['value'] !== '- / '
+            fn(array $item): bool => filled($item['value']) && $item['value'] !== '- / '
         ));
     }
 
