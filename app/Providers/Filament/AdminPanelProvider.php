@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Profile;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
 use App\Filament\Widgets\AcolhidosCriadosLineChart;
 use App\Filament\Widgets\UsuariosCriadosLineChart;
@@ -41,6 +42,32 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
             ->colors([
                 'primary' => Color::Teal,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Administracao e Acesso')
+                    ->navigationSort(100)
+                    ->navigationIcon('heroicon-o-shield-check')
+                    ->activeNavigationIcon('heroicon-s-shield-check')
+                    ->modelLabel('Perfil de acesso')
+                    ->pluralModelLabel('Perfis de acesso')
+                    ->simpleResourcePermissionView()
+                    ->localizePermissionLabels()
+                    ->gridColumns([
+                        'default' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns([
+                        'default' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->resourceCheckboxListColumns([
+                        'default' => 1,
+                        'md' => 2,
+                    ]),
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

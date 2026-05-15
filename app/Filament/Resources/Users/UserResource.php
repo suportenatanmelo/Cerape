@@ -91,6 +91,13 @@ class UserResource extends Resource
                                 ->maxLength(255),
                             DateTimePicker::make('email_verified_at')
                                 ->label('Email verificado em'),
+                            Select::make('roles')
+                                ->label('Perfis de acesso')
+                                ->relationship('roles', 'name')
+                                ->multiple()
+                                ->preload()
+                                ->searchable()
+                                ->columnSpanFull(),
                             TextInput::make('password')
                                 ->label('Senha')
                                 ->password()
@@ -151,6 +158,12 @@ class UserResource extends Resource
                     ->badge()
                     ->color('success')
                     ->placeholder('-'),
+                TextEntry::make('roles.name')
+                    ->label('Perfis de acesso')
+                    ->badge()
+                    ->separator(',')
+                    ->color('warning')
+                    ->placeholder('-'),
                 TextEntry::make('created_at')
                     ->badge()
                     ->color('gray')
@@ -196,6 +209,11 @@ class UserResource extends Resource
                     ->label('Email verificado em')
                     ->dateTime()
                     ->sortable(),
+                TextColumn::make('roles.name')
+                    ->label('Perfis de acesso')
+                    ->badge()
+                    ->separator(',')
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
