@@ -40,7 +40,7 @@ class BirthdayNotificationService
     /**
      * @return array{users: int, acolhidos: int}
      */
-    public static function sendMonthlyBirthdayNotifications(): array
+    public static function sendDailyBirthdayNotifications(): array
     {
         $userCount = 0;
         $acolhidoCount = 0;
@@ -48,9 +48,10 @@ class BirthdayNotificationService
         User::query()
             ->whereNotNull('data_nascimento')
             ->whereMonth('data_nascimento', now()->month)
+            ->whereDay('data_nascimento', now()->day)
             ->chunkById(100, function ($users) use (&$userCount): void {
                 foreach ($users as $user) {
-                    if (self::notifyUserBirthdayMonth($user)) {
+                    if (self::notifyUserBirthday($user)) {
                         $userCount++;
                     }
                 }
@@ -60,9 +61,10 @@ class BirthdayNotificationService
             ->where('ativo', true)
             ->whereNotNull('data_nascimento')
             ->whereMonth('data_nascimento', now()->month)
+            ->whereDay('data_nascimento', now()->day)
             ->chunkById(100, function ($acolhidos) use (&$acolhidoCount): void {
                 foreach ($acolhidos as $acolhido) {
-                    $acolhidoCount += self::notifyAcolhidoBirthdayMonth($acolhido);
+                    $acolhidoCount += self::notifyAcolhidoBirthday($acolhido);
                 }
             });
 
@@ -72,13 +74,13 @@ class BirthdayNotificationService
         ];
     }
 
-    public static function notifyUserBirthdayMonth(User $user): bool
+    public static function notifyUserBirthday(User $user): bool
     {
-        if (! self::isBirthdayInCurrentMonth($user->data_nascimento)) {
+        if (! self::isBirthdayToday($user->data_nascimento)) {
             return false;
         }
 
-        $notificationKey = 'user_birthday_month_' . $user->getKey() . '_' . now()->format('Y-m');
+        $notificationKey = 'user_birthday_day_' . $user->getKey() . '_' . now()->format('Y-m-d');
 
         if ($user->notifications()->where('data', 'like', '%' . $notificationKey . '%')->exists()) {
             return false;
@@ -86,8 +88,8 @@ class BirthdayNotificationService
 
         FilamentDatabaseNotifications::send(
             Notification::make()
-                ->title('Parabens pelo seu mes!')
-                ->body('Feliz aniversario, ' . $user->name . '. Desejamos um mes de paz, saude e alegria.')
+                ->title('Parabens pelo seu dia!')
+                ->body('Feliz aniversario, ' . $user->name . '. Desejamos um dia de paz, saude e alegria.')
                 ->success()
                 ->icon('heroicon-o-gift')
                 ->viewData([
@@ -99,13 +101,13 @@ class BirthdayNotificationService
         return true;
     }
 
-    public static function notifyAcolhidoBirthdayMonth(Acolhido $acolhido): int
+    public static function notifyAcolhidoBirthday(Acolhido $acolhido): int
     {
-        if (! self::isBirthdayInCurrentMonth($acolhido->data_nascimento)) {
+        if (! self::isBirthdayToday($acolhido->data_nascimento)) {
             return 0;
         }
 
-        $notificationKey = 'acolhido_birthday_month_' . $acolhido->getKey() . '_' . now()->format('Y-m');
+        $notificationKey = 'acolhido_birthday_day_' . $acolhido->getKey() . '_' . now()->format('Y-m-d');
         $users = User::query()->get();
 
         if ($users->isEmpty()) {
@@ -124,8 +126,8 @@ class BirthdayNotificationService
 
         FilamentDatabaseNotifications::send(
             Notification::make()
-                ->title('Aniversariante do mes')
-                ->body('Parabens para ' . ($acolhido->nome_completo_paciente ?? 'acolhido') . '. Desejamos um mes especial e abencoado.')
+                ->title('Aniversariante do dia')
+                ->body('Parabens para ' . ($acolhido->nome_completo_paciente ?? 'acolhido') . '. Desejamos um dia especial e abencoado.')
                 ->success()
                 ->icon('heroicon-o-cake')
                 ->viewData([
@@ -137,8 +139,10 @@ class BirthdayNotificationService
         return $usersToNotify->count();
     }
 
-    private static function isBirthdayInCurrentMonth(mixed $date): bool
+    private static function isBirthdayToday(mixed $date): bool
     {
-        return filled($date) && $date->month === now()->month;
+        return filled($date)
+            && $date->month === now()->month
+            && $date->day === now()->day;
     }
 }

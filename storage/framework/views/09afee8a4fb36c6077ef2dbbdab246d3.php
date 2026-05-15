@@ -41,6 +41,7 @@
                     <th style="width: 13%;">Controle</th>
                     <th style="width: 13%;">Autonomia</th>
                     <th style="width: 13%;">Transparencia</th>
+                    <th style="width: 13%;">Superacao</th>
                     <th style="width: 13%;">AutoCuidado</th>
                 </tr>
             </thead>
@@ -54,10 +55,11 @@
                         <td class="blank-cell"></td>
                         <td class="blank-cell"></td>
                         <td class="blank-cell"></td>
+                        <td class="blank-cell"></td>
                     </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
-                        <td colspan="7">Nenhum acolhido cadastrado no sistema.</td>
+                        <td colspan="8">Nenhum acolhido cadastrado no sistema.</td>
                     </tr>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </tbody>

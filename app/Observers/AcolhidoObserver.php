@@ -13,7 +13,7 @@ class AcolhidoObserver
      */
     public function created(Acolhido $acolhido): void
     {
-        BirthdayNotificationService::notifyAcolhidoBirthdayMonth($acolhido);
+        BirthdayNotificationService::notifyAcolhidoBirthday($acolhido);
     }
 
     /**
@@ -22,7 +22,7 @@ class AcolhidoObserver
     public function updated(Acolhido $acolhido): void
     {
         if ($acolhido->wasChanged('data_nascimento') || $acolhido->wasChanged('ativo')) {
-            BirthdayNotificationService::notifyAcolhidoBirthdayMonth($acolhido);
+            BirthdayNotificationService::notifyAcolhidoBirthday($acolhido);
         }
     }
 

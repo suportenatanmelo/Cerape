@@ -14,7 +14,7 @@ class SendUserProfileNotifications extends Command
     public function handle(): int
     {
         $welcomeCount = BirthdayNotificationService::sendWelcomeNotifications();
-        $birthdayCounts = BirthdayNotificationService::sendMonthlyBirthdayNotifications();
+        $birthdayCounts = BirthdayNotificationService::sendDailyBirthdayNotifications();
 
         $this->info("Boas-vindas enviadas: {$welcomeCount}");
         $this->info("Aniversarios de usuarios enviados: {$birthdayCounts['users']}");

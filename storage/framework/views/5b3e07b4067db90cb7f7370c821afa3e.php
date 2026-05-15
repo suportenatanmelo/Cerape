@@ -65,6 +65,7 @@
                                 <th class="px-4 py-3">Controle</th>
                                 <th class="px-4 py-3">Autonomia</th>
                                 <th class="px-4 py-3">Transparencia</th>
+                                <th class="px-4 py-3">Superacao</th>
                                 <th class="px-4 py-3">AutoCuidado</th>
                             </tr>
                         </thead>
@@ -78,10 +79,11 @@
                                     <td class="px-4 py-3 text-gray-300">_____</td>
                                     <td class="px-4 py-3 text-gray-300">_____</td>
                                     <td class="px-4 py-3 text-gray-300">_____</td>
+                                    <td class="px-4 py-3 text-gray-300">_____</td>
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="7" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
+                                    <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                                         Nenhum acolhido cadastrado no sistema.
                                     </td>
                                 </tr>

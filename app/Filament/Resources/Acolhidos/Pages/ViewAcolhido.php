@@ -91,7 +91,11 @@ class ViewAcolhido extends ViewRecord
                 'Toma medicamento' => $acolhido->toma_medicamento,
                 'Medicacoes' => $acolhido->qual_sao_as_medicacao,
                 'Tem receituario' => $acolhido->tem_receituario,
-                'Arquivo do receituario' => $acolhido->receituario ? basename((string) $acolhido->receituario) : null,
+                'Arquivos do receituario' => collect($acolhido->receituario ?? [])
+                    ->filter()
+                    ->map(fn (string $file): string => basename($file))
+                    ->values()
+                    ->all(),
                 'Possui exames laboratoriais' => $acolhido->exames_laboratoriais,
                 'Detalhes dos exames' => $acolhido->outros,
             ],

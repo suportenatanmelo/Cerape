@@ -9,13 +9,13 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        BirthdayNotificationService::notifyUserBirthdayMonth($user);
+        BirthdayNotificationService::notifyUserBirthday($user);
     }
 
     public function updated(User $user): void
     {
         if ($user->wasChanged('data_nascimento')) {
-            BirthdayNotificationService::notifyUserBirthdayMonth($user);
+            BirthdayNotificationService::notifyUserBirthday($user);
         }
     }
 }

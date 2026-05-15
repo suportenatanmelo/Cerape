@@ -21,29 +21,29 @@
                         </div>
 
                         <div class="mt-4 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
-                            Relatório profissional de evolução pessoal
+                            Relatorio profissional de evolucao pessoal
                         </div>
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">MÃ©dia geral consolidada</div>
-                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $médiaDeTodos) }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Media geral consolidada</div>
+                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $mediaDeTodos) }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das médias individuais limitada a 3</div>
-                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ number_format((float) $somaMédiasIndividuais, 2, ',', '.') }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das medias individuais limitada a 3</div>
+                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ number_format((float) $somaMediasIndividuais, 2, ',', '.') }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Usuários avaliadores</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Usuarios avaliadores</div>
                             <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $totalAvaliadores }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliações registradas</div>
-                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $totalAvaliações }}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliacoes registradas</div>
+                            <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $totalAvaliacoes }}</div>
                         </div>
                     </div>
 
@@ -58,7 +58,7 @@
 
                     <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-4">
-                            <div class="text-base font-semibold text-gray-950 dark:text-white">MÃ©dia geral por critÃ©rio</div>
+                            <div class="text-base font-semibold text-gray-950 dark:text-white">Media geral por criterio</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">Consolidado de todos os votos por categoria avaliada.</div>
                         </div>
 
@@ -78,7 +78,7 @@
         <div class="space-y-6">
             <x-filament::section
                 heading="Comparativos de periodo"
-                description="Acompanhe como a média atual se comporta em relacao ao periodo imédiatamente anterior."
+                description="Acompanhe como a media atual se comporta em relacao ao periodo imediatamente anterior."
             >
                 <div class="grid gap-4 lg:grid-cols-3">
                     @foreach (['semanal', 'mensal', 'semestral'] as $comparisonKey)
@@ -89,7 +89,7 @@
 
                             <div class="mt-4 space-y-4">
                                 <div class="rounded-xl bg-amber-50 p-4 dark:bg-amber-500/10">
-                                    <div class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">MÃ©dia das avaliaÃ§Ãµes</div>
+                                    <div class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">Media das avaliacoes</div>
                                     <div class="mt-2 flex items-end justify-between gap-3">
                                         <div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400">Atual</div>
@@ -106,7 +106,7 @@
                                 </div>
 
                                 <div class="rounded-xl bg-teal-50 p-4 dark:bg-teal-500/10">
-                                    <div class="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">MÃ©dia consolidada dos avaliadores</div>
+                                    <div class="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Media consolidada dos avaliadores</div>
                                     <div class="mt-2 flex items-end justify-between gap-3">
                                         <div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400">Atual</div>
@@ -124,11 +124,11 @@
 
                                 <div class="grid gap-3 sm:grid-cols-2">
                                     <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliações no periodo atual</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliacoes no periodo atual</div>
                                         <div class="mt-1 text-lg font-semibold text-gray-950 dark:text-white">{{ $comparison['current_total_evaluations'] }}</div>
                                     </div>
                                     <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliações no periodo anterior</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliacoes no periodo anterior</div>
                                         <div class="mt-1 text-lg font-semibold text-gray-950 dark:text-white">{{ $comparison['previous_total_evaluations'] }}</div>
                                     </div>
                                 </div>
@@ -140,10 +140,10 @@
 
             <x-filament::section
                 heading="Resumo detalhado por avaliador"
-                description="MÃ©dia individual, categorias votadas e histÃ³rico resumido de cada profissional."
+                description="Media individual, categorias votadas e historico resumido de cada profissional."
             >
                 <div class="space-y-4">
-                    @forelse ($usuários as $item)
+                    @forelse ($usuarios as $item)
                         <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                             <div class="flex flex-col gap-4 border-b border-gray-200 bg-gray-50 p-5 dark:border-gray-800 dark:bg-gray-950/60 lg:flex-row lg:items-center lg:justify-between">
                                 <div class="flex items-center gap-4">
@@ -156,7 +156,7 @@
                                     @endif
 
                                     <div>
-                                        <div class="text-lg font-semibold text-gray-950 dark:text-white">{{ $item['user']?->name ?? 'Usuário nao informado' }}</div>
+                                        <div class="text-lg font-semibold text-gray-950 dark:text-white">{{ $item['user']?->name ?? 'Usuario nao informado' }}</div>
                                         <div class="text-sm text-gray-500 dark:text-gray-400">{{ $item['user']?->email ?? 'Sem e-mail cadastrado' }}</div>
                                     </div>
                                 </div>
@@ -167,19 +167,19 @@
                                         <div class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">{{ $item['quantidade'] }}</div>
                                     </div>
                                     <div class="rounded-xl bg-white px-4 py-3 text-center shadow-sm dark:bg-gray-900">
-                                        <div class="text-xs uppercase tracking-wide text-gray-500">MÃ©dia individual</div>
-                                        <div class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $item['média']) }}</div>
+                                        <div class="text-xs uppercase tracking-wide text-gray-500">Media individual</div>
+                                        <div class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $item['media']) }}</div>
                                     </div>
                                     <div class="rounded-xl bg-white px-4 py-3 text-center shadow-sm dark:bg-gray-900">
-                                        <div class="text-xs uppercase tracking-wide text-gray-500">Último voto</div>
-                                        <div class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $item['ultima_avaliação']?->created_at?->format('d/m/Y') ?? '-' }}</div>
+                                        <div class="text-xs uppercase tracking-wide text-gray-500">Ultimo voto</div>
+                                        <div class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $item['ultima_avaliacao']?->created_at?->format('d/m/Y') ?? '-' }}</div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="space-y-4 p-5">
                                 <div class="grid gap-4 lg:grid-cols-5">
-                                    @foreach ($item['critérios'] as $label => $value)
+                                    @foreach ($item['criterios'] as $label => $value)
                                         <div class="rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-950">
                                             <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">{{ $label }}</div>
                                             <div class="mt-2 text-xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $value) }}</div>
@@ -194,22 +194,22 @@
                                                 <th class="px-4 py-3">Data</th>
                                                 <th class="px-4 py-3">Controle</th>
                                                 <th class="px-4 py-3">Autonomia</th>
-                                                <th class="px-4 py-3">TransparÃªncia</th>
-                                                <th class="px-4 py-3">SuperaÃ§Ã£o</th>
+                                                <th class="px-4 py-3">Transparencia</th>
+                                                <th class="px-4 py-3">Superacao</th>
                                                 <th class="px-4 py-3">Autocuidado</th>
-                                                <th class="px-4 py-3">MÃ©dia final</th>
+                                                <th class="px-4 py-3">Media final</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                                            @foreach ($item['avaliações'] as $avaliação)
+                                            @foreach ($item['avaliacoes'] as $avaliacao)
                                                 <tr class="text-gray-700 dark:text-gray-200">
-                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $avaliação->created_at?->format('d/m/Y') }}</td>
-                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliação->controler) }}</td>
-                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliação->autonomia) }}</td>
-                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliação->transparencia) }}</td>
-                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliação->superacao) }}</td>
-                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliação->autocuidado) }}</td>
-                                                    <td class="px-4 py-3 font-semibold">{{ $formatScore((float) $avaliação->Total) }}</td>
+                                                    <td class="px-4 py-3 whitespace-nowrap">{{ $avaliacao->created_at?->format('d/m/Y') }}</td>
+                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->controler) }}</td>
+                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->autonomia) }}</td>
+                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->transparencia) }}</td>
+                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->superacao) }}</td>
+                                                    <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->autocuidado) }}</td>
+                                                    <td class="px-4 py-3 font-semibold">{{ $formatScore((float) $avaliacao->Total) }}</td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -226,8 +226,8 @@
             </x-filament::section>
 
             <x-filament::section
-                heading="HistÃ³rico cronolÃ³gico das avaliaÃ§Ãµes"
-                description="Cada registro individual com os valores atribuÃ­dos por categoria."
+                heading="Historico cronologico das avaliacoes"
+                description="Cada registro individual com os valores atribuidos por categoria."
             >
                 <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                     <div class="overflow-x-auto">
@@ -238,28 +238,28 @@
                                     <th class="px-4 py-3">Avaliador</th>
                                     <th class="px-4 py-3">Controle</th>
                                     <th class="px-4 py-3">Autonomia</th>
-                                    <th class="px-4 py-3">TransparÃªncia</th>
-                                    <th class="px-4 py-3">SuperaÃ§Ã£o</th>
+                                    <th class="px-4 py-3">Transparencia</th>
+                                    <th class="px-4 py-3">Superacao</th>
                                     <th class="px-4 py-3">Autocuidado</th>
-                                    <th class="px-4 py-3">MÃ©dia final</th>
+                                    <th class="px-4 py-3">Media final</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
-                                @forelse ($avaliações as $avaliação)
+                                @forelse ($avaliacoes as $avaliacao)
                                     <tr class="text-gray-700 dark:text-gray-200">
-                                        <td class="px-4 py-3 whitespace-nowrap">{{ $avaliação->created_at?->format('d/m/Y') }}</td>
-                                        <td class="px-4 py-3">{{ $avaliação->user?->name ?? '-' }}</td>
-                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliação->controler) }}</td>
-                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliação->autonomia) }}</td>
-                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliação->transparencia) }}</td>
-                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliação->superacao) }}</td>
-                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliação->autocuidado) }}</td>
-                                        <td class="px-4 py-3 font-semibold">{{ $formatScore((float) $avaliação->Total) }}</td>
+                                        <td class="px-4 py-3 whitespace-nowrap">{{ $avaliacao->created_at?->format('d/m/Y') }}</td>
+                                        <td class="px-4 py-3">{{ $avaliacao->user?->name ?? '-' }}</td>
+                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->controler) }}</td>
+                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->autonomia) }}</td>
+                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->transparencia) }}</td>
+                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->superacao) }}</td>
+                                        <td class="px-4 py-3">{{ $formatScore((float) $avaliacao->autocuidado) }}</td>
+                                        <td class="px-4 py-3 font-semibold">{{ $formatScore((float) $avaliacao->Total) }}</td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="8" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
-                                            Nenhuma avaliaÃ§Ã£o encontrada para este acolhido.
+                                            Nenhuma avaliacao encontrada para este acolhido.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -270,11 +270,11 @@
             </x-filament::section>
 
             <x-filament::section
-                heading="Logica de calculo das médias"
-                description="ExplicaÃ§Ã£o objetiva de como o sistema consolida as notas apresentadas neste relatÃ³rio."
+                heading="Logica de calculo das medias"
+                description="Explicacao objetiva de como o sistema consolida as notas apresentadas neste relatorio."
             >
                 <div class="grid gap-4">
-                    @foreach ($logicasMédias as $logica)
+                    @foreach ($logicasMedias as $logica)
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                             <div class="text-base font-semibold text-gray-950 dark:text-white">{{ $logica['titulo'] }}</div>
                             <div class="mt-2 text-sm leading-6 text-gray-600 dark:text-gray-300">{{ $logica['descricao'] }}</div>
@@ -286,4 +286,3 @@
         </div>
     </div>
 </x-filament-panels::page>
-

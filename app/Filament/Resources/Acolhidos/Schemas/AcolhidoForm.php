@@ -437,14 +437,16 @@ class AcolhidoForm
                                             ->disk('public')
                                             ->directory('acolhidos/receituarios')
                                             ->visibility('public')
+                                            ->multiple()
                                             ->acceptedFileTypes([
                                                 'application/pdf',
                                                 'image/*',
                                             ])
-                                            ->maxFiles(1)
+                                            ->maxFiles(10)
                                             ->moveFiles()
                                             ->openable()
                                             ->downloadable()
+                                            ->reorderable()
                                             ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))

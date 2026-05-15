@@ -5,10 +5,10 @@ namespace App\Filament\Resources\Acolhidos\Schemas;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Facades\Storage;
 
 
 
@@ -259,15 +259,12 @@ class AcolhidoInfolist
                             ->columnSpanFull()
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->qual_sao_as_medicacao)),
-                        TextEntry::make('receituario')
-                            ->label('Arquivo do receituario')
-                            ->formatStateUsing(fn(string $state): string => 'Ver receituario')
-                            ->url(fn(string $state): string => Storage::disk('public')->url($state), true)
-                            ->badge()
-                            ->color('primary')
-                            ->icon('heroicon-o-arrow-top-right-on-square')
-                            ->columnSpanFull()
-                            ->helperText(fn(string $state): string => basename($state))
+                        ViewEntry::make('receituario')
+                            ->label('Arquivos do receituario')
+                            ->view('filament.resources.acolhidos.receituario-links')
+                            ->viewData([
+                                'disk' => 'public',
+                            ])
                             ->hidden(fn($record) => blank($record?->receituario)),
                         IconEntry::make('exames_laboratoriais')
                             ->label('Possui exames laboratoriais?')

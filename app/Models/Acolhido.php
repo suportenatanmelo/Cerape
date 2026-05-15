@@ -74,6 +74,7 @@ class Acolhido extends Model
         'toma_medicamento' => 'boolean',
         'qual_sao_as_medicacao' => 'array',
         'tem_receituario' => 'boolean',
+        'receituario' => 'array',
         'exames_laboratoriais' => 'boolean',
         'tem_filhos' => 'boolean',
         'pensao_alimenticia' => 'boolean',
