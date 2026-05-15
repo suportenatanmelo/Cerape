@@ -23,19 +23,23 @@ class ProntuarioEvolucaoInfolist
                             'md' => 2,
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
+                                ->color('primary')
                                 ->label('Acolhido'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
+                                ->hidden(fn($record) => blank($record?->acolhido?->avatar)),
                             TextEntry::make('user.name')
                                 ->label('Registrado por')
+                                ->color('primary')
                                 ->placeholder('-'),
                             TextEntry::make('data_prontuario')
                                 ->label('Data e hora do prontuario')
-                                ->dateTime('d/m/Y H:i'),
+                                ->dateTime('d/m/Y H:i')
+                                ->color('warning'),
                             TextEntry::make('created_at')
-                                ->label('Lancado no sistema em')
+                                ->label('Lançado no sistema em:')
+                                ->color('warning')
                                 ->dateTime('d/m/Y H:i'),
                         ]),
                     ]),
@@ -45,7 +49,7 @@ class ProntuarioEvolucaoInfolist
                     ->schema([
                         TextEntry::make('conteudo')
                             ->label('Conteudo')
-                            ->formatStateUsing(fn (?string $state): string => str($state ?? '')->sanitizeHtml())
+                            ->formatStateUsing(fn(?string $state): string => str($state ?? '')->sanitizeHtml())
                             ->html()
                             ->columnSpanFull(),
                     ]),

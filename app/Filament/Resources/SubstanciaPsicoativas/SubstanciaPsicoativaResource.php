@@ -50,6 +50,16 @@ class SubstanciaPsicoativaResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nome';
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record?->acolhido?->nome_completo_paciente ?? 'Sem nome';
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['acolhido.nome_completo_paciente'];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -85,14 +95,14 @@ class SubstanciaPsicoativaResource extends Resource
                                     }
 
                                     return collect(explode(',', (string) $state))
-                                        ->map(fn (string $item): string => trim($item))
+                                        ->map(fn(string $item): string => trim($item))
                                         ->filter()
                                         ->values()
                                         ->all();
                                 })
                                 ->dehydrateStateUsing(function (mixed $state): string {
                                     return collect($state ?? [])
-                                        ->map(fn (mixed $item): string => trim((string) $item))
+                                        ->map(fn(mixed $item): string => trim((string) $item))
                                         ->filter()
                                         ->unique()
                                         ->implode(', ');
@@ -172,8 +182,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Qual o nome da pessoa?')
                                 ->helperText('Preencha apenas se houver referencia nominal relevante para o contexto.')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('houve_dependentes_quimicos_familia_convivencia'))
-                                ->required(fn ($get): bool => (bool) $get('houve_dependentes_quimicos_familia_convivencia'))
+                                ->hidden(fn($get): bool => ! (bool) $get('houve_dependentes_quimicos_familia_convivencia'))
+                                ->required(fn($get): bool => (bool) $get('houve_dependentes_quimicos_familia_convivencia'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('influencia_terceiro_inicio_uso')
                                 ->label('Teve influencia de terceiro para o inicio do uso?')
@@ -199,8 +209,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->placeholder('Ex.: Pai, amigo, companheiro, colega')
                                 ->helperText('Identifique o vinculo predominante relacionado ao inicio do uso.')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => $get('influencia_terceiro_inicio_uso') !== 'sim')
-                                ->required(fn ($get): bool => $get('influencia_terceiro_inicio_uso') === 'sim')
+                                ->hidden(fn($get): bool => $get('influencia_terceiro_inicio_uso') !== 'sim')
+                                ->required(fn($get): bool => $get('influencia_terceiro_inicio_uso') === 'sim')
                                 ->dehydratedWhenHidden()
                                 ->columnSpanFull(),
                         ]),
@@ -230,8 +240,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, digite qual')
                                 ->placeholder('Ex.: AA, NA, grupo comunitario, grupo religioso')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('participou_grupos_apoio'))
-                                ->required(fn ($get): bool => (bool) $get('participou_grupos_apoio'))
+                                ->hidden(fn($get): bool => ! (bool) $get('participou_grupos_apoio'))
+                                ->required(fn($get): bool => (bool) $get('participou_grupos_apoio'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('teve_internacoes_anteriores')
                                 ->label('Teve internacoes anteriores?')
@@ -252,22 +262,22 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, quantas vezes?')
                                 ->placeholder('Ex.: 1 vez, 3 vezes')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
-                                ->required(fn ($get): bool => (bool) $get('teve_internacoes_anteriores'))
+                                ->hidden(fn($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
+                                ->required(fn($get): bool => (bool) $get('teve_internacoes_anteriores'))
                                 ->dehydratedWhenHidden(),
                             TextInput::make('onde_internacoes_anteriores')
                                 ->label('Onde foram as internacoes?')
                                 ->placeholder('Ex.: CAPS, comunidade terapeutica, hospital')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
-                                ->required(fn ($get): bool => (bool) $get('teve_internacoes_anteriores'))
+                                ->hidden(fn($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
+                                ->required(fn($get): bool => (bool) $get('teve_internacoes_anteriores'))
                                 ->dehydratedWhenHidden(),
                             TextInput::make('quando_internacoes_anteriores')
                                 ->label('Quando ocorreram?')
                                 ->placeholder('Ex.: 2021, ha 6 meses, adolescencia')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
-                                ->required(fn ($get): bool => (bool) $get('teve_internacoes_anteriores'))
+                                ->hidden(fn($get): bool => ! (bool) $get('teve_internacoes_anteriores'))
+                                ->required(fn($get): bool => (bool) $get('teve_internacoes_anteriores'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('lembra_tempo_acolhimento_anterior')
                                 ->label('Lembra o tempo de acolhimento anterior?')
@@ -286,8 +296,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, quanto tempo foi?')
                                 ->placeholder('Ex.: 30 dias, 6 meses, 1 ano')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => ! (bool) $get('lembra_tempo_acolhimento_anterior'))
-                                ->required(fn ($get): bool => (bool) $get('lembra_tempo_acolhimento_anterior'))
+                                ->hidden(fn($get): bool => ! (bool) $get('lembra_tempo_acolhimento_anterior'))
+                                ->required(fn($get): bool => (bool) $get('lembra_tempo_acolhimento_anterior'))
                                 ->dehydratedWhenHidden(),
                         ]),
                     ]),
@@ -322,15 +332,15 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, qual periodo?')
                                 ->placeholder('Ex.: 2019 a 2021, 8 meses')
                                 ->maxLength(255)
-                                ->hidden(fn ($get): bool => $get('esteve_unidade_prisional_ou_similar') !== 'sim')
-                                ->required(fn ($get): bool => $get('esteve_unidade_prisional_ou_similar') === 'sim')
+                                ->hidden(fn($get): bool => $get('esteve_unidade_prisional_ou_similar') !== 'sim')
+                                ->required(fn($get): bool => $get('esteve_unidade_prisional_ou_similar') === 'sim')
                                 ->dehydratedWhenHidden(),
                             Textarea::make('motivo_unidade_prisional')
                                 ->label('Se sim, qual motivo?')
                                 ->placeholder('Descreva de forma objetiva o motivo informado.')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => $get('esteve_unidade_prisional_ou_similar') !== 'sim')
-                                ->required(fn ($get): bool => $get('esteve_unidade_prisional_ou_similar') === 'sim')
+                                ->hidden(fn($get): bool => $get('esteve_unidade_prisional_ou_similar') !== 'sim')
+                                ->required(fn($get): bool => $get('esteve_unidade_prisional_ou_similar') === 'sim')
                                 ->dehydratedWhenHidden(),
                             Radio::make('processos_judiciais_andamento')
                                 ->label('Processos judiciais em andamento?')
@@ -349,8 +359,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, qual o motivo?')
                                 ->placeholder('Informe a natureza do processo ou a motivacao relatada.')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => ! (bool) $get('processos_judiciais_andamento'))
-                                ->required(fn ($get): bool => (bool) $get('processos_judiciais_andamento'))
+                                ->hidden(fn($get): bool => ! (bool) $get('processos_judiciais_andamento'))
+                                ->required(fn($get): bool => (bool) $get('processos_judiciais_andamento'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('processos_judiciais_anteriores')
                                 ->label('Processos judiciais anteriores?')
@@ -369,8 +379,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, qual o motivo?')
                                 ->placeholder('Registre o historico referido pelo acolhido.')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => ! (bool) $get('processos_judiciais_anteriores'))
-                                ->required(fn ($get): bool => (bool) $get('processos_judiciais_anteriores'))
+                                ->hidden(fn($get): bool => ! (bool) $get('processos_judiciais_anteriores'))
+                                ->required(fn($get): bool => (bool) $get('processos_judiciais_anteriores'))
                                 ->dehydratedWhenHidden(),
                         ]),
                     ]),
@@ -404,8 +414,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, especifique')
                                 ->placeholder('Ex.: faltas, demissao, afastamento ou outros')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => $get('impactos_trabalho_uso_substancias') !== 'sim')
-                                ->required(fn ($get): bool => $get('impactos_trabalho_uso_substancias') === 'sim')
+                                ->hidden(fn($get): bool => $get('impactos_trabalho_uso_substancias') !== 'sim')
+                                ->required(fn($get): bool => $get('impactos_trabalho_uso_substancias') === 'sim')
                                 ->dehydratedWhenHidden()
                                 ->columnSpanFull(),
                             Radio::make('desempregado_por_uso_substancias')
@@ -425,8 +435,8 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, ha quanto tempo?')
                                 ->placeholder('Selecione a faixa de tempo')
                                 ->options(self::unemploymentDurationOptions())
-                                ->hidden(fn ($get): bool => ! (bool) $get('desempregado_por_uso_substancias'))
-                                ->required(fn ($get): bool => (bool) $get('desempregado_por_uso_substancias'))
+                                ->hidden(fn($get): bool => ! (bool) $get('desempregado_por_uso_substancias'))
+                                ->required(fn($get): bool => (bool) $get('desempregado_por_uso_substancias'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('impacto_convivio_familiar_uso_substancias')
                                 ->label('Houve impacto no convivio familiar devido ao uso de substancias quimicas?')
@@ -446,16 +456,16 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, detalhe qual foi o impacto')
                                 ->placeholder('Ex.: conflitos, afastamento, rompimento de vinculos, negligencia')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => ! (bool) $get('impacto_convivio_familiar_uso_substancias'))
-                                ->required(fn ($get): bool => (bool) $get('impacto_convivio_familiar_uso_substancias'))
+                                ->hidden(fn($get): bool => ! (bool) $get('impacto_convivio_familiar_uso_substancias'))
+                                ->required(fn($get): bool => (bool) $get('impacto_convivio_familiar_uso_substancias'))
                                 ->dehydratedWhenHidden()
                                 ->columnSpanFull(),
                             Select::make('frequencia_impacto_convivio_familiar')
                                 ->label('Quantas vezes ja teve esse impacto familiar?')
                                 ->placeholder('Selecione a frequencia')
                                 ->options(self::impactFrequencyOptions())
-                                ->hidden(fn ($get): bool => ! (bool) $get('impacto_convivio_familiar_uso_substancias'))
-                                ->required(fn ($get): bool => (bool) $get('impacto_convivio_familiar_uso_substancias'))
+                                ->hidden(fn($get): bool => ! (bool) $get('impacto_convivio_familiar_uso_substancias'))
+                                ->required(fn($get): bool => (bool) $get('impacto_convivio_familiar_uso_substancias'))
                                 ->dehydratedWhenHidden(),
                             Radio::make('internacoes_hospitalares_uso_substancias')
                                 ->label('Ja precisou de internacoes hospitalares devido ao uso de substancias quimicas?')
@@ -475,15 +485,15 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->label('Se sim, quantas vezes?')
                                 ->placeholder('Selecione a frequencia')
                                 ->options(self::impactFrequencyOptions())
-                                ->hidden(fn ($get): bool => ! (bool) $get('internacoes_hospitalares_uso_substancias'))
-                                ->required(fn ($get): bool => (bool) $get('internacoes_hospitalares_uso_substancias'))
+                                ->hidden(fn($get): bool => ! (bool) $get('internacoes_hospitalares_uso_substancias'))
+                                ->required(fn($get): bool => (bool) $get('internacoes_hospitalares_uso_substancias'))
                                 ->dehydratedWhenHidden(),
                             Textarea::make('detalhes_internacoes_hospitalares_uso_substancias')
                                 ->label('Detalhe como foi')
                                 ->placeholder('Descreva contexto, gravidade, local e desfecho informado.')
                                 ->rows(3)
-                                ->hidden(fn ($get): bool => ! (bool) $get('internacoes_hospitalares_uso_substancias'))
-                                ->required(fn ($get): bool => (bool) $get('internacoes_hospitalares_uso_substancias'))
+                                ->hidden(fn($get): bool => ! (bool) $get('internacoes_hospitalares_uso_substancias'))
+                                ->required(fn($get): bool => (bool) $get('internacoes_hospitalares_uso_substancias'))
                                 ->dehydratedWhenHidden()
                                 ->columnSpanFull(),
                         ]),
@@ -528,7 +538,7 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->placeholder('-'),
                             TextEntry::make('influencia_terceiro_inicio_uso')
                                 ->label('Influencia de terceiro')
-                                ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                ->formatStateUsing(fn(?string $state): string => match ($state) {
                                     'sim' => 'Sim',
                                     'nao' => 'Nao',
                                     'prefere_nao_informar' => 'Prefere nao informar',
@@ -548,7 +558,7 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->placeholder('-'),
                             TextEntry::make('esteve_unidade_prisional_ou_similar')
                                 ->label('Unidade prisional ou similar')
-                                ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                ->formatStateUsing(fn(?string $state): string => match ($state) {
                                     'sim' => 'Sim',
                                     'nao' => 'Nao',
                                     'prefere_nao_informar' => 'Prefere nao informar',
@@ -556,7 +566,7 @@ class SubstanciaPsicoativaResource extends Resource
                                 }),
                             TextEntry::make('impactos_trabalho_uso_substancias')
                                 ->label('Impactos no trabalho')
-                                ->formatStateUsing(fn (?string $state): string => match ($state) {
+                                ->formatStateUsing(fn(?string $state): string => match ($state) {
                                     'sim' => 'Sim',
                                     'nao' => 'Nao',
                                     'prefere_nao_informar' => 'Prefere nao informar',
@@ -607,7 +617,7 @@ class SubstanciaPsicoativaResource extends Resource
                     ->boolean(),
                 TextColumn::make('influencia_terceiro_inicio_uso')
                     ->label('Influencia de terceiro')
-                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                    ->formatStateUsing(fn(?string $state): string => match ($state) {
                         'sim' => 'Sim',
                         'nao' => 'Nao',
                         'prefere_nao_informar' => 'Prefere nao informar',
@@ -627,7 +637,7 @@ class SubstanciaPsicoativaResource extends Resource
                     ->label('Baixar relatorio')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->action(fn (SubstanciaPsicoativas $record) => static::downloadReportResponse($record)),
+                    ->action(fn(SubstanciaPsicoativas $record) => static::downloadReportResponse($record)),
                 EditAction::make(),
                 DeleteAction::make(),
             ])
@@ -710,7 +720,7 @@ class SubstanciaPsicoativaResource extends Resource
             'record' => $record,
             'sections' => $sections,
             'logoCerape' => static::publicImageDataUri('storage/images/logo.png'),
-            'formatValue' => fn (mixed $value): string => static::formatValue($value),
+            'formatValue' => fn(mixed $value): string => static::formatValue($value),
         ];
     }
 
@@ -724,7 +734,7 @@ class SubstanciaPsicoativaResource extends Resource
         $fileName = 'relatorio-substancia-psicoativa-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
+            fn() => print($pdf->output()),
             $fileName,
             ['Content-Type' => 'application/pdf'],
         );

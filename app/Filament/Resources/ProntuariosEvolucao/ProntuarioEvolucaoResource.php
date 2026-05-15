@@ -39,6 +39,16 @@ class ProntuarioEvolucaoResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'data_prontuario';
 
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record?->acolhido?->nome_completo_paciente ?? 'Sem nome';
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['acolhido.nome_completo_paciente'];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return ProntuarioEvolucaoForm::configure($schema);
@@ -186,7 +196,7 @@ class ProntuarioEvolucaoResource extends Resource
             ['label' => 'Cadastro no sistema', 'value' => $acolhido->created_at?->format('d/m/Y H:i') ?? '-'],
         ];
 
-        return array_values(array_filter($items, fn (array $item): bool => filled($item['value'])));
+        return array_values(array_filter($items, fn(array $item): bool => filled($item['value'])));
     }
 
     private static function resolveAvatarPath(?string $path): ?string

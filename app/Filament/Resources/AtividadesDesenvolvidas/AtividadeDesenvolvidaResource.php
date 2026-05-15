@@ -32,7 +32,17 @@ class AtividadeDesenvolvidaResource extends Resource
 
     protected static ?string $pluralModelLabel = 'atividades a serem desenvolvidas';
 
-    protected static ?string $recordTitleAttribute = 'acolhido_id';
+    protected static ?string $recordTitleAttribute = 'acolhido.nome_completo_paciente';
+
+    public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record?->acolhido?->nome_completo_paciente ?? 'Sem nome';
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['acolhido.nome_completo_paciente'];
+    }
 
     public static function form(Schema $schema): Schema
     {
