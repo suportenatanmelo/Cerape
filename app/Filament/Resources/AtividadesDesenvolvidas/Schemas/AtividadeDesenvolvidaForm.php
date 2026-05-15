@@ -249,7 +249,7 @@ class AtividadeDesenvolvidaForm
     private static function learningOptions(): array
     {
         return [
-            'estudo_alfabetizacao' => 'Atividades de estudo e alfabetizacao',
+            'estudo_alfabetizacao' => 'Atividades de estudo e alfabetização',
         ];
     }
 

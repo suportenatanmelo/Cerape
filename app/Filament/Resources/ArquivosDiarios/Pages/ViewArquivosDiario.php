@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\Saudes\Pages;
+namespace App\Filament\Resources\ArquivosDiarios\Pages;
 
-use App\Filament\Resources\Saudes\SaudeResource;
+use App\Filament\Resources\ArquivosDiarios\ArquivosDiarioResource;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 
-class ViewSaude extends ViewRecord
+class ViewArquivosDiario extends ViewRecord
 {
-    protected static string $resource = SaudeResource::class;
+    protected static string $resource = ArquivosDiarioResource::class;
 
     protected function getHeaderActions(): array
     {
@@ -18,7 +18,7 @@ class ViewSaude extends ViewRecord
                 ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
-                ->action(fn () => SaudeResource::downloadReportResponse($this->getRecord())),
+                ->action(fn () => ArquivosDiarioResource::downloadReportResponse($this->getRecord())),
             EditAction::make(),
         ];
     }

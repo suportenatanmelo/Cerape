@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Acolhidos\Tables;
 
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -76,17 +78,20 @@ class AcolhidosTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->after(function ($records): void {
-                            foreach ($records as $record) {
-                                AcolhidoForm::notifyUsers($record, 'deleted');
-                            }
-                        }),
+                ActionGroup::make([
+                    ViewAction::make(),
+
+                    EditAction::make()
+                        ->after(
+                            fn($record) =>
+                            AcolhidoForm::notifyUsers($record, 'updated')
+                        ),
+
+                    DeleteAction::make()
+                        ->after(
+                            fn($record) =>
+                            AcolhidoForm::notifyUsers($record, 'deleted')
+                        ),
                 ]),
             ]);
     }

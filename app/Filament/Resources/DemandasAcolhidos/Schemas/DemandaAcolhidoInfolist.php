@@ -23,7 +23,9 @@ class DemandaAcolhidoInfolist
                             'md' => 2,
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
-                                ->label('Acolhido'),
+                                ->label('Acolhido')
+                                ->badge()
+                                ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
@@ -35,12 +37,18 @@ class DemandaAcolhidoInfolist
                                 ->columnSpanFull(),
                             TextEntry::make('saida_prevista_em')
                                 ->label('Saida da clinica CERAPE')
-                                ->dateTime('d/m/Y H:i'),
+                                ->dateTime('d/m/Y H:i')
+                                ->badge()
+                                ->color('warning'),
                             TextEntry::make('retorno_previsto_em')
                                 ->label('Chegada na clinica CERAPE')
-                                ->dateTime('d/m/Y H:i'),
+                                ->dateTime('d/m/Y H:i')
+                                ->badge()
+                                ->color('success'),
                             TextEntry::make('duracao_prevista')
                                 ->label('Duracao prevista')
+                                ->badge()
+                                ->color('info')
                                 ->state(fn ($record): string => self::formatDuration($record?->saida_prevista_em, $record?->retorno_previsto_em)),
                             TextEntry::make('situacao_agenda')
                                 ->label('Situacao')

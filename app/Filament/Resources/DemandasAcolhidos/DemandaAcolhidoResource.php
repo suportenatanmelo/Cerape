@@ -10,12 +10,15 @@ use App\Filament\Resources\DemandasAcolhidos\Tables\DemandasAcolhidosTable;
 use App\Models\DemandaAcolhido;
 use App\Models\User;
 use App\Support\FilamentDatabaseNotifications;
+use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use UnitEnum;
 
 class DemandaAcolhidoResource extends Resource
@@ -145,5 +148,111 @@ class DemandaAcolhidoResource extends Resource
     private static function notificationUrl(DemandaAcolhido $record): string
     {
         return self::getUrl('view', ['record' => $record]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function getReportData(DemandaAcolhido $record): array
+    {
+        $record->loadMissing('acolhido');
+
+        return [
+            'title' => 'Relatorio da demanda do acolhido',
+            'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido nao identificado',
+            'metaLines' => [
+                'Emitido em: ' . now()->format('d/m/Y H:i'),
+                'Demanda organizada para consulta e acompanhamento.',
+            ],
+            'highlight' => $record->demanda,
+            'photoData' => self::imageDataUri($record->acolhido?->avatar),
+            'photoLabel' => 'Agenda',
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'sections' => [
+                'Dados da agenda' => [
+                    'Acolhido' => $record->acolhido?->nome_completo_paciente,
+                    'Demanda' => $record->demanda,
+                    'Saida prevista' => $record->saida_prevista_em,
+                    'Retorno previsto' => $record->retorno_previsto_em,
+                    'Observacoes' => $record->observacoes,
+                ],
+                'Controle do registro' => [
+                    'Criado em' => $record->created_at,
+                    'Atualizado em' => $record->updated_at,
+                ],
+            ],
+            'formatValue' => fn (mixed $value): string => self::formatValue($value),
+        ];
+    }
+
+    public static function downloadReportResponse(DemandaAcolhido $record)
+    {
+        $record->loadMissing('acolhido');
+
+        $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
+            ->setPaper('a4');
+
+        $fileName = 'relatorio-demanda-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            $fileName,
+            ['Content-Type' => 'application/pdf'],
+        );
+    }
+
+    private static function formatValue(mixed $value): string
+    {
+        if ($value instanceof \Carbon\CarbonInterface) {
+            return $value->format('d/m/Y H:i');
+        }
+
+        $value = trim(strip_tags((string) $value));
+
+        return $value !== '' ? $value : '-';
+    }
+
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (array_unique([$path, 'acolhidos/avatars/' . basename($path), 'avatars/' . basename($path)]) as $candidate) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    private static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
 }

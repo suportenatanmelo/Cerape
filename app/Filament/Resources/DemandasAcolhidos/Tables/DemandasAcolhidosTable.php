@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DemandasAcolhidos\Tables;
 
 use App\Filament\Resources\DemandasAcolhidos\DemandaAcolhidoResource;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -36,20 +37,23 @@ class DemandasAcolhidosTable
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
                 TextColumn::make('situacao')
-                    ->label('Situacao')
+                    ->label('Situação')
                     ->badge()
-                    ->color(fn ($record): string => self::statusColor($record?->saida_prevista_em, $record?->retorno_previsto_em))
-                    ->state(fn ($record): string => self::statusLabel($record?->saida_prevista_em, $record?->retorno_previsto_em)),
+                    ->color(fn($record): string => self::statusColor($record?->saida_prevista_em, $record?->retorno_previsto_em))
+                    ->state(fn($record): string => self::statusLabel($record?->saida_prevista_em, $record?->retorno_previsto_em)),
             ])
             ->filters([
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make()
-                    ->after(fn ($record) => DemandaAcolhidoResource::notifyUsers($record, 'updated')),
-                DeleteAction::make()
-                    ->after(fn ($record) => DemandaAcolhidoResource::notifyUsers($record, 'deleted')),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make()
+                        ->after(fn($record) => DemandaAcolhidoResource::notifyUsers($record, 'updated')),
+                    DeleteAction::make()
+                        ->after(fn($record) => DemandaAcolhidoResource::notifyUsers($record, 'deleted')),
+                ]),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

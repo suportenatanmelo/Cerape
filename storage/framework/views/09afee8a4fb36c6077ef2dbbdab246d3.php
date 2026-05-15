@@ -22,11 +22,7 @@
 </head>
 <body>
     <div class="page">
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($logoCerape): ?>
-            <div class="brand-bar">
-                <img src="<?php echo e($logoCerape); ?>" class="brand-logo" alt="Logo Cerape">
-            </div>
-        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        <?php echo $__env->make('pdf.partials.cerape-brand-header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
         <div class="header">
             <h1>Auto Avaliacao dos acolhidos</h1>

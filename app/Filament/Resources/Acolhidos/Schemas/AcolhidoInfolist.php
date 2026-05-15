@@ -53,7 +53,9 @@ class AcolhidoInfolist
                                 ->boolean(),
                             TextEntry::make('data_nascimento')
                                 ->label('Nascimento')
-                                ->date(),
+                                ->date()
+                                ->badge()
+                                ->color('info'),
                             TextEntry::make('estado_civil')
                                 ->label('Estado civil')
                                 ->badge()
@@ -93,9 +95,13 @@ class AcolhidoInfolist
                                     ->placeholder('-'),
                                 TextEntry::make('cor_da_pele')
                                     ->label('Cor da pele')
+                                    ->badge()
+                                    ->color('gray')
                                     ->placeholder('-'),
                                 TextEntry::make('numero_do_telefone')
                                     ->label('Telefone')
+                                    ->badge()
+                                    ->color('success')
                                     ->placeholder('-'),
                             ]),
                         ]),
@@ -112,6 +118,8 @@ class AcolhidoInfolist
                     ->schema([
                         TextEntry::make('CEP')
                             ->label('CEP')
+                            ->badge()
+                            ->color('gray')
                             ->placeholder('-'),
                         TextEntry::make('endereco_paciente')
                             ->label('Endereco')
@@ -121,9 +129,13 @@ class AcolhidoInfolist
                             ->placeholder('-'),
                         TextEntry::make('municipio_do_paciente')
                             ->label('Municipio')
+                            ->badge()
+                            ->color('info')
                             ->placeholder('-'),
                         TextEntry::make('uf_municipio_do_paciente')
                             ->label('UF')
+                            ->badge()
+                            ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('moradia_propria')
                             ->label('Moradia propria')
@@ -183,9 +195,13 @@ class AcolhidoInfolist
                     ->schema([
                         TextEntry::make('escolaridade')
                             ->label('Escolaridade')
+                            ->badge()
+                            ->color('primary')
                             ->placeholder('-'),
                         TextEntry::make('profissao')
                             ->label('Profissao')
+                            ->badge()
+                            ->color('gray')
                             ->placeholder('-'),
                         IconEntry::make('trabalha')
                             ->label('Trabalha?')
@@ -332,10 +348,14 @@ class AcolhidoInfolist
                     ->schema([
                         TextEntry::make('created_at')
                             ->label('Criado em')
-                            ->dateTime(),
+                            ->dateTime()
+                            ->badge()
+                            ->color('gray'),
                         TextEntry::make('updated_at')
                             ->label('Atualizado em')
-                            ->dateTime(),
+                            ->dateTime()
+                            ->badge()
+                            ->color('warning'),
                     ]),
             ]);
     }

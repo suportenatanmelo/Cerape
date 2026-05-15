@@ -22,7 +22,9 @@ class SaudeInfolist
                             'md' => 2,
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
-                                ->label('Acolhido'),
+                                ->label('Acolhido')
+                                ->badge()
+                                ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular(),
@@ -34,30 +36,35 @@ class SaudeInfolist
                                     ->boolean(),
                                 TextEntry::make('condicoes_saude')
                                     ->label('Condicoes de saude')
+                                    ->badge()
+                                    ->color('info')
                                     ->listWithLineBreaks()
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                             ]),
-
-
-                        Section::make("Uso e dosagem da medicação")
-                            ->icon('')
+                        Section::make('Uso e dosagem da medicacao')
                             ->schema([
                                 IconEntry::make('usa_medicacao_psicoativa')
-                                    ->label('Uso de medicacao psicoativa ')
+                                    ->label('Uso de medicacao psicoativa')
                                     ->boolean(),
                                 TextEntry::make('nome_medicacao_psicoativa')
-                                    ->label('Nome da medicacao psicoativa ou princípio ativo')
+                                    ->label('Nome da medicacao psicoativa ou principio ativo')
+                                    ->badge()
+                                    ->color('primary')
                                     ->listWithLineBreaks()
                                     ->placeholder('-'),
                                 TextEntry::make('dosagem_medicacao_psicoativa')
                                     ->label('Dosagem da medicacao psicoativa')
+                                    ->badge()
+                                    ->color('warning')
                                     ->placeholder('-'),
                                 IconEntry::make('prescrito_profissional')
                                     ->label('Medicacao prescrita por profissional de saude')
                                     ->boolean(),
                                 TextEntry::make('diagnosticado')
                                     ->label('Condicoes diagnosticadas relacionadas a saude mental ou uso de substancias')
+                                    ->badge()
+                                    ->color('danger')
                                     ->listWithLineBreaks()
                                     ->placeholder('-'),
                             ]),
@@ -76,8 +83,6 @@ class SaudeInfolist
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                             ]),
-
-
                     ]),
             ]);
     }

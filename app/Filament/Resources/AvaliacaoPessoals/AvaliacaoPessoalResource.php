@@ -39,17 +39,17 @@ class AvaliacaoPessoalResource extends Resource
 {
     protected static ?string $model = AvaliacaoPessoal::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'AvaliaÃ§oes';
+    protected static string | UnitEnum | null $navigationGroup = 'Avaliações';
 
-    protected static ?string $navigationLabel = 'Avaliacoes pessoais';
+    protected static ?string $navigationLabel = 'Avaliações pessoais';
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedChartBar;
 
     protected static ?string $slug = 'avaliacoes-pessoais';
 
-    protected static ?string $modelLabel = 'avaliacao pessoal';
+    protected static ?string $modelLabel = 'avaliação pessoal';
 
-    protected static ?string $pluralModelLabel = 'avaliacoes pessoais';
+    protected static ?string $pluralModelLabel = 'avaliações pessoais';
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -57,8 +57,8 @@ class AvaliacaoPessoalResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Identificacao da avaliacao')
-                    ->description('Relacione a avaliacao ao acolhido e ao profissional responsavel.')
+                Section::make('Identificação da avaliação')
+                    ->description('Relacione a avaliação ao acolhido e ao profissional responsável.')
                     ->icon('heroicon-o-identification')
                     ->schema([
                         Grid::make([
@@ -76,7 +76,7 @@ class AvaliacaoPessoalResource extends Resource
                                 )
                                 ->required(),
                             Select::make('user_id')
-                                ->label('Usuario avaliador')
+                                ->label('Usuário avaliador')
                                 ->relationship('user', 'name')
                                 ->searchable()
                                 ->preload()
@@ -91,8 +91,8 @@ class AvaliacaoPessoalResource extends Resource
                                 ->required(),
                         ]),
                     ]),
-                Section::make('PontuaÃ§ao')
-                    ->description('Cada criterio aceita apenas notas maiores que 1 e menores ou iguais a 3. A media final e calculada automaticamente.')
+                Section::make('Pontuação')
+                    ->description('Cada critério aceita apenas notas maiores que 1 e menores ou iguais a 3. A média final é calculada automaticamente.')
                     ->icon('heroicon-o-star')
                     ->schema([
                         Grid::make([
@@ -101,11 +101,11 @@ class AvaliacaoPessoalResource extends Resource
                         ])->schema([
                             self::scoreInput('controler', 'Controle'),
                             self::scoreInput('autonomia', 'Autonomia'),
-                            self::scoreInput('transparencia', 'Transparencia'),
-                            self::scoreInput('superacao', 'Superacao'),
+                            self::scoreInput('transparencia', 'Transparência'),
+                            self::scoreInput('superacao', 'Superação'),
                             self::scoreInput('autocuidado', 'Autocuidado'),
                             TextInput::make('Total')
-                                ->label('Media final')
+                                ->label('Média final')
                                 ->numeric()
                                 ->readOnly()
                                 ->dehydrated()
@@ -136,51 +136,67 @@ class AvaliacaoPessoalResource extends Resource
                             ->width(96)
                             ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => self::resolveAvatarPath($record->acolhido?->avatar)),
                         TextEntry::make('acolhido.nome_completo_paciente')
-                            ->label('Acolhido'),
+                            ->label('Acolhido')
+                            ->badge()
+                            ->color('primary'),
                         TextEntry::make('user.name')
-                            ->label('Usuario avaliador')
+                            ->label('Usuário avaliador')
+                            ->badge()
+                            ->color('info')
                             ->placeholder('-'),
                         TextEntry::make('dias_na_casa')
-                            ->label('Tempo de casa'),
+                            ->label('Tempo de casa')
+                            ->badge()
+                            ->color('warning'),
                         TextEntry::make('controler')
                             ->label('Controle')
+                            ->badge()
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('autonomia')
                             ->label('Autonomia')
+                            ->badge()
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('transparencia')
-                            ->label('Transparencia')
+                            ->label('Transparência')
+                            ->badge()
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('superacao')
-                            ->label('Superacao')
+                            ->label('Superação')
+                            ->badge()
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('autocuidado')
                             ->label('Autocuidado')
+                            ->badge()
+                            ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
                         TextEntry::make('Total')
-                            ->label('Media final')
+                            ->label('Média final')
                             ->badge()
                             ->color(fn($state): string => self::scoreColor((float) $state))
                             ->suffix(' / 3'),
-                        TextEntry::make('media_de_todos')
-                            ->label('Media de todos')
+                        TextEntry::make('média_de_todos')
+                            ->label('Média de todos')
                             ->badge()
                             ->color(fn($state): string => self::scoreColor((float) $state))
-                            ->getStateUsing(fn(AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id))
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): float => self::calculateMédiaDeTodos($record->acolhido_id))
                             ->formatStateUsing(fn($state): string => self::formatScore((float) $state)),
                         TextEntry::make('total_avaliadores')
-                            ->label('Usuarios que avaliaram')
+                            ->label('Usuários que avaliaram')
                             ->badge()
                             ->color('primary')
                             ->getStateUsing(fn(AvaliacaoPessoal $record): int => self::countEvaluators($record->acolhido_id)),
                     ]),
-                Section::make('Analise por usuario')
-                    ->description('Resumo consolidado das avaliacoes feitas por cada usuario para este acolhido.')
+                Section::make('Análise por usuário')
+                    ->description('Resumo consolidado das avaliações feitas por cada usuário para este acolhido.')
                     ->icon('heroicon-o-users')
                     ->schema([
-                        ViewEntry::make('analise_usuarios')
+                        ViewEntry::make('analise_usuários')
                             ->hiddenLabel()
-                            ->view('filament.resources.avaliacao-pessoals.user-analysis')
+                            ->view('filament.resources.avaliação-pessoals.user-analysis')
                             ->viewData(fn(AvaliacaoPessoal $record): array => self::getReportData($record)),
                     ]),
             ]);
@@ -196,7 +212,7 @@ class AvaliacaoPessoalResource extends Resource
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
-                    ->label('Usuario avaliador')
+                    ->label('Usuário avaliador')
                     ->searchable()
                     ->sortable()
                     ->placeholder('-'),
@@ -204,7 +220,7 @@ class AvaliacaoPessoalResource extends Resource
                     ->label('Tempo de casa')
                     ->searchable(),
                 TextColumn::make('Total')
-                    ->label('Media')
+                    ->label('Média')
                     ->badge()
                     ->color(fn($state): string => match (true) {
                         (float) $state >= 2.5 => 'success',
@@ -213,12 +229,12 @@ class AvaliacaoPessoalResource extends Resource
                     })
                     ->formatStateUsing(fn($state): string => number_format((float) $state, 2, ',', '.') . ' / 3')
                     ->sortable(),
-                TextColumn::make('media_de_todos')
-                    ->label('Media de todos')
+                TextColumn::make('média_de_todos')
+                    ->label('Média de todos')
                     ->badge()
                     ->color(fn($state): string => self::scoreColor((float) $state))
                     ->getStateUsing(
-                        fn(AvaliacaoPessoal $record): float => self::calculateMediaDeTodos($record->acolhido_id)
+                        fn(AvaliacaoPessoal $record): float => self::calculateMédiaDeTodos($record->acolhido_id)
                     )
                     ->formatStateUsing(fn($state): string => self::formatScore((float) $state)),
                 TextColumn::make('created_at')
@@ -233,7 +249,7 @@ class AvaliacaoPessoalResource extends Resource
                     ->searchable()
                     ->preload(),
                 SelectFilter::make('user_id')
-                    ->label('Usuario avaliador')
+                    ->label('Usuário avaliador')
                     ->relationship('user', 'name')
                     ->searchable()
                     ->preload(),
@@ -252,12 +268,12 @@ class AvaliacaoPessoalResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListAvaliacaoPessoals::route('/'),
-            'auto-avaliacao' => AutoAvaliacao::route('/auto-avaliacao'),
-            'create' => CreateAvaliacaoPessoal::route('/create'),
-            'view' => ViewAvaliacaoPessoal::route('/{record}'),
-            'report' => RelatorioAvaliacaoPessoal::route('/{record}/relatorio'),
-            'edit' => EditAvaliacaoPessoal::route('/{record}/edit'),
+            'index' => ListAvaliaçãoPessoals::route('/'),
+            'auto-avaliação' => AutoAvaliação::route('/auto-avaliação'),
+            'create' => CreateAvaliaçãoPessoal::route('/create'),
+            'view' => ViewAvaliaçãoPessoal::route('/{record}'),
+            'report' => RelatórioAvaliaçãoPessoal::route('/{record}/relatório'),
+            'edit' => EditAvaliaçãoPessoal::route('/{record}/edit'),
         ];
     }
 
@@ -325,14 +341,14 @@ class AvaliacaoPessoalResource extends Resource
         };
     }
 
-    public static function calculateMediaDeTodos(int $acolhidoId): float
+    public static function calculateMédiaDeTodos(int $acolhidoId): float
     {
-        $userAverages = AvaliacaoPessoal::query()
+        $userAverages = AvaliaçãoPessoal::query()
             ->where('acolhido_id', $acolhidoId)
             ->whereNotNull('user_id')
-            ->selectRaw('user_id, AVG(`Total`) as media_usuario')
+            ->selectRaw('user_id, AVG(`Total`) as média_usuario')
             ->groupBy('user_id')
-            ->pluck('media_usuario');
+            ->pluck('média_usuario');
 
         if ($userAverages->isEmpty()) {
             return 0;
@@ -343,7 +359,7 @@ class AvaliacaoPessoalResource extends Resource
 
     public static function countEvaluators(int $acolhidoId): int
     {
-        return AvaliacaoPessoal::query()
+        return AvaliaçãoPessoal::query()
             ->where('acolhido_id', $acolhidoId)
             ->whereNotNull('user_id')
             ->distinct('user_id')
@@ -357,13 +373,13 @@ class AvaliacaoPessoalResource extends Resource
     {
         $record->loadMissing(['acolhido', 'user']);
 
-        $avaliacoes = AvaliacaoPessoal::query()
+        $avaliacoes = AvaliaçãoPessoal::query()
             ->with(['user', 'acolhido'])
             ->where('acolhido_id', $record->acolhido_id)
             ->latest()
             ->get();
 
-        $usuarios = self::summarizeEvaluators($avaliacoes);
+        $usuários = self::summarizeEvaluators($avaliacoes);
         $criteriaAverages = self::calculateCriteriaAverages($avaliacoes);
         $personalData = self::buildAcolhidoPersonalData($record->acolhido);
         $periodComparisons = [
@@ -372,39 +388,39 @@ class AvaliacaoPessoalResource extends Resource
             'semestral' => self::calculatePeriodComparison($record->acolhido_id, 'semestral'),
             'anual' => self::calculatePeriodComparison($record->acolhido_id, 'anual'),
         ];
-        $somaMediasIndividuais = min(3, (float) $usuarios->sum('media'));
-        $logicasMedias = [
+        $somaMediasIndividuais = min(3, (float) $usuários->sum('média'));
+        $logicasMédias = [
             [
-                'titulo' => 'Logica da media individual de um avaliador',
-                'descricao' => 'Para cada avaliador, a media individual e calculada pela soma das medias finais registradas por esse avaliador para o acolhido, dividida pela quantidade de avaliacoes que ele realizou.',
-                'formula' => 'Media individual = soma das medias finais do avaliador / quantidade de avaliacoes do avaliador',
+                'titulo' => 'Logica da média individual de um avaliador',
+                'descricao' => 'Para cada avaliador, a média individual e calculada pela soma das médias finais registradas por esse avaliador para o acolhido, dividida pela quantidade de avaliações que ele realizou.',
+                'formula' => 'Média individual = soma das médias finais do avaliador / quantidade de avaliações do avaliador',
             ],
             [
-                'titulo' => 'Logica da media de todos os avaliadores',
-                'descricao' => 'A media de todos considera a media individual de cada avaliador com o mesmo peso. Primeiro calculamos a media individual de cada profissional. Depois calculamos a media dessas medias individuais.',
-                'formula' => 'Media de todos = soma das medias individuais dos avaliadores / quantidade de avaliadores',
+                'titulo' => 'Logica da média de todos os avaliadores',
+                'descricao' => 'A média de todos considera a média individual de cada avaliador com o mesmo peso. Primeiro calculamos a média individual de cada profissional. Depois calculamos a média dessas médias individuais.',
+                'formula' => 'Média de todos = soma das médias individuais dos avaliadores / quantidade de avaliadores',
             ],
             [
-                'titulo' => 'Regra de apresentacao da soma das medias individuais',
-                'descricao' => 'Nos relatorios, a soma das medias individuais exibida em tela e no PDF nunca ultrapassa 3, respeitando a escala maxima da avaliacao pessoal.',
-                'formula' => 'Soma exibida = menor valor entre 3 e a soma das medias individuais',
+                'titulo' => 'Regra de apresentacao da soma das médias individuais',
+                'descricao' => 'Nos relatórios, a soma das médias individuais exibida em tela e no PDF nunca ultrapassa 3, respeitando a escala máxima da avaliação pessoal.',
+                'formula' => 'Soma exibida = menor valor entre 3 e a soma das médias individuais',
             ],
         ];
 
         return [
             'record' => $record,
             'acolhido' => $record->acolhido,
-            'avaliacoes' => $avaliacoes,
-            'usuarios' => $usuarios,
+            'avaliações' => $avaliacoes,
+            'usuários' => $usuários,
             'personalData' => $personalData,
             'criteriaAverages' => $criteriaAverages,
-            'mediaDeTodos' => self::calculateMediaDeTodos($record->acolhido_id),
-            'somaMediasIndividuais' => $somaMediasIndividuais,
-            'logicasMedias' => $logicasMedias,
+            'médiaDeTodos' => self::calculateMédiaDeTodos($record->acolhido_id),
+            'somaMédiasIndividuais' => $somaMediasIndividuais,
+            'logicasMédias' => $logicasMédias,
             'totalAvaliadores' => self::countEvaluators($record->acolhido_id),
-            'totalAvaliacoes' => $avaliacoes->count(),
-            'ultimaAvaliacao' => $avaliacoes->first(),
-            'primeiraAvaliacao' => $avaliacoes->last(),
+            'totalAvaliações' => $avaliacoes->count(),
+            'ultimaAvaliação' => $avaliacoes->first(),
+            'primeiraAvaliação' => $avaliacoes->last(),
             'periodComparisons' => $periodComparisons,
             'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
             'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
@@ -420,30 +436,30 @@ class AvaliacaoPessoalResource extends Resource
     protected static function summarizeEvaluators(Collection $avaliacoes): Collection
     {
         return $avaliacoes
-            ->filter(fn(AvaliacaoPessoal $avaliacao): bool => filled($avaliacao->user_id))
+            ->filter(fn(AvaliaçãoPessoal $avaliacao): bool => filled($avaliacao->user_id))
             ->groupBy('user_id')
-            ->map(function ($avaliacoesDoUsuario) {
-                /** @var \Illuminate\Support\Collection<int, AvaliacaoPessoal> $avaliacoesDoUsuario */
-                $primeiraAvaliacao = $avaliacoesDoUsuario->first();
-                $avaliacoesOrdenadas = $avaliacoesDoUsuario->sortByDesc('created_at')->values();
+            ->map(function ($avaliacoesDoUsuário) {
+                /** @var \Illuminate\Support\Collection<int, AvaliacaoPessoal> $avaliacoesDoUsuário */
+                $primeiraAvaliação = $avaliacoesDoUsuário->first();
+                $avaliacoesOrdenadas = $avaliacoesDoUsuário->sortByDesc('created_at')->values();
 
                 return [
-                    'user' => $primeiraAvaliacao?->user,
-                    'foto' => self::imageDataUri($primeiraAvaliacao?->user?->avatar),
-                    'quantidade' => $avaliacoesDoUsuario->count(),
-                    'media' => (float) $avaliacoesDoUsuario->avg('Total'),
+                    'user' => $primeiraAvaliação?->user,
+                    'foto' => self::imageDataUri($primeiraAvaliação?->user?->avatar),
+                    'quantidade' => $avaliacoesDoUsuário->count(),
+                    'média' => (float) $avaliacoesDoUsuário->avg('Total'),
                     'ultima_avaliacao' => $avaliacoesOrdenadas->first(),
                     'criterios' => [
-                        'Controle' => (float) $avaliacoesDoUsuario->avg('controler'),
-                        'Autonomia' => (float) $avaliacoesDoUsuario->avg('autonomia'),
-                        'Transparencia' => (float) $avaliacoesDoUsuario->avg('transparencia'),
-                        'Superacao' => (float) $avaliacoesDoUsuario->avg('superacao'),
-                        'Autocuidado' => (float) $avaliacoesDoUsuario->avg('autocuidado'),
+                        'Controle' => (float) $avaliacoesDoUsuário->avg('controler'),
+                        'Autonomia' => (float) $avaliacoesDoUsuário->avg('autonomia'),
+                        'Transparência' => (float) $avaliacoesDoUsuário->avg('transparencia'),
+                        'Superação' => (float) $avaliacoesDoUsuário->avg('superacao'),
+                        'Autocuidado' => (float) $avaliacoesDoUsuário->avg('autocuidado'),
                     ],
-                    'avaliacoes' => $avaliacoesOrdenadas,
+                    'avaliações' => $avaliacoesOrdenadas,
                 ];
             })
-            ->sortByDesc('media')
+            ->sortByDesc('média')
             ->values();
     }
 
@@ -456,8 +472,8 @@ class AvaliacaoPessoalResource extends Resource
         return [
             'Controle' => (float) $avaliacoes->avg('controler'),
             'Autonomia' => (float) $avaliacoes->avg('autonomia'),
-            'Transparencia' => (float) $avaliacoes->avg('transparencia'),
-            'Superacao' => (float) $avaliacoes->avg('superacao'),
+            'Transparência' => (float) $avaliacoes->avg('transparencia'),
+            'Superação' => (float) $avaliacoes->avg('superacao'),
             'Autocuidado' => (float) $avaliacoes->avg('autocuidado'),
         ];
     }
@@ -494,7 +510,7 @@ class AvaliacaoPessoalResource extends Resource
 
     public static function calculateRawAverageForRange(int $acolhidoId, Carbon $start, Carbon $end): float
     {
-        return (float) (AvaliacaoPessoal::query()
+        return (float) (AvaliaçãoPessoal::query()
             ->where('acolhido_id', $acolhidoId)
             ->whereBetween('created_at', [$start, $end])
             ->avg('Total') ?? 0);
@@ -502,13 +518,13 @@ class AvaliacaoPessoalResource extends Resource
 
     public static function calculateConsolidatedAverageForRange(int $acolhidoId, Carbon $start, Carbon $end): float
     {
-        $userAverages = AvaliacaoPessoal::query()
+        $userAverages = AvaliaçãoPessoal::query()
             ->where('acolhido_id', $acolhidoId)
             ->whereNotNull('user_id')
             ->whereBetween('created_at', [$start, $end])
-            ->selectRaw('user_id, AVG(`Total`) as media_usuario')
+            ->selectRaw('user_id, AVG(`Total`) as média_usuario')
             ->groupBy('user_id')
-            ->pluck('media_usuario');
+            ->pluck('média_usuario');
 
         if ($userAverages->isEmpty()) {
             return 0;
@@ -579,11 +595,11 @@ class AvaliacaoPessoalResource extends Resource
             'consolidated_current' => $currentConsolidated,
             'consolidated_previous' => $previousConsolidated,
             'consolidated_delta' => $currentConsolidated - $previousConsolidated,
-            'current_total_evaluations' => AvaliacaoPessoal::query()
+            'current_total_evaluations' => AvaliaçãoPessoal::query()
                 ->where('acolhido_id', $acolhidoId)
                 ->whereBetween('created_at', [$ranges['current_start'], $ranges['current_end']])
                 ->count(),
-            'previous_total_evaluations' => AvaliacaoPessoal::query()
+            'previous_total_evaluations' => AvaliaçãoPessoal::query()
                 ->where('acolhido_id', $acolhidoId)
                 ->whereBetween('created_at', [$ranges['previous_start'], $ranges['previous_end']])
                 ->count(),
@@ -595,7 +611,7 @@ class AvaliacaoPessoalResource extends Resource
         return $start->format('d/m/Y') . ' a ' . $end->format('d/m/Y');
     }
 
-    public static function notifyUsersAboutEvaluation(AvaliacaoPessoal $avaliacao): void
+    public static function notifyUsersAboutEvaluation(AvaliaçãoPessoal $avaliacao): void
     {
         $avaliacao->loadMissing('acolhido');
 
@@ -603,7 +619,7 @@ class AvaliacaoPessoalResource extends Resource
             return;
         }
 
-        $evaluatedUserIds = AvaliacaoPessoal::query()
+        $evaluatedUserIds = AvaliaçãoPessoal::query()
             ->where('acolhido_id', $avaliacao->acolhido_id)
             ->whereNotNull('user_id')
             ->distinct()
@@ -620,8 +636,8 @@ class AvaliacaoPessoalResource extends Resource
         if ($usersPendingEvaluation->isNotEmpty()) {
             FilamentDatabaseNotifications::send(
                 Notification::make()
-                    ->title('Avaliacao pendente')
-                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ainda precisa da sua avaliacao.")
+                    ->title('Avaliação pendente')
+                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ainda precisa da sua avaliação.")
                     ->warning()
                     ->icon('heroicon-o-clipboard-document-check'),
                 $usersPendingEvaluation,
@@ -631,8 +647,8 @@ class AvaliacaoPessoalResource extends Resource
         if ($usersWhoEvaluated->isNotEmpty()) {
             FilamentDatabaseNotifications::send(
                 Notification::make()
-                    ->title('Media de avaliacao atualizada')
-                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} ja possui media de todos: " . self::formatScore(self::calculateMediaDeTodos($avaliacao->acolhido_id)) . '.')
+                    ->title('Média de avaliação atualizada')
+                    ->body("O acolhido {$avaliacao->acolhido->nome_completo_paciente} já possui média de todos: " . self::formatScore(self::calculateMédiaDeTodos($avaliacao->acolhido_id)) . '.')
                     ->success()
                     ->icon('heroicon-o-chart-bar'),
                 $usersWhoEvaluated,
@@ -745,3 +761,6 @@ class AvaliacaoPessoalResource extends Resource
         ];
     }
 }
+
+
+

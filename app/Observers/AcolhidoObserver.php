@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Models\Acolhido;
+use App\Support\BirthdayNotificationService;
 
 class AcolhidoObserver
 {
@@ -12,7 +13,7 @@ class AcolhidoObserver
      */
     public function created(Acolhido $acolhido): void
     {
-        //
+        BirthdayNotificationService::notifyAcolhidoBirthdayMonth($acolhido);
     }
 
     /**
@@ -20,7 +21,9 @@ class AcolhidoObserver
      */
     public function updated(Acolhido $acolhido): void
     {
-        //
+        if ($acolhido->wasChanged('data_nascimento') || $acolhido->wasChanged('ativo')) {
+            BirthdayNotificationService::notifyAcolhidoBirthdayMonth($acolhido);
+        }
     }
 
     /**

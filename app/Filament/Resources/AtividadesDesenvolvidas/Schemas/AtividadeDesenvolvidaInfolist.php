@@ -24,6 +24,8 @@ class AtividadeDesenvolvidaInfolist
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
                                 ->label('Acolhido')
+                                ->badge()
+                                ->color('primary')
                                 ->placeholder('Nao vinculado'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
@@ -38,36 +40,48 @@ class AtividadeDesenvolvidaInfolist
                             ->boolean(),
                         TextEntry::make('horario_atendimento_grupo_12_passos')
                             ->label('Horario - 12 passos')
+                            ->badge()
+                            ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('atendimentos_grupos')
                             ->label('Atendimentos em grupos')
                             ->boolean(),
                         TextEntry::make('horario_atendimentos_grupos')
                             ->label('Horario - grupos')
+                            ->badge()
+                            ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('atendimentos_individuais_conselheiros')
                             ->label('Atendimentos individuais')
                             ->boolean(),
                         TextEntry::make('horario_atendimentos_individuais_conselheiros')
                             ->label('Horario - atendimentos individuais')
+                            ->badge()
+                            ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('conhecimento_dependencia_spa')
                             ->label('Conhecimento sobre dependencia de SPA')
                             ->boolean(),
                         TextEntry::make('horario_conhecimento_dependencia_spa')
                             ->label('Horario - dependencia de SPA')
+                            ->badge()
+                            ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('atendimento_familia')
                             ->label('Atendimento a familia')
                             ->boolean(),
                         TextEntry::make('detalhes_atendimento_familia')
                             ->label('Detalhes do atendimento a familia')
+                            ->badge()
+                            ->color('info')
                             ->placeholder('-'),
                         IconEntry::make('visitacao_familiares_responsaveis')
                             ->label('Visitacao de familiares e responsaveis')
                             ->boolean(),
                         TextEntry::make('dia_visitacao_familiares_responsaveis')
                             ->label('Dia da visitacao')
+                            ->badge()
+                            ->color('info')
                             ->placeholder('-'),
                     ])
                     ->columns(2),
@@ -172,15 +186,22 @@ class AtividadeDesenvolvidaInfolist
         }
 
         if (! is_array($state)) {
-            return (string) $state;
+            return self::humanizeValue((string) $state);
         }
 
         $labels = AtividadeDesenvolvidaForm::allChecklistLabels();
 
         return collect($state)
-            ->map(fn (mixed $item): string => $labels[(string) $item] ?? (string) $item)
+            ->map(fn (mixed $item): string => $labels[(string) $item] ?? self::humanizeValue((string) $item))
             ->filter()
             ->values()
             ->all();
+    }
+
+    private static function humanizeValue(string $value): string
+    {
+        $value = trim(str_replace('_', ' ', $value));
+
+        return $value !== '' ? mb_convert_case($value, MB_CASE_TITLE, 'UTF-8') : '-';
     }
 }

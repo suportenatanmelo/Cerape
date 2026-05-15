@@ -512,14 +512,22 @@ class SubstanciaPsicoativaResource extends Resource
                             'md' => 2,
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
-                                ->label('Acolhido'),
+                                ->label('Acolhido')
+                                ->badge()
+                                ->color('primary'),
                             TextEntry::make('nome')
-                                ->label('Substancia'),
+                                ->label('Substancia')
+                                ->badge()
+                                ->color('warning'),
                             TextEntry::make('frequencia')
                                 ->label('Frequencia')
+                                ->badge()
+                                ->color('info')
                                 ->placeholder('-'),
                             TextEntry::make('quantidade')
                                 ->label('Quantidade')
+                                ->badge()
+                                ->color('gray')
                                 ->placeholder('-'),
                             TextEntry::make('via_administracao')
                                 ->label('Via de administracao')
@@ -538,6 +546,7 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->placeholder('-'),
                             TextEntry::make('influencia_terceiro_inicio_uso')
                                 ->label('Influencia de terceiro')
+                                ->badge()
                                 ->formatStateUsing(fn(?string $state): string => match ($state) {
                                     'sim' => 'Sim',
                                     'nao' => 'Nao',
@@ -558,6 +567,7 @@ class SubstanciaPsicoativaResource extends Resource
                                 ->placeholder('-'),
                             TextEntry::make('esteve_unidade_prisional_ou_similar')
                                 ->label('Unidade prisional ou similar')
+                                ->badge()
                                 ->formatStateUsing(fn(?string $state): string => match ($state) {
                                     'sim' => 'Sim',
                                     'nao' => 'Nao',

@@ -2,9 +2,9 @@
     <table style="border-collapse: collapse; width: 100%;">
         <tr>
             <td style="vertical-align: top; width: 120px;">
-                @if (! empty($logoCerape))
-                    <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
-                @endif
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($logoCerape)): ?>
+                    <img src="<?php echo e($logoCerape); ?>" class="brand-logo" alt="Logo Cerape">
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </td>
             <td style="padding-left: 12px; vertical-align: middle;">
                 <div style="color: #1f2937; font-size: 10px; line-height: 1.45;">
@@ -17,3 +17,4 @@
         </tr>
     </table>
 </div>
+<?php /**PATH C:\laragon\www\cerape\resources\views/pdf/partials/cerape-brand-header.blade.php ENDPATH**/ ?>

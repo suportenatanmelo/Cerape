@@ -71,24 +71,7 @@
 <body>
 
     <div class="page">
-        @if ($logoCerape)
-            <div class="brand-bar">
-                <div class="brand-table">
-                    <div class="brand-logo-cell">
-                        <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
-                    </div>
-                    <div class="brand-info-cell">
-                        <div class="brand-info">
-                            <strong>CENTRO DE REABILITAÇÃO DO - CERAPE - CRC</strong>
-                            <div class="brand-info-line">ÁREA RURAL DO PARQUE ALVORADA 3, FAZENDA QUINTAS S/N - LUZIÂNIA - GO</div>
-                            <div class="brand-info-line">CEP N 72.800-010 TELEFONE (61) 3323-5403</div>
-                            <div class="brand-info-line">CNPJ 00.857.994.0002-48</div>
-                            <div class="brand-info-line">agendacerape@gmail.com</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
+        @include('pdf.partials.cerape-brand-header')
 
         <div class="hero">
             <div class="hero-left">

@@ -29,11 +29,7 @@
 </head>
 <body>
     <div class="page">
-        @if ($logoCerape)
-            <div class="brand-bar">
-                <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
-            </div>
-        @endif
+        @include('pdf.partials.cerape-brand-header')
 
         <div class="header">
             <div class="avatar-wrap">

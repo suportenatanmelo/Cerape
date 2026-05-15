@@ -23,24 +23,28 @@ class ProntuarioEvolucaoInfolist
                             'md' => 2,
                         ])->schema([
                             TextEntry::make('acolhido.nome_completo_paciente')
-                                ->color('primary')
-                                ->label('Acolhido'),
+                                ->label('Acolhido')
+                                ->badge()
+                                ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn($record) => blank($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
                             TextEntry::make('user.name')
                                 ->label('Registrado por')
+                                ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
                             TextEntry::make('data_prontuario')
                                 ->label('Data e hora do prontuario')
                                 ->dateTime('d/m/Y H:i')
+                                ->badge()
                                 ->color('warning'),
                             TextEntry::make('created_at')
-                                ->label('Lançado no sistema em:')
-                                ->color('warning')
-                                ->dateTime('d/m/Y H:i'),
+                                ->label('Lançado no sistema em')
+                                ->dateTime('d/m/Y H:i')
+                                ->badge()
+                                ->color('warning'),
                         ]),
                     ]),
                 Section::make('Evolucao registrada')
@@ -49,7 +53,7 @@ class ProntuarioEvolucaoInfolist
                     ->schema([
                         TextEntry::make('conteudo')
                             ->label('Conteudo')
-                            ->formatStateUsing(fn(?string $state): string => str($state ?? '')->sanitizeHtml())
+                            ->formatStateUsing(fn (?string $state): string => str($state ?? '')->sanitizeHtml())
                             ->html()
                             ->columnSpanFull(),
                     ]),

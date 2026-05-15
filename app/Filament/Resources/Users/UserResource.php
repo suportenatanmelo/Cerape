@@ -114,33 +114,51 @@ class UserResource extends Resource
                     ->height(96)
                     ->width(96),
                 TextEntry::make('name')
-                    ->label('Nome completo'),
+                    ->label('Nome completo')
+                    ->badge()
+                    ->color('primary'),
                 TextEntry::make('email')
-                    ->label('Email'),
+                    ->label('Email')
+                    ->badge()
+                    ->color('info'),
                 TextEntry::make('cpf')
                     ->label('CPF')
+                    ->badge()
+                    ->color('gray')
                     ->placeholder('-'),
                 TextEntry::make('endereco')
                     ->label('Endereco')
                     ->placeholder('-'),
                 TextEntry::make('uf')
                     ->label('UF')
+                    ->badge()
+                    ->color('warning')
                     ->placeholder('-'),
                 TextEntry::make('nacionalidade')
                     ->label('Nacionalidade')
+                    ->badge()
+                    ->color('success')
                     ->placeholder('-'),
                 TextEntry::make('data_nascimento')
                     ->label('Data de nascimento')
                     ->date()
+                    ->badge()
+                    ->color('info')
                     ->placeholder('-'),
                 TextEntry::make('email_verified_at')
                     ->label('Email verificado em')
                     ->dateTime()
+                    ->badge()
+                    ->color('success')
                     ->placeholder('-'),
                 TextEntry::make('created_at')
+                    ->badge()
+                    ->color('gray')
                     ->dateTime()
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
+                    ->badge()
+                    ->color('warning')
                     ->dateTime()
                     ->placeholder('-'),
             ]);
