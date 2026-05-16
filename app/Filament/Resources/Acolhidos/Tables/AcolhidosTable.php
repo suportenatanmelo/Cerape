@@ -20,6 +20,10 @@ class AcolhidosTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('updated_at', 'desc')
+            ->emptyStateHeading('Nenhum acolhido disponivel')
+            ->emptyStateDescription('Assim que houver um acolhido vinculado com acesso liberado, ele aparecera aqui.')
+            ->emptyStateIcon('heroicon-o-users')
             ->columns([
                 TextColumn::make('user.name')
                     ->label('Funcionário responsável')
@@ -93,7 +97,8 @@ class AcolhidosTable
                             AcolhidoForm::notifyUsers($record, 'deleted')
                         ),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     private static function resolveAvatarPath(?string $path): ?string

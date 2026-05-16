@@ -8,8 +8,11 @@ use App\Filament\Resources\Saudes\Schemas\SaudeForm;
 use App\Filament\Resources\Saudes\Schemas\SaudeInfolist;
 use App\Filament\Resources\Saudes\Tables\SaudesTable;
 use App\Models\Saude;
+use App\Support\AcolhidoAccess;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -32,6 +35,16 @@ class SaudeResource extends Resource
     protected static ?string $pluralModelLabel = 'fichas de saude';
 
     protected static ?string $recordTitleAttribute = 'acolhido_id';
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 5;
+    }
 
     public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
     {
@@ -58,12 +71,39 @@ class SaudeResource extends Resource
         return SaudesTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => ManageSaudes::route('/'),
             'view' => ViewSaude::route('/{record}'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'danger';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Fichas de saude disponiveis';
     }
 
     /**

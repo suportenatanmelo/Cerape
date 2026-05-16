@@ -4,72 +4,84 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\DemandaAcolhido;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DemandaAcolhidoPolicy
 {
     use HandlesAuthorization;
     
-    public function viewAny(AuthUser $authUser): bool
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('ViewAny:DemandaAcolhido');
+        return ShieldPermission::allows($authUser, 'viewAny', 'DemandaAcolhido');
     }
 
-    public function view(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function view(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('View:DemandaAcolhido');
+        return ShieldPermission::allows($authUser, 'view', 'DemandaAcolhido')
+            && $authUser->canAccessAcolhido($demandaAcolhido->acolhido_id);
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('Create:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'create', 'DemandaAcolhido');
     }
 
-    public function update(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function update(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('Update:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'update', 'DemandaAcolhido');
     }
 
-    public function delete(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function delete(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('Delete:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'delete', 'DemandaAcolhido');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('DeleteAny:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'deleteAny', 'DemandaAcolhido');
     }
 
-    public function restore(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function restore(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('Restore:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restore', 'DemandaAcolhido');
     }
 
-    public function forceDelete(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function forceDelete(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('ForceDelete:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDelete', 'DemandaAcolhido');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'DemandaAcolhido');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('RestoreAny:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restoreAny', 'DemandaAcolhido');
     }
 
-    public function replicate(AuthUser $authUser, DemandaAcolhido $demandaAcolhido): bool
+    public function replicate(User $authUser, DemandaAcolhido $demandaAcolhido): bool
     {
-        return $authUser->can('Replicate:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'replicate', 'DemandaAcolhido');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('Reorder:DemandaAcolhido');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'reorder', 'DemandaAcolhido');
     }
 
 }

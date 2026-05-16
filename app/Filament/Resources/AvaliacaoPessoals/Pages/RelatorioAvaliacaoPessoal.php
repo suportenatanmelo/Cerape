@@ -5,6 +5,7 @@ namespace App\Filament\Resources\AvaliacaoPessoals\Pages;
 use App\Filament\Resources\AvaliacaoPessoals\AvaliacaoPessoalResource;
 use App\Filament\Widgets\AvaliacaoPessoalAcolhidoChart;
 use App\Filament\Widgets\AvaliacaoPessoalPeriodoComparativoChart;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Concerns\InteractsWithRecord;
@@ -42,6 +43,7 @@ class RelatorioAvaliacaoPessoal extends Page
                 ->label('Baixar PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->action(function () {
                     $record = $this->getRecord();
                     $record->loadMissing('acolhido');

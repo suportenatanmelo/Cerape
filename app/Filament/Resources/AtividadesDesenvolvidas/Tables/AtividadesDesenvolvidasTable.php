@@ -18,6 +18,10 @@ class AtividadesDesenvolvidasTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('updated_at', 'desc')
+            ->emptyStateHeading('Nenhuma atividade CRC registrada')
+            ->emptyStateDescription('Os planos de atividades e acompanhamento CRC ficarao visiveis aqui.')
+            ->emptyStateIcon('heroicon-o-clipboard-document-check')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
@@ -36,7 +40,8 @@ class AtividadesDesenvolvidasTable
                     ->label('Planejamento de saida')
                     ->formatStateUsing(fn (mixed $state): string => self::formatList($state))
                     ->limit(60)
-                    ->wrap(),
+                    ->wrap()
+                    ->description(fn ($record): string => $record->observacoes_gerais ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_gerais), 70) : 'Sem observacoes gerais'),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()
@@ -56,7 +61,8 @@ class AtividadesDesenvolvidasTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     private static function formatList(mixed $state): string

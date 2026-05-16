@@ -17,6 +17,9 @@ class ProntuariosEvolucaoTable
     {
         return $table
             ->defaultSort('data_prontuario', 'desc')
+            ->emptyStateHeading('Nenhum prontuario encontrado')
+            ->emptyStateDescription('Os prontuarios de evolucao do acolhido serao listados aqui.')
+            ->emptyStateIcon('heroicon-o-document-text')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
@@ -51,6 +54,7 @@ class ProntuariosEvolucaoTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 }

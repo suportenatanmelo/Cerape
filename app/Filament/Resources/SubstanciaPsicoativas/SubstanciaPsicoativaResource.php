@@ -6,7 +6,9 @@ use App\Filament\Resources\SubstanciaPsicoativas\Pages\ManageSubstanciaPsicoativ
 use App\Filament\Resources\SubstanciaPsicoativas\Pages\ViewSubstanciaPsicoativa;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\User;
+use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -30,6 +32,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use UnitEnum;
@@ -38,9 +41,11 @@ class SubstanciaPsicoativaResource extends Resource
 {
     protected static ?string $model = SubstanciaPsicoativas::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Substancias psicoativas';
+
+    protected static ?int $navigationSort = 7;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-beaker';
 
@@ -58,6 +63,11 @@ class SubstanciaPsicoativaResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['acolhido.nome_completo_paciente'];
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
     }
 
     public static function form(Schema $schema): Schema
@@ -647,6 +657,7 @@ class SubstanciaPsicoativaResource extends Resource
                     ->label('Baixar relatorio')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
+                    ->hidden(fn (): bool => PortalContext::isFamilyUser())
                     ->action(fn(SubstanciaPsicoativas $record) => static::downloadReportResponse($record)),
                 EditAction::make(),
                 DeleteAction::make(),
@@ -658,12 +669,39 @@ class SubstanciaPsicoativaResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => ManageSubstanciaPsicoativas::route('/'),
             'view' => ViewSubstanciaPsicoativa::route('/{record}'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'warning';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Historico de substancias acompanhadas';
     }
 
     /**
@@ -752,7 +790,7 @@ class SubstanciaPsicoativaResource extends Resource
 
     public static function notifyUsers(SubstanciaPsicoativas $record, string $event): void
     {
-        $users = User::query()->get();
+        $users = AcolhidoAccess::notificationRecipientsForAcolhido((int) $record->acolhido_id);
 
         if ($users->isEmpty()) {
             return;

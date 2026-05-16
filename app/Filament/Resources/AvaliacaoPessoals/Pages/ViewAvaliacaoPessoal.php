@@ -4,6 +4,7 @@ namespace App\Filament\Resources\AvaliacaoPessoals\Pages;
 
 use App\Filament\Resources\AvaliacaoPessoals\AvaliacaoPessoalResource;
 use App\Filament\Widgets\AvaliacaoPessoalAcolhidoChart;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -25,6 +26,16 @@ class ViewAvaliacaoPessoal extends ViewRecord
         return 'Avaliacao do acolhido';
     }
 
+    public function getSubheading(): string | Htmlable | null
+    {
+        $record = $this->getRecord();
+
+        return trim(implode(' • ', array_filter([
+            $record->acolhido?->nome_completo_paciente,
+            $record->user?->name ? 'Registrada por ' . $record->user->name : null,
+        ])));
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -37,6 +48,7 @@ class ViewAvaliacaoPessoal extends ViewRecord
                 ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->action(function () {
                     $record = $this->getRecord();
                     $record->loadMissing('acolhido');

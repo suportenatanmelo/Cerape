@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AvaliacaoPessoals\Pages;
 
 use App\Filament\Resources\AvaliacaoPessoals\AvaliacaoPessoalResource;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\Page;
@@ -30,6 +31,7 @@ class AutoAvaliacao extends Page
                 ->label('Baixar PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->action(function () {
                     $pdf = Pdf::loadView('pdf.auto-avaliacao-report', AvaliacaoPessoalResource::getAutoEvaluationReportData())
                         ->setPaper('a4', 'landscape');

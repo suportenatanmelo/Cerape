@@ -108,7 +108,7 @@ class BirthdayNotificationService
         }
 
         $notificationKey = 'acolhido_birthday_day_' . $acolhido->getKey() . '_' . now()->format('Y-m-d');
-        $users = User::query()->get();
+        $users = AcolhidoAccess::notificationRecipientsForAcolhido((int) $acolhido->getKey());
 
         if ($users->isEmpty()) {
             return 0;

@@ -10,7 +10,10 @@ use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoInfolist;
 use App\Filament\Resources\Acolhidos\Tables\AcolhidosTable;
 use App\Models\Acolhido;
+use App\Support\AcolhidoAccess;
+use App\Support\PortalContext;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -21,9 +24,11 @@ class AcolhidoResource extends Resource
 {
     protected static ?string $model = Acolhido::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Acolhidos';
+
+    protected static ?int $navigationSort = 1;
 
     protected static string | BackedEnum | null $navigationIcon = Heroicon::Users;
 
@@ -42,6 +47,16 @@ class AcolhidoResource extends Resource
     public static function table(Table $table): Table
     {
         return AcolhidosTable::configure($table);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user(), 'id');
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user(), 'id');
     }
 
     public static function getRelations(): array
@@ -71,6 +86,28 @@ class AcolhidoResource extends Resource
             'Municipio' => $record->municipio_do_paciente ?: '-',
             'UF' => $record->uf_municipio_do_paciente ?: '-',
         ];
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'primary';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Acolhidos disponiveis para consulta';
     }
 
     public static function getPages(): array

@@ -4,72 +4,84 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\Saude;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SaudePolicy
 {
     use HandlesAuthorization;
     
-    public function viewAny(AuthUser $authUser): bool
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('ViewAny:Saude');
+        return ShieldPermission::allows($authUser, 'viewAny', 'Saude');
     }
 
-    public function view(AuthUser $authUser, Saude $saude): bool
+    public function view(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('View:Saude');
+        return ShieldPermission::allows($authUser, 'view', 'Saude')
+            && $authUser->canAccessAcolhido($saude->acolhido_id);
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('Create:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'create', 'Saude');
     }
 
-    public function update(AuthUser $authUser, Saude $saude): bool
+    public function update(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('Update:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'update', 'Saude');
     }
 
-    public function delete(AuthUser $authUser, Saude $saude): bool
+    public function delete(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('Delete:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'delete', 'Saude');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('DeleteAny:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'deleteAny', 'Saude');
     }
 
-    public function restore(AuthUser $authUser, Saude $saude): bool
+    public function restore(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('Restore:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restore', 'Saude');
     }
 
-    public function forceDelete(AuthUser $authUser, Saude $saude): bool
+    public function forceDelete(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('ForceDelete:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDelete', 'Saude');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'Saude');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('RestoreAny:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restoreAny', 'Saude');
     }
 
-    public function replicate(AuthUser $authUser, Saude $saude): bool
+    public function replicate(User $authUser, Saude $saude): bool
     {
-        return $authUser->can('Replicate:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'replicate', 'Saude');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('Reorder:Saude');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'reorder', 'Saude');
     }
 
 }

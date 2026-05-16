@@ -11,7 +11,9 @@ use App\Filament\Resources\AvaliacaoPessoals\Pages\ViewAvaliacaoPessoal;
 use App\Models\Acolhido;
 use App\Models\AvaliacaoPessoal;
 use App\Models\User;
+use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
+use App\Support\PortalContext;
 use BackedEnum;
 use Carbon\Carbon;
 use Filament\Forms\Components\Select;
@@ -33,6 +35,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use UnitEnum;
 
 class AvaliacaoPessoalResource extends Resource
@@ -52,6 +55,16 @@ class AvaliacaoPessoalResource extends Resource
     protected static ?string $pluralModelLabel = 'avaliações pessoais';
 
     protected static ?string $recordTitleAttribute = 'id';
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 2;
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -92,9 +105,14 @@ class AvaliacaoPessoalResource extends Resource
                         ]),
                     ]),
                 Section::make('Pontuação')
-                    ->description('Cada critério aceita apenas notas maiores que 1 e menores ou iguais a 3. A média final é calculada automaticamente.')
+                    ->description('Cada critério aceita apenas notas maiores ou iguais a 1 e menores ou iguais a 3. A média final é calculada automaticamente.')
                     ->icon('heroicon-o-star')
                     ->schema([
+                        Section::make('Atenção aos valores')
+                            ->description('Revise cada nota antes de salvar. O sistema aceita somente valores de 1 até 3 em todos os critérios e recalcula a média final automaticamente.')
+                            ->icon('heroicon-o-exclamation-triangle')
+                            ->schema([])
+                            ->compact(),
                         Grid::make([
                             'default' => 1,
                             'md' => 3,
@@ -265,6 +283,11 @@ class AvaliacaoPessoalResource extends Resource
             ]);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
     public static function getPages(): array
     {
         return [
@@ -277,26 +300,68 @@ class AvaliacaoPessoalResource extends Resource
         ];
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'info';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Avaliacoes pessoais registradas';
+    }
+
     private static function scoreInput(string $name, string $label): TextInput
     {
         return TextInput::make($name)
             ->label($label)
             ->numeric()
             ->step(0.01)
-            ->minValue(1.01)
+            ->minValue(1)
             ->maxValue(3)
             ->default(null)
             ->required()
-            ->helperText('Informe uma nota maior que 1 e menor ou igual a 3.')
+            ->rule('gte:1')
+            ->rule('lte:3')
+            ->helperText('Informe uma nota maior ou igual a 1 e menor ou igual a 3.')
             ->validationMessages([
                 'required' => 'Preencha a nota de ' . mb_strtolower($label) . '.',
                 'numeric' => 'A nota de ' . mb_strtolower($label) . ' deve ser um numero.',
-                'min' => 'A nota de ' . mb_strtolower($label) . ' deve ser maior que 1.',
+                'min' => 'A nota de ' . mb_strtolower($label) . ' deve ser maior ou igual a 1.',
+                'gte' => 'A nota de ' . mb_strtolower($label) . ' deve ser maior ou igual a 1.',
                 'max' => 'A nota de ' . mb_strtolower($label) . ' nao pode ser maior que 3.',
+                'lte' => 'A nota de ' . mb_strtolower($label) . ' nao pode ser maior que 3.',
             ])
             ->live(onBlur: true)
             ->afterStateUpdated(fn(Get $get, Set $set): mixed => self::refreshTotal($get, $set))
             ->suffix('/ 3');
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public static function validateScoreData(array $data): void
+    {
+        $rules = [];
+        $messages = [];
+
+        foreach (self::scoreFields() as $field) {
+            $label = mb_strtolower(self::scoreLabel($field));
+
+            $rules[$field] = ['required', 'numeric', 'gte:1', 'lte:3'];
+            $messages["{$field}.required"] = 'Preencha a nota de ' . $label . '.';
+            $messages["{$field}.numeric"] = 'A nota de ' . $label . ' deve ser um numero.';
+            $messages["{$field}.gte"] = 'A nota de ' . $label . ' deve ser maior ou igual a 1.';
+            $messages["{$field}.lte"] = 'A nota de ' . $label . ' nao pode ser maior que 3.';
+        }
+
+        Validator::make($data, $rules, $messages)->validate();
     }
 
     private static function refreshTotal(Get $get, Set $set): void
@@ -626,11 +691,17 @@ class AvaliacaoPessoalResource extends Resource
             ->pluck('user_id');
 
         $usersPendingEvaluation = User::query()
+            ->whereNull('acolhido_id')
             ->whereNotIn('id', $evaluatedUserIds)
             ->get();
 
         $usersWhoEvaluated = User::query()
             ->whereIn('id', $evaluatedUserIds)
+            ->where(function (Builder $query) use ($avaliacao): void {
+                $query
+                    ->whereNull('acolhido_id')
+                    ->orWhere('acolhido_id', $avaliacao->acolhido_id);
+            })
             ->get();
 
         if ($usersPendingEvaluation->isNotEmpty()) {
@@ -760,7 +831,16 @@ class AvaliacaoPessoalResource extends Resource
             'autocuidado',
         ];
     }
+
+    private static function scoreLabel(string $field): string
+    {
+        return match ($field) {
+            'controler' => 'Controle',
+            'autonomia' => 'Autonomia',
+            'transparencia' => 'Transparência',
+            'superacao' => 'Superação',
+            'autocuidado' => 'Autocuidado',
+            default => $field,
+        };
+    }
 }
-
-
-

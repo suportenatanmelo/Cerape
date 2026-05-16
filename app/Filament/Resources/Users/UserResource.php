@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Users;
 
 use App\Filament\Resources\Users\Pages\ManageUsers;
+use App\Models\Acolhido;
 use App\Models\User;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
@@ -68,6 +69,12 @@ class UserResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->unique(ignoreRecord: true),
+                            Select::make('acolhido_id')
+                                ->label('Acolhido vinculado')
+                                ->relationship('acolhido', 'nome_completo_paciente')
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Preencha para criar um acesso familiar restrito a este acolhido.'),
                             TextInput::make('cpf')
                                 ->label('CPF')
                                 ->mask('999.999.999-99')
@@ -128,6 +135,11 @@ class UserResource extends Resource
                     ->label('Email')
                     ->badge()
                     ->color('info'),
+                TextEntry::make('acolhido.nome_completo_paciente')
+                    ->label('Acolhido vinculado')
+                    ->badge()
+                    ->color('warning')
+                    ->placeholder('-'),
                 TextEntry::make('cpf')
                     ->label('CPF')
                     ->badge()
@@ -192,6 +204,10 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->label('Email')
                     ->searchable(),
+                TextColumn::make('acolhido.nome_completo_paciente')
+                    ->label('Acolhido vinculado')
+                    ->searchable()
+                    ->placeholder('-'),
                 TextColumn::make('cpf')
                     ->label('CPF')
                     ->searchable()

@@ -4,72 +4,84 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\AtividadeDesenvolvida;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AtividadeDesenvolvidaPolicy
 {
     use HandlesAuthorization;
     
-    public function viewAny(AuthUser $authUser): bool
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('ViewAny:AtividadeDesenvolvida');
+        return ShieldPermission::allows($authUser, 'viewAny', 'AtividadeDesenvolvida');
     }
 
-    public function view(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function view(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('View:AtividadeDesenvolvida');
+        return ShieldPermission::allows($authUser, 'view', 'AtividadeDesenvolvida')
+            && $authUser->canAccessAcolhido($atividadeDesenvolvida->acolhido_id);
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('Create:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'create', 'AtividadeDesenvolvida');
     }
 
-    public function update(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function update(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('Update:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'update', 'AtividadeDesenvolvida');
     }
 
-    public function delete(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function delete(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('Delete:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'delete', 'AtividadeDesenvolvida');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('DeleteAny:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'deleteAny', 'AtividadeDesenvolvida');
     }
 
-    public function restore(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function restore(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('Restore:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restore', 'AtividadeDesenvolvida');
     }
 
-    public function forceDelete(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function forceDelete(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('ForceDelete:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDelete', 'AtividadeDesenvolvida');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'AtividadeDesenvolvida');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('RestoreAny:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restoreAny', 'AtividadeDesenvolvida');
     }
 
-    public function replicate(AuthUser $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
+    public function replicate(User $authUser, AtividadeDesenvolvida $atividadeDesenvolvida): bool
     {
-        return $authUser->can('Replicate:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'replicate', 'AtividadeDesenvolvida');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('Reorder:AtividadeDesenvolvida');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'reorder', 'AtividadeDesenvolvida');
     }
 
 }

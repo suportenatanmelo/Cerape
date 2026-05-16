@@ -12,13 +12,16 @@ use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoInfolis
 use App\Filament\Resources\ProntuariosEvolucao\Tables\ProntuariosEvolucaoTable;
 use App\Models\ProntuarioEvolucao;
 use App\Models\User;
+use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
+use App\Support\PortalContext;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use UnitEnum;
@@ -27,9 +30,11 @@ class ProntuarioEvolucaoResource extends Resource
 {
     protected static ?string $model = ProntuarioEvolucao::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Prontuario de evolucao';
+
+    protected static ?int $navigationSort = 3;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
@@ -64,9 +69,24 @@ class ProntuarioEvolucaoResource extends Resource
         return ProntuariosEvolucaoTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
     public static function notifyUsers(ProntuarioEvolucao $record, string $event): void
     {
-        $users = User::query()->get();
+        $users = AcolhidoAccess::notificationRecipientsForAcolhido((int) $record->acolhido_id);
 
         if ($users->isEmpty()) {
             return;
@@ -126,6 +146,23 @@ class ProntuarioEvolucaoResource extends Resource
             'view' => ViewProntuarioEvolucao::route('/{record}'),
             'edit' => EditProntuarioEvolucao::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'warning';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Prontuarios disponiveis no portal';
     }
 
     private static function notificationTitle(string $event): string

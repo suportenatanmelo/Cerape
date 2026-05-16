@@ -18,6 +18,9 @@ class DemandasAcolhidosTable
     {
         return $table
             ->defaultSort('saida_prevista_em')
+            ->emptyStateHeading('Nenhuma demanda agendada')
+            ->emptyStateDescription('As demandas vinculadas ao acolhido aparecerao aqui com status e horario.')
+            ->emptyStateIcon('heroicon-o-calendar-days')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
@@ -27,7 +30,8 @@ class DemandasAcolhidosTable
                     ->label('Demanda')
                     ->searchable()
                     ->wrap()
-                    ->limit(60),
+                    ->limit(60)
+                    ->description(fn ($record): string => $record->observacoes ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes), 70) : 'Sem observacoes adicionais'),
                 TextColumn::make('saida_prevista_em')
                     ->label('Saida')
                     ->dateTime('d/m/Y H:i')
@@ -59,7 +63,8 @@ class DemandasAcolhidosTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 
     private static function statusLabel(mixed $saida, mixed $retorno): string

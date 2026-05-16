@@ -6,6 +6,7 @@ namespace App\Filament\Resources\Acolhidos\Schemas;
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Models\Acolhido;
 use App\Models\User;
+use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
 use Filament\Actions\Action;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -37,7 +38,7 @@ class AcolhidoForm
 {
     public static function notifyUsers(Acolhido $acolhido, string $event): void
     {
-        $users = User::query()->get();
+        $users = AcolhidoAccess::notificationRecipientsForAcolhido((int) $acolhido->getKey());
 
         if ($users->isEmpty()) {
             return;

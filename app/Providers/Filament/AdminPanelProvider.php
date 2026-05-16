@@ -3,6 +3,9 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Profile;
+use App\Http\Middleware\EnsureFamilyProfileIsComplete;
+use App\Filament\Resources\Roles\RoleResource;
+use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
 use App\Filament\Widgets\AcolhidosCriadosLineChart;
@@ -15,6 +18,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -35,14 +39,27 @@ class AdminPanelProvider extends PanelProvider
             ->profile(Profile::class, isSimple: false)
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
+            ->brandName(fn (): string => PortalContext::brandName())
             ->brandLogo(asset('storage/images/logo.png'))
-            ->brandLogoHeight('60px')
+            ->brandLogoHeight(fn (): string => PortalContext::isFamilyUser() ? '52px' : '60px')
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
-            ->colors([
-                'primary' => Color::Teal,
+            ->colors(fn (): array => [
+                'primary' => PortalContext::isFamilyUser() ? Color::Rose : Color::Teal,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): \Illuminate\Contracts\View\View => view('filament.portal.head-theme')
+            )
+            ->renderHook(
+                PanelsRenderHook::SIDEBAR_NAV_START,
+                fn (): \Illuminate\Contracts\View\View => view('filament.portal.sidebar-identity')
+            )
+            ->renderHook(
+                PanelsRenderHook::CONTENT_BEFORE,
+                fn (): \Illuminate\Contracts\View\View => view('filament.portal.page-banner')
+            )
             ->plugins([
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Administracao e Acesso')
@@ -51,7 +68,6 @@ class AdminPanelProvider extends PanelProvider
                     ->activeNavigationIcon('heroicon-s-shield-check')
                     ->modelLabel('Perfil de acesso')
                     ->pluralModelLabel('Perfis de acesso')
-                    ->simpleResourcePermissionView()
                     ->localizePermissionLabels()
                     ->gridColumns([
                         'default' => 1,
@@ -68,6 +84,9 @@ class AdminPanelProvider extends PanelProvider
                         'default' => 1,
                         'md' => 2,
                     ]),
+            ])
+            ->resources([
+                RoleResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -94,6 +113,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                EnsureFamilyProfileIsComplete::class,
             ]);
     }
 }

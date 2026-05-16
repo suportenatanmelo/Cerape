@@ -14,62 +14,62 @@ class ArquivosDiarioPolicy
     
     public function viewAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ViewAny:ArquivosDiario');
+        return $authUser->can('view_any:arquivos_diario');
     }
 
     public function view(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('View:ArquivosDiario');
+        return $authUser->can('view:arquivos_diario');
     }
 
     public function create(AuthUser $authUser): bool
     {
-        return $authUser->can('Create:ArquivosDiario');
+        return $authUser->can('create:arquivos_diario');
     }
 
     public function update(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('Update:ArquivosDiario');
+        return $authUser->can('update:arquivos_diario');
     }
 
     public function delete(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('Delete:ArquivosDiario');
+        return $authUser->can('delete:arquivos_diario');
     }
 
     public function deleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('DeleteAny:ArquivosDiario');
+        return $authUser->can('delete_any:arquivos_diario');
     }
 
     public function restore(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('Restore:ArquivosDiario');
+        return $authUser->can('restore:arquivos_diario');
     }
 
     public function forceDelete(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('ForceDelete:ArquivosDiario');
+        return $authUser->can('force_delete:arquivos_diario');
     }
 
     public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:ArquivosDiario');
+        return $authUser->can('force_delete_any:arquivos_diario');
     }
 
     public function restoreAny(AuthUser $authUser): bool
     {
-        return $authUser->can('RestoreAny:ArquivosDiario');
+        return $authUser->can('restore_any:arquivos_diario');
     }
 
     public function replicate(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('Replicate:ArquivosDiario');
+        return $authUser->can('replicate:arquivos_diario');
     }
 
     public function reorder(AuthUser $authUser): bool
     {
-        return $authUser->can('Reorder:ArquivosDiario');
+        return $authUser->can('reorder:arquivos_diario');
     }
 
 }

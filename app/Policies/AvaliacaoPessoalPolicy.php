@@ -4,72 +4,84 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\AvaliacaoPessoal;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AvaliacaoPessoalPolicy
 {
     use HandlesAuthorization;
     
-    public function viewAny(AuthUser $authUser): bool
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('ViewAny:AvaliacaoPessoal');
+        return ShieldPermission::allows($authUser, 'viewAny', 'AvaliacaoPessoal');
     }
 
-    public function view(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function view(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('View:AvaliacaoPessoal');
+        return ShieldPermission::allows($authUser, 'view', 'AvaliacaoPessoal')
+            && $authUser->canAccessAcolhido($avaliacaoPessoal->acolhido_id);
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('Create:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'create', 'AvaliacaoPessoal');
     }
 
-    public function update(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function update(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('Update:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'update', 'AvaliacaoPessoal');
     }
 
-    public function delete(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function delete(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('Delete:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'delete', 'AvaliacaoPessoal');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('DeleteAny:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'deleteAny', 'AvaliacaoPessoal');
     }
 
-    public function restore(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function restore(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('Restore:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restore', 'AvaliacaoPessoal');
     }
 
-    public function forceDelete(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function forceDelete(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('ForceDelete:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDelete', 'AvaliacaoPessoal');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('ForceDeleteAny:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'AvaliacaoPessoal');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('RestoreAny:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'restoreAny', 'AvaliacaoPessoal');
     }
 
-    public function replicate(AuthUser $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
+    public function replicate(User $authUser, AvaliacaoPessoal $avaliacaoPessoal): bool
     {
-        return $authUser->can('Replicate:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'replicate', 'AvaliacaoPessoal');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('Reorder:AvaliacaoPessoal');
+        return ! $authUser->isRestrictedToAcolhido()
+            && ShieldPermission::allows($authUser, 'reorder', 'AvaliacaoPessoal');
     }
 
 }

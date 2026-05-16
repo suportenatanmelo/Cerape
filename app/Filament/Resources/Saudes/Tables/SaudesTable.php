@@ -16,6 +16,10 @@ class SaudesTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->defaultSort('updated_at', 'desc')
+            ->emptyStateHeading('Nenhuma ficha de saude cadastrada')
+            ->emptyStateDescription('Quando houver registros clinicos vinculados ao acolhido, eles aparecerao aqui.')
+            ->emptyStateIcon('heroicon-o-heart')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
@@ -35,7 +39,8 @@ class SaudesTable
                         return (string) $state;
                     })
                     ->wrap()
-                    ->limit(80),
+                    ->limit(80)
+                    ->description(fn ($record): string => $record->observacoes_clinicas ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_clinicas), 70) : 'Sem observacoes clinicas'),
                 IconColumn::make('faz_tratamento_medico')
                     ->label('Em tratamento')
                     ->boolean(),
@@ -56,6 +61,7 @@ class SaudesTable
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->striped();
     }
 }

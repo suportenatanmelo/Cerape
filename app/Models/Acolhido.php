@@ -88,6 +88,11 @@ class Acolhido extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function familyUsers(): HasMany
+    {
+        return $this->hasMany(User::class, 'acolhido_id');
+    }
+
     public function avaliacoesPessoais(): HasMany
     {
         return $this->hasMany(AvaliacaoPessoal::class);

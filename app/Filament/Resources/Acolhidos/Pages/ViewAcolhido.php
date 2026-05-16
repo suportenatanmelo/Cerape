@@ -4,16 +4,34 @@ namespace App\Filament\Resources\Acolhidos\Pages;
 
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Models\Acolhido;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ViewAcolhido extends ViewRecord
 {
     protected static string $resource = AcolhidoResource::class;
+
+    public function getTitle(): string | Htmlable
+    {
+        return 'Perfil do acolhido';
+    }
+
+    public function getSubheading(): string | Htmlable | null
+    {
+        $record = $this->getRecord();
+
+        return trim(implode(' • ', array_filter([
+            $record->nome_completo_paciente,
+            $record->municipio_do_paciente,
+            $record->uf_municipio_do_paciente,
+        ])));
+    }
 
     protected function getHeaderActions(): array
     {
@@ -22,6 +40,7 @@ class ViewAcolhido extends ViewRecord
                 ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->action(function () {
                     $record = $this->getRecord();
                     $record->loadMissing(['user', 'avaliacoesPessoais.user']);

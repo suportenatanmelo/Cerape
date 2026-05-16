@@ -9,7 +9,9 @@ use App\Filament\Resources\AtividadesDesenvolvidas\Schemas\AtividadeDesenvolvida
 use App\Filament\Resources\AtividadesDesenvolvidas\Tables\AtividadesDesenvolvidasTable;
 use App\Models\AtividadeDesenvolvida;
 use App\Models\User;
+use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
+use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -17,6 +19,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use UnitEnum;
@@ -25,9 +28,11 @@ class AtividadeDesenvolvidaResource extends Resource
 {
     protected static ?string $model = AtividadeDesenvolvida::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Atividades CRC';
+
+    protected static ?int $navigationSort = 6;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
@@ -62,9 +67,24 @@ class AtividadeDesenvolvidaResource extends Resource
         return AtividadesDesenvolvidasTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
     public static function notifyUsers(AtividadeDesenvolvida $record, string $event): void
     {
-        $users = User::query()->get();
+        $users = AcolhidoAccess::notificationRecipientsForAcolhido((int) $record->acolhido_id);
 
         if ($users->isEmpty()) {
             return;
@@ -103,6 +123,23 @@ class AtividadeDesenvolvidaResource extends Resource
             'index' => ManageAtividadesDesenvolvidas::route('/'),
             'view' => ViewAtividadeDesenvolvida::route('/{record}'),
         ];
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'gray';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Planos e atividades CRC';
     }
 
     private static function notificationTitle(string $event): string
