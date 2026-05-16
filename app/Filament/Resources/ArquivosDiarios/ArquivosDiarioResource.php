@@ -23,8 +23,9 @@ class ArquivosDiarioResource extends Resource
 {
     protected static ?string $model = ArquivosDiario::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Uploads';
+    // protected static string | UnitEnum | null $navigationGroup = 'Uploads';
 
+    protected static string | UnitEnum | null $navigationGroup = 'Documentos e Reuniões';
     protected static ?string $navigationLabel = 'Arquivos';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
@@ -91,7 +92,7 @@ class ArquivosDiarioResource extends Resource
                     'Data do arquivo' => $record->updated_at,
                 ],
             ],
-            'formatValue' => fn (mixed $value): string => self::formatValue($value),
+            'formatValue' => fn(mixed $value): string => self::formatValue($value),
         ];
     }
 
@@ -103,7 +104,7 @@ class ArquivosDiarioResource extends Resource
         $fileName = 'relatorio-arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
+            fn() => print($pdf->output()),
             $fileName,
             ['Content-Type' => 'application/pdf'],
         );

@@ -30,7 +30,7 @@ class ReuniaoResource extends Resource
 {
     protected static ?string $model = Reuniao::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Documentos Institucionais';
+    protected static string | UnitEnum | null $navigationGroup = 'Documentos e Reuniões';
 
     protected static ?string $navigationLabel = 'Reuniões';
 
@@ -46,36 +46,45 @@ class ReuniaoResource extends Resource
     {
         return $schema
             ->components([
-                Section::make('Ata da reunião')
-                    ->description('A ata é um documento oficial que registra de forma clara, objetiva e resumida todas as discussões, deliberações e decisões tomadas durante uma reunião, assembleia ou evento. Ela funciona como um registro legal e administrativo, garantindo transparência e segurança jurídica sobre o que foi acordado entre as partes presentes.')
-                    ->icon('heroicon-o-document-text')
+                Grid::make(1)
                     ->schema([
-                        Grid::make([
-                            'default' => 1,
-                            'md' => 2,
-                        ])->schema([
-                            TextInput::make('titulo')
-                                ->label('Título')
-                                ->required()
-                                ->maxLength(255),
-                            TextInput::make('usuario_responsavel')
-                                ->label('Responsável pelo registro')
-                                ->default(fn (): string => auth()->user()?->name ?? 'Sistema')
-                                ->disabled()
-                                ->dehydrated(false),
-                            Textarea::make('descricao')
-                                ->label('Descrição')
-                                ->rows(3)
-                                ->columnSpanFull(),
-                            DateTimePicker::make('data_reuniao')
-                                ->label('Data e hora da reunião')
-                                ->seconds(false)
-                                ->native(false)
-                                ->displayFormat('d/m/Y H:i')
-                                ->default(now())
-                                ->required(),
-                        ]),
-                    ]),
+                        Section::make('Ata da reunião')
+                            ->description('A ata é um documento oficial que registra de forma clara, objetiva e resumida todas as discussões, deliberações e decisões tomadas durante uma reunião, assembleia ou evento. Ela funciona como um registro legal e administrativo, garantindo transparência e segurança jurídica sobre o que foi acordado entre as partes presentes.')
+                            ->icon('heroicon-o-document-text')
+                            ->schema([
+                                Grid::make([
+                                    'default' => 1,
+                                    'md' => 2,
+                                ])->schema([
+                                    TextInput::make('titulo')
+                                        ->label('Título')
+                                        ->required()
+                                        ->maxLength(255),
+
+                                    TextInput::make('usuario_responsavel')
+                                        ->label('Responsável pelo registro')
+                                        ->default(fn(): string => auth()->user()?->name ?? 'Sistema')
+                                        ->disabled()
+                                        ->dehydrated(false),
+
+                                    Textarea::make('descricao')
+                                        ->label('Descrição')
+                                        ->rows(3)
+                                        ->columnSpanFull(),
+
+                                    DateTimePicker::make('data_reuniao')
+                                        ->label('Data e hora da reunião')
+                                        ->seconds(false)
+                                        ->native(false)
+                                        ->displayFormat('d/m/Y H:i')
+                                        ->default(now())
+                                        ->required(),
+                                ]),
+                            ])
+                            ->columnSpan(1)
+                            ->columnStart(1),
+                    ])->columnSpanFull(),
+
                 Section::make('Conteúdo da ata')
                     ->description('Registre os participantes, a pauta discutida, as deliberações e as decisões finais de forma organizada e profissional.')
                     ->icon('heroicon-o-pencil-square')
@@ -94,7 +103,7 @@ class ReuniaoResource extends Resource
                             ->extraInputAttributes([
                                 'style' => 'min-height: 26rem;',
                             ]),
-                    ]),
+                    ])->columnSpanFull(),
             ]);
     }
 
@@ -237,7 +246,7 @@ class ReuniaoResource extends Resource
         $fileName = 'ata-reuniao-' . Str::slug($record->titulo ?: 'registro') . '.pdf';
 
         return response()->streamDownload(
-            fn () => print($pdf->output()),
+            fn() => print($pdf->output()),
             $fileName,
             ['Content-Type' => 'application/pdf'],
         );
