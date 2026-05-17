@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "daae10e46362f2290bff567760bee27b",
+    "content-hash": "3e888f0844e512044e893a729062f282",
     "packages": [
         {
             "name": "al-saloul/filament-image-gallery",
