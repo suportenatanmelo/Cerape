@@ -23,6 +23,15 @@ class CreateAcolhido extends CreateRecord
         return 'Acolhido cadastrado com sucesso';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeCreate(array $data): array
+    {
+        return AcolhidoForm::prepareForPersistence($data);
+    }
+
     protected function afterCreate(): void
     {
         AcolhidoForm::notifyUsers($this->getRecord(), 'created');

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Acolhido;
 use App\Models\AvaliacaoPessoal;
+use App\Support\PortalContext;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\LineChartWidget;
@@ -13,19 +14,26 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
 
+    protected static ?int $sort = 5;
+
     protected string $view = 'filament.widgets.avaliacao-pessoal-line-chart';
 
     protected ?string $heading = 'Relatorio de evolucao do acolhido';
 
     protected ?string $description = 'Selecione um acolhido para comparar a media das avaliacoes com a media consolidada dos avaliadores em cada periodo.';
 
-    protected ?string $maxHeight = '280px';
+    protected ?string $maxHeight = '340px';
 
     protected int | string | array $columnSpan = 'full';
 
     public ?string $filter = 'semanal';
 
     public ?string $acolhidoId = null;
+
+    public static function canView(): bool
+    {
+        return ! PortalContext::isFamilyUser();
+    }
 
     public function mount(): void
     {

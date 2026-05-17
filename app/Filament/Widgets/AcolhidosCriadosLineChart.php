@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Acolhido;
+use App\Support\PortalContext;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\LineChartWidget;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 class AcolhidosCriadosLineChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
+
+    protected static ?int $sort = 3;
 
     protected ?string $heading = 'Cadastros de acolhidos';
 
@@ -24,6 +27,11 @@ class AcolhidosCriadosLineChart extends LineChartWidget
     ];
 
     public ?string $filter = 'semanal';
+
+    public static function canView(): bool
+    {
+        return ! PortalContext::isFamilyUser();
+    }
 
     protected function getFilters(): ?array
     {

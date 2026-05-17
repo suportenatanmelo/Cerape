@@ -30,6 +30,8 @@ class ShieldPermission
 
         return array_values(array_unique([
             "{$snakeAbility}:{$snakeSubject}",
+            "{$snakeAbility}:{$studlySubject}",
+            "{$studlyAbility}:{$snakeSubject}",
             "{$studlyAbility}:{$studlySubject}",
         ]));
     }

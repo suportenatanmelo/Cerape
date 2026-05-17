@@ -8,12 +8,18 @@ use App\Filament\Resources\Reunioes\Pages\ListReunioes;
 use App\Filament\Resources\Reunioes\Pages\ViewReuniao;
 use App\Models\Reuniao;
 use App\Support\PortalContext;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Support\ShieldPermission;
 use BackedEnum;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Grid;
@@ -30,11 +36,11 @@ class ReuniaoResource extends Resource
 {
     protected static ?string $model = Reuniao::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Documentos e Reuniões';
+    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reuniões';
 
     protected static ?string $navigationLabel = 'Reuniões';
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedDocumentText;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
     protected static ?string $modelLabel = 'ata de reunião';
 
@@ -63,7 +69,7 @@ class ReuniaoResource extends Resource
 
                                     TextInput::make('usuario_responsavel')
                                         ->label('Responsável pelo registro')
-                                        ->default(fn(): string => auth()->user()?->name ?? 'Sistema')
+                                        ->default(fn (): string => auth()->user()?->name ?? 'Sistema')
                                         ->disabled()
                                         ->dehydrated(false),
 
@@ -171,13 +177,13 @@ class ReuniaoResource extends Resource
             ])
             ->defaultSort('data_reuniao', 'desc')
             ->recordActions([
-                \Filament\Actions\ViewAction::make(),
-                \Filament\Actions\EditAction::make(),
-                \Filament\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -194,32 +200,56 @@ class ReuniaoResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'viewAny', 'Reuniao');
     }
 
     public static function canCreate(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'create', 'Reuniao');
     }
 
     public static function canView(Model $record): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'view', 'Reuniao');
     }
 
     public static function canEdit(Model $record): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'update', 'Reuniao');
     }
 
     public static function canDelete(Model $record): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'delete', 'Reuniao');
     }
 
     public static function canDeleteAny(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        $user = auth()->user();
+
+        return $user !== null
+            && ! PortalContext::isFamilyUser($user)
+            && ShieldPermission::allows($user, 'deleteAny', 'Reuniao');
     }
 
     /**
@@ -243,10 +273,10 @@ class ReuniaoResource extends Resource
         $pdf = Pdf::loadView('pdf.reuniao-ata-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'ata-reuniao-' . Str::slug($record->titulo ?: 'registro') . '.pdf';
+        $fileName = 'ata-reuniao-'.Str::slug($record->titulo ?: 'registro').'.pdf';
 
         return response()->streamDownload(
-            fn() => print($pdf->output()),
+            fn () => print ($pdf->output()),
             $fileName,
             ['Content-Type' => 'application/pdf'],
         );
@@ -262,6 +292,6 @@ class ReuniaoResource extends Resource
 
         $mimeType = mime_content_type($absolutePath) ?: 'image/png';
 
-        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+        return 'data:'.$mimeType.';base64,'.base64_encode((string) file_get_contents($absolutePath));
     }
 }

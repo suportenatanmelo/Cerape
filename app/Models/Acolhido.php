@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Acolhido extends Model
 {
@@ -93,6 +94,16 @@ class Acolhido extends Model
         return $this->hasMany(User::class, 'acolhido_id');
     }
 
+    public function acolhidoGaleria(): HasOne
+    {
+        return $this->hasOne(AcolhidoGaleria::class);
+    }
+
+    public function acolhidoVideos(): HasMany
+    {
+        return $this->hasMany(AcolhidoVideo::class);
+    }
+
     public function avaliacoesPessoais(): HasMany
     {
         return $this->hasMany(AvaliacaoPessoal::class);
@@ -121,5 +132,10 @@ class Acolhido extends Model
     public function prontuariosEvolucao(): HasMany
     {
         return $this->hasMany(ProntuarioEvolucao::class);
+    }
+
+    public function feedbackMessages(): HasMany
+    {
+        return $this->hasMany(FeedbackFamiliarMessage::class);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Acolhido;
 use App\Models\AvaliacaoPessoal;
+use App\Support\PortalContext;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Forms\Components\Select;
@@ -18,6 +19,8 @@ class AcolhidoEvolucaoLineChart extends LineChartWidget
 
     protected static bool $isDiscovered = false;
 
+    protected static ?int $sort = 6;
+
     protected ?string $heading = 'Evolucao individual do acolhido';
 
     protected ?string $description = 'Acompanhe a evolucao da media das avaliacoes de um acolhido especifico ao longo do tempo.';
@@ -29,6 +32,11 @@ class AcolhidoEvolucaoLineChart extends LineChartWidget
     protected bool $hasDeferredFilters = true;
 
     public ?string $filter = 'semanal';
+
+    public static function canView(): bool
+    {
+        return ! PortalContext::isFamilyUser();
+    }
 
     protected function getFilters(): ?array
     {

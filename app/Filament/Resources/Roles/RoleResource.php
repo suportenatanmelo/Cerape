@@ -8,6 +8,7 @@ use App\Filament\Resources\Roles\Pages\CreateRole;
 use App\Filament\Resources\Roles\Pages\EditRole;
 use App\Filament\Resources\Roles\Pages\ListRoles;
 use App\Filament\Resources\Roles\Pages\ViewRole;
+use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use BezhanSalleh\FilamentShield\Support\Utils;
@@ -190,5 +191,10 @@ class RoleResource extends Resource
     public static function getEssentialsPlugin(): ?FilamentShieldPlugin
     {
         return FilamentShieldPlugin::get();
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return ! PortalContext::isFamilyUser();
     }
 }

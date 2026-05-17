@@ -34,6 +34,7 @@ class AcolhidoResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'nome_completo_paciente';
 
+
     public static function form(Schema $schema): Schema
     {
         return AcolhidoForm::configure($schema);

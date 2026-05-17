@@ -30,6 +30,7 @@ use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -87,9 +88,16 @@ class AcolhidoForm
                                     ])->schema([
                                         Select::make('user_id')
                                             ->label('Quem esta cadastrando?')
-                                            ->relationship('user', 'name')
+                                            ->relationship(
+                                                'user',
+                                                'name',
+                                                modifyQueryUsing: fn(Builder $query): Builder => $query
+                                                    ->whereNull('acolhido_id')
+                                                    ->orderBy('name'),
+                                            )
                                             ->searchable()
                                             ->preload()
+                                            ->default(fn(): ?int => auth()->id())
                                             ->required(),
                                         TextInput::make('nome_completo_paciente')
                                             ->label('Nome completo do paciente')
@@ -198,6 +206,7 @@ class AcolhidoForm
                                             ->label('Moradia propria')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
@@ -213,6 +222,7 @@ class AcolhidoForm
                                             ->label('Mora em casa alugada?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->hidden(fn(Get $get): bool => self::isYes($get('moradia_propria')))
                                             ->dehydratedWhenHidden()
@@ -248,6 +258,7 @@ class AcolhidoForm
                                             ->label('Tem documentacao?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -304,6 +315,7 @@ class AcolhidoForm
                                             ->label('Trabalha?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -320,6 +332,7 @@ class AcolhidoForm
                                             ->label('Tem telefone?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -337,6 +350,7 @@ class AcolhidoForm
                                             ->label('Tem meio de encaminhamento?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -388,6 +402,7 @@ class AcolhidoForm
                                             ->label('Toma medicamento?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
@@ -425,6 +440,7 @@ class AcolhidoForm
                                             ->label('Tem receituario?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -485,6 +501,7 @@ class AcolhidoForm
                                             ->label('Tem filhos?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
+                                            ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -547,6 +564,115 @@ class AcolhidoForm
     private static function shouldHideNomeDoConjuge(Get $get): bool
     {
         return in_array((string) $get('estado_civil'), ['solteiro', 'viuvo'], true);
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    public static function prepareForPersistence(array $data): array
+    {
+        $data['user_id'] ??= auth()->id();
+
+        foreach ([
+            'ativo',
+            'tem_documentacao',
+            'moradia_propria',
+            'mora_em_casa_aluguada',
+            'trabalha',
+            'tem_telefone',
+            'tem_meio_de_encaminhamento',
+            'toma_medicamento',
+            'tem_receituario',
+            'exames_laboratoriais',
+            'tem_filhos',
+        ] as $field) {
+            $data[$field] = self::isYes($data[$field] ?? false);
+        }
+
+        foreach ([
+            'pensao_alimenticia',
+            'possui_contato_dos_filhos',
+        ] as $field) {
+            $data[$field] = array_key_exists($field, $data) && $data[$field] !== null
+                ? self::isYes($data[$field])
+                : null;
+        }
+
+        if (filled($data['avatar'] ?? null)) {
+            $data['avatar'] = self::resolveAvatarPath((string) $data['avatar']);
+        }
+
+        if (in_array((string) ($data['estado_civil'] ?? null), ['solteiro', 'viuvo'], true)) {
+            $data['nome_do_conjuge'] = null;
+        }
+
+        if ($data['moradia_propria']) {
+            $data['mora_em_casa_aluguada'] = false;
+        }
+
+        if (! $data['mora_em_casa_aluguada']) {
+            $data['quanto_tempo_de_aluguel'] = null;
+            $data['em_qual_regiao'] = null;
+        }
+
+        if (! $data['tem_documentacao']) {
+            $data['razao_caso_nao_tenha_documentacao'] = $data['razao_caso_nao_tenha_documentacao'] ?? null;
+            $data['documentos_civis'] = null;
+            $data['documentos_outros'] = null;
+        } else {
+            $data['razao_caso_nao_tenha_documentacao'] = null;
+            $data['documentos_civis'] = self::normalizeList($data['documentos_civis'] ?? []);
+            $data['documentos_outros'] = self::normalizeList($data['documentos_outros'] ?? []);
+        }
+
+        if (! $data['trabalha']) {
+            $data['nome_da_empresa_que_trabalha'] = null;
+        }
+
+        if (! $data['tem_telefone']) {
+            $data['numero_do_telefone'] = null;
+        }
+
+        if (! $data['tem_meio_de_encaminhamento']) {
+            $data['meio_de_encaminhamento'] = null;
+            $data['outro_meio_de_encaminhamento_qual'] = null;
+        } else {
+            $data['meio_de_encaminhamento'] = self::normalizeList($data['meio_de_encaminhamento'] ?? []);
+
+            if (! in_array('Outro meio de acolhimento', $data['meio_de_encaminhamento'], true)) {
+                $data['outro_meio_de_encaminhamento_qual'] = null;
+            }
+        }
+
+        if (! $data['toma_medicamento']) {
+            $data['qual_sao_as_medicacao'] = null;
+            $data['tem_receituario'] = false;
+            $data['receituario'] = null;
+        } else {
+            $data['qual_sao_as_medicacao'] = self::normalizeList($data['qual_sao_as_medicacao'] ?? []);
+
+            if (! $data['tem_receituario']) {
+                $data['receituario'] = null;
+            } else {
+                $data['receituario'] = self::normalizeList($data['receituario'] ?? []);
+            }
+        }
+
+        if (! $data['exames_laboratoriais']) {
+            $data['outros'] = null;
+        }
+
+        if (! $data['tem_filhos']) {
+            $data['quantidade_filhos'] = null;
+            $data['qual_o_nome_dos_filhos'] = null;
+            $data['numero_telefone_filhos'] = null;
+            $data['quem_responsavel_criancas'] = null;
+            $data['pensao_alimenticia'] = null;
+            $data['possui_contato_dos_filhos'] = null;
+        }
+
+        return $data;
     }
 
     private static function notificationTitle(string $event): string
@@ -673,5 +799,18 @@ class AcolhidoForm
             now()->format('Y_m_d_His'),
             $file->getClientOriginalExtension(),
         );
+    }
+
+    /**
+     * @param  mixed  $value
+     * @return array<int, mixed>
+     */
+    private static function normalizeList(mixed $value): array
+    {
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_filter($value, static fn(mixed $item): bool => filled($item)));
     }
 }

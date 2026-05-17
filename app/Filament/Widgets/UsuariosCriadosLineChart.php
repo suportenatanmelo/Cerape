@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Support\PortalContext;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 class UsuariosCriadosLineChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
+
+    protected static ?int $sort = 1;
 
     protected ?string $heading = 'Cadastros de usuarios';
 
@@ -24,6 +27,11 @@ class UsuariosCriadosLineChart extends LineChartWidget
     ];
 
     public ?string $filter = 'semanal';
+
+    public static function canView(): bool
+    {
+        return ! PortalContext::isFamilyUser();
+    }
 
     protected function getFilters(): ?array
     {

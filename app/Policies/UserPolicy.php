@@ -2,71 +2,71 @@
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
     use HandlesAuthorization;
-    
-    public function viewAny(AuthUser $authUser): bool
+
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('view_any:user');
+        return ShieldPermission::allows($authUser, 'viewAny', 'User');
     }
 
-    public function view(AuthUser $authUser): bool
+    public function view(User $authUser): bool
     {
-        return $authUser->can('view:user');
+        return ShieldPermission::allows($authUser, 'view', 'User');
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('create:user');
+        return ShieldPermission::allows($authUser, 'create', 'User');
     }
 
-    public function update(AuthUser $authUser): bool
+    public function update(User $authUser): bool
     {
-        return $authUser->can('update:user');
+        return ShieldPermission::allows($authUser, 'update', 'User');
     }
 
-    public function delete(AuthUser $authUser): bool
+    public function delete(User $authUser): bool
     {
-        return $authUser->can('delete:user');
+        return ShieldPermission::allows($authUser, 'delete', 'User');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('delete_any:user');
+        return ShieldPermission::allows($authUser, 'deleteAny', 'User');
     }
 
-    public function restore(AuthUser $authUser): bool
+    public function restore(User $authUser): bool
     {
-        return $authUser->can('restore:user');
+        return ShieldPermission::allows($authUser, 'restore', 'User');
     }
 
-    public function forceDelete(AuthUser $authUser): bool
+    public function forceDelete(User $authUser): bool
     {
-        return $authUser->can('force_delete:user');
+        return ShieldPermission::allows($authUser, 'forceDelete', 'User');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('force_delete_any:user');
+        return ShieldPermission::allows($authUser, 'forceDeleteAny', 'User');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('restore_any:user');
+        return ShieldPermission::allows($authUser, 'restoreAny', 'User');
     }
 
-    public function replicate(AuthUser $authUser): bool
+    public function replicate(User $authUser): bool
     {
-        return $authUser->can('replicate:user');
+        return ShieldPermission::allows($authUser, 'replicate', 'User');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('reorder:user');
+        return ShieldPermission::allows($authUser, 'reorder', 'User');
     }
-
 }

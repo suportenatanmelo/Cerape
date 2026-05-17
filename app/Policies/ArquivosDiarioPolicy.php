@@ -4,72 +4,72 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\ArquivosDiario;
+use App\Models\User;
+use App\Support\ShieldPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ArquivosDiarioPolicy
 {
     use HandlesAuthorization;
-    
-    public function viewAny(AuthUser $authUser): bool
+
+    public function viewAny(User $authUser): bool
     {
-        return $authUser->can('view_any:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'viewAny', 'ArquivosDiario');
     }
 
-    public function view(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function view(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('view:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'view', 'ArquivosDiario');
     }
 
-    public function create(AuthUser $authUser): bool
+    public function create(User $authUser): bool
     {
-        return $authUser->can('create:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'create', 'ArquivosDiario');
     }
 
-    public function update(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function update(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('update:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'update', 'ArquivosDiario');
     }
 
-    public function delete(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function delete(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('delete:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'delete', 'ArquivosDiario');
     }
 
-    public function deleteAny(AuthUser $authUser): bool
+    public function deleteAny(User $authUser): bool
     {
-        return $authUser->can('delete_any:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'deleteAny', 'ArquivosDiario');
     }
 
-    public function restore(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function restore(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('restore:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'restore', 'ArquivosDiario');
     }
 
-    public function forceDelete(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function forceDelete(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('force_delete:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'forceDelete', 'ArquivosDiario');
     }
 
-    public function forceDeleteAny(AuthUser $authUser): bool
+    public function forceDeleteAny(User $authUser): bool
     {
-        return $authUser->can('force_delete_any:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'forceDeleteAny', 'ArquivosDiario');
     }
 
-    public function restoreAny(AuthUser $authUser): bool
+    public function restoreAny(User $authUser): bool
     {
-        return $authUser->can('restore_any:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'restoreAny', 'ArquivosDiario');
     }
 
-    public function replicate(AuthUser $authUser, ArquivosDiario $arquivosDiario): bool
+    public function replicate(User $authUser, ArquivosDiario $arquivosDiario): bool
     {
-        return $authUser->can('replicate:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'replicate', 'ArquivosDiario');
     }
 
-    public function reorder(AuthUser $authUser): bool
+    public function reorder(User $authUser): bool
     {
-        return $authUser->can('reorder:arquivos_diario');
+        return ShieldPermission::allows($authUser, 'reorder', 'ArquivosDiario');
     }
-
 }

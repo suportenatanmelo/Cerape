@@ -30,6 +30,15 @@ class EditAcolhido extends EditRecord
         return 'Acolhido atualizado com sucesso';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        return AcolhidoForm::prepareForPersistence($data);
+    }
+
     protected function afterSave(): void
     {
         AcolhidoForm::notifyUsers($this->getRecord(), 'updated');

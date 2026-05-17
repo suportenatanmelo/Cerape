@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
 
@@ -63,6 +64,11 @@ class User extends Authenticatable implements HasAvatar
         return $this->hasMany(ProntuarioEvolucao::class);
     }
 
+    public function feedbackMessagesEnviadas(): HasMany
+    {
+        return $this->hasMany(FeedbackFamiliarMessage::class, 'sender_id');
+    }
+
     public function isRestrictedToAcolhido(): bool
     {
         return filled($this->acolhido_id);
@@ -90,6 +96,13 @@ class User extends Authenticatable implements HasAvatar
             && filled($this->endereco)
             && filled($this->uf)
             && filled($this->nacionalidade);
+    }
+
+    public function portalSlug(): string
+    {
+        $slug = Str::slug($this->name);
+
+        return trim(($slug !== '' ? $slug : 'usuario') . '-' . $this->getKey(), '-');
     }
 
     //class User extends Authenticatable implements HasAvatar
