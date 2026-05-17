@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
@@ -23,6 +24,7 @@ use Filament\Pages\Dashboard;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Icons\Heroicon;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -43,6 +45,13 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->topNavigation(false)
             ->navigationItems([
+                NavigationItem::make('Chat')
+                    ->group(fn (): string => (string) PortalContext::portalNavigationGroup())
+                    ->icon(Heroicon::OutlinedChatBubbleLeftRight)
+                    ->isActiveWhen(fn (): bool => request()->is('chatify*') || request()->routeIs(FeedbackFamiliar::getRouteName()))
+                    ->sort(4)
+                    ->url(fn (): string => route(config('chatify.routes.prefix')))
+                    ->visible(fn (): bool => FeedbackFamiliar::canAccess()),
                 NavigationItem::make('GOV BR')
                     ->url('https://servicos.acesso.gov.br/')
                     ->icon('heroicon-o-globe-alt')

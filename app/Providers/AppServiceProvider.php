@@ -10,6 +10,7 @@ use App\Observers\AcolhidoObserver;
 use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use App\Observers\UserObserver;
+use App\Support\ChatifyMessenger;
 use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Schema;
@@ -23,7 +24,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind('ChatifyMessenger', function () {
+            return new ChatifyMessenger();
+        });
     }
 
     /**
