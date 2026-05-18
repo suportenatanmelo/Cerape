@@ -244,7 +244,7 @@ return [
     */
 
     'custom_permissions' => [
-        'view:AcolhidoGalleryPortal',
+        'View:AcolhidoGalleryPortal',
     ],
 
     /*

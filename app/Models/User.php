@@ -5,6 +5,8 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,7 +31,7 @@ use Spatie\Permission\Traits\HasRoles;
     'data_nascimento',
 ])]
 #[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
@@ -47,6 +49,10 @@ class User extends Authenticatable implements HasAvatar
             'password' => 'hashed',
             'data_nascimento' => 'date',
         ];
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 
     public function avaliacoesPessoais(): HasMany
