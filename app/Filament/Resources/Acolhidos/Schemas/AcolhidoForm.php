@@ -268,6 +268,7 @@ class AcolhidoForm
 
                                                 $set('documentos_civis', null);
                                                 $set('documentos_outros', null);
+                                                self::clearDocumentNumberFields($set);
                                             }),
                                         TextInput::make('razao_caso_nao_tenha_documentacao')
                                             ->label('Caso nao tenha documento')
@@ -286,7 +287,39 @@ class AcolhidoForm
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
+                                            ->live()
+                                            ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::civilDocumentNumberFields()))
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_rg')
+                                            ->label('Numero do RG')
+                                            ->mask('99.999.999-9')
+                                            ->maxLength(12)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'rg'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_cpf')
+                                            ->label('Numero do CPF')
+                                            ->mask('999.999.999-99')
+                                            ->maxLength(14)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'cpf'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_certidao_nascimento')
+                                            ->label('Numero da certidao de nascimento')
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_nascimento'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_certidao_casamento')
+                                            ->label('Numero da certidao de casamento')
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_casamento'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_carteira_trabalho')
+                                            ->label('Numero da carteira de trabalho')
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'carteira_trabalho'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_titulo_eleitor')
+                                            ->label('Numero do titulo de eleitor')
+                                            ->mask('9999 9999 9999')
+                                            ->maxLength(14)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'titulo_eleitor'))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_outros')
                                             ->label('Outros documentos')
@@ -298,7 +331,21 @@ class AcolhidoForm
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
+                                            ->live()
+                                            ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::otherDocumentNumberFields()))
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_nis')
+                                            ->label('Numero do NIS/PIS')
+                                            ->mask('999.99999.99-9')
+                                            ->maxLength(14)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'nis'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_cartao_sus')
+                                            ->label('Numero do cartao do SUS')
+                                            ->mask('999 9999 9999 9999')
+                                            ->maxLength(18)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'cartao_sus'))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
@@ -620,10 +667,12 @@ class AcolhidoForm
             $data['razao_caso_nao_tenha_documentacao'] = $data['razao_caso_nao_tenha_documentacao'] ?? null;
             $data['documentos_civis'] = null;
             $data['documentos_outros'] = null;
+            $data = self::clearDocumentNumberValues($data);
         } else {
             $data['razao_caso_nao_tenha_documentacao'] = null;
             $data['documentos_civis'] = self::normalizeList($data['documentos_civis'] ?? []);
             $data['documentos_outros'] = self::normalizeList($data['documentos_outros'] ?? []);
+            $data = self::normalizeDocumentNumberValues($data);
         }
 
         if (! $data['trabalha']) {
@@ -743,6 +792,11 @@ class AcolhidoForm
         return ! in_array('Outro meio de acolhimento', $get('meio_de_encaminhamento') ?? [], true);
     }
 
+    private static function hasSelectedDocument(Get $get, string $field, string $document): bool
+    {
+        return in_array($document, $get($field) ?? [], true);
+    }
+
     private static function isYes(mixed $value): bool
     {
         $normalized = Str::of((string) $value)
@@ -799,6 +853,96 @@ class AcolhidoForm
             now()->format('Y_m_d_His'),
             $file->getClientOriginalExtension(),
         );
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function civilDocumentNumberFields(): array
+    {
+        return [
+            'rg' => 'numero_rg',
+            'cpf' => 'numero_cpf',
+            'certidao_nascimento' => 'numero_certidao_nascimento',
+            'certidao_casamento' => 'numero_certidao_casamento',
+            'carteira_trabalho' => 'numero_carteira_trabalho',
+            'titulo_eleitor' => 'numero_titulo_eleitor',
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function otherDocumentNumberFields(): array
+    {
+        return [
+            'nis' => 'numero_nis',
+            'cartao_sus' => 'numero_cartao_sus',
+        ];
+    }
+
+    private static function syncDocumentNumberFields(Set $set, mixed $state, array $fieldMap): bool
+    {
+        $selectedDocuments = is_array($state) ? $state : [];
+
+        foreach ($fieldMap as $document => $field) {
+            if (! in_array($document, $selectedDocuments, true)) {
+                $set($field, null);
+            }
+        }
+
+        return true;
+    }
+
+    private static function clearDocumentNumberFields(Set $set): void
+    {
+        foreach (array_merge(self::civilDocumentNumberFields(), self::otherDocumentNumberFields()) as $field) {
+            $set($field, null);
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private static function clearDocumentNumberValues(array $data): array
+    {
+        foreach (array_merge(self::civilDocumentNumberFields(), self::otherDocumentNumberFields()) as $field) {
+            $data[$field] = null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private static function normalizeDocumentNumberValues(array $data): array
+    {
+        $selectedCivilDocuments = $data['documentos_civis'] ?? [];
+        $selectedOtherDocuments = $data['documentos_outros'] ?? [];
+
+        foreach (self::civilDocumentNumberFields() as $document => $field) {
+            $data[$field] = in_array($document, $selectedCivilDocuments, true)
+                ? self::normalizeNullableString($data[$field] ?? null)
+                : null;
+        }
+
+        foreach (self::otherDocumentNumberFields() as $document => $field) {
+            $data[$field] = in_array($document, $selectedOtherDocuments, true)
+                ? self::normalizeNullableString($data[$field] ?? null)
+                : null;
+        }
+
+        return $data;
+    }
+
+    private static function normalizeNullableString(mixed $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value === '' ? null : $value;
     }
 
     /**

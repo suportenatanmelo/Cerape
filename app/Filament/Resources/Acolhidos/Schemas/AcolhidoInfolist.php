@@ -183,6 +183,38 @@ class AcolhidoInfolist
                             ->columnSpanFull()
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->documentos_outros)),
+                        TextEntry::make('numero_rg')
+                            ->label('Numero do RG')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_rg)),
+                        TextEntry::make('numero_cpf')
+                            ->label('Numero do CPF')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_cpf)),
+                        TextEntry::make('numero_certidao_nascimento')
+                            ->label('Numero da certidao de nascimento')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_certidao_nascimento)),
+                        TextEntry::make('numero_certidao_casamento')
+                            ->label('Numero da certidao de casamento')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_certidao_casamento)),
+                        TextEntry::make('numero_carteira_trabalho')
+                            ->label('Numero da carteira de trabalho')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_carteira_trabalho)),
+                        TextEntry::make('numero_titulo_eleitor')
+                            ->label('Numero do titulo de eleitor')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_titulo_eleitor)),
+                        TextEntry::make('numero_nis')
+                            ->label('Numero do NIS/PIS')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_nis)),
+                        TextEntry::make('numero_cartao_sus')
+                            ->label('Numero do cartao do SUS')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_cartao_sus)),
                     ]),
 
                 Section::make('Trabalho e encaminhamento')
