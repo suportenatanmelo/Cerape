@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Chatify;
 use App\Models\ChFavorite as Favorite;
 use App\Models\ChMessage as Message;
 use App\Models\User;
+use App\Support\FilamentDatabaseNotifications;
 use App\Support\PortalContext;
 use Chatify\Facades\ChatifyMessenger as Chatify;
 use Chatify\Http\Controllers\MessagesController as BaseMessagesController;
+use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -94,6 +97,7 @@ class MessagesController extends BaseMessagesController
             ]);
 
             $messageData = Chatify::parseMessage($message);
+            $this->sendIncomingMessageNotification($message, $id);
 
             if ($this->hasRealtimeConfigured() && Auth::id() !== $id) {
                 Chatify::push('private-chatify.' . $id, 'messaging', [
@@ -297,5 +301,58 @@ class MessagesController extends BaseMessagesController
         return filled(config('chatify.pusher.key'))
             && filled(config('chatify.pusher.secret'))
             && filled(config('chatify.pusher.app_id'));
+    }
+
+    protected function sendIncomingMessageNotification(Message $message, int $recipientId): void
+    {
+        if (Auth::id() === $recipientId) {
+            return;
+        }
+
+        $recipient = User::query()->find($recipientId);
+        $sender = Auth::user();
+
+        if (! $recipient instanceof User || ! $sender instanceof User) {
+            return;
+        }
+
+        $chatUrl = url(trim((string) config('chatify.routes.prefix', 'chatify'), '/') . '/' . $sender->getKey());
+        $preview = $this->formatNotificationPreview($message);
+
+        FilamentDatabaseNotifications::send(
+            Notification::make()
+                ->title('Nova mensagem no Chatify')
+                ->body($sender->name . ' enviou: ' . $preview)
+                ->icon('heroicon-o-chat-bubble-left-right')
+                ->iconColor('info')
+                ->actions([
+                    Action::make('openChatConversation')
+                        ->label('Abrir conversa')
+                        ->button()
+                        ->markAsRead()
+                        ->url($chatUrl),
+                ])
+                ->viewData([
+                    'key' => 'chat_message_' . $message->getKey(),
+                ]),
+            $recipient,
+        );
+    }
+
+    protected function formatNotificationPreview(Message $message): string
+    {
+        $body = trim((string) html_entity_decode((string) $message->body, ENT_QUOTES, 'UTF-8'));
+
+        if ($body !== '') {
+            return Str::limit($body, 120);
+        }
+
+        $attachment = json_decode((string) $message->attachment);
+
+        if (filled($attachment?->old_name)) {
+            return 'anexo: ' . Str::limit((string) $attachment->old_name, 80);
+        }
+
+        return 'nova mensagem';
     }
 }

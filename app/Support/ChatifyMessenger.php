@@ -5,6 +5,8 @@ namespace App\Support;
 use Chatify\ChatifyMessenger as BaseChatifyMessenger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Pusher\Pusher;
 
 class ChatifyMessenger extends BaseChatifyMessenger
@@ -64,5 +66,42 @@ class ChatifyMessenger extends BaseChatifyMessenger
         }
 
         return response()->json(['message' => 'Not authenticated'], 403);
+    }
+
+    public function getUserWithAvatar($user)
+    {
+        $avatar = (string) ($user->avatar ?? '');
+
+        if (($avatar === '' || $avatar === config('chatify.user_avatar.default')) && config('chatify.gravatar.enabled')) {
+            $imageSize = config('chatify.gravatar.image_size');
+            $imageset = config('chatify.gravatar.imageset');
+            $user->avatar = 'https://www.gravatar.com/avatar/' . md5(strtolower(trim((string) $user->email))) . '?s=' . $imageSize . '&d=' . $imageset;
+
+            return $user;
+        }
+
+        $user->avatar = $this->getUserAvatarUrl($avatar);
+
+        return $user;
+    }
+
+    public function getUserAvatarUrl($userAvatarName)
+    {
+        $disk = Storage::disk(config('chatify.storage_disk_name'));
+        $avatar = trim((string) $userAvatarName);
+
+        if ($avatar === '') {
+            $avatar = config('chatify.user_avatar.default');
+        }
+
+        if (Str::startsWith($avatar, ['http://', 'https://', '//', 'data:'])) {
+            return $avatar;
+        }
+
+        if (str_contains($avatar, '/')) {
+            return $disk->url($avatar);
+        }
+
+        return $disk->url(trim(config('chatify.user_avatar.folder'), '/') . '/' . $avatar);
     }
 }
