@@ -132,7 +132,7 @@ class MessagesController extends BaseMessagesController
 
     public function seen(Request $request)
     {
-        if (! $this->canChatWith((int) $request['id'])) {
+        if (! $this->canAccessConversationWith((int) $request['id'])) {
             return Response::json(['status' => 0], 403);
         }
 
@@ -141,6 +141,12 @@ class MessagesController extends BaseMessagesController
 
     public function getContacts(Request $request): JsonResponse
     {
+        $allowedContactIds = User::query()
+            ->whereKeyNot(Auth::id())
+            ->get()
+            ->filter(fn (User $user): bool => $this->canAccessConversationWith((int) $user->getKey()))
+            ->pluck('id');
+
         $users = Message::join('users', function ($join) {
             $join->on('ch_messages.from_id', '=', 'users.id')
                 ->orOn('ch_messages.to_id', '=', 'users.id');
@@ -150,6 +156,7 @@ class MessagesController extends BaseMessagesController
                     ->orWhere('ch_messages.to_id', Auth::id());
             })
             ->where('users.id', '!=', Auth::id())
+            ->whereIn('users.id', $allowedContactIds)
             ->select('users.*', DB::raw('MAX(ch_messages.created_at) max_created_at'))
             ->orderBy('max_created_at', 'desc')
             ->groupBy('users.id')
@@ -271,7 +278,7 @@ class MessagesController extends BaseMessagesController
             return $query->whereNull('acolhido_id');
         }
 
-        return $query->whereNull('acolhido_id');
+        return $query;
     }
 
     protected function canAccessConversationWith(int $userId): bool
@@ -280,20 +287,18 @@ class MessagesController extends BaseMessagesController
             return true;
         }
 
-        if ($this->searchableUsersQuery()->whereKey($userId)->exists()) {
-            return true;
+        $authUser = Auth::user();
+        $targetUser = User::query()->find($userId);
+
+        if (! $authUser instanceof User || ! $targetUser instanceof User) {
+            return false;
         }
 
-        return Message::query()
-            ->where(function ($query) use ($userId) {
-                $query->where('from_id', Auth::id())
-                    ->where('to_id', $userId);
-            })
-            ->orWhere(function ($query) use ($userId) {
-                $query->where('from_id', $userId)
-                    ->where('to_id', Auth::id());
-            })
-            ->exists();
+        if ($authUser->isRestrictedToAcolhido()) {
+            return ! $targetUser->isRestrictedToAcolhido();
+        }
+
+        return true;
     }
 
     protected function hasRealtimeConfigured(): bool

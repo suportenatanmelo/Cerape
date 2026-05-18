@@ -17,7 +17,7 @@ class AcolhidoVideoResource extends Resource
 {
     protected static ?string $model = AcolhidoVideo::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reunioes';
+    protected static string|UnitEnum|null $navigationGroup = 'Uploads de videos';
 
     protected static ?string $navigationLabel = 'Videos do YouTube';
 
