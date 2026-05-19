@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources\AcolhidoGalerias\Tables;
 
+use Alsaloul\ImageGallery\Tables\Columns\ImageGalleryColumn;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -28,29 +29,39 @@ class AcolhidoGaleriasTable
             ->emptyStateDescription('Quando uma galeria for criada para um acolhido, ela aparecera aqui para manutencao da equipe.')
             ->emptyStateIcon('heroicon-o-photo')
             ->columns([
-                ViewColumn::make('gallery_card')
-                    ->label('')
-                    ->view('filament.tables.columns.acolhido-galeria-card')
-                    ->searchable(['titulo', 'descricao'])
-                    ->sortable(false),
+                ImageGalleryColumn::make('gallery_preview')
+                    ->label('Imagens')
+                    ->state(fn ($record): array => $record->galleryUrls())
+                    ->disk('public')
+                    ->circular()
+                    ->stacked(3)
+                    ->ring(2, '#ffffff')
+                    ->limit(4)
+                    ->remainingTextBadge(true)
+                    ->emptyText('Sem imagens'),
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
                     ->searchable()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->description(fn ($record): ?string => $record->descricao ?: null)
+                    ->wrap(),
                 TextColumn::make('titulo')
                     ->label('Titulo')
                     ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->placeholder('Sem titulo')
+                    ->sortable(),
+                TextColumn::make('gallery_count')
+                    ->label('Total de imagens')
+                    ->badge()
+                    ->state(fn ($record): string => (string) $record->galleryCount()),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->description(fn ($record): ?string => $record->lastGalleryUpdateLabel() ? 'Ultima imagem em ' . $record->lastGalleryUpdateLabel() : null),
                 IconColumn::make('ativo')
                     ->label('Ativa')
-                    ->boolean()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->boolean(),
             ])
             ->filters([
                 Filter::make('data_adicao_imagem')
@@ -98,9 +109,14 @@ class AcolhidoGaleriasTable
                     }),
             ])
             ->recordActions([
+                ViewAction::make(),
                 EditAction::make()
                     ->label('Gerenciar imagens'),
                 DeleteAction::make(),
+            ])
+            ->headerActions([
+                \Filament\Actions\CreateAction::make()
+                    ->label('Nova galeria'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

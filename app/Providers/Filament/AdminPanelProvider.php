@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use Alsaloul\ImageGallery\ImageGalleryPlugin;
+use Awcodes\Curator\CuratorPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
@@ -9,7 +11,6 @@ use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
 use App\Filament\Widgets\AcolhidosCriadosLineChart;
 use App\Filament\Widgets\AvaliacaoPessoalLineChart;
 use App\Filament\Widgets\DemandasAcolhidosLineChart;
-use App\Filament\Widgets\FamilyDashboardGalleryWidget;
 use App\Filament\Widgets\UsuariosCriadosLineChart;
 use App\Filament\Widgets\UsuariosVinculadosAcolhidoLineChart;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
@@ -70,6 +71,7 @@ class AdminPanelProvider extends PanelProvider
             ->colors(fn (): array => [
                 'primary' => PortalContext::isFamilyUser() ? Color::Rose : Color::Teal,
             ])
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
                 fn (): View => view('filament.portal.head-theme')
@@ -87,6 +89,14 @@ class AdminPanelProvider extends PanelProvider
                 fn (): View => view('filament.portal.family-dashboard-url')
             )
             ->plugins([
+                ImageGalleryPlugin::make(),
+                CuratorPlugin::make()
+                    ->label('Galeria Familiar')
+                    ->pluralLabel('Galeria Familiar')
+                    ->navigationIcon('heroicon-o-photo')
+                    ->navigationGroup(fn (): string => (string) PortalContext::portalNavigationGroup())
+                    ->navigationSort(2)
+                    ->registerNavigation(fn (): bool => PortalContext::isFamilyUser()),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Administracao e Acesso')
                     ->navigationSort(100)
@@ -121,7 +131,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                FamilyDashboardGalleryWidget::class,
                 UsuariosCriadosLineChart::class,
                 UsuariosVinculadosAcolhidoLineChart::class,
                 AcolhidosCriadosLineChart::class,

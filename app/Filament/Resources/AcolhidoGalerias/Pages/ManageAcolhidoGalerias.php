@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AcolhidoGalerias\Pages;
 
 use App\Filament\Resources\AcolhidoGalerias\AcolhidoGaleriaResource;
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageAcolhidoGalerias extends ManageRecords
@@ -17,9 +16,6 @@ class ManageAcolhidoGalerias extends ManageRecords
 
     protected function getHeaderActions(): array
     {
-        return [
-            CreateAction::make()
-                ->label('Nova galeria'),
-        ];
+        return [];
     }
 }
