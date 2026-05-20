@@ -14,7 +14,7 @@ class AcolhidoGaleriaInfolist
     {
         return $schema
             ->components([
-                Section::make('Resumo da galeria')
+                Section::make('Resumo do album')
                     ->icon('heroicon-o-identification')
                     ->columns([
                         'default' => 1,
@@ -25,10 +25,10 @@ class AcolhidoGaleriaInfolist
                             ->label('Acolhido')
                             ->weight('bold'),
                         TextEntry::make('titulo')
-                            ->label('Titulo')
+                            ->label('Album')
                             ->placeholder('-'),
                         IconEntry::make('ativo')
-                            ->label('Galeria ativa no portal')
+                            ->label('Album ativo no portal')
                             ->boolean(),
                         TextEntry::make('updated_at')
                             ->label('Atualizado em')
@@ -39,7 +39,7 @@ class AcolhidoGaleriaInfolist
                             ->columnSpanFull(),
                     ]),
                 Section::make('Image Library')
-                    ->description('Mesma experiencia visual do portal da familia, com navegacao horizontal e ampliacao das imagens.')
+                    ->description('Mesma experiencia visual do portal da familia, com navegacao horizontal e ampliacao das imagens do album.')
                     ->icon('heroicon-o-photo')
                     ->schema([
                         ViewEntry::make('gallery_preview')

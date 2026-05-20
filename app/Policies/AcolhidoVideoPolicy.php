@@ -15,14 +15,13 @@ class AcolhidoVideoPolicy
 
     public function viewAny(User $authUser): bool
     {
-        return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'viewAny', 'AcolhidoVideo');
+        return ShieldPermission::allows($authUser, 'viewAny', 'AcolhidoVideo');
     }
 
     public function view(User $authUser, AcolhidoVideo $acolhidoVideo): bool
     {
-        return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'view', 'AcolhidoVideo');
+        return ShieldPermission::allows($authUser, 'view', 'AcolhidoVideo')
+            && $authUser->canAccessAcolhido($acolhidoVideo->acolhido_id);
     }
 
     public function create(User $authUser): bool

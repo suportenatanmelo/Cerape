@@ -11,8 +11,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 
 class AcolhidoGaleriaForm
@@ -22,7 +20,7 @@ class AcolhidoGaleriaForm
         return $schema
             ->components([
                 Section::make('Galeria de imagens do acolhido')
-                    ->description('Cadastre as imagens autorizadas para exibicao no portal da familia. O carrossel so sera mostrado quando a permissao do ACL estiver liberada.')
+                    ->description('Cadastre albuns autorizados para exibicao no portal da familia. Cada album respeita a permissao liberada no Shield ACL.')
                     ->icon('heroicon-o-photo')
                     ->schema([
                         Grid::make([
@@ -31,42 +29,33 @@ class AcolhidoGaleriaForm
                         ])->schema([
                             Placeholder::make('gallery_flow_notice')
                                 ->label('Como funciona')
-                                ->content(new HtmlString('Cada acolhido possui uma unica galeria. Para adicionar novas imagens em um acolhido ja cadastrado, use <strong>Gerenciar imagens</strong> na lista e o sistema vai somando tudo no mesmo acervo.'))
+                                ->content(new HtmlString('Agora cada acolhido pode ter <strong>varios albuns</strong>. Crie um novo album sempre que quiser separar momentos, visitas, atividades ou periodos diferentes no portal da familia.'))
                                 ->columnSpanFull(),
                             Select::make('acolhido_id')
                                 ->label('Acolhido')
-                                ->relationship(
-                                    'acolhido',
-                                    'nome_completo_paciente',
-                                    modifyQueryUsing: function (Builder $query, ?Model $record): Builder {
-                                        return $query->whereDoesntHave('acolhidoGaleria', function (Builder $galleryQuery) use ($record): void {
-                                            if ($record?->exists) {
-                                                $galleryQuery->whereKeyNot($record->getKey());
-                                            }
-                                        });
-                                    },
-                                )
+                                ->relationship('acolhido', 'nome_completo_paciente')
                                 ->searchable()
                                 ->preload()
                                 ->required()
-                                ->helperText('Somente acolhidos sem galeria aparecem aqui. Se o acolhido ja existir na lista, abra o registro dele para adicionar mais imagens.'),
+                                ->helperText('Voce pode criar mais de um album para o mesmo acolhido.'),
                             Toggle::make('ativo')
-                                ->label('Galeria ativa no portal')
+                                ->label('Album ativo no portal')
                                 ->default(true)
                                 ->inline(false),
                             TextInput::make('titulo')
-                                ->label('Titulo da galeria')
+                                ->label('Titulo do album')
+                                ->required()
                                 ->maxLength(150)
-                                ->placeholder('Ex.: Momentos especiais da semana')
+                                ->placeholder('Ex.: Visita da familia em maio')
                                 ->columnSpanFull(),
                             Textarea::make('descricao')
                                 ->label('Descricao')
                                 ->rows(3)
                                 ->maxLength(500)
-                                ->placeholder('Mensagem breve para acompanhar as imagens no portal.')
+                                ->placeholder('Mensagem breve para contextualizar este album no portal.')
                                 ->columnSpanFull(),
                             SpatieMediaLibraryFileUpload::make('gallery')
-                                ->label('Imagens da galeria')
+                                ->label('Imagens do album')
                                 ->collection('gallery')
                                 ->image()
                                 ->imageEditor()
@@ -82,7 +71,7 @@ class AcolhidoGaleriaForm
                                 ->maxFiles(50)
                                 ->minFiles(1)
                                 ->required()
-                                ->helperText('Envie varias imagens, reorganize na ordem desejada e mantenha apenas imagens aprovadas para a familia. As miniaturas sao geradas automaticamente.')
+                                ->helperText('Envie varias imagens, reorganize na ordem desejada e mantenha apenas imagens aprovadas para a familia. Cada cadastro representa um album separado.')
                                 ->columnSpanFull(),
                         ]),
                     ]),

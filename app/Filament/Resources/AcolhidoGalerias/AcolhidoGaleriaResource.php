@@ -8,11 +8,13 @@ use App\Filament\Resources\AcolhidoGalerias\Schemas\AcolhidoGaleriaForm;
 use App\Filament\Resources\AcolhidoGalerias\Schemas\AcolhidoGaleriaInfolist;
 use App\Filament\Resources\AcolhidoGalerias\Tables\AcolhidoGaleriasTable;
 use App\Models\AcolhidoGaleria;
+use App\Support\AcolhidoAccess;
 use App\Support\PortalContext;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 
@@ -22,11 +24,11 @@ class AcolhidoGaleriaResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reunioes';
 
-    protected static ?string $navigationLabel = 'Galeria de imagens';
+    protected static ?string $navigationLabel = 'Albuns de imagens';
 
-    protected static ?string $modelLabel = 'galeria de imagens';
+    protected static ?string $modelLabel = 'album de imagens';
 
-    protected static ?string $pluralModelLabel = 'galerias de imagens';
+    protected static ?string $pluralModelLabel = 'albuns de imagens';
 
     protected static ?int $navigationSort = 3;
 
@@ -49,6 +51,16 @@ class AcolhidoGaleriaResource extends Resource
         return AcolhidoGaleriaInfolist::configure($schema);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
     public static function getPages(): array
     {
         return [
@@ -64,7 +76,7 @@ class AcolhidoGaleriaResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        return auth()->check() && static::canViewAny();
     }
 
     public static function getNavigationBadge(): ?string
@@ -81,6 +93,6 @@ class AcolhidoGaleriaResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
-        return (string) ($record->titulo ?: $record->acolhido?->nome_completo_paciente ?: 'Galeria');
+        return (string) ($record->titulo ?: $record->acolhido?->nome_completo_paciente ?: 'Album');
     }
 }

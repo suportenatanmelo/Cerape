@@ -102,9 +102,14 @@ class Acolhido extends Model
         return $this->hasMany(User::class, 'acolhido_id');
     }
 
+    public function acolhidoGalerias(): HasMany
+    {
+        return $this->hasMany(AcolhidoGaleria::class);
+    }
+
     public function acolhidoGaleria(): HasOne
     {
-        return $this->hasOne(AcolhidoGaleria::class);
+        return $this->hasOne(AcolhidoGaleria::class)->latestOfMany();
     }
 
     public function acolhidoVideos(): HasMany

@@ -15,14 +15,13 @@ class AcolhidoGaleriaPolicy
 
     public function viewAny(User $authUser): bool
     {
-        return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'viewAny', 'AcolhidoGaleria');
+        return ShieldPermission::allows($authUser, 'viewAny', 'AcolhidoGaleria');
     }
 
     public function view(User $authUser, AcolhidoGaleria $acolhidoGaleria): bool
     {
-        return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'view', 'AcolhidoGaleria');
+        return ShieldPermission::allows($authUser, 'view', 'AcolhidoGaleria')
+            && $authUser->canAccessAcolhido($acolhidoGaleria->acolhido_id);
     }
 
     public function create(User $authUser): bool

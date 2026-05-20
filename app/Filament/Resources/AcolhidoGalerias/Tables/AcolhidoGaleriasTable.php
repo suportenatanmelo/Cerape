@@ -25,8 +25,8 @@ class AcolhidoGaleriasTable
                 'md' => 2,
                 'xl' => 2,
             ])
-            ->emptyStateHeading('Nenhuma galeria cadastrada')
-            ->emptyStateDescription('Quando uma galeria for criada para um acolhido, ela aparecera aqui para manutencao da equipe.')
+            ->emptyStateHeading('Nenhum album cadastrado')
+            ->emptyStateDescription('Quando um album for criado para um acolhido, ele aparecera aqui para manutencao da equipe e exibicao no portal.')
             ->emptyStateIcon('heroicon-o-photo')
             ->columns([
                 ImageGalleryColumn::make('gallery_preview')
@@ -46,7 +46,7 @@ class AcolhidoGaleriasTable
                     ->description(fn ($record): ?string => $record->descricao ?: null)
                     ->wrap(),
                 TextColumn::make('titulo')
-                    ->label('Titulo')
+                    ->label('Album')
                     ->searchable()
                     ->placeholder('Sem titulo')
                     ->sortable(),
@@ -111,12 +111,12 @@ class AcolhidoGaleriasTable
             ->recordActions([
                 ViewAction::make(),
                 EditAction::make()
-                    ->label('Gerenciar imagens'),
+                    ->label('Gerenciar album'),
                 DeleteAction::make(),
             ])
             ->headerActions([
                 \Filament\Actions\CreateAction::make()
-                    ->label('Nova galeria'),
+                    ->label('Novo album'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

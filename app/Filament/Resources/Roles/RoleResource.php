@@ -112,6 +112,41 @@ class RoleResource extends Resource
             ->toArray();
     }
 
+    /**
+     * @return array<int, string>
+     */
+    public static function getPermissionStateKeys(): array
+    {
+        $keys = [];
+
+        if (static::shield()->hasSimpleResourcePermissionView()) {
+            $keys[] = 'resources_tab';
+        } else {
+            $keys = [
+                ...$keys,
+                ...collect(FilamentShield::getResources())
+                    ->pluck('resourceFqcn')
+                    ->filter(fn (mixed $value): bool => is_string($value) && $value !== '')
+                    ->values()
+                    ->all(),
+            ];
+        }
+
+        if (Utils::isPageTabEnabled()) {
+            $keys[] = 'pages_tab';
+        }
+
+        if (Utils::isWidgetTabEnabled()) {
+            $keys[] = 'widgets_tab';
+        }
+
+        if (Utils::isCustomPermissionTabEnabled()) {
+            $keys[] = 'custom_permissions_tab';
+        }
+
+        return array_values(array_unique($keys));
+    }
+
     #[Override]
     public static function table(Table $table): Table
     {

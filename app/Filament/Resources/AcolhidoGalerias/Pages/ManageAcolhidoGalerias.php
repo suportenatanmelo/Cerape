@@ -11,7 +11,7 @@ class ManageAcolhidoGalerias extends ManageRecords
 
     public function getTitle(): string
     {
-        return 'Galeria de imagens';
+        return 'Albuns de imagens';
     }
 
     protected function getHeaderActions(): array

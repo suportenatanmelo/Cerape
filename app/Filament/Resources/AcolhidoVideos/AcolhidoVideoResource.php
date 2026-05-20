@@ -6,8 +6,10 @@ use App\Filament\Resources\AcolhidoVideos\Pages\ManageAcolhidoVideos;
 use App\Filament\Resources\AcolhidoVideos\Schemas\AcolhidoVideoForm;
 use App\Filament\Resources\AcolhidoVideos\Tables\AcolhidoVideosTable;
 use App\Models\AcolhidoVideo;
+use App\Support\AcolhidoAccess;
 use App\Support\PortalContext;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
@@ -41,6 +43,16 @@ class AcolhidoVideoResource extends Resource
         return AcolhidoVideosTable::configure($table);
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+    }
+
+    public static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+    }
+
     public static function getPages(): array
     {
         return [
@@ -48,8 +60,20 @@ class AcolhidoVideoResource extends Resource
         ];
     }
 
+    public static function getNavigationGroup(): string|UnitEnum|null
+    {
+        return PortalContext::portalNavigationGroup();
+    }
+
     public static function shouldRegisterNavigation(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        return auth()->check() && static::canViewAny();
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $count = static::getEloquentQuery()->count();
+
+        return $count > 0 ? (string) $count : null;
     }
 }

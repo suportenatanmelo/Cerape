@@ -13,7 +13,7 @@ class ViewAcolhidoGaleria extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        return 'Galeria de imagens';
+        return 'Album de imagens';
     }
 
     public function getSubheading(): string | Htmlable | null
@@ -27,7 +27,7 @@ class ViewAcolhidoGaleria extends ViewRecord
     {
         return [
             EditAction::make()
-                ->label('Gerenciar imagens'),
+                ->label('Gerenciar album'),
         ];
     }
 }

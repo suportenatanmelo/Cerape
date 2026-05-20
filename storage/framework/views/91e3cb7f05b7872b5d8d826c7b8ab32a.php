@@ -2,8 +2,9 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'label' => null,
-    'size' => 0,
+    'columnSpan' => [],
+    'columnStart' => [],
+    'height' => null,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -20,8 +21,9 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'label' => null,
-    'size' => 0,
+    'columnSpan' => [],
+    'columnStart' => [],
+    'height' => null,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -33,7 +35,12 @@ foreach ($attributes->all() as $__key => $__value) {
 }
 
 unset($__defined_vars, $__key, $__value); ?>
-<div class="absolute inset-x-0 bottom-0 flex items-center justify-between px-1.5 pt-10 pb-1.5 text-xs text-white bg-gradient-to-t from-black/80 to-transparent gap-3 pointer-events-none">
-    <p class="truncate"><?php echo e($label); ?></p>
-    <p class="flex-shrink-0"><?php echo e(curator()->sizeForHumans($size)); ?></p>
-</div><?php /**PATH C:\laragon\www\cerape\vendor\awcodes\filament-curator\resources\views/components/display/info-overlay.blade.php ENDPATH**/ ?>
+
+<div
+    <?php echo e(($attributes ?? new \Illuminate\View\ComponentAttributeBag)
+            ->gridColumn($columnSpan, $columnStart)
+            ->class(['fi-section fi-loading-section'])
+            ->style(['height: ' . ($height ?? '8rem')])); ?>
+
+></div>
+<?php /**PATH C:\laragon\www\cerape\vendor\filament\support\resources\views/components/loading-section.blade.php ENDPATH**/ ?>

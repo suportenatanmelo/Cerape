@@ -15,61 +15,78 @@ class CuratorMediaPolicy
 
     public function viewAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'viewAny', 'Media');
+        return $this->allows($authUser, 'viewAny');
     }
 
     public function view(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'view', 'Media');
+        return $this->allows($authUser, 'view')
+            && $authUser->canAccessAcolhido($media->acolhido_id);
     }
 
     public function create(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'create', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'create');
     }
 
     public function update(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'update', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'update');
     }
 
     public function delete(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'delete', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'delete');
     }
 
     public function deleteAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'deleteAny', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'deleteAny');
     }
 
     public function restore(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'restore', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'restore');
     }
 
     public function restoreAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'restoreAny', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'restoreAny');
     }
 
     public function forceDelete(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'forceDelete', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'forceDelete');
     }
 
     public function forceDeleteAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'forceDeleteAny', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'forceDeleteAny');
     }
 
     public function replicate(User $authUser, CuratorMedia $media): bool
     {
-        return ShieldPermission::allows($authUser, 'replicate', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'replicate');
     }
 
     public function reorder(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'reorder', 'Media');
+        return ! $authUser->isRestrictedToAcolhido()
+            && $this->allows($authUser, 'reorder');
+    }
+
+    private function allows(User $authUser, string $ability): bool
+    {
+        return ShieldPermission::allows($authUser, $ability, 'Media')
+            || ShieldPermission::allows($authUser, $ability, 'CuratorMedia');
     }
 }
