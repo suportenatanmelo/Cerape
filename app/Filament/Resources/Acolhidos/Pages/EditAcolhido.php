@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Acolhidos\Pages;
 
+use App\Filament\Resources\Acolhidos\Concerns\PersistsAcolhidoFormDraft;
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use Filament\Actions\DeleteAction;
@@ -11,9 +12,18 @@ use Filament\Support\Enums\Width;
 
 class EditAcolhido extends EditRecord
 {
+    use PersistsAcolhidoFormDraft;
+
     protected static string $resource = AcolhidoResource::class;
 
     protected Width | string | null $maxContentWidth = Width::Full;
+
+    public function mount(int | string $record): void
+    {
+        parent::mount($record);
+
+        $this->restoreAcolhidoDraft();
+    }
 
     protected function getHeaderActions(): array
     {
@@ -41,6 +51,12 @@ class EditAcolhido extends EditRecord
 
     protected function afterSave(): void
     {
+        $this->forgetAcolhidoDraft();
         AcolhidoForm::notifyUsers($this->getRecord(), 'updated');
+    }
+
+    protected function getAcolhidoDraftSessionKey(): string
+    {
+        return 'acolhidos.edit.draft.' . (auth()->id() ?? 'guest') . '.' . $this->getRecord()->getKey();
     }
 }

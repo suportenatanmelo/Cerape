@@ -1,4 +1,13 @@
-<x-filament-panels::page>
+<?php if (isset($component)) { $__componentOriginal166a02a7c5ef5a9331faf66fa665c256 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament-panels::components.page.index','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('filament-panels::page'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
     <style>
         .declaration-layout {
             display: grid;
@@ -98,7 +107,8 @@
 
     <div class="declaration-layout">
         <div class="declaration-panel">
-            {{ $this->form }}
+            <?php echo e($this->form); ?>
+
         </div>
 
         <div class="declaration-preview">
@@ -110,18 +120,28 @@
                 <div style="font-size: 0.88rem; font-weight: 600;">CERAPE / CRC</div>
             </div>
 
-            @php($payload = $this->getPreviewPayload())
+            <?php ($payload = $this->getPreviewPayload()); ?>
 
-            @if ($payload)
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($payload): ?>
                 <div class="paper-sheet">
-                    @include('declaracoes.partials.documento', ['payload' => $payload, 'mode' => 'preview'])
+                    <?php echo $__env->make('declaracoes.partials.documento', ['payload' => $payload, 'mode' => 'preview'], array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
                 </div>
-            @else
+            <?php else: ?>
                 <div class="empty-state">
                     <div style="font-size: 1.08rem; font-weight: 700;">Selecione uma declaracao para continuar</div>
                     <div class="page-note">Quando a declaracao exigir acolhido, escolha um nome para liberar a visualizacao e o PDF.</div>
                 </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
     </div>
-</x-filament-panels::page>
+ <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $attributes = $__attributesOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__attributesOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256)): ?>
+<?php $component = $__componentOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
+<?php unset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
+<?php endif; ?>
+<?php /**PATH C:\laragon\www\cerape\resources\views/filament/pages/declaracoes-assinaveis.blade.php ENDPATH**/ ?>

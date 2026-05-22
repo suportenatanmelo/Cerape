@@ -148,7 +148,6 @@ class AcolhidoForm
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('nome_da_mae')
                                             ->label('Nome da mae')
-                                            ->default('Nao informado')
                                             ->required(),
                                         TextInput::make('nome_do_pai')
                                             ->label('Nome do pai')
@@ -202,8 +201,10 @@ class AcolhidoForm
                                         TextInput::make('municipio_do_paciente')
                                             ->label('Municipio')
                                             ->required(),
-                                        TextInput::make('uf_municipio_do_paciente')
+                                        Select::make('uf_municipio_do_paciente')
                                             ->label('UF')
+                                            ->options(self::getBrazilianStates())
+                                            ->searchable()
                                             ->required(),
                                         Radio::make('moradia_propria')
                                             ->label('Moradia propria')
@@ -565,10 +566,6 @@ class AcolhidoForm
                                                 $set('pensao_alimenticia', null);
                                                 $set('possui_contato_dos_filhos', null);
                                             }),
-                                        TextInput::make('responsavel_pela_intervencao_do_acolhido')
-                                            ->label('Responsavel pela intervencao do acolhido')
-                                            ->required()
-                                            ->columnSpanFull(),
                                         TextInput::make('profissional_referencia_acolhido_instituicao')
                                             ->label('Profissional de referencia na instituicao')
                                             ->columnSpanFull(),
@@ -605,6 +602,47 @@ class AcolhidoForm
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
+                            Section::make('interventor do acolhido')
+                                ->schema([
+                                    Grid::make([
+                                        'default' => 1,
+                                        'md' => 2,
+                                    ])->schema([
+                                        TextInput::make('interventor_nome_completo')
+                                            ->label('Nome completo'),
+                                        TextInput::make('interventor_cpf')
+                                            ->label('CPF')
+                                            ->mask('999.999.999-99')
+                                            ->maxLength(14),
+                                        TextInput::make('interventor_rg')
+                                            ->label('RG'),
+                                        TextInput::make('interventor_exp')
+                                            ->label('EXP'),
+                                        Select::make('interventor_rg_uf')
+                                            ->label('UF do RG')
+                                            ->options(self::getBrazilianStates())
+                                            ->searchable(),
+                                        TextInput::make('interventor_profissao')
+                                            ->label('Profissao'),
+                                        DatePicker::make('interventor_data_nascimento')
+                                            ->label('Data de nascimento'),
+                                        TextInput::make('interventor_residente')
+                                            ->label('Residente'),
+                                        TextInput::make('interventor_complemento')
+                                            ->label('Complemento'),
+                                        TextInput::make('interventor_bairro')
+                                            ->label('Bairro'),
+                                        TextInput::make('interventor_cidade')
+                                            ->label('Cidade'),
+                                        Select::make('interventor_endereco_uf')
+                                            ->label('UF')
+                                            ->options(self::getBrazilianStates())
+                                            ->searchable(),
+                                        TextInput::make('interventor_telefone_contato')
+                                            ->label('Telefone para contato')
+                                            ->mask('(99) 99999-9999'),
+                                    ]),
+                                ]),
                         ]),
                 ])
                     ->columnSpanFull(),
@@ -614,6 +652,42 @@ class AcolhidoForm
     private static function shouldHideNomeDoConjuge(Get $get): bool
     {
         return in_array((string) $get('estado_civil'), ['solteiro', 'viuvo'], true);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function getBrazilianStates(): array
+    {
+        return [
+            'AC' => 'Acre',
+            'AL' => 'Alagoas',
+            'AP' => 'Amapa',
+            'AM' => 'Amazonas',
+            'BA' => 'Bahia',
+            'CE' => 'Ceara',
+            'DF' => 'Distrito Federal',
+            'ES' => 'Espirito Santo',
+            'GO' => 'Goias',
+            'MA' => 'Maranhao',
+            'MT' => 'Mato Grosso',
+            'MS' => 'Mato Grosso do Sul',
+            'MG' => 'Minas Gerais',
+            'PA' => 'Para',
+            'PB' => 'Paraiba',
+            'PR' => 'Parana',
+            'PE' => 'Pernambuco',
+            'PI' => 'Piaui',
+            'RJ' => 'Rio de Janeiro',
+            'RN' => 'Rio Grande do Norte',
+            'RS' => 'Rio Grande do Sul',
+            'RO' => 'Rondonia',
+            'RR' => 'Roraima',
+            'SC' => 'Santa Catarina',
+            'SP' => 'Sao Paulo',
+            'SE' => 'Sergipe',
+            'TO' => 'Tocantins',
+        ];
     }
 
     /**
@@ -723,6 +797,12 @@ class AcolhidoForm
             $data['pensao_alimenticia'] = null;
             $data['possui_contato_dos_filhos'] = null;
         }
+
+        $data['responsavel_pela_intervencao_do_acolhido'] = self::normalizeNullableString(
+            $data['interventor_nome_completo']
+                ?? $data['responsavel_pela_intervencao_do_acolhido']
+                ?? null
+        );
 
         return $data;
     }

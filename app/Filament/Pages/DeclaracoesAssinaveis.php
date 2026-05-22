@@ -144,6 +144,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'Declaracao para uso de imagem',
             'desistencia_ptc' => 'Declaracao de desistencia do PTC',
             'acolhimento_voluntario' => 'Declaracao de acolhimento voluntario',
+            'contrato_prevencao_recaida' => 'Contrato terapeutico - prevencao a recaida',
         ];
     }
 
@@ -197,6 +198,9 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'addressLine' => self::buildAddressLine($acolhido),
             'cpf' => $acolhido?->numero_cpf ?: '_____________________',
             'rg' => $acolhido?->numero_rg ?: '_________________________________________',
+            'signatureDateLine' => "_____________________, {$dateParts['day']} de {$dateParts['month']} de {$dateParts['year']}",
+            'interventor' => self::buildInterventorPayload($acolhido),
+            'acolhidoProfile' => self::buildAcolhidoProfilePayload($acolhido),
         ];
     }
 
@@ -208,6 +212,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'DECLARACAO PARA USO DE IMAGEM',
             'desistencia_ptc' => 'DECLARACAO DE DESISTENCIA DO PTC',
             'acolhimento_voluntario' => 'DECLARACAO DE ACOLHIMENTO VOLUNTARIO',
+            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO - PREVENCAO A RECAIDA',
             default => 'DECLARACAO',
         };
     }
@@ -245,6 +250,63 @@ class DeclaracoesAssinaveis extends Page implements HasForms
         ]);
 
         return $segments !== [] ? implode(', ', $segments) : '____________________________________________________________';
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function buildInterventorPayload(?Acolhido $acolhido): array
+    {
+        return [
+            'nome' => self::valueOrBlank($acolhido?->interventor_nome_completo, '________________________________________________________________'),
+            'cpf' => self::valueOrBlank($acolhido?->interventor_cpf, '___________________'),
+            'rg' => self::valueOrBlank($acolhido?->interventor_rg, '___________'),
+            'exp' => self::valueOrBlank($acolhido?->interventor_exp, '___________'),
+            'rgUf' => self::valueOrBlank($acolhido?->interventor_rg_uf, '______'),
+            'profissao' => self::valueOrBlank($acolhido?->interventor_profissao, '______________'),
+            'dataNascimento' => self::dateOrBlank($acolhido?->interventor_data_nascimento),
+            'residente' => self::valueOrBlank($acolhido?->interventor_residente, '____________________________________________________________'),
+            'complemento' => self::valueOrBlank($acolhido?->interventor_complemento, '_____________________'),
+            'bairro' => self::valueOrBlank($acolhido?->interventor_bairro, '_________________________'),
+            'cidade' => self::valueOrBlank($acolhido?->interventor_cidade, '_______________________________'),
+            'uf' => self::valueOrBlank($acolhido?->interventor_endereco_uf, '______'),
+            'telefone' => self::valueOrBlank($acolhido?->interventor_telefone_contato, '___________________________'),
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function buildAcolhidoProfilePayload(?Acolhido $acolhido): array
+    {
+        return [
+            'nome' => self::valueOrBlank($acolhido?->nome_completo_paciente, '________________________________________________________'),
+            'dataNascimento' => self::dateOrBlank($acolhido?->data_nascimento),
+            'cpf' => self::valueOrBlank($acolhido?->numero_cpf, '___________________'),
+            'rg' => self::valueOrBlank($acolhido?->numero_rg, '_______________________'),
+            'profissao' => self::valueOrBlank($acolhido?->profissao, '_____________________________'),
+            'naturalidade' => self::valueOrBlank($acolhido?->municipio_do_paciente, '___________________________________'),
+            'uf' => self::valueOrBlank($acolhido?->uf_municipio_do_paciente, '______'),
+            'nacionalidade' => self::valueOrBlank($acolhido?->user?->nacionalidade, '______________'),
+        ];
+    }
+
+    private static function valueOrBlank(mixed $value, string $fallback): string
+    {
+        $text = trim((string) ($value ?? ''));
+
+        return $text !== '' ? $text : $fallback;
+    }
+
+    private static function dateOrBlank(mixed $value): string
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value->format('d/m/Y');
+        }
+
+        $text = trim((string) ($value ?? ''));
+
+        return $text !== '' ? $text : '__/__/____';
     }
 
     /**

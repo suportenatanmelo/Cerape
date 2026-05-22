@@ -1,6 +1,6 @@
-@php($acolhido = $payload['acolhido'])
-@php($interventor = $payload['interventor'] ?? [])
-@php($acolhidoProfile = $payload['acolhidoProfile'] ?? [])
+<?php ($acolhido = $payload['acolhido']); ?>
+<?php ($interventor = $payload['interventor'] ?? []); ?>
+<?php ($acolhidoProfile = $payload['acolhidoProfile'] ?? []); ?>
 
 <style>
     .doc-title { color: #0f172a; font-size: 1.2rem; font-weight: 800; letter-spacing: 0.08em; margin: 0 0 1.6rem; text-align: center; text-transform: uppercase; }
@@ -20,28 +20,30 @@
     .doc-compact { line-height: 1.65; }
 </style>
 
-@switch($payload['type'])
-    @case('leitura_ptc')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php switch($payload['type']):
+    case ('leitura_ptc'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
             Declaro para os devidos fins que foi lido o Programa Terapeutico do CR - CERAPE, sendo discriminado suas 4 (quatro) FASES, 1a. FASE 105 (cento e cinco dias) dias, 2a. FASE 60 (sessenta dias) dias, 3a. FASE 60 (sessenta dias) e 4a. FASE 45 (quarenta e cinco) dias, podendo estender-se a 140 (cento e quarenta) dias, caso o acolhido necessite de reinsercao ao mercado de trabalho. Lido tambem o programa semanal de horarios de atividades de todas as terapias com todas as rotinas do CRC descritos.
         </p>
         <p class="doc-paragraph">
             Por ser verdade, firmo a presente declaracao,
         </p>
-        <p class="doc-date">{{ $payload['dateText'] }}</p>
+        <p class="doc-date"><?php echo e($payload['dateText']); ?></p>
         <div class="doc-signature">
             <span class="signature-line">&nbsp;</span>
         </div>
-        @break
+        <?php break; ?>
 
-    @case('termo_desligamento')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+    <?php case ('termo_desligamento'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
-            Eu, {{ $acolhido?->nome_completo_paciente ?? '____________________________________________________________' }}
-            filiacao(mae): {{ $acolhido?->nome_da_mae ?? '__________________________________________' }}
-            (pai): {{ $acolhido?->nome_do_pai ?? '____________________________________________________' }},
-            acolhido no Centro de Reabilitacao do CERAPE - CRC, desde {{ $payload['admissionDate'] }}, solicito o meu desligamento do acolhimento voluntario, pelo motivo abaixo:
+            Eu, <?php echo e($acolhido?->nome_completo_paciente ?? '____________________________________________________________'); ?>
+
+            filiacao(mae): <?php echo e($acolhido?->nome_da_mae ?? '__________________________________________'); ?>
+
+            (pai): <?php echo e($acolhido?->nome_do_pai ?? '____________________________________________________'); ?>,
+            acolhido no Centro de Reabilitacao do CERAPE - CRC, desde <?php echo e($payload['admissionDate']); ?>, solicito o meu desligamento do acolhimento voluntario, pelo motivo abaixo:
         </p>
         <div class="doc-list">
             <div>(   ) Desistencia a PEDIDO</div>
@@ -61,7 +63,7 @@
         <span class="doc-multi-line"></span>
         <span class="doc-multi-line"></span>
         <p class="doc-paragraph" style="margin-top: 1rem;">Elogio: <span class="blank-block blank-wide">&nbsp;</span></p>
-        <p class="doc-date">{{ $payload['dateText'] }}</p>
+        <p class="doc-date"><?php echo e($payload['dateText']); ?></p>
         <div class="doc-signature">
             <span class="signature-line">Assinatura do acolhido</span>
         </div>
@@ -70,14 +72,14 @@
             <span class="signature-line">&nbsp;</span>
             <span class="signature-line">&nbsp;</span>
         </div>
-        @break
+        <?php break; ?>
 
-    @case('uso_imagem')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+    <?php case ('uso_imagem'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
-            Neste ato eu {{ $acolhido?->nome_completo_paciente ?? '____________________________________________________________' }},
-            portador da Cedula de Identidade RG n&ordm; {{ $payload['rg'] }} e do CPF/MF n&ordm; {{ $payload['cpf'] }},
-            residente {{ $payload['addressLine'] }}.
+            Neste ato eu <?php echo e($acolhido?->nome_completo_paciente ?? '____________________________________________________________'); ?>,
+            portador da Cedula de Identidade RG n&ordm; <?php echo e($payload['rg']); ?> e do CPF/MF n&ordm; <?php echo e($payload['cpf']); ?>,
+            residente <?php echo e($payload['addressLine']); ?>.
         </p>
         <p class="doc-paragraph">
             Autorizo o uso de minha imagem em todo e qualquer material seja em fotos avulsas como em documentos, para ser utilizada em campanhas promocionais e institucionais do CERAPE/CRC, CNPJ n&ordm; 00.857.994/0001-67, localizado na Fazenda Quintas no Park Alvorada II Luziânia - GO.
@@ -88,56 +90,56 @@
         <p class="doc-paragraph">
             Por ser esta, a expressao da minha vontade, declaro que autorizo o uso acima descrito sem que haja a ser reclamado a titulo de direitos conexos a minha imagem, assino a presente autorizacao em 2 (duas) vias de igual teor e forma.
         </p>
-        <p class="doc-date">{{ $payload['dateText'] }}</p>
+        <p class="doc-date"><?php echo e($payload['dateText']); ?></p>
         <div class="doc-signature">
-            <span class="signature-line">Acolhido CPF n&ordm; {{ $payload['cpf'] }}</span>
+            <span class="signature-line">Acolhido CPF n&ordm; <?php echo e($payload['cpf']); ?></span>
         </div>
-        @break
+        <?php break; ?>
 
-    @case('desistencia_ptc')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+    <?php case ('desistencia_ptc'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
             Declaro para os devidos fins que na ocorrencia da desistencia do Programa Terapeutico do CR - CERAPE, nao serao devolvidos doacoes de itens do acolhimento tais como material de higiene pessoal, camisetas do PTC para uso apenas durante o Programa e demais itens que sao de uso coletivo entregues no dia do acolhimento, sendo os mesmos para uso da Comunidade Terapeutica.
         </p>
         <p class="doc-paragraph">
             Por ser verdade, firmo a presente declaracao,
         </p>
-        <p class="doc-date">{{ $payload['dateText'] }}</p>
+        <p class="doc-date"><?php echo e($payload['dateText']); ?></p>
         <div class="doc-signature">
-            <span class="signature-line">Acolhido CPF n&ordm; {{ $payload['cpf'] }}</span>
+            <span class="signature-line">Acolhido CPF n&ordm; <?php echo e($payload['cpf']); ?></span>
         </div>
-        @break
+        <?php break; ?>
 
-    @case('acolhimento_voluntario')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+    <?php case ('acolhimento_voluntario'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
             Declaro para os devidos fins que sou voluntario ao acolhimento no CENTRO DE REABILITACAO DO CERAPE - CRC, submetendo-me as normas e recomendacoes internas do CRC, bem como, sua Programacao Diaria, ciente tambem de que nao terei nenhum vinculo empregaticio, nem obrigacao de natureza trabalhista, previdenciaria e afins, em conformidade com a Lei 9.608, de fevereiro de 1998 e Lei n&ordm; 13.840 item II de 05/06/2020, enquanto durar minha permanencia no CRC.
         </p>
         <p class="doc-paragraph">
             Por ser expressao da verdade, assumindo inteira responsabilidade pelas declaracoes acima sob as penas da lei, assino a presente declaracao para que produza seus efeitos legais.
         </p>
-        <p class="doc-date">{{ $payload['dateText'] }}</p>
+        <p class="doc-date"><?php echo e($payload['dateText']); ?></p>
         <div class="doc-signature">
-            <span class="signature-line">Acolhido CPF n&ordm; {{ $payload['cpf'] }}</span>
+            <span class="signature-line">Acolhido CPF n&ordm; <?php echo e($payload['cpf']); ?></span>
         </div>
-        @break
+        <?php break; ?>
 
-    @case('contrato_prevencao_recaida')
-        <h1 class="doc-title">{{ $payload['title'] }}</h1>
+    <?php case ('contrato_prevencao_recaida'): ?>
+        <h1 class="doc-title"><?php echo e($payload['title']); ?></h1>
         <p class="doc-paragraph">
             CONTRATADO: CENTRO DE REABILITACAO DO CERAPE - CRC, CNPJ n&ordm; 00.857.994/0002-48, estabelecido na Area Rural, Park Alvorada III, Fazenda Quintas, Chacara da Igreja Batista Rhema, Luzi&acirc;nia - GO.
         </p>
         <p class="doc-paragraph doc-compact">
             INTERVENTOR DO ACOLHIMENTO:<br>
-            Nome: {{ $interventor['nome'] ?? '________________________________________________________________' }}, CPF {{ $interventor['cpf'] ?? '___________________' }}, RG: {{ $interventor['rg'] ?? '___________' }}, Exp. {{ $interventor['exp'] ?? '___________' }}, UF {{ $interventor['rgUf'] ?? '______' }}<br>
-            Profissao: {{ $interventor['profissao'] ?? '______________' }} Data de Nascimento: {{ $interventor['dataNascimento'] ?? '__/__/____' }},<br>
-            Residente: {{ $interventor['residente'] ?? '____________________________________________________________' }}, Complemento: {{ $interventor['complemento'] ?? '_____________________' }}, Bairro: {{ $interventor['bairro'] ?? '_________________________' }} Cidade: {{ $interventor['cidade'] ?? '_______________________________' }}, UF: {{ $interventor['uf'] ?? '______' }},<br>
-            Tel: {{ $interventor['telefone'] ?? '___________________________' }},
+            Nome: <?php echo e($interventor['nome'] ?? '________________________________________________________________'); ?>, CPF <?php echo e($interventor['cpf'] ?? '___________________'); ?>, RG: <?php echo e($interventor['rg'] ?? '___________'); ?>, Exp. <?php echo e($interventor['exp'] ?? '___________'); ?>, UF <?php echo e($interventor['rgUf'] ?? '______'); ?><br>
+            Profissao: <?php echo e($interventor['profissao'] ?? '______________'); ?> Data de Nascimento: <?php echo e($interventor['dataNascimento'] ?? '__/__/____'); ?>,<br>
+            Residente: <?php echo e($interventor['residente'] ?? '____________________________________________________________'); ?>, Complemento: <?php echo e($interventor['complemento'] ?? '_____________________'); ?>, Bairro: <?php echo e($interventor['bairro'] ?? '_________________________'); ?> Cidade: <?php echo e($interventor['cidade'] ?? '_______________________________'); ?>, UF: <?php echo e($interventor['uf'] ?? '______'); ?>,<br>
+            Tel: <?php echo e($interventor['telefone'] ?? '___________________________'); ?>,
         </p>
         <p class="doc-paragraph doc-compact">
-            ACOLHIDO: {{ $acolhidoProfile['nome'] ?? '________________________________________________________' }} Data de Nascimento: {{ $acolhidoProfile['dataNascimento'] ?? '__/__/____' }}, CPF: {{ $acolhidoProfile['cpf'] ?? '___________________' }},<br>
-            RG: {{ $acolhidoProfile['rg'] ?? '_______________________' }}, Profissao: {{ $acolhidoProfile['profissao'] ?? '_____________________________' }}, Naturalidade: {{ $acolhidoProfile['naturalidade'] ?? '___________________________________' }} UF {{ $acolhidoProfile['uf'] ?? '______' }}<br>
-            Nacionalidade: {{ $acolhidoProfile['nacionalidade'] ?? '______________' }}.
+            ACOLHIDO: <?php echo e($acolhidoProfile['nome'] ?? '________________________________________________________'); ?> Data de Nascimento: <?php echo e($acolhidoProfile['dataNascimento'] ?? '__/__/____'); ?>, CPF: <?php echo e($acolhidoProfile['cpf'] ?? '___________________'); ?>,<br>
+            RG: <?php echo e($acolhidoProfile['rg'] ?? '_______________________'); ?>, Profissao: <?php echo e($acolhidoProfile['profissao'] ?? '_____________________________'); ?>, Naturalidade: <?php echo e($acolhidoProfile['naturalidade'] ?? '___________________________________'); ?> UF <?php echo e($acolhidoProfile['uf'] ?? '______'); ?><br>
+            Nacionalidade: <?php echo e($acolhidoProfile['nacionalidade'] ?? '______________'); ?>.
         </p>
         <p class="doc-paragraph">
             CLAUSULA 1&ordf; - Propoe-se o servico de tratamento e acompanhamento de prevencao e reabilitacao de recaida, conforme as normas internas, rotina terapeutica e orientacoes institucionais do CERAPE / CRC.
@@ -151,10 +153,11 @@
         <p class="doc-paragraph">
             E, por estarem de acordo, firmam o presente contrato para que produza seus efeitos.
         </p>
-        <p class="doc-date">{{ $payload['signatureDateLine'] }}</p>
+        <p class="doc-date"><?php echo e($payload['signatureDateLine']); ?></p>
         <div class="two-lines">
             <span class="signature-line">Interventor do acolhimento</span>
             <span class="signature-line">Acolhido</span>
         </div>
-        @break
-@endswitch
+        <?php break; ?>
+<?php endswitch; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+<?php /**PATH C:\laragon\www\cerape\resources\views/declaracoes/partials/documento.blade.php ENDPATH**/ ?>
