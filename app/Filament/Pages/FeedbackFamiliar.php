@@ -46,7 +46,7 @@ class FeedbackFamiliar extends Page
 
     public static function getNavigationGroup(): string|\UnitEnum|null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::communicationNavigationGroup();
     }
 
     public static function getNavigationBadge(): ?string

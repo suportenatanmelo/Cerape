@@ -58,7 +58,7 @@ class AvaliacaoPessoalResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::evaluationNavigationGroup();
     }
 
     public static function getNavigationSort(): ?int
@@ -750,6 +750,119 @@ class AvaliacaoPessoalResource extends Resource
             'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'geradoEm' => now(),
         ];
+    }
+
+    /**
+     * @param  Carbon|string|null  $evaluationDate
+     * @return array<string, mixed>
+     */
+    public static function getConsolidatedSummaryReportData(Carbon|string|null $evaluationDate = null): array
+    {
+        $selectedDate = null;
+
+        $query = AvaliacaoPessoal::query()
+            ->with(['acolhido', 'user'])
+            ->whereHas('acolhido')
+            ->orderBy('created_at');
+
+        if (filled($evaluationDate)) {
+            $selectedDate = $evaluationDate instanceof Carbon
+                ? $evaluationDate->copy()->startOfDay()
+                : Carbon::parse($evaluationDate)->startOfDay();
+
+            $query->whereDate('created_at', $selectedDate->toDateString());
+        }
+
+        $evaluations = $query->get();
+
+        $rows = $evaluations
+            ->groupBy('acolhido_id')
+            ->map(function (Collection $acolhidoEvaluations): array {
+                /** @var AvaliacaoPessoal|null $latestEvaluation */
+                $latestEvaluation = $acolhidoEvaluations->sortByDesc('created_at')->first();
+
+                $professionalEvaluations = $acolhidoEvaluations
+                    ->filter(fn (AvaliacaoPessoal $evaluation): bool => filled($evaluation->user_id))
+                    ->values();
+
+                $userAverages = $professionalEvaluations
+                    ->groupBy('user_id')
+                    ->map(fn (Collection $userEvaluations): float => (float) $userEvaluations->avg('Total'))
+                    ->values();
+
+                $consolidatedAverage = $userAverages->isEmpty() ? 0.0 : (float) $userAverages->avg();
+                $sumOfIndividualAverages = (float) $userAverages->sum();
+                $professionalNames = $professionalEvaluations
+                    ->map(fn (AvaliacaoPessoal $evaluation): string => (string) ($evaluation->user?->name ?? ''))
+                    ->filter()
+                    ->unique()
+                    ->sort()
+                    ->values();
+
+                return [
+                    'acolhido_id' => $latestEvaluation?->acolhido_id,
+                    'acolhido_nome' => (string) ($latestEvaluation?->acolhido?->nome_completo_paciente ?? 'Acolhido nao identificado'),
+                    'profissionais' => $professionalNames,
+                    'profissional_nome' => $professionalNames->isNotEmpty()
+                        ? $professionalNames->implode(', ')
+                        : 'Sem profissional avaliador',
+                    'soma_medias_individuais' => $sumOfIndividualAverages,
+                    'media_de_todos' => $consolidatedAverage,
+                    'total_avaliadores' => $professionalNames->count(),
+                    'total_votos' => $professionalEvaluations->count(),
+                    'total_avaliacoes_profissional' => $professionalEvaluations->count(),
+                    'total_avaliacoes_acolhido' => $acolhidoEvaluations->count(),
+                    'media_geral_votos' => (float) $professionalEvaluations->avg('Total'),
+                    'ultima_avaliacao_em' => $latestEvaluation?->created_at,
+                    'primeira_avaliacao_em' => $acolhidoEvaluations->sortBy('created_at')->first()?->created_at,
+                    'formula_texto' => $professionalNames->count() > 0
+                        ? self::formatScore($sumOfIndividualAverages) . ' ÷ ' . $professionalNames->count() . ' = ' . self::formatScore($consolidatedAverage)
+                        : 'Sem avaliadores para compor a formula',
+                ];
+            })
+            ->sortBy([
+                ['acolhido_nome', 'asc'],
+            ])
+            ->values();
+
+        $professionals = $evaluations
+            ->filter(fn (AvaliacaoPessoal $evaluation): bool => filled($evaluation->user_id))
+            ->pluck('user_id')
+            ->filter()
+            ->unique();
+
+        $overallMediaUsuarios = $rows->isEmpty()
+            ? 0.0
+            : (float) $rows->avg('media_de_todos');
+
+        $overallMediaVotos = $evaluations->isEmpty()
+            ? 0.0
+            : (float) $evaluations->avg('Total');
+
+        return [
+            'selectedDate' => $selectedDate,
+            'generatedAt' => now(),
+            'rows' => $rows,
+            'totalAcolhidos' => $evaluations->pluck('acolhido_id')->unique()->count(),
+            'totalProfissionais' => $professionals->count(),
+            'totalAvaliacoes' => $evaluations->count(),
+            'totalVotos' => $evaluations->count(),
+            'overallMediaUsuarios' => $overallMediaUsuarios,
+            'overallMediaVotos' => $overallMediaVotos,
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'formatScore' => fn (float $score): string => self::formatScore($score),
+        ];
+    }
+
+    public static function latestEvaluationDate(): ?Carbon
+    {
+        $latestDate = AvaliacaoPessoal::query()->max('created_at');
+
+        if (! $latestDate) {
+            return null;
+        }
+
+        return Carbon::parse($latestDate);
     }
 
     public static function scoreColor(float $score): string

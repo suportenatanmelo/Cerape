@@ -236,6 +236,11 @@ class AcolhidoInfolist
                             ->badge()
                             ->color('gray')
                             ->placeholder('-'),
+                        TextEntry::make('religiao')
+                            ->label('Religiao')
+                            ->badge()
+                            ->color('warning')
+                            ->placeholder('-'),
                         IconEntry::make('trabalha')
                             ->label('Trabalha?')
                             ->boolean(),

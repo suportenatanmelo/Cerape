@@ -103,7 +103,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
 
     public static function getNavigationGroup(): string | \UnitEnum | null
     {
-        return PortalContext::isFamilyUser() ? PortalContext::portalNavigationGroup() : 'Declaracoes Assinaveis';
+        return PortalContext::documentsNavigationGroup();
     }
 
     public function getPreviewPayload(): ?array

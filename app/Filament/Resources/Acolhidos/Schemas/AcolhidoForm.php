@@ -124,8 +124,7 @@ class AcolhidoForm
                                             ->getUploadedFileNameForStorageUsing(
                                                 fn(TemporaryUploadedFile $file): string =>
                                                 uniqid() . '.' . $file->getClientOriginalExtension()
-                                            )
-                                            ->required(),
+                                            ),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
                                             ->required(),
@@ -162,6 +161,10 @@ class AcolhidoForm
                                             ->required(),
                                         TextInput::make('profissao')
                                             ->label('Profissao')
+                                            ->required(),
+                                        TextInput::make('religiao')
+                                            ->label('Qual a religiao do acolhido?')
+                                            ->placeholder('Informe a religiao do acolhido')
                                             ->required(),
                                     ]),
                                 ]),

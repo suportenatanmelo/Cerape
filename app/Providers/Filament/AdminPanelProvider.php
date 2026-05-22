@@ -39,18 +39,32 @@ class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
+        $navigationGroups = PortalContext::isFamilyUser()
+            ? [
+                PortalContext::portalNavigationGroup(),
+            ]
+            : [
+                PortalContext::portalNavigationGroup(),
+                PortalContext::evaluationNavigationGroup(),
+                PortalContext::documentsNavigationGroup(),
+                PortalContext::mediaNavigationGroup(),
+                PortalContext::communicationNavigationGroup(),
+                'Administracao e Acesso',
+            ];
+
         return $panel
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
             ->topNavigation(false)
+            ->navigationGroups($navigationGroups)
             ->navigationItems([
                 NavigationItem::make('Chat')
-                    ->group(fn (): string => (string) PortalContext::portalNavigationGroup())
+                    ->group(fn (): string => PortalContext::communicationNavigationGroup())
                     ->icon(Heroicon::OutlinedChatBubbleLeftRight)
                     ->isActiveWhen(fn (): bool => request()->is('chatify*') || request()->routeIs(FeedbackFamiliar::getRouteName()))
-                    ->sort(4)
+                    ->sort(1)
                     ->url(fn (): string => route(config('chatify.routes.prefix')))
                     ->visible(fn (): bool => FeedbackFamiliar::canAccess()),
                 NavigationItem::make('GOV BR')
@@ -88,14 +102,18 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::BODY_START,
                 fn (): View => view('filament.portal.family-dashboard-url')
             )
+            ->renderHook(
+                PanelsRenderHook::FOOTER,
+                fn (): View => view('filament.portal.footer')
+            )
             ->plugins([
                 ImageGalleryPlugin::make(),
                 CuratorPlugin::make()
                     ->label('Galeria Familiar')
                     ->pluralLabel('Galeria Familiar')
                     ->navigationIcon('heroicon-o-photo')
-                    ->navigationGroup(fn (): string => (string) PortalContext::portalNavigationGroup())
-                    ->navigationSort(2)
+                    ->navigationGroup(fn (): string => PortalContext::mediaNavigationGroup())
+                    ->navigationSort(3)
                     ->registerNavigation(fn (): bool => PortalContext::isFamilyUser()),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Administracao e Acesso')

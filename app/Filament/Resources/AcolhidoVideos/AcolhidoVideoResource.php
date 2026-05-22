@@ -27,7 +27,7 @@ class AcolhidoVideoResource extends Resource
 
     protected static ?string $pluralModelLabel = 'videos do YouTube';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 2;
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-play-circle';
 
@@ -62,7 +62,7 @@ class AcolhidoVideoResource extends Resource
 
     public static function getNavigationGroup(): string|UnitEnum|null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::mediaNavigationGroup();
     }
 
     public static function shouldRegisterNavigation(): bool

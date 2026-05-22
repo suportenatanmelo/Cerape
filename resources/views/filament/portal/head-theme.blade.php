@@ -3,6 +3,18 @@
     $familyTheme = \App\Support\PortalContext::familyTheme();
 @endphp
 
+<script>
+    (() => {
+        const applyCerapeTitle = () => {
+            document.title = 'SISTEMA CERAPE';
+        };
+
+        applyCerapeTitle();
+        document.addEventListener('DOMContentLoaded', applyCerapeTitle);
+        document.addEventListener('livewire:navigated', applyCerapeTitle);
+    })();
+</script>
+
 @if ($isFamily)
     <style>
         :root {

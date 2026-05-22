@@ -68,6 +68,11 @@ class ArquivosDiarioResource extends Resource
         ];
     }
 
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return \App\Support\PortalContext::documentsNavigationGroup();
+    }
+
     /**
      * @return array<string, mixed>
      */

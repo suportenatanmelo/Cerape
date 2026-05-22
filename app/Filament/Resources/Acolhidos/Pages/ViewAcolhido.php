@@ -8,7 +8,11 @@ use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Utilities\Set;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -37,15 +41,39 @@ class ViewAcolhido extends ViewRecord
     {
         return [
             Action::make('downloadRelatorio')
-                ->label('Baixar relatorio')
+                ->label('Baixar relatorio PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
-                ->action(function () {
+                ->form([
+                    Placeholder::make('report_sections_info')
+                        ->hiddenLabel()
+                        ->content('Marque as secoes que deseja incluir no PDF. Se marcar todas, o sistema gera um relatorio geral do acolhido.'),
+                    Toggle::make('select_all_sections')
+                        ->label('Marcar todas para gerar um relatorio geral')
+                        ->live()
+                        ->default(true)
+                        ->afterStateUpdated(function (Set $set, ?bool $state): void {
+                            $set('selected_sections', $state ? array_keys(self::reportSectionOptions()) : []);
+                        }),
+                    CheckboxList::make('selected_sections')
+                        ->label('Secoes do relatorio')
+                        ->options(self::reportSectionOptions())
+                        ->default(array_keys(self::reportSectionOptions()))
+                        ->columns(2)
+                        ->required()
+                        ->helperText('Voce pode gerar um PDF completo ou somente com as secoes selecionadas.'),
+                ])
+                ->action(function (array $data) {
                     $record = $this->getRecord();
                     $record->loadMissing(['user', 'avaliacoesPessoais.user']);
 
-                    $pdf = Pdf::loadView('pdf.acolhido-report', self::getReportData($record))
+                    $selectedSections = collect($data['selected_sections'] ?? [])
+                        ->filter(fn (mixed $section): bool => is_string($section) && $section !== '')
+                        ->values()
+                        ->all();
+
+                    $pdf = Pdf::loadView('pdf.acolhido-report', self::getReportData($record, $selectedSections))
                         ->setPaper('a4');
 
                     $fileName = 'relatorio-acolhido-' . Str::slug($record->nome_completo_paciente) . '.pdf';
@@ -63,9 +91,37 @@ class ViewAcolhido extends ViewRecord
     /**
      * @return array<string, mixed>
      */
-    private static function getReportData(Acolhido $acolhido): array
+    private static function getReportData(Acolhido $acolhido, array $selectedSectionKeys = []): array
     {
-        $sections = [
+        $allSections = self::buildReportSections($acolhido);
+        $selectedKeys = blank($selectedSectionKeys)
+            ? array_keys($allSections)
+            : array_values(array_intersect($selectedSectionKeys, array_keys($allSections)));
+
+        $sections = collect($selectedKeys)
+            ->mapWithKeys(fn (string $key): array => isset($allSections[$key]) ? [$key => $allSections[$key]] : [])
+            ->all();
+
+        return [
+            'acolhido' => $acolhido,
+            'sections' => $sections,
+            'selectedSectionsCount' => count($sections),
+            'availableSectionsCount' => count($allSections),
+            'selectedSectionsLabel' => count($sections) === count($allSections)
+                ? 'Relatorio geral com todas as secoes'
+                : implode(', ', array_keys($sections)),
+            'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'formatValue' => fn (mixed $value): string => self::formatValue($value),
+        ];
+    }
+
+    /**
+     * @return array<string, array<string, mixed>>
+     */
+    private static function buildReportSections(Acolhido $acolhido): array
+    {
+        return [
             'Identificacao' => [
                 'Status' => $acolhido->ativo ? 'Ativo' : 'Desativado',
                 'Nome completo' => $acolhido->nome_completo_paciente,
@@ -142,14 +198,16 @@ class ViewAcolhido extends ViewRecord
                 'Atualizado em' => $acolhido->updated_at,
             ],
         ];
+    }
 
-        return [
-            'acolhido' => $acolhido,
-            'sections' => $sections,
-            'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
-            'formatValue' => fn (mixed $value): string => self::formatValue($value),
-        ];
+    /**
+     * @return array<string, string>
+     */
+    private static function reportSectionOptions(): array
+    {
+        return collect(array_keys(self::buildReportSections(new Acolhido())))
+            ->mapWithKeys(fn (string $section): array => [$section => $section])
+            ->all();
     }
 
     private static function formatValue(mixed $value): string

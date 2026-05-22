@@ -3,6 +3,18 @@
     $familyTheme = \App\Support\PortalContext::familyTheme();
 ?>
 
+<script>
+    (() => {
+        const applyCerapeTitle = () => {
+            document.title = 'SISTEMA CERAPE';
+        };
+
+        applyCerapeTitle();
+        document.addEventListener('DOMContentLoaded', applyCerapeTitle);
+        document.addEventListener('livewire:navigated', applyCerapeTitle);
+    })();
+</script>
+
 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isFamily): ?>
     <style>
         :root {

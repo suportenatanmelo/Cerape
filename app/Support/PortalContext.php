@@ -28,7 +28,35 @@ class PortalContext
     {
         return static::isFamilyUser($user)
             ? 'Portal da Familia'
-            : 'CADASTROS';
+            : 'Cadastros e Acompanhamento';
+    }
+
+    public static function evaluationNavigationGroup(Authenticatable | null $user = null): string
+    {
+        return static::isFamilyUser($user)
+            ? static::portalNavigationGroup($user)
+            : 'Avaliacoes e Indicadores';
+    }
+
+    public static function documentsNavigationGroup(Authenticatable | null $user = null): string
+    {
+        return static::isFamilyUser($user)
+            ? static::portalNavigationGroup($user)
+            : 'Documentos e Relatorios';
+    }
+
+    public static function mediaNavigationGroup(Authenticatable | null $user = null): string
+    {
+        return static::isFamilyUser($user)
+            ? static::portalNavigationGroup($user)
+            : 'Midia e Galeria';
+    }
+
+    public static function communicationNavigationGroup(Authenticatable | null $user = null): string
+    {
+        return static::isFamilyUser($user)
+            ? static::portalNavigationGroup($user)
+            : 'Comunicacao';
     }
 
     public static function greeting(Authenticatable | null $user = null): string
