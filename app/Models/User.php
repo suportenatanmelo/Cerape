@@ -16,6 +16,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
+use App\Support\UserRoleManager;
 
 
 #[Fillable([
@@ -52,6 +53,10 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     }
     public function canAccessPanel(Panel $panel): bool
     {
+        if ($this->isRestrictedToAcolhido()) {
+            return UserRoleManager::hasAssignedRole($this);
+        }
+
         return true;
     }
 

@@ -53,7 +53,8 @@ class SaudesTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->label('Visualizar'),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

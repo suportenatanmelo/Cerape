@@ -177,7 +177,8 @@ class ReuniaoResource extends Resource
             ])
             ->defaultSort('data_reuniao', 'desc')
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->label('Visualizar'),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

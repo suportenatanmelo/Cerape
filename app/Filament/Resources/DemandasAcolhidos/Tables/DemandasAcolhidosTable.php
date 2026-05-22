@@ -51,7 +51,8 @@ class DemandasAcolhidosTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
+                    ViewAction::make()
+                        ->label('Visualizar'),
                     EditAction::make()
                         ->after(fn($record) => DemandaAcolhidoResource::notifyUsers($record, 'updated')),
                     DeleteAction::make()

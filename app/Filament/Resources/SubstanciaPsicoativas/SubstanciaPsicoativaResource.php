@@ -652,7 +652,8 @@ class SubstanciaPsicoativaResource extends Resource
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->label('Visualizar'),
                 Action::make('downloadRelatorio')
                     ->label('Baixar relatorio')
                     ->icon('heroicon-o-arrow-down-tray')

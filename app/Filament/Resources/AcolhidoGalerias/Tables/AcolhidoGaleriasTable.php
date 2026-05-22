@@ -109,7 +109,8 @@ class AcolhidoGaleriasTable
                     }),
             ])
             ->recordActions([
-                ViewAction::make(),
+                ViewAction::make()
+                    ->label('Visualizar'),
                 EditAction::make()
                     ->label('Gerenciar album'),
                 DeleteAction::make(),

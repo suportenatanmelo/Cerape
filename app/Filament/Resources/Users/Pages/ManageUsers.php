@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
 use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ManageRecords;
 
 class ManageUsers extends ManageRecords
@@ -14,7 +15,13 @@ class ManageUsers extends ManageRecords
     {
         return [
             CreateAction::make()
-                ->label('Criar usuario'),
+                ->label('Criar usuario')
+                ->using(fn (array $data) => UserResource::createUserWithRoles($data)),
         ];
+    }
+
+    protected function configureEditAction(EditAction $action): void
+    {
+        $action->using(fn ($record, array $data) => UserResource::updateUserWithRoles($record, $data));
     }
 }

@@ -72,7 +72,8 @@ class AcolhidosTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    ViewAction::make(),
+                    ViewAction::make()
+                        ->label('Visualizar'),
 
                     EditAction::make()
                         ->after(

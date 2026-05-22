@@ -17,6 +17,7 @@ use BezhanSalleh\PluginEssentials\Concerns\Resource as Essentials;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -91,11 +92,7 @@ class RoleResource extends Resource
     {
         return collect(FilamentShield::getResources())
             ->map(function (array $entity): Section {
-                $sectionLabel = strval(
-                    static::shield()->hasLocalizedPermissionLabels()
-                        ? FilamentShield::getLocalizedResourceLabel($entity['resourceFqcn'])
-                        : $entity['model']
-                );
+                $sectionLabel = static::buildResourceSectionLabel($entity);
 
                 $permissions = static::getResourcePermissionOptions($entity);
                 $permissionCount = count($permissions);
@@ -110,6 +107,31 @@ class RoleResource extends Resource
                     ->collapsible();
             })
             ->toArray();
+    }
+
+    protected static function buildResourceSectionLabel(array $entity): string
+    {
+        $resourceClass = $entity['resourceFqcn'] ?? null;
+
+        if (! is_string($resourceClass) || $resourceClass === '' || ! class_exists($resourceClass)) {
+            return (string) ($entity['model'] ?? 'Recurso');
+        }
+
+        $resourceLabel = method_exists($resourceClass, 'getPluralModelLabel')
+            ? (string) $resourceClass::getPluralModelLabel()
+            : (string) ($entity['model'] ?? class_basename($resourceClass));
+
+        $navigationGroup = method_exists($resourceClass, 'getNavigationGroup')
+            ? $resourceClass::getNavigationGroup()
+            : null;
+
+        $navigationGroup = is_string($navigationGroup) ? trim($navigationGroup) : null;
+
+        if (blank($navigationGroup)) {
+            return Str::headline($resourceLabel);
+        }
+
+        return Str::headline($navigationGroup).' - '.Str::headline($resourceLabel);
     }
 
     /**
@@ -181,6 +203,8 @@ class RoleResource extends Resource
                 //
             ])
             ->recordActions([
+                ViewAction::make()
+                    ->label('Visualizar'),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

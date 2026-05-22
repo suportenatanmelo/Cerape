@@ -273,7 +273,8 @@ class AvaliacaoPessoalResource extends Resource
                     ->preload(),
             ])
             ->recordActions([
-                \Filament\Actions\ViewAction::make(),
+                \Filament\Actions\ViewAction::make()
+                    ->label('Visualizar'),
                 \Filament\Actions\EditAction::make(),
             ])
             ->toolbarActions([

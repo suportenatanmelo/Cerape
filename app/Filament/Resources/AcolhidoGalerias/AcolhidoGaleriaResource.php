@@ -10,6 +10,7 @@ use App\Filament\Resources\AcolhidoGalerias\Tables\AcolhidoGaleriasTable;
 use App\Models\AcolhidoGaleria;
 use App\Support\AcolhidoAccess;
 use App\Support\PortalContext;
+use App\Support\PortalResourceAuthorization;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -53,12 +54,22 @@ class AcolhidoGaleriaResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+        $user = auth()->user();
+
+        return PortalResourceAuthorization::scopeVisibleRecords(
+            AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), $user),
+            $user,
+        );
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+        $user = auth()->user();
+
+        return PortalResourceAuthorization::scopeVisibleRecords(
+            AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), $user),
+            $user,
+        );
     }
 
     public static function getPages(): array
@@ -77,6 +88,36 @@ class AcolhidoGaleriaResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->check() && static::canViewAny();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return PortalResourceAuthorization::canViewAny(auth()->user(), 'AcolhidoGaleria');
+    }
+
+    public static function canCreate(): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoGaleria', 'create');
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return PortalResourceAuthorization::canViewRecord(auth()->user(), 'AcolhidoGaleria', $record->acolhido_id);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoGaleria', 'update');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoGaleria', 'delete');
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoGaleria', 'deleteAny');
     }
 
     public static function getNavigationBadge(): ?string

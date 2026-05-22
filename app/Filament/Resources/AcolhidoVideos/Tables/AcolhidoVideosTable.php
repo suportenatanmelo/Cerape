@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\AcolhidoVideos\Tables;
 
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -11,6 +12,7 @@ use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\HtmlString;
 
 class AcolhidoVideosTable
 {
@@ -25,7 +27,8 @@ class AcolhidoVideosTable
                 ImageColumn::make('youtube_thumbnail')
                     ->label('Thumb')
                     ->getStateUsing(fn ($record): ?string => $record->youtubeThumbnailUrl())
-                    ->square(),
+                    ->square()
+                    ->tooltip('Use Visualizar para assistir ao video'),
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
                     ->searchable()
@@ -51,6 +54,30 @@ class AcolhidoVideosTable
                     ->sortable(),
             ])
             ->recordActions([
+                Action::make('visualizar')
+                    ->label('Visualizar')
+                    ->icon('heroicon-o-eye')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Fechar')
+                    ->modalWidth('4xl')
+                    ->visible(fn ($record): bool => filled($record->youtubeEmbedUrl()))
+                    ->modalHeading(fn ($record): string => $record->titulo ?: 'Visualizar video')
+                    ->modalDescription(fn ($record): ?string => $record->descricao ?: 'Video liberado para o portal da familia.')
+                    ->modalContent(function ($record): HtmlString {
+                        $embedUrl = $record->youtubeEmbedUrl();
+
+                        if (blank($embedUrl)) {
+                            return new HtmlString('<p class="text-sm text-gray-500">Este video ainda nao possui um link valido para exibicao.</p>');
+                        }
+
+                        return new HtmlString(
+                            '<div class="space-y-4">'.
+                                '<div class="overflow-hidden rounded-lg border border-gray-200 bg-black shadow-sm">'.
+                                    '<iframe src="'.e($embedUrl).'" class="aspect-video w-full" allowfullscreen loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>'.
+                                '</div>'.
+                            '</div>'
+                        );
+                    }),
                 EditAction::make(),
                 DeleteAction::make(),
             ])

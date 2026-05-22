@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Users;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Models\Acolhido;
 use App\Models\User;
+use App\Support\UserRoleManager;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -26,6 +27,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -104,6 +106,8 @@ class UserResource extends Resource
                                 ->multiple()
                                 ->preload()
                                 ->searchable()
+                                ->required(fn (callable $get): bool => filled($get('acolhido_id')))
+                                ->helperText('O controle do painel deste usuario sera definido pelo perfil selecionado no Shield.')
                                 ->columnSpanFull(),
                             TextInput::make('password')
                                 ->label('Senha')
@@ -229,6 +233,7 @@ class UserResource extends Resource
                     ->label('Perfis de acesso')
                     ->badge()
                     ->separator(',')
+                    ->placeholder('Sem perfil')
                     ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -243,8 +248,12 @@ class UserResource extends Resource
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ViewAction::make()
+                    ->label('Visualizar'),
+                EditAction::make()
+                    ->using(function (Model $record, array $data): Model {
+                        return static::updateUserWithRoles($record, $data);
+                    }),
                 DeleteAction::make(),
             ])
             ->toolbarActions([
@@ -295,5 +304,29 @@ class UserResource extends Resource
             'SE' => 'Sergipe',
             'TO' => 'Tocantins',
         ];
+    }
+
+    public static function createUserWithRoles(array $data): User
+    {
+        ['attributes' => $attributes, 'roles' => $roles] = UserRoleManager::splitFormData($data);
+
+        /** @var User $user */
+        $user = static::getModel()::create($attributes);
+        UserRoleManager::syncRoles($user, $roles);
+
+        return $user;
+    }
+
+    public static function updateUserWithRoles(Model $record, array $data): Model
+    {
+        ['attributes' => $attributes, 'roles' => $roles] = UserRoleManager::splitFormData($data);
+
+        $record->update($attributes);
+
+        if ($record instanceof User) {
+            UserRoleManager::syncRoles($record, $roles);
+        }
+
+        return $record;
     }
 }

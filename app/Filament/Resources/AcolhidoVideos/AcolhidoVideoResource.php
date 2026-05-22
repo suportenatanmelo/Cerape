@@ -8,11 +8,13 @@ use App\Filament\Resources\AcolhidoVideos\Tables\AcolhidoVideosTable;
 use App\Models\AcolhidoVideo;
 use App\Support\AcolhidoAccess;
 use App\Support\PortalContext;
+use App\Support\PortalResourceAuthorization;
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use UnitEnum;
 
 class AcolhidoVideoResource extends Resource
@@ -45,12 +47,22 @@ class AcolhidoVideoResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), auth()->user());
+        $user = auth()->user();
+
+        return PortalResourceAuthorization::scopeVisibleRecords(
+            AcolhidoAccess::scopeQueryToAcolhido(parent::getEloquentQuery(), $user),
+            $user,
+        );
     }
 
     public static function getGlobalSearchEloquentQuery(): Builder
     {
-        return AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), auth()->user());
+        $user = auth()->user();
+
+        return PortalResourceAuthorization::scopeVisibleRecords(
+            AcolhidoAccess::scopeQueryToAcolhido(parent::getGlobalSearchEloquentQuery(), $user),
+            $user,
+        );
     }
 
     public static function getPages(): array
@@ -68,6 +80,36 @@ class AcolhidoVideoResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return auth()->check() && static::canViewAny();
+    }
+
+    public static function canViewAny(): bool
+    {
+        return PortalResourceAuthorization::canViewAny(auth()->user(), 'AcolhidoVideo');
+    }
+
+    public static function canCreate(): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoVideo', 'create');
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return PortalResourceAuthorization::canViewRecord(auth()->user(), 'AcolhidoVideo', $record->acolhido_id);
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoVideo', 'update');
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoVideo', 'delete');
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return PortalResourceAuthorization::canManage(auth()->user(), 'AcolhidoVideo', 'deleteAny');
     }
 
     public static function getNavigationBadge(): ?string
