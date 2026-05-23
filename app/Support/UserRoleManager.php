@@ -17,7 +17,7 @@ class UserRoleManager
 
         return [
             'attributes' => $data,
-            'roles' => array_values(array_filter($roles, fn (mixed $role): bool => filled($role))),
+            'roles' => array_values(array_unique(array_filter($roles, fn (mixed $role): bool => filled($role)))),
         ];
     }
 
@@ -29,14 +29,33 @@ class UserRoleManager
         $roleModel = app(config('permission.models.role'));
 
         $roles = collect($selectedRoles)
+            ->filter(fn (mixed $role): bool => filled($role))
             ->map(fn (mixed $role): mixed => is_numeric($role) ? (int) $role : $role)
+            ->unique()
+            ->values();
+
+        if ($roles->isEmpty()) {
+            $user->syncRoles([]);
+
+            return;
+        }
+
+        $roles = $roles
             ->pipe(function (Collection $roles) use ($roleModel): Collection {
                 $ids = $roles->filter(fn (mixed $role): bool => is_int($role))->values();
                 $names = $roles->filter(fn (mixed $role): bool => is_string($role))->values();
 
                 return $roleModel::query()
-                    ->when($ids->isNotEmpty(), fn ($query) => $query->orWhereIn('id', $ids->all()))
-                    ->when($names->isNotEmpty(), fn ($query) => $query->orWhereIn('name', $names->all()))
+                    ->where(function ($query) use ($ids, $names): void {
+                        if ($ids->isNotEmpty()) {
+                            $query->whereIn('id', $ids->all());
+                        }
+
+                        if ($names->isNotEmpty()) {
+                            $method = $ids->isNotEmpty() ? 'orWhereIn' : 'whereIn';
+                            $query->{$method}('name', $names->all());
+                        }
+                    })
                     ->get();
             });
 

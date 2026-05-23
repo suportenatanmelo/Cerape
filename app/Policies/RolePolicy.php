@@ -7,13 +7,13 @@ namespace App\Policies;
 use App\Models\User;
 use App\Support\ShieldPermission;
 use BezhanSalleh\FilamentShield\Support\Utils;
-use Spatie\Permission\Models\Role;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Spatie\Permission\Models\Role;
 
 class RolePolicy
 {
     use HandlesAuthorization;
-    
+
     public function viewAny(User $authUser): bool
     {
         return $this->allows($authUser, 'viewAny');
@@ -111,5 +111,4 @@ class RolePolicy
 
         return $authUser->can($ability, $roleModel);
     }
-
 }

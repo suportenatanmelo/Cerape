@@ -258,7 +258,10 @@ return [
     |
     */
 
-    'custom_permissions' => [],
+    'custom_permissions' => [
+        'View:Chatify',
+        'Create:Chatify',
+    ],
 
     /*
     |--------------------------------------------------------------------------

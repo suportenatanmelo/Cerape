@@ -6,82 +6,82 @@ namespace App\Policies;
 
 use App\Models\SubstanciaPsicoativas;
 use App\Models\User;
-use App\Support\ShieldPermission;
+use App\Policies\Concerns\AuthorizesShieldPermissions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class SubstanciaPsicoativasPolicy
 {
+    use AuthorizesShieldPermissions;
     use HandlesAuthorization;
-    
+
     public function viewAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'viewAny', 'SubstanciaPsicoativas');
+        return $this->allows($authUser, 'viewAny', 'SubstanciaPsicoativas');
     }
 
     public function view(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
-        return ShieldPermission::allows($authUser, 'view', 'SubstanciaPsicoativas')
+        return $this->allows($authUser, 'view', 'SubstanciaPsicoativas')
             && $authUser->canAccessAcolhido($substanciaPsicoativas->acolhido_id);
     }
 
     public function create(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'create', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'create', 'SubstanciaPsicoativas');
     }
 
     public function update(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'update', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'update', 'SubstanciaPsicoativas');
     }
 
     public function delete(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'delete', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'delete', 'SubstanciaPsicoativas');
     }
 
     public function deleteAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'deleteAny', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'deleteAny', 'SubstanciaPsicoativas');
     }
 
     public function restore(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'restore', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'restore', 'SubstanciaPsicoativas');
     }
 
     public function forceDelete(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'forceDelete', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'forceDelete', 'SubstanciaPsicoativas');
     }
 
     public function forceDeleteAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'forceDeleteAny', 'SubstanciaPsicoativas');
     }
 
     public function restoreAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'restoreAny', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'restoreAny', 'SubstanciaPsicoativas');
     }
 
     public function replicate(User $authUser, SubstanciaPsicoativas $substanciaPsicoativas): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'replicate', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'replicate', 'SubstanciaPsicoativas');
     }
 
     public function reorder(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'reorder', 'SubstanciaPsicoativas');
+            && $this->allows($authUser, 'reorder', 'SubstanciaPsicoativas');
     }
-
 }

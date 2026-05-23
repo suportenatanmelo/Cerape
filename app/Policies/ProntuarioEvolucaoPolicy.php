@@ -6,82 +6,82 @@ namespace App\Policies;
 
 use App\Models\ProntuarioEvolucao;
 use App\Models\User;
-use App\Support\ShieldPermission;
+use App\Policies\Concerns\AuthorizesShieldPermissions;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProntuarioEvolucaoPolicy
 {
+    use AuthorizesShieldPermissions;
     use HandlesAuthorization;
-    
+
     public function viewAny(User $authUser): bool
     {
-        return ShieldPermission::allows($authUser, 'viewAny', 'ProntuarioEvolucao');
+        return $this->allows($authUser, 'viewAny', 'ProntuarioEvolucao');
     }
 
     public function view(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
-        return ShieldPermission::allows($authUser, 'view', 'ProntuarioEvolucao')
+        return $this->allows($authUser, 'view', 'ProntuarioEvolucao')
             && $authUser->canAccessAcolhido($prontuarioEvolucao->acolhido_id);
     }
 
     public function create(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'create', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'create', 'ProntuarioEvolucao');
     }
 
     public function update(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'update', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'update', 'ProntuarioEvolucao');
     }
 
     public function delete(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'delete', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'delete', 'ProntuarioEvolucao');
     }
 
     public function deleteAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'deleteAny', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'deleteAny', 'ProntuarioEvolucao');
     }
 
     public function restore(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'restore', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'restore', 'ProntuarioEvolucao');
     }
 
     public function forceDelete(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'forceDelete', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'forceDelete', 'ProntuarioEvolucao');
     }
 
     public function forceDeleteAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'forceDeleteAny', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'forceDeleteAny', 'ProntuarioEvolucao');
     }
 
     public function restoreAny(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'restoreAny', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'restoreAny', 'ProntuarioEvolucao');
     }
 
     public function replicate(User $authUser, ProntuarioEvolucao $prontuarioEvolucao): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'replicate', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'replicate', 'ProntuarioEvolucao');
     }
 
     public function reorder(User $authUser): bool
     {
         return ! $authUser->isRestrictedToAcolhido()
-            && ShieldPermission::allows($authUser, 'reorder', 'ProntuarioEvolucao');
+            && $this->allows($authUser, 'reorder', 'ProntuarioEvolucao');
     }
-
 }

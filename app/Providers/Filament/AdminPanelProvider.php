@@ -42,6 +42,7 @@ class AdminPanelProvider extends PanelProvider
         $navigationGroups = PortalContext::isFamilyUser()
             ? [
                 PortalContext::portalNavigationGroup(),
+                PortalContext::communicationNavigationGroup(),
             ]
             : [
                 PortalContext::portalNavigationGroup(),
@@ -67,10 +68,7 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(1)
                     ->url(fn (): string => route(config('chatify.routes.prefix')))
                     ->visible(fn (): bool => FeedbackFamiliar::canAccess()),
-                NavigationItem::make('GOV BR')
-                    ->url('https://servicos.acesso.gov.br/')
-                    ->icon('heroicon-o-globe-alt')
-                    ->sort(99),
+
             ])
             ->profile(Profile::class, isSimple: false)
             ->databaseNotifications()

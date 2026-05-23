@@ -102,10 +102,29 @@ class UserResource extends Resource
                                 ->label('Email verificado em'),
                             Select::make('roles')
                                 ->label('Perfis de acesso')
-                                ->relationship('roles', 'name')
+                                ->options(fn (): array => app(config('permission.models.role'))::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all())
                                 ->multiple()
+                                ->default([])
                                 ->preload()
                                 ->searchable()
+                                ->afterStateHydrated(function (Select $component, ?User $record, mixed $state): void {
+                                    if ($record instanceof User) {
+                                        $component->state(
+                                            $record->roles
+                                                ->pluck('id')
+                                                ->map(fn (mixed $id): string => (string) $id)
+                                                ->all()
+                                        );
+                                    }
+                                })
+                                ->dehydrateStateUsing(fn (mixed $state): array => collect($state)
+                                    ->filter(fn (mixed $role): bool => filled($role))
+                                    ->map(fn (mixed $role): string => (string) $role)
+                                    ->values()
+                                    ->all())
                                 ->required(fn (callable $get): bool => filled($get('acolhido_id')))
                                 ->helperText('O controle do painel deste usuario sera definido pelo perfil selecionado no Shield.')
                                 ->columnSpanFull(),
