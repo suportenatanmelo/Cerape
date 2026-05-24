@@ -44,6 +44,7 @@ class Acolhido extends Model
         'trabalha',
         'nome_da_empresa_que_trabalha',
         'escolaridade',
+        'escolaridade_observacao',
         'profissao',
         'religiao',
         'tem_telefone',

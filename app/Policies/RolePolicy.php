@@ -4,111 +4,72 @@ declare(strict_types=1);
 
 namespace App\Policies;
 
-use App\Models\User;
-use App\Support\ShieldPermission;
-use BezhanSalleh\FilamentShield\Support\Utils;
-use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Spatie\Permission\Models\Role;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class RolePolicy
 {
     use HandlesAuthorization;
-
-    public function viewAny(User $authUser): bool
+    
+    public function viewAny(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'viewAny');
+        return $authUser->can('ViewAny:Role');
     }
 
-    public function view(User $authUser, Role $role): bool
+    public function view(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'view');
+        return $authUser->can('View:Role');
     }
 
-    public function create(User $authUser): bool
+    public function create(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'create');
+        return $authUser->can('Create:Role');
     }
 
-    public function update(User $authUser, Role $role): bool
+    public function update(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'update');
+        return $authUser->can('Update:Role');
     }
 
-    public function delete(User $authUser, Role $role): bool
+    public function delete(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'delete');
+        return $authUser->can('Delete:Role');
     }
 
-    public function deleteAny(User $authUser): bool
+    public function deleteAny(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'deleteAny');
+        return $authUser->can('DeleteAny:Role');
     }
 
-    public function restore(User $authUser, Role $role): bool
+    public function restore(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'restore');
+        return $authUser->can('Restore:Role');
     }
 
-    public function forceDelete(User $authUser, Role $role): bool
+    public function forceDelete(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'forceDelete');
+        return $authUser->can('ForceDelete:Role');
     }
 
-    public function forceDeleteAny(User $authUser): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'forceDeleteAny');
+        return $authUser->can('ForceDeleteAny:Role');
     }
 
-    public function restoreAny(User $authUser): bool
+    public function restoreAny(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'restoreAny');
+        return $authUser->can('RestoreAny:Role');
     }
 
-    public function replicate(User $authUser, Role $role): bool
+    public function replicate(AuthUser $authUser, Role $role): bool
     {
-        return $this->allows($authUser, 'replicate');
+        return $authUser->can('Replicate:Role');
     }
 
-    public function reorder(User $authUser): bool
+    public function reorder(AuthUser $authUser): bool
     {
-        return $this->allows($authUser, 'reorder');
+        return $authUser->can('Reorder:Role');
     }
 
-    private function allows(User $authUser, string $ability): bool
-    {
-        if ($authUser->isRestrictedToAcolhido()) {
-            return false;
-        }
-
-        if ($authUser->hasRole((string) config('filament-shield.super_admin.name', 'super_admin'))) {
-            return true;
-        }
-
-        if (ShieldPermission::allows($authUser, $ability, 'Role')) {
-            return true;
-        }
-
-        foreach (ShieldPermission::candidates($ability, 'Role') as $permission) {
-            if ($authUser->can($permission)) {
-                return true;
-            }
-        }
-
-        $legacy = match ($ability) {
-            'viewAny' => 'view_any:role',
-            'deleteAny' => 'delete_any:role',
-            'forceDelete' => 'force_delete:role',
-            'forceDeleteAny' => 'force_delete_any:role',
-            'restoreAny' => 'restore_any:role',
-            default => strtolower($ability) . ':role',
-        };
-
-        if ($authUser->can($legacy)) {
-            return true;
-        }
-
-        $roleModel = Utils::getRoleModel();
-
-        return $authUser->can($ability, $roleModel);
-    }
 }

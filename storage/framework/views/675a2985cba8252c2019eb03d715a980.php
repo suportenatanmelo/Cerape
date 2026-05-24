@@ -1,4 +1,4 @@
-@php
+<?php
     $context = $context ?? 'admin';
     $isFamily = $context === 'family';
     $wrapperClasses = $isFamily
@@ -46,10 +46,10 @@
     $totalImages = count($imageUrls ?? []);
     $periodCount = count($galleryTimeline ?? []);
     $latestUpdate = $gallery?->lastGalleryUpdateLabel();
-@endphp
+?>
 
-@once
-    @push('styles')
+<?php if (! $__env->hasRenderedOnce('e16ee55d-9081-4dc5-9115-4a791683869e')): $__env->markAsRenderedOnce('e16ee55d-9081-4dc5-9115-4a791683869e'); ?>
+    <?php $__env->startPush('styles'); ?>
         <style>
             .family-gallery-shell {
                 position: relative;
@@ -83,102 +83,109 @@
                 border-radius: 999px;
             }
         </style>
-    @endpush
-@endonce
+    <?php $__env->stopPush(); ?>
+<?php endif; ?>
 
-<div class="{{ $wrapperClasses }}">
-    <div class="relative border-b {{ $headerBorder }} px-6 py-6 sm:px-8">
-        <p class="{{ $eyebrowClass }}">
-            {{ $isFamily ? 'Dashboard da familia' : 'Dashboard institucional' }}
+<div class="<?php echo e($wrapperClasses); ?>">
+    <div class="relative border-b <?php echo e($headerBorder); ?> px-6 py-6 sm:px-8">
+        <p class="<?php echo e($eyebrowClass); ?>">
+            <?php echo e($isFamily ? 'Dashboard da familia' : 'Dashboard institucional'); ?>
+
         </p>
         <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-3xl">
-                <h2 class="{{ $titleClass }}">
-                    {{ $gallery?->titulo ?: 'Galeria do acolhido' }}
+                <h2 class="<?php echo e($titleClass); ?>">
+                    <?php echo e($gallery?->titulo ?: 'Galeria do acolhido'); ?>
+
                 </h2>
-                <p class="{{ $descriptionClass }}">
-                    {{ $gallery?->descricao ?: 'Clique nas imagens para ampliar, navegar, dar zoom e visualizar em tela cheia.' }}
+                <p class="<?php echo e($descriptionClass); ?>">
+                    <?php echo e($gallery?->descricao ?: 'Clique nas imagens para ampliar, navegar, dar zoom e visualizar em tela cheia.'); ?>
+
                 </p>
                 <div class="mt-4 flex flex-wrap gap-2">
-                    <span class="{{ $chipClass }}">
-                        {{ $periodCount }} momentos
+                    <span class="<?php echo e($chipClass); ?>">
+                        <?php echo e($periodCount); ?> momentos
                     </span>
-                    <span class="{{ $chipClass }}">
-                        {{ $totalImages }} imagens
+                    <span class="<?php echo e($chipClass); ?>">
+                        <?php echo e($totalImages); ?> imagens
                     </span>
-                    @if ($gallery?->ativo)
-                        <span class="{{ $chipClass }}">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($gallery?->ativo): ?>
+                        <span class="<?php echo e($chipClass); ?>">
                             Album ativo no portal
                         </span>
-                    @endif
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
-                @if (filled($latestUpdate))
-                    <p class="mt-3 text-[11px] font-semibold uppercase tracking-[0.24em] {{ $isFamily ? 'text-neutral-500' : 'text-slate-500' }}">
-                        Ultima atualizacao: {{ $latestUpdate }}
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(filled($latestUpdate)): ?>
+                    <p class="mt-3 text-[11px] font-semibold uppercase tracking-[0.24em] <?php echo e($isFamily ? 'text-neutral-500' : 'text-slate-500'); ?>">
+                        Ultima atualizacao: <?php echo e($latestUpdate); ?>
+
                     </p>
-                @endif
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
-            <div class="{{ $badgeClass }}">
-                {{ $totalImages }} imagens de {{ $acolhido?->nome_completo_paciente }}
+            <div class="<?php echo e($badgeClass); ?>">
+                <?php echo e($totalImages); ?> imagens de <?php echo e($acolhido?->nome_completo_paciente); ?>
+
             </div>
         </div>
     </div>
 
     <div class="relative space-y-8 px-6 py-6 sm:px-8">
         <div class="grid gap-4 lg:grid-cols-3">
-            <div class="{{ $statCardClass }}">
-                <p class="{{ $statLabelClass }}">Acervo visual</p>
-                <p class="{{ $statValueClass }}">{{ $totalImages }}</p>
-                <p class="mt-2 text-sm {{ $isFamily ? 'text-neutral-600' : 'text-slate-600' }}">
+            <div class="<?php echo e($statCardClass); ?>">
+                <p class="<?php echo e($statLabelClass); ?>">Acervo visual</p>
+                <p class="<?php echo e($statValueClass); ?>"><?php echo e($totalImages); ?></p>
+                <p class="mt-2 text-sm <?php echo e($isFamily ? 'text-neutral-600' : 'text-slate-600'); ?>">
                     Fotografias e registros disponiveis neste album.
                 </p>
             </div>
-            <div class="{{ $statCardClass }}">
-                <p class="{{ $statLabelClass }}">Linha do tempo</p>
-                <p class="{{ $statValueClass }}">{{ $periodCount }}</p>
-                <p class="mt-2 text-sm {{ $isFamily ? 'text-neutral-600' : 'text-slate-600' }}">
+            <div class="<?php echo e($statCardClass); ?>">
+                <p class="<?php echo e($statLabelClass); ?>">Linha do tempo</p>
+                <p class="<?php echo e($statValueClass); ?>"><?php echo e($periodCount); ?></p>
+                <p class="mt-2 text-sm <?php echo e($isFamily ? 'text-neutral-600' : 'text-slate-600'); ?>">
                     Datas agrupadas para leitura cronologica do material.
                 </p>
             </div>
-            <div class="{{ $statCardClass }}">
-                <p class="{{ $statLabelClass }}">Ultimo movimento</p>
-                <p class="mt-2 font-serif text-2xl {{ $isFamily ? 'text-neutral-950' : 'text-slate-950' }}">
-                    {{ $latestUpdate ?: '--' }}
+            <div class="<?php echo e($statCardClass); ?>">
+                <p class="<?php echo e($statLabelClass); ?>">Ultimo movimento</p>
+                <p class="mt-2 font-serif text-2xl <?php echo e($isFamily ? 'text-neutral-950' : 'text-slate-950'); ?>">
+                    <?php echo e($latestUpdate ?: '--'); ?>
+
                 </p>
-                <p class="mt-2 text-sm {{ $isFamily ? 'text-neutral-600' : 'text-slate-600' }}">
+                <p class="mt-2 text-sm <?php echo e($isFamily ? 'text-neutral-600' : 'text-slate-600'); ?>">
                     Registro mais recente publicado nesta galeria.
                 </p>
             </div>
         </div>
 
-        @forelse (($galleryTimeline ?? []) as $galleryGroup)
-            <section class="space-y-4 rounded-[1.6rem] border {{ $isFamily ? 'border-neutral-900/15 bg-white/35' : 'border-slate-200 bg-slate-50/55' }} p-4 sm:p-5">
-                <div class="flex items-center justify-between gap-3 border-b border-dashed {{ $sectionRuleClass }} pb-3">
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = ($galleryTimeline ?? []); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $galleryGroup): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <section class="space-y-4 rounded-[1.6rem] border <?php echo e($isFamily ? 'border-neutral-900/15 bg-white/35' : 'border-slate-200 bg-slate-50/55'); ?> p-4 sm:p-5">
+                <div class="flex items-center justify-between gap-3 border-b border-dashed <?php echo e($sectionRuleClass); ?> pb-3">
                     <div>
-                        <h3 class="{{ $sectionTitleClass }}">
-                            {{ $galleryGroup['label'] }}
+                        <h3 class="<?php echo e($sectionTitleClass); ?>">
+                            <?php echo e($galleryGroup['label']); ?>
+
                         </h3>
-                        <p class="{{ $sectionDescriptionClass }}">
-                            {{ count($galleryGroup['images']) }} imagem(ns) adicionada(s) nesta data
+                        <p class="<?php echo e($sectionDescriptionClass); ?>">
+                            <?php echo e(count($galleryGroup['images'])); ?> imagem(ns) adicionada(s) nesta data
                         </p>
                     </div>
 
-                    @php
+                    <?php
                         $galleryId = 'gallery-timeline-' . str_replace(['{', '}', '-'], '', (string) \Illuminate\Support\Str::uuid());
-                    @endphp
+                    ?>
 
                     <div class="hidden items-center gap-2 sm:flex">
                         <button
                             type="button"
-                            class="{{ $buttonClass }}"
-                            onclick="document.getElementById('{{ $galleryId }}').scrollBy({ left: -320, behavior: 'smooth' })"
+                            class="<?php echo e($buttonClass); ?>"
+                            onclick="document.getElementById('<?php echo e($galleryId); ?>').scrollBy({ left: -320, behavior: 'smooth' })"
                         >
                             Prev
                         </button>
                         <button
                             type="button"
-                            class="{{ $buttonClass }}"
-                            onclick="document.getElementById('{{ $galleryId }}').scrollBy({ left: 320, behavior: 'smooth' })"
+                            class="<?php echo e($buttonClass); ?>"
+                            onclick="document.getElementById('<?php echo e($galleryId); ?>').scrollBy({ left: 320, behavior: 'smooth' })"
                         >
                             Next
                         </button>
@@ -186,20 +193,20 @@
                 </div>
 
                 <div
-                    id="{{ $galleryId }}"
+                    id="<?php echo e($galleryId); ?>"
                     class="gallery-timeline-strip image-gallery family-gallery-dashboard flex snap-x snap-mandatory gap-5 overflow-x-auto pb-3 pr-2"
                     data-viewer-gallery
                 >
-                    @foreach ($galleryGroup['images'] as $image)
-                        <figure class="{{ $figureClass }}">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $galleryGroup['images']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $image): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <figure class="<?php echo e($figureClass); ?>">
                             <div class="relative aspect-video overflow-hidden bg-neutral-900">
                                 <div class="absolute inset-x-0 top-0 z-[1] h-20 bg-gradient-to-b from-black/28 to-transparent"></div>
                                 <img
-                                    src="{{ $image['url'] }}"
-                                    alt="{{ $image['caption'] }}"
+                                    src="<?php echo e($image['url']); ?>"
+                                    alt="<?php echo e($image['caption']); ?>"
                                     loading="lazy"
                                     class="h-full w-full cursor-zoom-in object-cover transition duration-500 hover:scale-[1.04]"
-                                    data-added-at="{{ $image['added_at'] }}"
+                                    data-added-at="<?php echo e($image['added_at']); ?>"
                                 />
                                 <div class="absolute left-3 top-3 z-[2] rounded-full bg-white/88 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-800 shadow-sm">
                                     CERAPE CRC
@@ -209,21 +216,24 @@
                                         Visualizar
                                     </span>
                                     <span class="text-[10px] font-medium uppercase tracking-[0.18em] text-white/90">
-                                        {{ $galleryGroup['label'] }}
+                                        <?php echo e($galleryGroup['label']); ?>
+
                                     </span>
                                 </div>
                             </div>
-                            <figcaption class="{{ $captionClass }}">
-                                {{ $image['caption'] }}
+                            <figcaption class="<?php echo e($captionClass); ?>">
+                                <?php echo e($image['caption']); ?>
+
                             </figcaption>
                         </figure>
-                    @endforeach
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
             </section>
-        @empty
-            <div class="rounded-[1.5rem] border border-dashed {{ $isFamily ? 'border-neutral-400 bg-white/70 text-neutral-600' : 'border-slate-300 bg-slate-50 text-slate-600' }} px-6 py-10 text-center">
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="rounded-[1.5rem] border border-dashed <?php echo e($isFamily ? 'border-neutral-400 bg-white/70 text-neutral-600' : 'border-slate-300 bg-slate-50 text-slate-600'); ?> px-6 py-10 text-center">
                 Nenhuma imagem disponivel nesta galeria.
             </div>
-        @endforelse
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
 </div>
+<?php /**PATH C:\laragon\www\cerape\resources\views/filament/resources/acolhido-galerias/gallery-timeline.blade.php ENDPATH**/ ?>

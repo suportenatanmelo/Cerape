@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Filament\Resources\Acolhidos\Schemas;
-
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -230,7 +229,12 @@ class AcolhidoInfolist
                             ->label('Escolaridade')
                             ->badge()
                             ->color('primary')
+                            ->formatStateUsing(fn (?string $state): string => AcolhidoForm::getBrazilianEducationLevelLabel($state) ?? '-')
                             ->placeholder('-'),
+                        TextEntry::make('escolaridade_observacao')
+                            ->label('Observacao da escolaridade')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->escolaridade_observacao)),
                         TextEntry::make('profissao')
                             ->label('Profissao')
                             ->badge()

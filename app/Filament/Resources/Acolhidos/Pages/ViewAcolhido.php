@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Acolhidos\Pages;
 
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
+use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Models\Acolhido;
 use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -132,7 +133,8 @@ class ViewAcolhido extends ViewRecord
                 'Nome da mae' => $acolhido->nome_da_mae,
                 'Nome do pai' => $acolhido->nome_do_pai,
                 'Cor da pele' => $acolhido->cor_da_pele,
-                'Escolaridade' => $acolhido->escolaridade,
+                'Escolaridade' => AcolhidoForm::getBrazilianEducationLevelLabel($acolhido->escolaridade),
+                'Observacao da escolaridade' => $acolhido->escolaridade_observacao,
                 'Profissao' => $acolhido->profissao,
             ],
             'Endereco e moradia' => [

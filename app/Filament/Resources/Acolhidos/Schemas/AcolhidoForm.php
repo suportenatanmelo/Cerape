@@ -155,9 +155,16 @@ class AcolhidoForm
                                         TextInput::make('cor_da_pele')
                                             ->label('Cor da pele')
                                             ->required(),
-                                        TextInput::make('escolaridade')
+                                        Select::make('escolaridade')
                                             ->label('Escolaridade')
+                                            ->options(self::getBrazilianEducationLevels())
+                                            ->searchable()
+                                            ->preload()
                                             ->required(),
+                                        TextInput::make('escolaridade_observacao')
+                                            ->label('Observacao da escolaridade')
+                                            ->placeholder('Ex.: cursando, interrompido, incompleto, EJA, supletivo...')
+                                            ->maxLength(255),
                                         TextInput::make('profissao')
                                             ->label('Profissao')
                                             ->required(),
@@ -691,6 +698,42 @@ class AcolhidoForm
     }
 
     /**
+     * @return array<string, string>
+     */
+    public static function getBrazilianEducationLevels(): array
+    {
+        return [
+            'nao_alfabetizado' => 'Nao alfabetizado(a)',
+            'alfabetizado' => 'Alfabetizado(a)',
+            'ensino_fundamental_incompleto' => 'Ensino fundamental incompleto',
+            'ensino_fundamental_completo' => 'Ensino fundamental completo',
+            'ensino_medio_incompleto' => 'Ensino medio incompleto',
+            'ensino_medio_completo' => 'Ensino medio completo',
+            'ensino_tecnico_incompleto' => 'Ensino tecnico incompleto',
+            'ensino_tecnico_completo' => 'Ensino tecnico completo',
+            'ensino_superior_incompleto' => 'Ensino superior incompleto',
+            'ensino_superior_completo' => 'Ensino superior completo',
+            'pos_graduacao_incompleta' => 'Pos-graduacao incompleta',
+            'pos_graduacao_completa' => 'Pos-graduacao completa',
+            'mestrado_incompleto' => 'Mestrado incompleto',
+            'mestrado_completo' => 'Mestrado completo',
+            'doutorado_incompleto' => 'Doutorado incompleto',
+            'doutorado_completo' => 'Doutorado completo',
+            'eja' => 'Educacao de Jovens e Adultos (EJA)',
+            'supletivo' => 'Supletivo',
+        ];
+    }
+
+    public static function getBrazilianEducationLevelLabel(?string $value): ?string
+    {
+        if (blank($value)) {
+            return null;
+        }
+
+        return self::getBrazilianEducationLevels()[$value] ?? $value;
+    }
+
+    /**
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
@@ -755,6 +798,9 @@ class AcolhidoForm
         if (! $data['trabalha']) {
             $data['nome_da_empresa_que_trabalha'] = null;
         }
+
+        $data['escolaridade'] = self::normalizeNullableString($data['escolaridade'] ?? null);
+        $data['escolaridade_observacao'] = self::normalizeNullableString($data['escolaridade_observacao'] ?? null);
 
         if (! $data['tem_telefone']) {
             $data['numero_do_telefone'] = null;
