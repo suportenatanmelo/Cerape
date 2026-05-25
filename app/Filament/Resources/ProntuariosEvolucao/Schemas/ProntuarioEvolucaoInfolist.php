@@ -35,13 +35,26 @@ class ProntuarioEvolucaoInfolist
                                 ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
+                            TextEntry::make('atividade')
+                                ->label('Atividade realizada')
+                                ->badge()
+                                ->color('success')
+                                ->formatStateUsing(fn (mixed $state): string => ProntuarioEvolucaoForm::getClinicActivityLabel($state) ?? '-')
+                                ->columnSpanFull()
+                                ->placeholder('-'),
                             TextEntry::make('data_prontuario')
                                 ->label('Data e hora do prontuario')
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('warning'),
+                            TextEntry::make('proxima_data_prontuario')
+                                ->label('Proxima data do prontuario')
+                                ->dateTime('d/m/Y H:i')
+                                ->badge()
+                                ->color('info')
+                                ->placeholder('-'),
                             TextEntry::make('created_at')
-                                ->label('Lançado no sistema em')
+                                ->label('Lancado no sistema em')
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('warning'),

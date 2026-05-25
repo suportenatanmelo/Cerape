@@ -60,6 +60,8 @@
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['actions' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($actions),'alignment' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($alignment),'full-width' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isFullWidth),'x-bind:style' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isSticky ? 'isSticky ? `width: ${width}px;` : \'\'' : null)]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal59d80b1aec4ae4c914a3e52dede19504)): ?>

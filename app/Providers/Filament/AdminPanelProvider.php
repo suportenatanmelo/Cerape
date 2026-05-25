@@ -3,7 +3,6 @@
 namespace App\Providers\Filament;
 
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
-use Awcodes\Curator\CuratorPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
@@ -106,13 +105,6 @@ class AdminPanelProvider extends PanelProvider
             )
             ->plugins([
                 ImageGalleryPlugin::make(),
-                CuratorPlugin::make()
-                    ->label('Galeria Familiar')
-                    ->pluralLabel('Galeria Familiar')
-                    ->navigationIcon('heroicon-o-photo')
-                    ->navigationGroup(fn (): string => PortalContext::mediaNavigationGroup())
-                    ->navigationSort(3)
-                    ->registerNavigation(fn (): bool => PortalContext::isFamilyUser()),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Administracao e Acesso')
                     ->navigationSort(100)

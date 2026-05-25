@@ -2,9 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\CuratorMedia;
 use App\Models\Acolhido;
-use App\Policies\CuratorMediaPolicy;
 use App\Models\DemandaAcolhido;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\User;
@@ -13,12 +11,10 @@ use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use App\Observers\UserObserver;
 use App\Support\ChatifyMessenger;
-use Awcodes\Curator\Facades\Curator;
 use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -39,15 +35,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Carbon::setLocale('pt_BR');
-
-        Gate::policy(CuratorMedia::class, CuratorMediaPolicy::class);
-
-        Curator::configure()->directory(function (): ?string {
-            $user = auth()->user();
-            $acolhidoId = $user?->linkedAcolhidoId();
-
-            return $acolhidoId ? 'galeria-familiar/acolhido-'.$acolhidoId : null;
-        });
 
         DateTimePicker::configureUsing(function (DateTimePicker $component): void {
             $component

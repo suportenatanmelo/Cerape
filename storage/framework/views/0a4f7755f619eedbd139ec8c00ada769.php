@@ -53,6 +53,8 @@ unset($__defined_vars, $__key, $__value); ?>
         \Filament\Support\prepare_inherited_attributes($attributes)
             ->class(['fi-user-avatar'])
     )]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
 <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal7aa0b6b1aa4a6b63824d7be5e541d1cb)): ?>

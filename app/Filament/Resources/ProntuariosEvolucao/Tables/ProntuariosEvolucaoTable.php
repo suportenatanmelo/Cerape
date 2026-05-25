@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\ProntuariosEvolucao\Tables;
 
+use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoForm;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -29,16 +31,28 @@ class ProntuariosEvolucaoTable
                     ->label('Registrado por')
                     ->placeholder('-')
                     ->searchable(),
+                TextColumn::make('atividade')
+                    ->label('Atividade')
+                    ->badge()
+                    ->formatStateUsing(fn (mixed $state): string => ProntuarioEvolucaoForm::getClinicActivityLabel($state) ?? '-')
+                    ->limit(50)
+                    ->tooltip(fn ($record): ?string => ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade))
+                    ->searchable(),
                 TextColumn::make('data_prontuario')
                     ->label('Data do prontuario')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
-                TextColumn::make('conteudo')
-                    ->label('Resumo da evolucao')
-                    ->formatStateUsing(fn (?string $state): string => Str::limit(trim(strip_tags($state ?? '')), 120))
-                    ->wrap(),
+                TextColumn::make('proxima_data_prontuario')
+                    ->label('Proxima data')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])
@@ -46,10 +60,13 @@ class ProntuariosEvolucaoTable
                 //
             ])
             ->recordActions([
-                ViewAction::make()
+                ActionGroup::make([
+                      ViewAction::make()
                     ->label('Visualizar'),
                 EditAction::make(),
                 DeleteAction::make(),
+                ]),
+
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

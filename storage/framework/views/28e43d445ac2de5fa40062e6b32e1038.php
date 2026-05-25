@@ -47,6 +47,8 @@
                 })
             ' : null
         ),'tag' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($isCopyable ? 'button' : 'span'),'tooltip' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute($tooltip),'attributes' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute(\Filament\Support\prepare_inherited_attributes($getExtraAttributeBag()->class(['fi-sc-text'])))]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
         <?php echo e($content); ?>
 
      <?php echo $__env->renderComponent(); ?>

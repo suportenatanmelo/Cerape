@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Awcodes\Curator\Resources\Media\MediaResource;
 use BezhanSalleh\FilamentShield\Resources\Roles\RoleResource;
 use Filament\Pages\Dashboard;
 use Filament\Widgets\AccountWidget;
@@ -187,20 +186,6 @@ return [
                 'create',
                 'update',
                 'delete',
-            ],
-            MediaResource::class => [
-                'viewAny',
-                'view',
-                'create',
-                'update',
-                'delete',
-                'deleteAny',
-                'restore',
-                'restoreAny',
-                'forceDelete',
-                'forceDeleteAny',
-                'replicate',
-                'reorder',
             ],
         ],
         'exclude' => [

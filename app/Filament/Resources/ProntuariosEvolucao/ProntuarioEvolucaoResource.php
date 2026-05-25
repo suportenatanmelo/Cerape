@@ -134,6 +134,8 @@ class ProntuarioEvolucaoResource extends Resource
             'fotoAcolhido' => self::imageDataUri($acolhido?->avatar),
             'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'personalData' => self::buildAcolhidoPersonalData($acolhido),
+            'atividadeLabel' => ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade),
+            'proximaDataProntuario' => $record->proxima_data_prontuario?->format('d/m/Y H:i'),
             'conteudoHtml' => self::normalizeReportContent((string) $record->conteudo),
         ];
     }

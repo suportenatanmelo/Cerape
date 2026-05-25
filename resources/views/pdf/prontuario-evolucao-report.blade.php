@@ -48,6 +48,8 @@
                 <h1>Relatorio de prontuario de evolucao</h1>
                 <div><strong>{{ $acolhido?->nome_completo_paciente ?? 'Acolhido nao identificado' }}</strong></div>
                 <div class="muted">Prontuario registrado em: {{ $record->data_prontuario?->format('d/m/Y H:i') ?? '-' }}</div>
+                <div class="muted">Proxima data do prontuario: {{ $proximaDataProntuario ?? '-' }}</div>
+                <div class="muted">Atividades realizadas: {{ $atividadeLabel ?? '-' }}</div>
                 <div class="muted">Registrado por: {{ $record->user?->name ?? '-' }}</div>
                 <div class="muted">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
                 <div class="pill">Evolucao clinica estruturada</div>

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Casts\CommaSeparatedString;
 
 class ProntuarioEvolucao extends Model
 {
@@ -12,12 +13,16 @@ class ProntuarioEvolucao extends Model
     protected $fillable = [
         'acolhido_id',
         'user_id',
+        'atividade',
         'data_prontuario',
+        'proxima_data_prontuario',
         'conteudo',
     ];
 
     protected $casts = [
         'data_prontuario' => 'datetime',
+        'proxima_data_prontuario' => 'datetime',
+        'atividade' => CommaSeparatedString::class,
     ];
 
     public function acolhido(): BelongsTo
