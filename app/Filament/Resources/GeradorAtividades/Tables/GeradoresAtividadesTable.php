@@ -18,37 +18,24 @@ class GeradoresAtividadesTable
     {
         return $table
             ->defaultSort('data_programacao', 'desc')
-            ->emptyStateHeading('Nenhuma programacao cadastrada')
-            ->emptyStateDescription('As programacoes diarias de atividades aparecerao aqui.')
+            ->emptyStateHeading('Nenhum quadro semanal cadastrado')
+            ->emptyStateDescription('Os planejamentos semanais de atividades aparecerao aqui.')
             ->emptyStateIcon('heroicon-o-clipboard-document-list')
             ->columns([
-                TextColumn::make('titulo')
-                    ->label('Titulo')
-                    ->searchable()
-                    ->sortable(),
+
                 TextColumn::make('data_programacao')
-                    ->label('Data')
-                    ->date('d/m/Y')
+                    ->label('Periodo')
+                    ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::getPeriodLabel($record))
                     ->sortable(),
-                TextColumn::make('acolhidos_ids')
-                    ->label('Acolhidos')
-                    ->formatStateUsing(fn (?array $state): string => GeradorAtividadeResource::formatAcolhidos($state, 3))
-                    ->tooltip(fn ($record): string => GeradorAtividadeResource::formatAcolhidos($record->acolhidos_ids))
-                    ->wrap(),
-                TextColumn::make('atividades_matutinas')
-                    ->label('Manha')
-                    ->formatStateUsing(fn (?array $state): string => GeradorAtividadeResource::formatActivities($state, 2))
-                    ->tooltip(fn ($record): string => GeradorAtividadeResource::formatActivities($record->atividades_matutinas))
-                    ->wrap(),
-                TextColumn::make('atividades_vespertinas')
-                    ->label('Tarde')
-                    ->formatStateUsing(fn (?array $state): string => GeradorAtividadeResource::formatActivities($state, 2))
-                    ->tooltip(fn ($record): string => GeradorAtividadeResource::formatActivities($record->atividades_vespertinas))
+                TextColumn::make('atividades_planejadas')
+                    ->label('Atividades praticas')
+                    ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record, 3))
+                    ->tooltip(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record))
                     ->wrap(),
                 TextColumn::make('user.name')
                     ->label('Responsavel')
                     ->placeholder('-')
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime('d/m/Y H:i')

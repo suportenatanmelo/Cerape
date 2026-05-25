@@ -35,9 +35,8 @@ return [
         ],
     ],
 
-    'correios' => [
-        'cep_base_url' => env('CORREIOS_CEP_BASE_URL', 'https://api.correios.com.br/cep/v2'),
-        'token' => env('CORREIOS_TOKEN'),
+    'viacep' => [
+        'base_url' => env('VIACEP_BASE_URL', 'https://viacep.com.br/ws'),
     ],
 
 ];

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 
 class CorreiosCepService
@@ -12,46 +11,42 @@ class CorreiosCepService
         $cep = preg_replace('/\D+/', '', $cep);
 
         if (strlen($cep) !== 8) {
-            return null;
+            return [
+                'error' => 'invalid_cep',
+            ];
         }
 
-        $token = config('services.correios.token');
-        $baseUrl = rtrim((string) config('services.correios.cep_base_url'), '/');
-
-        if (blank($token) || blank($baseUrl)) {
-            return null;
-        }
+        $baseUrl = rtrim((string) config('services.viacep.base_url', 'https://viacep.com.br/ws'), '/');
 
         $response = Http::acceptJson()
-            ->withToken($token)
             ->timeout(10)
-            ->get("{$baseUrl}/enderecos/{$cep}");
+            ->get("{$baseUrl}/{$cep}/json/");
 
         if (! $response->successful()) {
-            return null;
+            return [
+                'error' => 'service_unavailable',
+            ];
         }
 
         $payload = $response->json();
-        $item = Arr::first($payload['itens'] ?? []) ?? $payload;
 
-        if (! is_array($item)) {
-            return null;
+        if (! is_array($payload)) {
+            return [
+                'error' => 'service_unavailable',
+            ];
         }
 
-        $logradouro = trim((string) ($item['logradouro'] ?? ''));
-
-        if ($logradouro === '') {
-            $logradouro = trim(implode(' ', array_filter([
-                $item['tipoLogradouro'] ?? null,
-                $item['nomeLogradouro'] ?? null,
-            ])));
+        if (($payload['erro'] ?? false) === true) {
+            return [
+                'error' => 'not_found',
+            ];
         }
 
         return [
-            'endereco' => $logradouro !== '' ? $logradouro : null,
-            'bairro' => $item['bairro'] ?? null,
-            'municipio' => $item['localidade'] ?? null,
-            'uf' => $item['uf'] ?? null,
+            'endereco' => filled($payload['logradouro'] ?? null) ? $payload['logradouro'] : null,
+            'bairro' => $payload['bairro'] ?? null,
+            'municipio' => $payload['localidade'] ?? null,
+            'uf' => $payload['uf'] ?? null,
         ];
     }
 }

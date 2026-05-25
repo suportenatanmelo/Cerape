@@ -188,9 +188,37 @@ class AcolhidoForm
                                             ->mask('99999-999')
                                             ->live(onBlur: true)
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                                $cep = preg_replace('/\D+/', '', (string) $state);
+
+                                                if ($cep === '') {
+                                                    return;
+                                                }
+
                                                 $address = app(CorreiosCepService::class)->lookup((string) $state);
 
                                                 if (! is_array($address)) {
+                                                    return;
+                                                }
+
+                                                if (isset($address['error'])) {
+                                                    match ($address['error']) {
+                                                        'invalid_cep' => Notification::make()
+                                                            ->title('CEP invalido')
+                                                            ->body('Informe um CEP com 8 digitos para preencher o endereco.')
+                                                            ->warning()
+                                                            ->send(),
+                                                        'not_found' => Notification::make()
+                                                            ->title('CEP nao encontrado')
+                                                            ->body('O ViaCEP nao encontrou esse CEP. Confira e tente novamente.')
+                                                            ->warning()
+                                                            ->send(),
+                                                        default => Notification::make()
+                                                            ->title('Nao foi possivel consultar o CEP')
+                                                            ->body('O servico do ViaCEP esta indisponivel no momento. Tente novamente mais tarde.')
+                                                            ->danger()
+                                                            ->send(),
+                                                    };
+
                                                     return;
                                                 }
 
@@ -198,7 +226,8 @@ class AcolhidoForm
                                                 $set('bairro_do_paciente', $address['bairro'] ?? null);
                                                 $set('municipio_do_paciente', $address['municipio'] ?? null);
                                                 $set('uf_municipio_do_paciente', $address['uf'] ?? null);
-                                            }),
+                                            })
+                                            ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
                                             ->label('Endereco do paciente')
                                             ->required(),

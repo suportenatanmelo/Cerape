@@ -13,7 +13,9 @@ class GeradorAtividade extends Model
         'user_id',
         'titulo',
         'data_programacao',
+        'periodo_fim',
         'acolhidos_ids',
+        'atividades_planejadas',
         'atividades_matutinas',
         'atividades_vespertinas',
         'observacoes',
@@ -21,7 +23,9 @@ class GeradorAtividade extends Model
 
     protected $casts = [
         'data_programacao' => 'date',
+        'periodo_fim' => 'date',
         'acolhidos_ids' => 'array',
+        'atividades_planejadas' => 'array',
         'atividades_matutinas' => 'array',
         'atividades_vespertinas' => 'array',
     ];

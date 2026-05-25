@@ -15,16 +15,16 @@ class ViewGeradorAtividade extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        return 'Programacao de atividades';
+        return 'Quadro semanal de atividades';
     }
 
     public function getSubheading(): string | Htmlable | null
     {
         $record = $this->getRecord();
 
-        return trim(implode(' • ', array_filter([
+        return trim(implode(' | ', array_filter([
             $record->titulo,
-            $record->data_programacao?->format('d/m/Y'),
+            GeradorAtividadeResource::getPeriodLabel($record),
         ])));
     }
 

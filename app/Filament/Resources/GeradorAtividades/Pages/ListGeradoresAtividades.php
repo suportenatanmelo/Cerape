@@ -18,7 +18,7 @@ class ListGeradoresAtividades extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Nova programacao'),
+            CreateAction::make()->label('Nova semana de atividades'),
         ];
     }
 }

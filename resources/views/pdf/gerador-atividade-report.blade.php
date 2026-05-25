@@ -2,79 +2,83 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Programacao de atividades</title>
+    <title>Quadro semanal de atividades</title>
     <style>
         * { box-sizing: border-box; }
-        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; margin: 0; }
-        .page { padding: 26px; }
-        .hero { border-bottom: 2px solid #0f766e; padding-bottom: 18px; width: 100%; }
-        .muted { color: #6b7280; margin-bottom: 4px; }
-        .pill { background: #ccfbf1; border-radius: 999px; color: #115e59; display: inline-block; font-size: 10px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
-        h1 { font-size: 21px; margin: 0 0 6px; }
-        h2 { color: #0f766e; font-size: 14px; margin: 22px 0 10px; }
-        .chips { margin-top: 8px; }
-        .chip { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 999px; display: inline-block; margin: 0 6px 6px 0; padding: 5px 10px; }
-        .grid { width: 100%; }
-        .grid-item { display: inline-block; vertical-align: top; width: 48%; }
-        .card { border: 1px solid #d1d5db; border-radius: 14px; min-height: 180px; padding: 16px; }
-        .card ul { margin: 0; padding-left: 18px; }
-        .card li { margin-bottom: 7px; }
-        .observacoes { border: 1px solid #d1d5db; border-radius: 14px; margin-top: 8px; padding: 16px; }
-        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 24px; padding-top: 8px; }
+        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
+        .page { padding: 20px; }
+        .title { border: 1px solid #9ca3af; border-bottom: 0; font-size: 20px; font-weight: bold; padding: 10px 14px; text-align: center; text-transform: uppercase; }
+        .title span { color: #111827; }
+        .meta { border: 1px solid #9ca3af; border-bottom: 0; padding: 8px 12px; }
+        .meta-line { margin-bottom: 3px; }
+        .meta-line:last-child { margin-bottom: 0; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #9ca3af; padding: 6px 7px; vertical-align: top; }
+        th { background: #f3f4f6; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .col-order { text-align: center; width: 7%; }
+        .col-activity { width: 26%; }
+        .col-demand { width: 47%; }
+        .col-names { width: 20%; }
+        .demand p { margin: 0 0 5px; }
+        .demand ul, .demand ol { margin: 4px 0 0 16px; padding: 0; }
+        .demand li { margin-bottom: 3px; }
+        .names-list { margin: 0; padding-left: 16px; }
+        .names-list li { margin-bottom: 2px; }
+        .observacoes { border: 1px solid #9ca3af; border-top: 0; padding: 10px 12px; }
+        .observacoes h2 { font-size: 11px; margin: 0 0 6px; text-transform: uppercase; }
+        .footer { color: #6b7280; font-size: 9px; margin-top: 10px; text-align: right; }
     </style>
 </head>
 <body>
     <div class="page">
         @include('pdf.partials.cerape-brand-header')
 
-        <div class="hero">
-            <h1>{{ $record->titulo }}</h1>
-            <div class="muted"><strong>Data da programacao:</strong> {{ $record->data_programacao?->format('d/m/Y') ?? '-' }}</div>
-            <div class="muted"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
-            <div class="muted"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
-            <div class="pill">Planejamento diario organizado por turno</div>
+        <div class="title">
+            {{ $record->titulo }} <span>- {{ $periodoLabel }}</span>
+        </div>
+        <div class="meta">
+            <div class="meta-line"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
+            <div class="meta-line"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
         </div>
 
-        <h2>Acolhidos selecionados</h2>
-        <div class="chips">
-            @forelse ($acolhidos as $acolhido)
-                <span class="chip">{{ $acolhido }}</span>
-            @empty
-                <span class="chip">Nenhum acolhido selecionado</span>
-            @endforelse
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-order">Ordem</th>
+                    <th class="col-activity">Atividades praticas</th>
+                    <th class="col-demand">Demanda</th>
+                    <th class="col-names">Nome</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($atividadesPlanejadas as $atividade)
+                    <tr>
+                        <td class="col-order">{{ $atividade['ordem'] }}</td>
+                        <td class="col-activity">{{ $atividade['atividade_pratica'] ?: '-' }}</td>
+                        <td class="col-demand demand">{!! $atividade['demanda_html'] ?: '-' !!}</td>
+                        <td class="col-names">
+                            @if ($atividade['acolhidos_nomes'] === [])
+                                -
+                            @else
+                                <ul class="names-list">
+                                    @foreach ($atividade['acolhidos_nomes'] as $nome)
+                                        <li>{{ $nome }}</li>
+                                    @endforeach
+                                </ul>
+                            @endif
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4">Nenhuma atividade cadastrada para este periodo.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
 
-        <h2>Atividades programadas</h2>
-        <div class="grid">
-            <div class="grid-item">
-                <div class="card">
-                    <strong>Turno matutino</strong>
-                    <ul>
-                        @forelse ($atividadesMatutinas as $atividade)
-                            <li>{{ $atividade }}</li>
-                        @empty
-                            <li>Nenhuma atividade matutina selecionada.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div>
-            <div class="grid-item" style="margin-left: 3.5%;">
-                <div class="card">
-                    <strong>Turno vespertino</strong>
-                    <ul>
-                        @forelse ($atividadesVespertinas as $atividade)
-                            <li>{{ $atividade }}</li>
-                        @empty
-                            <li>Nenhuma atividade vespertina selecionada.</li>
-                        @endforelse
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <h2>Observacoes complementares</h2>
         <div class="observacoes">
-            {{ filled($record->observacoes) ? $record->observacoes : 'Sem observacoes adicionais.' }}
+            <h2>Observacoes complementares</h2>
+            {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observacoes adicionais.' !!}
         </div>
 
         <div class="footer">
