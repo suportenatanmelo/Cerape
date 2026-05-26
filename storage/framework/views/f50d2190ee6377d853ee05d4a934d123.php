@@ -6,20 +6,10 @@
 ?>
 
 <div class="space-y-4">
-    <div class="grid gap-4 md:grid-cols-3">
+    <div class="grid gap-4 md:grid-cols-1">
         <div class="rounded-2xl border border-primary-100 bg-gradient-to-br from-primary-50 to-white p-4 shadow-sm">
             <div class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Periodo</div>
             <div class="mt-2 text-base font-semibold text-gray-900"><?php echo e($periodo); ?></div>
-        </div>
-        <div class="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-4 shadow-sm">
-            <div class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Acolhidos Envolvidos</div>
-            <div class="mt-2 text-base font-semibold text-gray-900"><?php echo e(count($acolhidos)); ?></div>
-            <div class="mt-2 text-xs text-gray-600"><?php echo e($acolhidos === [] ? 'Nenhum acolhido vinculado.' : implode(', ', array_slice($acolhidos, 0, 4)) . (count($acolhidos) > 4 ? ' +' . (count($acolhidos) - 4) : '')); ?></div>
-        </div>
-        <div class="rounded-2xl border border-amber-100 bg-gradient-to-br from-amber-50 to-white p-4 shadow-sm">
-            <div class="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">Atividades Lancadas</div>
-            <div class="mt-2 text-base font-semibold text-gray-900"><?php echo e(count($rows)); ?></div>
-            <div class="mt-2 text-xs text-gray-600">Linhas organizadas para acompanhamento semanal.</div>
         </div>
     </div>
 

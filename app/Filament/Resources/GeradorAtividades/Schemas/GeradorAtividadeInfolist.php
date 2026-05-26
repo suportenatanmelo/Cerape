@@ -38,16 +38,6 @@ class GeradorAtividadeInfolist
                                 ->badge()
                                 ->color('info')
                                 ->placeholder('-'),
-                            TextEntry::make('atividades_planejadas')
-                                ->label('Quantidade de atividades')
-                                ->formatStateUsing(fn ($record): string => (string) GeradorAtividadeResource::getPlannedActivitiesCount($record))
-                                ->badge()
-                                ->color('success'),
-                            TextEntry::make('acolhidos_ids')
-                                ->label('Quantidade de acolhidos')
-                                ->formatStateUsing(fn ($record): string => (string) count($record->acolhidos_ids ?? []))
-                                ->badge()
-                                ->color('primary'),
                             TextEntry::make('updated_at')
                                 ->label('Ultima atualizacao')
                                 ->dateTime('d/m/Y H:i')
