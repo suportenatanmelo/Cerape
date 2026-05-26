@@ -7,6 +7,7 @@ use App\Filament\Resources\Reunioes\Pages\EditReuniao;
 use App\Filament\Resources\Reunioes\Pages\ListReunioes;
 use App\Filament\Resources\Reunioes\Pages\ViewReuniao;
 use App\Models\Reuniao;
+use App\Models\User;
 use App\Support\PortalContext;
 use App\Support\ShieldPermission;
 use BackedEnum;
@@ -18,6 +19,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Infolists\Components\TextEntry;
@@ -36,15 +38,15 @@ class ReuniaoResource extends Resource
 {
     protected static ?string $model = Reuniao::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reuniões';
+    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reunioes';
 
-    protected static ?string $navigationLabel = 'Reuniões';
+    protected static ?string $navigationLabel = 'Reunioes';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedDocumentText;
 
-    protected static ?string $modelLabel = 'ata de reunião';
+    protected static ?string $modelLabel = 'ata de reuniao';
 
-    protected static ?string $pluralModelLabel = 'atas de reunião';
+    protected static ?string $pluralModelLabel = 'atas de reuniao';
 
     protected static ?string $recordTitleAttribute = 'titulo';
 
@@ -54,8 +56,8 @@ class ReuniaoResource extends Resource
             ->components([
                 Grid::make(1)
                     ->schema([
-                        Section::make('Ata da reunião')
-                            ->description('A ata é um documento oficial que registra de forma clara, objetiva e resumida todas as discussões, deliberações e decisões tomadas durante uma reunião, assembleia ou evento. Ela funciona como um registro legal e administrativo, garantindo transparência e segurança jurídica sobre o que foi acordado entre as partes presentes.')
+                        Section::make('Ata da reuniao')
+                            ->description('Registre o titulo, a data, os participantes internos e o conteudo formal da ata.')
                             ->icon('heroicon-o-document-text')
                             ->schema([
                                 Grid::make([
@@ -63,43 +65,46 @@ class ReuniaoResource extends Resource
                                     'md' => 2,
                                 ])->schema([
                                     TextInput::make('titulo')
-                                        ->label('Título')
+                                        ->label('Titulo')
                                         ->required()
                                         ->maxLength(255),
-
                                     TextInput::make('usuario_responsavel')
-                                        ->label('Responsável pelo registro')
+                                        ->label('Responsavel pelo registro')
                                         ->default(fn (): string => auth()->user()?->name ?? 'Sistema')
                                         ->disabled()
                                         ->dehydrated(false),
-
                                     Textarea::make('descricao')
-                                        ->label('Descrição')
+                                        ->label('Descricao')
                                         ->rows(3)
                                         ->columnSpanFull(),
-
                                     DateTimePicker::make('data_reuniao')
-                                        ->label('Data e hora da reunião')
+                                        ->label('Data e hora da reuniao')
                                         ->seconds(false)
                                         ->native(false)
-                                        ->displayFormat('d/m/Y H:i')
                                         ->default(now())
                                         ->required(),
+                                    Select::make('participantes_user_ids')
+                                        ->label('Quem participou')
+                                        ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id')->all())
+                                        ->multiple()
+                                        ->searchable()
+                                        ->preload()
+                                        ->helperText('Selecione os usuarios internos que participaram da reuniao.')
+                                        ->columnSpanFull(),
                                 ]),
                             ])
                             ->columnSpan(1)
                             ->columnStart(1),
                     ])->columnSpanFull(),
-
-                Section::make('Conteúdo da ata')
-                    ->description('Registre os participantes, a pauta discutida, as deliberações e as decisões finais de forma organizada e profissional.')
+                Section::make('Conteudo da ata')
+                    ->description('Registre os participantes, a pauta discutida, as deliberacoes e as decisoes finais.')
                     ->icon('heroicon-o-pencil-square')
                     ->schema([
                         RichEditor::make('ata')
-                            ->label('ATA')
+                            ->label('Ata')
                             ->required()
                             ->columnSpanFull()
-                            ->placeholder('Descreva a abertura da reunião, os assuntos tratados, as decisões tomadas, os encaminhamentos definidos e o encerramento.')
+                            ->placeholder('Descreva a abertura da reuniao, os assuntos tratados, as decisoes tomadas, os encaminhamentos definidos e o encerramento.')
                             ->toolbarButtons([
                                 ['bold', 'italic', 'underline', 'strike', 'link'],
                                 ['h2', 'h3', 'blockquote'],
@@ -125,29 +130,34 @@ class ReuniaoResource extends Resource
                     ])
                     ->schema([
                         TextEntry::make('titulo')
-                            ->label('Título')
+                            ->label('Titulo')
                             ->weight('bold'),
                         TextEntry::make('user.name')
-                            ->label('Responsável pelo registro')
+                            ->label('Responsavel pelo registro')
                             ->badge()
                             ->color('primary')
                             ->placeholder('-'),
                         TextEntry::make('data_reuniao')
-                            ->label('Data e hora da reunião')
+                            ->label('Data e hora da reuniao')
                             ->dateTime(),
                         TextEntry::make('created_at')
                             ->label('Criado em')
                             ->dateTime(),
+                        TextEntry::make('participantes_internos')
+                            ->label('Participantes')
+                            ->state(fn (Reuniao $record): string => $record->participantesUsers()->pluck('name')->implode(', '))
+                            ->placeholder('-')
+                            ->columnSpanFull(),
                         TextEntry::make('descricao')
-                            ->label('Descrição')
+                            ->label('Descricao')
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ]),
-                Section::make('Documento de visualização')
+                Section::make('Documento de visualizacao')
                     ->icon('heroicon-o-document')
                     ->schema([
                         TextEntry::make('ata')
-                            ->label('Conteúdo da ata')
+                            ->label('Conteudo da ata')
                             ->html()
                             ->columnSpanFull(),
                     ]),
@@ -159,13 +169,17 @@ class ReuniaoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('titulo')
-                    ->label('Título')
+                    ->label('Titulo')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
-                    ->label('Responsável')
+                    ->label('Responsavel')
                     ->badge()
                     ->searchable(),
+                TextColumn::make('participantes_resumo')
+                    ->label('Participantes')
+                    ->state(fn (Reuniao $record): string => $record->participantesUsers()->pluck('name')->implode(', '))
+                    ->wrap(),
                 TextColumn::make('data_reuniao')
                     ->label('Data e hora')
                     ->dateTime()

@@ -14,14 +14,14 @@ class ViewReuniao extends ViewRecord
 
     public function getTitle(): string | Htmlable
     {
-        return 'Ata de reunião';
+        return 'Ata de reuniao';
     }
 
     public function getSubheading(): string | Htmlable | null
     {
         $record = $this->getRecord();
 
-        return trim(implode(' • ', array_filter([
+        return trim(implode(' - ', array_filter([
             $record->titulo,
             $record->user?->name ? 'Registrada por ' . $record->user->name : null,
         ])));
