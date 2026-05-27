@@ -218,6 +218,29 @@ class ReuniaoResource extends Resource
         return PortalContext::documentsNavigationGroup();
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'titulo',
+            'descricao',
+            'user.name',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return (string) $record->titulo;
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Responsavel' => $record->user?->name ?: '-',
+            'Data' => $record->data_reuniao?->format('d/m/Y H:i') ?: '-',
+            'Participantes' => $record instanceof Reuniao ? ($record->participantesUsers()->pluck('name')->implode(', ') ?: '-') : '-',
+        ];
+    }
+
     public static function canViewAny(): bool
     {
         $user = auth()->user();

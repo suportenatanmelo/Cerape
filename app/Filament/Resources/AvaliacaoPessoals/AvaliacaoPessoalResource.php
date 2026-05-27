@@ -66,6 +66,29 @@ class AvaliacaoPessoalResource extends Resource
         return 2;
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'acolhido.nome_completo_paciente',
+            'user.name',
+            'dias_na_casa',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return (string) ($record->acolhido?->nome_completo_paciente ?: 'Avaliacao pessoal');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Avaliador' => $record->user?->name ?: '-',
+            'Media final' => isset($record->Total) ? self::formatScore((float) $record->Total) : '-',
+            'Avaliado em' => $record->created_at?->format('d/m/Y H:i') ?: '-',
+        ];
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -141,6 +164,7 @@ class AvaliacaoPessoalResource extends Resource
         return $schema
             ->components([
                 Section::make('Resumo')
+                    ->columnSpanFull()
                     ->columns([
                         'default' => 1,
                         'md' => 3,
@@ -210,10 +234,12 @@ class AvaliacaoPessoalResource extends Resource
                     ]),
                 Section::make('Análise por usuário')
                     ->description('Resumo consolidado das avaliações feitas por cada usuário para este acolhido.')
+                    ->columnSpanFull()
                     ->icon('heroicon-o-users')
                     ->schema([
                         ViewEntry::make('analise_usuarios')
                             ->hiddenLabel()
+                            ->columnSpanFull()
                             ->view('filament.resources.avaliacao-pessoals.user-analysis')
                             ->viewData(fn(AvaliacaoPessoal $record): array => self::getReportData($record)),
                     ]),

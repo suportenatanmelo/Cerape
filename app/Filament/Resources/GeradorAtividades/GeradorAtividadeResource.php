@@ -81,6 +81,28 @@ class GeradorAtividadeResource extends Resource
             : PortalContext::documentsNavigationGroup();
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'titulo',
+            'user.name',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return (string) $record->titulo;
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Periodo' => self::getPeriodLabel($record instanceof GeradorAtividade ? $record : null),
+            'Acolhidos' => $record instanceof GeradorAtividade ? self::formatAcolhidos($record->acolhidos_ids, 3) : '-',
+            'Responsavel' => $record->user?->name ?: '-',
+        ];
+    }
+
     public static function canViewAny(): bool
     {
         $user = auth()->user();

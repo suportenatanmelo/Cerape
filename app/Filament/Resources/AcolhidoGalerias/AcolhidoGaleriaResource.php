@@ -72,6 +72,15 @@ class AcolhidoGaleriaResource extends Resource
         );
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'titulo',
+            'descricao',
+            'acolhido.nome_completo_paciente',
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -135,5 +144,13 @@ class AcolhidoGaleriaResource extends Resource
     public static function getGlobalSearchResultTitle(Model $record): string
     {
         return (string) ($record->titulo ?: $record->acolhido?->nome_completo_paciente ?: 'Album');
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
+            'Descricao' => $record->descricao ?: '-',
+        ];
     }
 }

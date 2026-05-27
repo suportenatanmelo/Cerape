@@ -72,6 +72,28 @@ class AcolhidoVideoResource extends Resource
         ];
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'titulo',
+            'descricao',
+            'acolhido.nome_completo_paciente',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return (string) ($record->titulo ?: 'Video do YouTube');
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
+            'Link' => $record->youtube_url ?: '-',
+        ];
+    }
+
     public static function getNavigationGroup(): string|UnitEnum|null
     {
         return PortalContext::mediaNavigationGroup();

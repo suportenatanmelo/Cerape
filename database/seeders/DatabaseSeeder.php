@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             ])->toArray(),
         );
 
-        $this->call(AcolhidoSeeder::class);
+        $this->call([
+            AcolhidoSeeder::class,
+            AvaliacaoPessoalSeeder::class,
+        ]);
     }
 }

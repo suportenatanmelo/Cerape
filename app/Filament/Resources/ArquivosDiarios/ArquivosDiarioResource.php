@@ -73,6 +73,27 @@ class ArquivosDiarioResource extends Resource
         return \App\Support\PortalContext::documentsNavigationGroup();
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'titulo',
+            'upload_arquivo',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return (string) ($record->titulo ?: 'Arquivo');
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Arquivo' => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : '-',
+            'Atualizado em' => $record->updated_at?->format('d/m/Y H:i') ?: '-',
+        ];
+    }
+
     /**
      * @return array<string, mixed>
      */

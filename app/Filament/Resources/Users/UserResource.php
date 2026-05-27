@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Users;
 
 use App\Filament\Resources\Users\Pages\ManageUsers;
-use App\Models\Acolhido;
 use App\Models\User;
 use App\Support\UserRoleManager;
 use BackedEnum;
@@ -59,7 +58,7 @@ class UserResource extends Resource
                                 ->visibility('public')
                                 ->maxFiles(1)
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn(TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file): string => Str::uuid().'.'.$file->getClientOriginalExtension()
                                 ),
                             TextInput::make('name')
                                 ->label('Nome completo')
@@ -110,7 +109,7 @@ class UserResource extends Resource
                                 ->default([])
                                 ->preload()
                                 ->searchable()
-                                ->afterStateHydrated(function (Select $component, ?User $record, mixed $state): void {
+                                ->afterStateHydrated(function (Select $component, ?User $record): void {
                                     if ($record instanceof User) {
                                         $component->state(
                                             $record->roles
@@ -132,8 +131,8 @@ class UserResource extends Resource
                                 ->label('Senha')
                                 ->password()
                                 ->revealable()
-                                ->required(fn(string $operation): bool => $operation === 'create')
-                                ->dehydrated(fn(?string $state): bool => filled($state))
+                                ->required(fn (string $operation): bool => $operation === 'create')
+                                ->dehydrated(fn (?string $state): bool => filled($state))
                                 ->maxLength(255),
                         ]),
                     ]),
@@ -286,6 +285,36 @@ class UserResource extends Resource
     {
         return [
             'index' => ManageUsers::route('/'),
+        ];
+    }
+
+    public static function getGlobalSearchEloquentQuery(): \Illuminate\Database\Eloquent\Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['acolhido', 'roles']);
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return [
+            'name',
+            'email',
+            'cpf',
+            'uf',
+            'acolhido.nome_completo_paciente',
+        ];
+    }
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return (string) $record->name;
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Email' => $record->email ?: '-',
+            'CPF' => $record->cpf ?: '-',
+            'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
         ];
     }
 
