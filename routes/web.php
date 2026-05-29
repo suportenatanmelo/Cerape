@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Models\User;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('frontend.layout');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/home', fn () => redirect()->route('home'));
 
 Route::middleware('auth')->get('/user/{slug}', function (Request $request, string $slug) {
     $user = $request->user();
