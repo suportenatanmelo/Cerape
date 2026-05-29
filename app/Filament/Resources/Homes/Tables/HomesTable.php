@@ -17,19 +17,23 @@ class HomesTable
         return $table
             ->columns([
                 ImageColumn::make('hero_image')
-                    ->label('Imagem')
+                    ->label('Imagem principal')
                     ->disk('public')
                     ->height(80)
                     ->width(120),
                 TextColumn::make('title')
-                    ->label('Titulo')
+                    ->label('Titulo principal')
                     ->searchable()
                     ->placeholder('-'),
                 TextColumn::make('subtitle')
-                    ->label('Legenda')
+                    ->label('Texto de apoio')
                     ->limit(60)
                     ->searchable()
                     ->placeholder('-'),
+                TextColumn::make('carousel_items')
+                    ->label('Slides')
+                    ->state(fn ($record): int => count($record->carousel_items ?? []))
+                    ->badge(),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()

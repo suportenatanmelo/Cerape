@@ -6,23 +6,25 @@ use App\Filament\Frontend\Resources\Homes\Pages\ManageHomes;
 use App\Filament\Resources\Homes\Schemas\HomeForm;
 use App\Filament\Resources\Homes\Tables\HomesTable;
 use App\Models\Home;
+use App\Support\PortalContext;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use UnitEnum;
 
 class HomeResource extends Resource
 {
     protected static ?string $model = Home::class;
 
-    protected static ?string $navigationLabel = 'Imagem da Home';
+    protected static ?string $navigationLabel = 'Conteudo da Home';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?string $modelLabel = 'imagem da home';
+    protected static ?string $modelLabel = 'conteudo da home';
 
-    protected static ?string $pluralModelLabel = 'imagens da home';
+    protected static ?string $pluralModelLabel = 'conteudos da home';
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -46,5 +48,10 @@ class HomeResource extends Resource
         return [
             'index' => ManageHomes::route('/'),
         ];
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::mediaNavigationGroup();
     }
 }
