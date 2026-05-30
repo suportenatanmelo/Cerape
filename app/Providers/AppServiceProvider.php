@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -34,6 +35,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Gate::before(function (User $user): ?bool {
+            return $user->hasRole(config('filament-shield.super_admin.name', 'super_admin'))
+                ? true
+                : null;
+        });
+
         Carbon::setLocale('pt_BR');
 
         DateTimePicker::configureUsing(function (DateTimePicker $component): void {
@@ -41,6 +48,8 @@ class AppServiceProvider extends ServiceProvider
                 ->locale('pt_BR')
                 ->timezone(config('app.timezone'))
                 ->firstDayOfWeek(1)
+                ->native(false)
+                ->placeholder($component->hasTime() ? '__/__/____ __:__' : '__/__/____')
                 ->defaultDateDisplayFormat('d/m/Y')
                 ->defaultDateTimeDisplayFormat('d/m/Y H:i')
                 ->defaultDateTimeWithSecondsDisplayFormat('d/m/Y H:i:s')

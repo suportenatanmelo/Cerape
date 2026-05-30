@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
@@ -17,21 +18,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
         $superAdmin = User::updateOrCreate(
             ['email' => 'suportenatanmelo@gmail.com'],
-            User::factory()->make([
+            [
                 'name' => 'Suporte Natan Melo',
-                'email' => 'suportenatanmelo@gmail.com',
                 'password' => Hash::make('insidesenha22'),
-            ])->toArray(),
+                'email_verified_at' => now(),
+            ],
         );
 
-        Role::firstOrCreate([
+        $superAdminRole = Role::firstOrCreate([
             'name' => 'super_admin',
             'guard_name' => 'web',
         ]);
 
-        $superAdmin->assignRole('super_admin');
+        $superAdmin->assignRole($superAdminRole);
+
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $this->call([
             AcolhidoSeeder::class,

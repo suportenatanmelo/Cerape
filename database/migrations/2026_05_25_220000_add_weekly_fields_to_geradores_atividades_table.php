@@ -14,10 +14,14 @@ return new class extends Migration
             $table->json('atividades_planejadas')->nullable()->after('acolhidos_ids');
         });
 
+        $periodEndExpression = DB::connection()->getDriverName() === 'sqlite'
+            ? "date(data_programacao, '+6 days')"
+            : 'DATE_ADD(data_programacao, INTERVAL 6 DAY)';
+
         DB::table('geradores_atividades')
             ->whereNull('periodo_fim')
             ->update([
-                'periodo_fim' => DB::raw('DATE_ADD(data_programacao, INTERVAL 6 DAY)'),
+                'periodo_fim' => DB::raw($periodEndExpression),
             ]);
     }
 

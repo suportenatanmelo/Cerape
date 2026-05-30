@@ -33,6 +33,26 @@ class Profile extends EditProfile
         return 'Meu perfil';
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $user = $this->getUser();
+
+        return array_merge($data, [
+            'name' => $user->getAttribute('name'),
+            'email' => $user->getAttribute('email'),
+            'avatar' => $user->getAttribute('avatar'),
+            'cpf' => $user->getAttribute('cpf'),
+            'data_nascimento' => $user->getAttribute('data_nascimento')?->format('Y-m-d'),
+            'endereco' => $user->getAttribute('endereco'),
+            'uf' => $user->getAttribute('uf'),
+            'nacionalidade' => $user->getAttribute('nacionalidade') ?: 'Brasileira',
+        ]);
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
@@ -92,6 +112,7 @@ class Profile extends EditProfile
                             DatePicker::make('data_nascimento')
                                 ->label('Data de nascimento')
                                 ->native(false)
+                                ->displayFormat('d/m/Y')
                                 ->maxDate(now()),
                             TextInput::make('endereco')
                                 ->label('Endereco')

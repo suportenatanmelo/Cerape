@@ -9,7 +9,6 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
@@ -117,17 +116,16 @@ class GeradorAtividadeForm
                                         : sprintf('%02d. Nova atividade', $index + 1);
                                 })
                                 ->schema([
-                                    TagsInput::make('atividade_pratica')
+                                    Select::make('atividade_pratica')
                                         ->label('Atividade pratica')
-                                        ->suggestions(self::activitySuggestions())
-                                        ->splitKeys(['Tab', 'Enter'])
-                                        ->nestedRecursiveRules([
-                                            'in:' . implode(',', self::activitySuggestions()),
-                                        ])
-                                        ->placeholder('Selecione ou digite uma atividade da lista')
-                                        ->helperText('Use uma tag por linha para escolher a atividade pratica.')
-                                        ->reorderable()
-                                        ->color('primary')
+                                        ->options(fn (Get $get, mixed $state): array => self::availableActivityOptions($get, $state))
+                                        ->searchable()
+                                        ->preload()
+                                        ->native(false)
+                                        ->live()
+                                        ->distinct()
+                                        ->placeholder('Selecione uma atividade da lista')
+                                        ->helperText('Atividades ja escolhidas em outra linha saem desta lista.')
                                         ->columnSpan(3),
                                     RichEditor::make('demanda')
                                         ->label('Demanda')
@@ -206,6 +204,44 @@ class GeradorAtividadeForm
             'Lavanderia',
             'Revitalizacao',
         ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function activityOptions(): array
+    {
+        return array_combine(self::activitySuggestions(), self::activitySuggestions());
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function availableActivityOptions(Get $get, mixed $currentState): array
+    {
+        $currentActivity = self::normalizeActivityState($currentState);
+
+        $selectedActivities = collect($get('../') ?? [])
+            ->filter(fn (mixed $item): bool => is_array($item))
+            ->map(fn (array $item): string => self::normalizeActivityState($item['atividade_pratica'] ?? null))
+            ->filter()
+            ->reject(fn (string $activity): bool => $activity === $currentActivity)
+            ->unique()
+            ->values()
+            ->all();
+
+        return collect(self::activityOptions())
+            ->reject(fn (string $label, string $activity): bool => in_array($activity, $selectedActivities, true))
+            ->all();
+    }
+
+    private static function normalizeActivityState(mixed $state): string
+    {
+        if (is_array($state)) {
+            $state = $state[0] ?? '';
+        }
+
+        return trim((string) $state);
     }
 
     /**

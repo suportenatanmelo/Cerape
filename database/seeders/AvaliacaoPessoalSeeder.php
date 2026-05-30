@@ -17,63 +17,57 @@ class AvaliacaoPessoalSeeder extends Seeder
         $faker = fake('pt_BR');
         $faker->seed(20260526);
 
-        $avaliadores = collect([
-            ['name' => 'Avaliador Social Seeder', 'email' => 'avaliador.social@cerape.local'],
-            ['name' => 'Avaliador Clinico Seeder', 'email' => 'avaliador.clinico@cerape.local'],
-            ['name' => 'Avaliador Terapeutico Seeder', 'email' => 'avaliador.terapeutico@cerape.local'],
-        ])->map(function (array $data): User {
-            /** @var User $user */
-            $user = User::query()->firstOrCreate(
-                ['email' => $data['email']],
+        $avaliadores = User::query()
+            ->whereNull('acolhido_id')
+            ->orderBy('id')
+            ->get();
+
+        $acolhidos = Acolhido::query()
+            ->orderBy('id')
+            ->get();
+
+        if ($avaliadores->isEmpty() || $acolhidos->isEmpty()) {
+            return;
+        }
+
+        $quantidadeAvaliadores = $avaliadores->count();
+
+        $acolhidos->each(function (Acolhido $acolhido, int $index) use ($avaliadores, $quantidadeAvaliadores, $faker): void {
+            /** @var User $avaliador */
+            $avaliador = $avaliadores[$index % $quantidadeAvaliadores];
+            $diasNaCasa = $this->formatDiasNaCasa($acolhido);
+
+            $scores = [
+                'controler' => $this->randomScore($faker),
+                'autonomia' => $this->randomScore($faker),
+                'transparencia' => $this->randomScore($faker),
+                'superacao' => $this->randomScore($faker),
+                'autocuidado' => $this->randomScore($faker),
+            ];
+
+            $createdAt = ($acolhido->created_at ?? now())
+                ->copy()
+                ->addDays(($index % 7) + 1)
+                ->setTime($faker->numberBetween(8, 17), $faker->randomElement([0, 15, 30, 45]));
+
+            AvaliacaoPessoal::query()->updateOrCreate(
                 [
-                    'name' => $data['name'],
-                    'password' => bcrypt('password'),
-                    'email_verified_at' => now(),
+                    'acolhido_id' => $acolhido->getKey(),
+                    'user_id' => $avaliador->getKey(),
+                ],
+                [
+                    'dias_na_casa' => $diasNaCasa,
+                    'controler' => $scores['controler'],
+                    'autonomia' => $scores['autonomia'],
+                    'transparencia' => $scores['transparencia'],
+                    'superacao' => $scores['superacao'],
+                    'autocuidado' => $scores['autocuidado'],
+                    'Total' => $this->calculateTotal($scores),
+                    'created_at' => $createdAt,
+                    'updated_at' => $createdAt->copy()->addMinutes(5),
                 ],
             );
-
-            return $user;
         });
-
-        Acolhido::query()
-            ->orderBy('id')
-            ->get()
-            ->each(function (Acolhido $acolhido) use ($avaliadores, $faker): void {
-                $diasNaCasa = $this->formatDiasNaCasa($acolhido);
-
-                foreach ($avaliadores as $index => $avaliador) {
-                    $scores = [
-                        'controler' => $this->randomScore($faker),
-                        'autonomia' => $this->randomScore($faker),
-                        'transparencia' => $this->randomScore($faker),
-                        'superacao' => $this->randomScore($faker),
-                        'autocuidado' => $this->randomScore($faker),
-                    ];
-
-                    $createdAt = ($acolhido->created_at ?? now())
-                        ->copy()
-                        ->addDays($index + 1)
-                        ->setTime($faker->numberBetween(8, 17), $faker->randomElement([0, 15, 30, 45]));
-
-                    AvaliacaoPessoal::query()->updateOrCreate(
-                        [
-                            'acolhido_id' => $acolhido->getKey(),
-                            'user_id' => $avaliador->getKey(),
-                        ],
-                        [
-                            'dias_na_casa' => $diasNaCasa,
-                            'controler' => $scores['controler'],
-                            'autonomia' => $scores['autonomia'],
-                            'transparencia' => $scores['transparencia'],
-                            'superacao' => $scores['superacao'],
-                            'autocuidado' => $scores['autocuidado'],
-                            'Total' => $this->calculateTotal($scores),
-                            'created_at' => $createdAt,
-                            'updated_at' => $createdAt->copy()->addMinutes(5),
-                        ],
-                    );
-                }
-            });
     }
 
     private function randomScore(\Faker\Generator $faker): float

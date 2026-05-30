@@ -254,8 +254,10 @@ class GeradorAtividadeResource extends Resource
 
                 $atividade = $item['atividade_pratica'] ?? null;
 
-                if (is_string($atividade) && trim($atividade) !== '') {
-                    $item['atividade_pratica'] = [trim($atividade)];
+                if (is_array($atividade)) {
+                    $item['atividade_pratica'] = trim((string) ($atividade[0] ?? ''));
+                } elseif (is_string($atividade)) {
+                    $item['atividade_pratica'] = trim($atividade);
                 }
 
                 return $item;
