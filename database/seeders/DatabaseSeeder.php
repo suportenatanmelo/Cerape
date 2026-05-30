@@ -5,6 +5,8 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,13 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
-            ['email' => 'test@example.com'],
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'suportenatanmelo@gmail.com'],
             User::factory()->make([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
+                'name' => 'Suporte Natan Melo',
+                'email' => 'suportenatanmelo@gmail.com',
+                'password' => Hash::make('insidesenha22'),
             ])->toArray(),
         );
+
+        Role::firstOrCreate([
+            'name' => 'super_admin',
+            'guard_name' => 'web',
+        ]);
+
+        $superAdmin->assignRole('super_admin');
 
         $this->call([
             AcolhidoSeeder::class,
