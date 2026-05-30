@@ -3,6 +3,7 @@
 namespace App\Filament\Frontend\Resources\Homes;
 
 use App\Filament\Frontend\Resources\Homes\Pages\ManageHomes;
+use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Filament\Resources\Homes\Schemas\HomeForm;
 use App\Filament\Resources\Homes\Tables\HomesTable;
 use App\Models\Home;
@@ -16,6 +17,8 @@ use UnitEnum;
 
 class HomeResource extends Resource
 {
+    use HasNavigationCountBadge;
+
     protected static ?string $model = Home::class;
 
     protected static ?string $navigationLabel = 'Conteudo da Home';

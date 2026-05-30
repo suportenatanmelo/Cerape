@@ -98,7 +98,7 @@ class AcolhidoResource extends Resource
     {
         $count = static::getEloquentQuery()->count();
 
-        return $count > 0 ? (string) $count : null;
+        return (string) $count;
     }
 
     public static function getNavigationBadgeColor(): string | array | null

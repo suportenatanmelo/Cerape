@@ -9,6 +9,7 @@ use App\Filament\Resources\GeradorAtividades\Pages\ViewGeradorAtividade;
 use App\Filament\Resources\GeradorAtividades\Schemas\GeradorAtividadeForm;
 use App\Filament\Resources\GeradorAtividades\Schemas\GeradorAtividadeInfolist;
 use App\Filament\Resources\GeradorAtividades\Tables\GeradoresAtividadesTable;
+use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoForm;
 use App\Models\Acolhido;
 use App\Models\GeradorAtividade;
@@ -28,6 +29,8 @@ use UnitEnum;
 
 class GeradorAtividadeResource extends Resource
 {
+    use HasNavigationCountBadge;
+
     protected static ?string $model = GeradorAtividade::class;
 
     protected static string | UnitEnum | null $navigationGroup = 'Documentos e Relatorios';

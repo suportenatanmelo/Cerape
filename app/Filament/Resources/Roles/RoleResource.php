@@ -242,6 +242,21 @@ class RoleResource extends Resource
         return Utils::getResourceSlug();
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getEloquentQuery()->count();
+    }
+
+    public static function getNavigationBadgeColor(): string | array | null
+    {
+        return 'gray';
+    }
+
+    public static function getNavigationBadgeTooltip(): ?string
+    {
+        return 'Total de registros cadastrados';
+    }
+
     public static function getCluster(): ?string
     {
         return Utils::getResourceCluster();

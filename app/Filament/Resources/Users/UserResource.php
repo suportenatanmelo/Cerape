@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users;
 
+use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Models\User;
 use App\Support\UserRoleManager;
@@ -32,6 +33,8 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class UserResource extends Resource
 {
+    use HasNavigationCountBadge;
+
     protected static ?string $model = User::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::User;

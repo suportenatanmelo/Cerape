@@ -9,6 +9,7 @@ use App\Filament\Resources\ArquivosDiarios\Pages\ViewArquivosDiario;
 use App\Filament\Resources\ArquivosDiarios\Schemas\ArquivosDiarioForm;
 use App\Filament\Resources\ArquivosDiarios\Schemas\ArquivosDiarioInfolist;
 use App\Filament\Resources\ArquivosDiarios\Tables\ArquivosDiariosTable;
+use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Models\ArquivosDiario;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
@@ -21,6 +22,8 @@ use UnitEnum;
 
 class ArquivosDiarioResource extends Resource
 {
+    use HasNavigationCountBadge;
+
     protected static ?string $model = ArquivosDiario::class;
 
     // protected static string | UnitEnum | null $navigationGroup = 'Uploads';

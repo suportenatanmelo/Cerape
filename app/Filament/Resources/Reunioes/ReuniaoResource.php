@@ -6,6 +6,7 @@ use App\Filament\Resources\Reunioes\Pages\CreateReuniao;
 use App\Filament\Resources\Reunioes\Pages\EditReuniao;
 use App\Filament\Resources\Reunioes\Pages\ListReunioes;
 use App\Filament\Resources\Reunioes\Pages\ViewReuniao;
+use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Models\Reuniao;
 use App\Models\User;
 use App\Support\PortalContext;
@@ -36,6 +37,8 @@ use UnitEnum;
 
 class ReuniaoResource extends Resource
 {
+    use HasNavigationCountBadge;
+
     protected static ?string $model = Reuniao::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reunioes';
