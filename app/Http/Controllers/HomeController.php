@@ -9,7 +9,7 @@ class HomeController extends Controller
     public function index()
     {
         $home = Home::query()->latest()->first();
-
+        //dd($home);
         return view('frontend.layout', [
             'home' => $home,
         ]);

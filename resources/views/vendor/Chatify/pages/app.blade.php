@@ -110,3 +110,4 @@
 
 @include('Chatify::layouts.modals')
 @include('Chatify::layouts.footerLinks')
+@include('filament.portal.browser-title-alerts')

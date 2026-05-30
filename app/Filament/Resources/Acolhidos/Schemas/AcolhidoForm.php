@@ -498,6 +498,8 @@ class AcolhidoForm
                                                 }
 
                                                 $set('qual_sao_as_medicacao', null);
+                                                $set('tem_receituario', false);
+                                                $set('receituario', null);
                                             }),
                                         TagsInput::make('qual_sao_as_medicacao')
                                             ->label('Quais sao as medicacoes psicoativas')
@@ -527,14 +529,30 @@ class AcolhidoForm
                                             ->label('Tem receituario?')
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
-                                            ->default(false)
+                                            ->default(null)
                                             ->live()
-                                            ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('toma_medicamento')))
+                                            ->required(fn(Get $get): bool => self::isYes($get('toma_medicamento')))
+                                            ->validationMessages([
+                                                'required' => 'Informe se o acolhido tem receituario quando ele toma medicamento.',
+                                            ])
+                                            ->afterStateUpdated(function (Get $get, Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
                                                     return;
                                                 }
 
                                                 $set('receituario', null);
+
+                                                if (self::isYes($get('toma_medicamento'))) {
+                                                    $set('tem_receituario', true);
+
+                                                    Notification::make()
+                                                        ->title('Resposta incorreta')
+                                                        ->body('Se o acolhido toma medicamentos psicoativos, ele precisa de receituario. Por isso, nao marque "Nao" neste campo.')
+                                                        ->danger()
+                                                        ->duration(8000)
+                                                        ->send();
+                                                }
                                             }),
                                         FileUpload::make('receituario')
                                             ->label('Receituario')

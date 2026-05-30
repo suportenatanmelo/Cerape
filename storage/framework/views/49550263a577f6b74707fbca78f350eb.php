@@ -3,17 +3,7 @@
     $familyTheme = \App\Support\PortalContext::familyTheme();
 ?>
 
-<script>
-    (() => {
-        const applyCerapeTitle = () => {
-            document.title = 'SISTEMA CERAPE';
-        };
-
-        applyCerapeTitle();
-        document.addEventListener('DOMContentLoaded', applyCerapeTitle);
-        document.addEventListener('livewire:navigated', applyCerapeTitle);
-    })();
-</script>
+<?php echo $__env->make('filament.portal.browser-title-alerts', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isFamily): ?>
     <style>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ContactMessageController;
+use App\Models\ChMessage;
 use App\Models\User;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
@@ -12,6 +13,25 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::post('/contato', [ContactMessageController::class, 'store'])->name('contact.store');
 Route::get('/home', fn () => redirect()->route('home'));
+
+Route::middleware('auth')->get('/browser-alerts/status', function (Request $request) {
+    $user = $request->user();
+
+    abort_unless($user instanceof User, 401);
+
+    $chatUnread = ChMessage::query()
+        ->where('to_id', $user->getKey())
+        ->where('seen', 0)
+        ->count();
+
+    $notificationUnread = $user->unreadNotifications()->count();
+
+    return response()->json([
+        'chat_unread' => $chatUnread,
+        'notification_unread' => $notificationUnread,
+        'total_unread' => $chatUnread + $notificationUnread,
+    ]);
+})->name('browser-alerts.status');
 
 Route::middleware('auth')->get('/user/{slug}', function (Request $request, string $slug) {
     $user = $request->user();

@@ -21,7 +21,7 @@ class PortalContext
     {
         return static::isFamilyUser($user)
             ? 'Portal da Familia'
-            : 'CADASTROS';
+            : 'SISTEMA CERAPE';
     }
 
     public static function portalNavigationGroup(Authenticatable | null $user = null): string

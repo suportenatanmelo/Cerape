@@ -3,17 +3,7 @@
     $familyTheme = \App\Support\PortalContext::familyTheme();
 @endphp
 
-<script>
-    (() => {
-        const applyCerapeTitle = () => {
-            document.title = 'SISTEMA CERAPE';
-        };
-
-        applyCerapeTitle();
-        document.addEventListener('DOMContentLoaded', applyCerapeTitle);
-        document.addEventListener('livewire:navigated', applyCerapeTitle);
-    })();
-</script>
+@include('filament.portal.browser-title-alerts')
 
 @if ($isFamily)
     <style>
