@@ -17,6 +17,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
@@ -26,6 +27,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -103,6 +105,11 @@ class UserResource extends Resource
                                 ->maxLength(255),
                             DateTimePicker::make('email_verified_at')
                                 ->label('Email verificado em'),
+                            Toggle::make('active_status')
+                                ->label('Usuario ativo')
+                                ->helperText('Use para ativar ou desativar este usuario.')
+                                ->default(true)
+                                ->inline(false),
                             Select::make('roles')
                                 ->label('Perfis de acesso')
                                 ->options(fn (): array => app(config('permission.models.role'))::query()
@@ -196,6 +203,11 @@ class UserResource extends Resource
                     ->badge()
                     ->color('success')
                     ->placeholder('-'),
+                TextEntry::make('active_status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'Ativo' : 'Inativo')
+                    ->color(fn (bool $state): string => $state ? 'success' : 'danger'),
                 TextEntry::make('roles.name')
                     ->label('Perfis de acesso')
                     ->badge()
@@ -251,6 +263,9 @@ class UserResource extends Resource
                 TextColumn::make('email_verified_at')
                     ->label('Email verificado em')
                     ->dateTime()
+                    ->sortable(),
+                ToggleColumn::make('active_status')
+                    ->label('Ativo')
                     ->sortable(),
                 TextColumn::make('roles.name')
                     ->label('Perfis de acesso')

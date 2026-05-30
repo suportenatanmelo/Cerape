@@ -30,6 +30,7 @@ use App\Support\UserRoleManager;
     'uf',
     'nacionalidade',
     'data_nascimento',
+    'active_status',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser, HasAvatar
@@ -49,6 +50,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'data_nascimento' => 'date',
+            'active_status' => 'boolean',
         ];
     }
     public function canAccessPanel(Panel $panel): bool
