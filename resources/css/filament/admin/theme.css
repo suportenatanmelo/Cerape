@@ -1,0 +1,35 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*.php';
+@source '../../../../resources/views/filament/**/*.blade.php';
+
+@layer components {
+    :root.dark select.fi-select-input,
+    :root.dark select.fi-select-input option,
+    :root.dark select.fi-select-input optgroup,
+    :root.dark .fi-select-input,
+    :root.dark .fi-select-input-btn,
+    :root.dark .fi-select-input-option,
+    :root.dark .fi-select-input-value-label,
+    :root.dark .fi-input,
+    :root.dark .fi-badge,
+    :root.dark .fi-badge-label,
+    :root.dark .fi-badge-label-ctn,
+    :root.dark .fi-fo-tags-input .fi-badge,
+    :root.dark .fi-fo-tags-input .fi-badge-label,
+    :root.dark .fi-fo-tags-input .fi-badge-label-ctn {
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+    }
+
+    :root.dark select.fi-select-input option,
+    :root.dark select.fi-select-input optgroup {
+        background-color: var(--color-gray-900);
+    }
+
+    :root.dark .fi-select-input-placeholder,
+    :root.dark .fi-input::placeholder {
+        color: var(--color-gray-300);
+        -webkit-text-fill-color: var(--color-gray-300);
+    }
+}
