@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\AtividadesDesenvolvidas\Schemas;
 
 use App\Filament\Resources\AtividadesDesenvolvidas\Schemas\AtividadeDesenvolvidaForm;
+use App\Support\PdfImage;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -30,7 +31,8 @@ class AtividadeDesenvolvidaInfolist
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
+                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
                         ]),
                     ]),
                 Section::make('Atividades terapêuticas')

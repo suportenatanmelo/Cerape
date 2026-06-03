@@ -29,11 +29,11 @@ class AtividadeDesenvolvidaResource extends Resource
 {
     protected static ?string $model = AtividadeDesenvolvida::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
+    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
 
     protected static ?string $navigationLabel = 'Atividades CRC';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 3;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
@@ -80,7 +80,9 @@ class AtividadeDesenvolvidaResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::isFamilyUser()
+            ? PortalContext::portalNavigationGroup()
+            : 'Cadastros';
     }
 
     public static function notifyUsers(AtividadeDesenvolvida $record, string $event): void
@@ -196,16 +198,16 @@ class AtividadeDesenvolvidaResource extends Resource
         $record->loadMissing('acolhido');
 
         return [
-            'title' => 'Relatório institucional de atividade CRC',
+            'title' => 'Documento institucional de atividade CRC',
             'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido não identificado',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
                 'Plano de atividades terapêuticas e de reintegração.',
             ],
             'highlight' => 'Resumo profissional das atividades desenvolvidas',
-            'photoData' => self::imageDataUri($record->acolhido?->avatar),
+            'photoData' => PdfImage::storageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'CRC',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'sections' => [
                 'Atividades terapeuticas' => [
                     'Estudo sistematico dos 12 passos' => $record->atendimento_grupo_12_passos,
@@ -253,7 +255,7 @@ class AtividadeDesenvolvidaResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'relatorio-atividade-crc-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'atividade-crc-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn () => print($pdf->output()),
@@ -306,18 +308,4 @@ class AtividadeDesenvolvidaResource extends Resource
         return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    private static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

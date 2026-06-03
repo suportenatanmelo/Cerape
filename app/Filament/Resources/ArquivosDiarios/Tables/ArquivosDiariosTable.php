@@ -15,7 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Storage;
+use App\Support\PdfImage;
 
 class ArquivosDiariosTable
 {
@@ -80,7 +80,7 @@ class ArquivosDiariosTable
                     ->label('Baixar')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? Storage::disk('public')->url($record->upload_arquivo) : null, shouldOpenInNewTab: true)
+                    ->url(fn ($record): ?string => PdfImage::publicUrl($record->upload_arquivo), shouldOpenInNewTab: true)
                     ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 EditAction::make(),
                 DeleteAction::make(),

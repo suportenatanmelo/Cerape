@@ -132,11 +132,13 @@ class ProntuarioEvolucaoResource extends Resource
         return [
             'record' => $record,
             'acolhido' => $acolhido,
-            'fotoAcolhido' => self::imageDataUri($acolhido?->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => PdfImage::storageDataUri($acolhido?->avatar),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'personalData' => self::buildAcolhidoPersonalData($acolhido),
             'atividadeLabel' => ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade),
             'proximaDataProntuario' => $record->proxima_data_prontuario?->format('d/m/Y H:i'),
+            'notaElogioLabel' => ProntuarioEvolucaoForm::getPraiseRatingLabel($record->nota_elogio),
+            'notaElogioStars' => self::buildPraiseRatingStars($record->nota_elogio),
             'conteudoHtml' => self::normalizeReportContent((string) $record->conteudo),
         ];
     }
@@ -243,21 +245,6 @@ class ProntuarioEvolucaoResource extends Resource
         return array_values(array_filter($items, fn(array $item): bool => filled($item['value'])));
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    private static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
-
     private static function normalizeReportContent(string $content): string
     {
         $content = preg_replace_callback('/<img[^>]+src=["\']([^"\']+)["\']/i', function (array $matches): string {
@@ -279,5 +266,15 @@ class ProntuarioEvolucaoResource extends Resource
         }, $content) ?? $content;
 
         return (string) str($content)->sanitizeHtml();
+    }
+
+    /**
+     * @return array<int, bool>
+     */
+    private static function buildPraiseRatingStars(int|string|null $value): array
+    {
+        $rating = max(0, min(5, (int) $value));
+
+        return array_map(fn (int $star): bool => $star <= $rating, range(1, 5));
     }
 }

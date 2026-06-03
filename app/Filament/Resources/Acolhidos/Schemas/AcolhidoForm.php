@@ -847,7 +847,7 @@ class AcolhidoForm
         }
 
         if (filled($data['avatar'] ?? null)) {
-            $data['avatar'] = self::resolveAvatarPath((string) $data['avatar']);
+            $data['avatar'] = PdfImage::resolveStoragePath((string) $data['avatar']);
         }
 
         if (in_array((string) ($data['estado_civil'] ?? null), ['solteiro', 'viuvo'], true)) {
@@ -1016,11 +1016,6 @@ class AcolhidoForm
 
         return in_array($value, [true, 1, '1'], true)
             || in_array($normalized, ['true', 'sim', 'yes', 'on'], true);
-    }
-
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
     }
 
     private static function makeUploadFileName(TemporaryUploadedFile $file, Get $get): string

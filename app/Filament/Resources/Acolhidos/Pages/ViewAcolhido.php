@@ -42,29 +42,29 @@ class ViewAcolhido extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('downloadRelatorio')
-                ->label('Baixar relatório PDF')
+            Action::make('downloadPdf')
+                ->label('Baixar PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->form([
                     Placeholder::make('report_sections_info')
                         ->hiddenLabel()
-                    ->content('Marque as seções que deseja incluir no PDF. Se marcar todas, o sistema gera um relatório geral do acolhido.'),
+                    ->content('Marque os módulos que deseja incluir no PDF. Se marcar todos, o sistema gera o Plano Individual de Acolhimento.'),
                     Toggle::make('select_all_sections')
-                    ->label('Marcar todas para gerar um relatório geral')
+                    ->label('Marcar todos os módulos')
                         ->live()
                         ->default(true)
                         ->afterStateUpdated(function (Set $set, ?bool $state): void {
                             $set('selected_sections', $state ? array_keys(self::reportSectionOptions()) : []);
                         }),
                     CheckboxList::make('selected_sections')
-                    ->label('Seções do relatório')
+                    ->label('Módulos do PIA')
                         ->options(self::reportSectionOptions())
                         ->default(array_keys(self::reportSectionOptions()))
                         ->columns(2)
                         ->required()
-                    ->helperText('Você pode gerar um PDF completo ou somente com as seções selecionadas.'),
+                    ->helperText('Você pode gerar um PDF completo ou somente com os módulos selecionados.'),
                 ])
                 ->action(function (array $data) {
                     $record = $this->getRecord();
@@ -78,7 +78,7 @@ class ViewAcolhido extends ViewRecord
                     $pdf = Pdf::loadView('pdf.acolhido-report', self::getReportData($record, $selectedSections))
                         ->setPaper('a4');
 
-                    $fileName = 'relatorio-acolhido-' . Str::slug($record->nome_completo_paciente) . '.pdf';
+                    $fileName = 'plano-individual-acolhimento-' . Str::slug($record->nome_completo_paciente) . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),
@@ -110,10 +110,10 @@ class ViewAcolhido extends ViewRecord
             'selectedSectionsCount' => count($sections),
             'availableSectionsCount' => count($allSections),
             'selectedSectionsLabel' => count($sections) === count($allSections)
-                ? 'Relatório geral com todas as seções'
+                ? 'PLANO INDIVIDUAL DE ACOLHIMENTO'
                 : implode(', ', array_keys($sections)),
-            'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => PdfImage::storageDataUri($acolhido->avatar),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
         ];
     }
@@ -127,7 +127,6 @@ class ViewAcolhido extends ViewRecord
             'Identificacao' => [
                 'Status' => $acolhido->ativo ? 'Ativo' : 'Desativado',
                 'Nome completo' => $acolhido->nome_completo_paciente,
-                'Responsável pelo cadastro' => $acolhido->user?->name,
                 'Data de nascimento' => $acolhido->data_nascimento,
                 'Estado civil' => $acolhido->estado_civil,
                 'Nome do conjuge' => $acolhido->nome_do_conjuge,
@@ -236,18 +235,4 @@ class ViewAcolhido extends ViewRecord
         return $value !== '' ? $value : '-';
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    private static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

@@ -13,7 +13,9 @@ class ProntuarioEvolucao extends Model
     protected $fillable = [
         'acolhido_id',
         'user_id',
+        'funcao_responsavel_informacao',
         'atividade',
+        'nota_elogio',
         'data_prontuario',
         'proxima_data_prontuario',
         'conteudo',
@@ -23,6 +25,7 @@ class ProntuarioEvolucao extends Model
         'data_prontuario' => 'datetime',
         'proxima_data_prontuario' => 'datetime',
         'atividade' => CommaSeparatedString::class,
+        'nota_elogio' => 'integer',
     ];
 
     public function acolhido(): BelongsTo

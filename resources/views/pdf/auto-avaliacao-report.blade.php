@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Relatório de autoavaliação</title>
+    <title>Documento de autoavaliação</title>
     <style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.4; margin: 0; }
@@ -66,7 +66,7 @@
         </table>
 
         <div class="footer">
-            Relatorio gerado automaticamente pelo sistema CERAPE.
+            Documento gerado automaticamente pelo sistema CERAPE.
         </div>
     </div>
 </body>

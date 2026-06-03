@@ -25,7 +25,7 @@ class ListAvaliacaoPessoals extends ListRecords
                 ->color('gray')
                 ->url(AvaliacaoPessoalResource::getUrl('auto-avaliacao')),
             Action::make('downloadConsolidatedReport')
-                ->label('Relatório PDF geral')
+                ->label('PDF geral')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
@@ -35,7 +35,7 @@ class ListAvaliacaoPessoals extends ListRecords
                     if ($payload['rows']->isEmpty()) {
                         Notification::make()
                             ->title('Nenhuma avaliação encontrada')
-                            ->body('Não existem avaliações registradas para gerar o relatório geral.')
+                            ->body('Não existem avaliações registradas para gerar o documento geral.')
                             ->warning()
                             ->send();
 
@@ -45,7 +45,7 @@ class ListAvaliacaoPessoals extends ListRecords
                     $pdf = Pdf::loadView('pdf.avaliacao-pessoal-consolidado-report', $payload)
                         ->setPaper('a4');
 
-                    $fileName = 'relatorio-geral-avaliacoes-acolhidos-' . Str::slug(now()->format('d-m-Y-H-i')) . '.pdf';
+                    $fileName = 'avaliacoes-acolhidos-' . Str::slug(now()->format('d-m-Y-H-i')) . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),

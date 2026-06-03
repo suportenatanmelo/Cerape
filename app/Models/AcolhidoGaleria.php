@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use App\Support\PdfImage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Spatie\Image\Enums\Fit;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
@@ -79,7 +79,8 @@ class AcolhidoGaleria extends Model implements HasMedia
 
         return collect($this->imagens ?? [])
             ->filter(fn (mixed $path): bool => filled($path))
-            ->map(fn (string $path): string => Storage::disk('public')->url($path))
+            ->map(fn (string $path): ?string => PdfImage::publicUrl($path))
+            ->filter()
             ->values()
             ->all();
     }
@@ -135,7 +136,8 @@ class AcolhidoGaleria extends Model implements HasMedia
 
         $legacyImages = collect($this->imagens ?? [])
             ->filter(fn (mixed $path): bool => filled($path))
-            ->map(fn (string $path): string => Storage::disk('public')->url($path))
+            ->map(fn (string $path): ?string => PdfImage::publicUrl($path))
+            ->filter()
             ->values()
             ->all();
 

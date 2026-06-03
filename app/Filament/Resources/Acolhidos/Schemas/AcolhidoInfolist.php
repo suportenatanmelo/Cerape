@@ -26,12 +26,11 @@ class AcolhidoInfolist
                         ->schema([
                             ImageEntry::make('avatar')
                                 ->label('Foto')
-                                ->disk('public')
                                 ->circular()
                                 ->height(120)
                                 ->width(120)
                                 ->getStateUsing(
-                                    fn($record): ?string => self::resolveAvatarPath($record->avatar)
+                                    fn($record): ?string => PdfImage::publicUrl($record->avatar)
                                 )
                                 ->extraImgAttributes([
                                     'style' => 'object-fit: cover;'
@@ -396,8 +395,4 @@ class AcolhidoInfolist
             ]);
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
 }

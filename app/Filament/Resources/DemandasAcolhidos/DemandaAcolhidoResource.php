@@ -29,9 +29,9 @@ class DemandaAcolhidoResource extends Resource
 {
     protected static ?string $model = DemandaAcolhido::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
+    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
 
-    protected static ?string $navigationLabel = 'Demandas do acolhido';
+    protected static ?string $navigationLabel = 'Demanda';
 
     protected static ?int $navigationSort = 4;
 
@@ -80,7 +80,9 @@ class DemandaAcolhidoResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::isFamilyUser()
+            ? PortalContext::portalNavigationGroup()
+            : 'Cadastros';
     }
 
     public static function notifyUsers(DemandaAcolhido $record, string $event): void
@@ -196,16 +198,16 @@ class DemandaAcolhidoResource extends Resource
         $record->loadMissing('acolhido');
 
         return [
-            'title' => 'Relatório institucional da demanda do acolhido',
+            'title' => 'Documento institucional da demanda do acolhido',
             'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido não identificado',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
                 'Demanda organizada para consulta e acompanhamento.',
             ],
             'highlight' => $record->demanda,
-            'photoData' => self::imageDataUri($record->acolhido?->avatar),
+            'photoData' => PdfImage::storageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'Agenda',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'sections' => [
                 'Dados da agenda' => [
                     'Acolhido' => $record->acolhido?->nome_completo_paciente,
@@ -230,7 +232,7 @@ class DemandaAcolhidoResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'relatorio-demanda-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'demanda-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn () => print($pdf->output()),
@@ -250,18 +252,4 @@ class DemandaAcolhidoResource extends Resource
         return $value !== '' ? $value : '-';
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    private static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

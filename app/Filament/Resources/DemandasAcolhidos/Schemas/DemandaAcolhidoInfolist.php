@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DemandasAcolhidos\Schemas;
 
+use App\Support\PdfImage;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
@@ -29,7 +30,8 @@ class DemandaAcolhidoInfolist
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
+                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
                             TextEntry::make('demanda')
                                 ->label('Demanda')
                                 ->badge()

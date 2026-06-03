@@ -2,11 +2,11 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Relatorio de avaliacao pessoal</title>
+    <title>Documento de avaliação pessoal</title>
     <style>
         * { box-sizing: border-box; }
-        body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.4; margin: 0; }
-        .page { padding: 20px; }
+        body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.45; margin: 0; }
+        .page { padding: 22px; }
         .brand-bar { border-bottom: 1px solid #dbe4ea; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
         .brand-table { display: table; width: 100%; }
         .brand-logo-cell, .brand-info-cell { display: table-cell; vertical-align: middle; }
@@ -16,21 +16,21 @@
         .brand-info { color: #475569; font-size: 9px; line-height: 1.45; }
         .brand-info strong { color: #0f172a; display: block; font-size: 10px; letter-spacing: 0.2px; margin-bottom: 2px; }
         .brand-info-line { margin: 1px 0; }
-        .hero { background: #fff; border: 1px solid #dbe4ea; border-radius: 14px; display: table; margin-bottom: 14px; padding: 14px; width: 100%; }
+        .hero { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; display: table; margin-bottom: 14px; padding: 16px; width: 100%; }
         .hero-left, .hero-right { display: table-cell; vertical-align: top; }
         .hero-left { width: 150px; padding-right: 14px; }
         .hero-right { padding-left: 14px; }
-        .profile-card { border: 1px solid #dbe4ea; border-radius: 12px; padding: 12px; text-align: center; }
-        .avatar { border: 2px solid #dbe4ea; border-radius: 14px; height: 148px; object-fit: cover; width: 112px; }
-        .avatar-empty { background: #f8fafc; border: 2px solid #dbe4ea; border-radius: 14px; color: #64748b; font-size: 24px; font-weight: bold; height: 148px; line-height: 148px; margin: 0 auto; text-align: center; width: 112px; }
+        .profile-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; padding: 12px; text-align: center; }
+        .avatar { border: 3px solid #cbd5e1; border-radius: 14px; height: 148px; object-fit: cover; width: 112px; }
+        .avatar-empty { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 14px; color: #334155; font-size: 24px; font-weight: bold; height: 148px; line-height: 148px; margin: 0 auto; text-align: center; width: 112px; }
         .profile-name { font-size: 13px; font-weight: bold; margin-top: 8px; }
         .profile-meta { color: #6b7280; font-size: 9px; margin-top: 3px; }
-        .title-panel { border-bottom: 2px solid #0f766e; padding-bottom: 12px; }
+        .title-panel { border-bottom: 2px solid #1d4ed8; padding-bottom: 12px; }
         h1 { font-size: 19px; margin: 0 0 4px; }
-        h2 { color: #0f766e; font-size: 12px; margin: 16px 0 8px; }
+        h2 { color: #1d4ed8; font-size: 12px; margin: 16px 0 8px; }
         .muted { color: #6b7280; }
         .cards { display: table; margin-top: 14px; width: 100%; }
-        .card { background: #fff; border: 1px solid #dbe4ea; border-radius: 10px; display: table-cell; padding: 10px; width: 25%; }
+        .card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; display: table-cell; padding: 10px; width: 25%; }
         .card + .card { border-left: 0; }
         .card-label { color: #6b7280; font-size: 8px; text-transform: uppercase; }
         .card-value { font-size: 14px; font-weight: bold; margin-top: 3px; }
@@ -47,10 +47,10 @@
         .criteria-item { background: #fff; border: 1px solid #dbe4ea; display: table-cell; padding: 8px; width: 20%; }
         .criteria-label { color: #6b7280; font-size: 8px; text-transform: uppercase; }
         .criteria-value { font-size: 13px; font-weight: bold; margin-top: 3px; }
-        .comparison-box { background: #fff; border: 1px solid #dbe4ea; border-radius: 10px; margin-bottom: 8px; padding: 8px; }
+        .comparison-box { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 8px; padding: 8px; }
         .comparison-title { font-size: 11px; font-weight: bold; margin-bottom: 3px; }
         .comparison-range { color: #6b7280; font-size: 8px; margin-bottom: 6px; }
-        .evaluator-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 10px; margin-bottom: 10px; page-break-inside: avoid; }
+        .evaluator-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 10px; page-break-inside: avoid; }
         .evaluator-head { background: #f8fafc; border-bottom: 1px solid #dbe4ea; display: table; padding: 8px; width: 100%; }
         .evaluator-photo-wrap, .evaluator-head-content { display: table-cell; vertical-align: middle; }
         .evaluator-photo-wrap { width: 52px; }
@@ -83,13 +83,13 @@
                     @endif
                     <div class="profile-name">{{ $acolhido?->nome_completo_paciente ?? '-' }}</div>
                     <div class="profile-meta">{{ $record->dias_na_casa ?? '-' }}</div>
-                    <div class="profile-meta">Relatório profissional de evolução pessoal</div>
+                    <div class="profile-meta">Documento profissional de evolução pessoal</div>
                 </div>
             </div>
 
             <div class="hero-right">
                 <div class="title-panel">
-                    <h1>Relatório detalhado de avaliação pessoal</h1>
+                    <h1>Documento detalhado de avaliação pessoal</h1>
                     <div class="muted">Acolhido: <strong>{{ $acolhido?->nome_completo_paciente ?? '-' }}</strong></div>
                     <div class="muted">Tempo de casa: {{ $record->dias_na_casa ?? '-' }}</div>
                     <div class="muted">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
@@ -295,7 +295,7 @@
         </table>
 
         <div class="footer">
-            Relatorio gerado automaticamente pelo sistema CERAPE. As medias foram calculadas com pontuacao maxima de 3 por criterio.
+            Documento gerado automaticamente pelo sistema CERAPE. As médias foram calculadas com pontuação máxima de 3 por critério.
         </div>
     </div>
 </body>

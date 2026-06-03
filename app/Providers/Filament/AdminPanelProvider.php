@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
+use App\Filament\Pages\Pia;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
@@ -13,6 +14,7 @@ use App\Filament\Widgets\DemandasAcolhidosLineChart;
 use App\Filament\Widgets\UsuariosCriadosLineChart;
 use App\Filament\Widgets\UsuariosVinculadosAcolhidoLineChart;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
+use App\Support\PdfImage;
 use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -45,6 +47,7 @@ class AdminPanelProvider extends PanelProvider
             ]
             : [
                 PortalContext::portalNavigationGroup(),
+                'Cadastros',
                 PortalContext::evaluationNavigationGroup(),
                 PortalContext::documentsNavigationGroup(),
                 PortalContext::mediaNavigationGroup(),
@@ -73,7 +76,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->brandName(fn (): string => PortalContext::brandName())
-            ->brandLogo(asset('storage/images/logo.png'))
+            ->brandLogo(PdfImage::publicUrl('storage/images/logo.png') ?? asset('grayscale/assets/favicon.ico'))
             ->brandLogoHeight(fn (): string => PortalContext::isFamilyUser() ? '52px' : '60px')
             ->homeUrl(fn (): ?string => PortalContext::familyDashboardUrl())
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
@@ -136,6 +139,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                Pia::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

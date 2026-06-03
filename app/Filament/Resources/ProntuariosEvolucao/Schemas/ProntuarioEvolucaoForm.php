@@ -8,11 +8,13 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ViewField;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
@@ -40,33 +42,50 @@ class ProntuarioEvolucaoForm
                                 ->searchable()
                                 ->preload()
                                 ->live()
-                                ->required()
                                 ->helperText('Selecione o acolhido antes de iniciar o texto para que os anexos sejam nomeados corretamente.'),
-                            Select::make('usuario_responsavel')
-                                ->label('Usuario responsavel')
-                                ->options(fn () => User::pluck('name', 'id'))
-
-                                ->helperText('O usuario logado sera registrado automaticamente neste prontuario.'),
+                            Select::make('user_id')
+                                ->label('Responsável pela informação')
+                                ->options(fn () => User::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id')
+                                    ->all())
+                                ->default(auth()->id())
+                                ->searchable()
+                                ->preload()
+                                ->live()
+                                ->afterStateUpdated(fn (Set $set, mixed $state): mixed => $set(
+                                    'funcao_responsavel_informacao',
+                                    filled($state) ? User::query()->whereKey($state)->value('funcao_usuario') : null,
+                                ))
+                                ->helperText('Selecione quem esta registrando ou validando esta informacao.'),
+                            TextInput::make('funcao_responsavel_informacao')
+                                ->label('Função do responsável pela informação')
+                                ->default(auth()->user()?->funcao_usuario)
+                                ->disabled()
+                                ->dehydrated()
+                                ->maxLength(255)
+                                ->placeholder('Sem função cadastrada para este usuário.'),
                             DateTimePicker::make('data_prontuario')
                                 ->label('Data e hora do prontuario')
                                 ->seconds(false)
                                 ->native(false)
                                 ->displayFormat('d/m/Y H:i')
                                 ->default(now())
-                                ->minDate(self::minimumProntuarioDate())
-                                ->maxDate(self::maximumProntuarioDate())
-                                ->rule('after_or_equal:' . self::minimumProntuarioDate()->format('Y-m-d 00:00:00'))
-                                ->rule('before_or_equal:' . self::maximumProntuarioDate()->format('Y-m-d 23:59:59'))
-                                ->required()
-                                ->helperText('Permite informar uma data de hoje ate os proximos 7 dias.'),
+                                ->helperText('Informe a data e hora do registro quando necessario.'),
                             DateTimePicker::make('proxima_data_prontuario')
                                 ->label('Proxima data do prontuario')
                                 ->seconds(false)
                                 ->native(false)
                                 ->displayFormat('d/m/Y H:i')
-                                ->default(now()->addDays(7))
-                                ->required()
-                                ->helperText('Vem preenchida com 7 dias a mais, mas pode ser editada conforme a necessidade da equipe.'),
+                                ->helperText('Informe uma proxima data quando houver acompanhamento previsto.'),
+                            ViewField::make('nota_elogio')
+                                ->label('Nota de elogio')
+                                ->default(1)
+                                ->view('filament.forms.components.star-rating')
+                                ->rule('nullable')
+                                ->rule('integer')
+                                ->rule('between:1,5')
+                                ->columnSpanFull(),
                             Section::make('Atividade realizada')
                                 ->description('Marque as atividades realizadas no dia em um checklist compacto e organizado.')
                                 ->icon('heroicon-o-check-badge')
@@ -85,7 +104,6 @@ class ProntuarioEvolucaoForm
                                         ->bulkToggleable(false)
                                         ->searchable(false)
                                         ->columnSpanFull()
-                                        ->required()
                                         ->extraAttributes([
                                             'class' => 'rounded-xl border border-gray-200 bg-white px-4 py-4 shadow-sm dark:border-white/10 dark:bg-white/5',
                                         ]),
@@ -111,7 +129,6 @@ class ProntuarioEvolucaoForm
                                 ['attachFiles', 'undo', 'redo'],
                             ])
                             ->columnSpanFull()
-                            ->required()
                             ->extraInputAttributes([
                                 'style' => 'min-height: 34rem;',
                             ])
@@ -217,13 +234,34 @@ class ProntuarioEvolucaoForm
         return self::getClinicActivityOptions()[$value] ?? $value;
     }
 
-    private static function minimumProntuarioDate(): Carbon
+    public static function getPraiseRatingLabel(int|string|null $value): ?string
     {
-        return now()->startOfDay();
+        if (blank($value)) {
+            return null;
+        }
+
+        return [
+            1 => 'Razoável',
+            2 => 'Bom',
+            3 => 'Muito bom',
+            4 => 'Ótimo',
+            5 => 'Excelente',
+        ][(int) $value] ?? null;
     }
 
-    private static function maximumProntuarioDate(): Carbon
+    public static function renderPraiseRating(int|string|null $value): string
     {
-        return now()->addDays(7)->endOfDay();
+        $rating = max(0, min(5, (int) $value));
+        $label = self::getPraiseRatingLabel($rating);
+        $stars = '';
+
+        for ($i = 1; $i <= 5; $i++) {
+            $stars .= sprintf(
+                '<span style="color:%s;font-size:1.25rem;line-height:1;">★</span>',
+                $i <= $rating ? '#f59e0b' : '#d1d5db',
+            );
+        }
+
+        return trim($stars . ($label ? ' <span style="font-weight:600;color:#374151;">' . e($label) . '</span>' : ''));
     }
 }

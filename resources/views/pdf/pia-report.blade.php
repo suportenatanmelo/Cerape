@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Plano Individual de Acolhimento</title>
+    <title>PLANO INDIVIDUAL DE ACOLHIMENTO</title>
     <style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Serif, serif; font-size: 12px; line-height: 1.5; margin: 0; }
@@ -25,7 +25,7 @@
         .summary-value { color: #111827; display: block; font-size: 13px; font-weight: bold; margin-top: 5px; }
         .summary-note { color: #475569; display: block; font-size: 8px; margin-top: 4px; }
         .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
-        .section-title { background: #eff6ff; border-bottom: 1px solid #bfdbfe; color: #1d4ed8; font-size: 13px; font-weight: bold; margin: 0; padding: 10px 12px; }
+        .section-title { background: #eff6ff; border-bottom: 1px solid #bfdbfe; color: #1d4ed8; font-size: 13px; font-weight: bold; margin: 0; padding: 10px 12px; text-transform: uppercase; }
         table { border-collapse: collapse; width: 100%; }
         th { background: #f8fafc; color: #334155; font-size: 9px; text-align: left; text-transform: uppercase; width: 34%; }
         th, td { border: 1px solid #dbe4ea; padding: 7px; vertical-align: top; }
@@ -43,20 +43,21 @@
             <table class="hero-table">
                 <tr>
                     <td class="avatar-wrap">
-                        @if ($fotoAcolhido)
-                            <img src="{{ $fotoAcolhido }}" class="avatar" alt="">
+                        @if ($photoData)
+                            <img src="{{ $photoData }}" class="avatar" alt="">
                         @else
-                            <div class="avatar-empty">Sem foto</div>
+                            <div class="avatar-empty">{{ $photoLabel ?? 'PIA' }}</div>
                         @endif
                     </td>
                     <td>
-                        <div class="eyebrow" style="color: #0f766e;">Perfil do acolhido</div>
-                        <h1>Plano Individual de Acolhimento</h1>
-                        <div class="hero-text"><strong>{{ $acolhido->nome_completo_paciente }}</strong></div>
-                        <div class="hero-text">Responsável pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
-                        <div class="hero-text">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
-                        <span class="status {{ $acolhido->ativo ? 'status-active' : 'status-inactive' }}">
-                            {{ $acolhido->ativo ? 'Ativo' : 'Desativado' }}
+                        <div class="eyebrow" style="color: #0f766e;">Plano individual</div>
+                        <h1>{{ $title }}</h1>
+                        <div class="hero-text"><strong>{{ $subtitle }}</strong></div>
+                        @foreach ($metaLines as $line)
+                            <div class="hero-text">{{ $line }}</div>
+                        @endforeach
+                        <span class="status {{ $highlight === 'PLANO COMPLETO' ? 'status-active' : 'status-inactive' }}">
+                            {{ $highlight }}
                         </span>
                     </td>
                 </tr>
@@ -68,30 +69,30 @@
                 <td>
                     <div class="summary-card">
                         <span class="summary-label">Módulos selecionados</span>
-                        <span class="summary-value">{{ $selectedSectionsCount }} de {{ $availableSectionsCount }}</span>
-                        <span class="summary-note">Quantidade de blocos incluidos neste PDF.</span>
+                        <span class="summary-value">{{ count($sections) }}</span>
+                        <span class="summary-note">Quantidade de módulos incluídos no plano.</span>
                     </div>
                 </td>
                 <td>
                     <div class="summary-card">
-                        <span class="summary-label">Tipo de documento</span>
-                        <span class="summary-value">{{ $selectedSectionsCount === $availableSectionsCount ? 'Plano completo' : 'Seleção parcial' }}</span>
-                        <span class="summary-note">{{ $selectedSectionsCount === $availableSectionsCount ? 'Todas as secoes foram marcadas.' : 'Somente as secoes escolhidas foram exportadas.' }}</span>
+                        <span class="summary-label">Documento</span>
+                        <span class="summary-value">Plano Individual de Acolhimento</span>
+                        <span class="summary-note">Documento preparado para arquivo institucional.</span>
                     </div>
                 </td>
                 <td>
                     <div class="summary-card">
-                        <span class="summary-label">Módulos incluídos</span>
-                        <span class="summary-value">{{ $selectedSectionsLabel }}</span>
-                        <span class="summary-note">Resumo das partes exibidas no documento.</span>
+                        <span class="summary-label">Acolhido</span>
+                        <span class="summary-value">{{ $subtitle }}</span>
+                        <span class="summary-note">Identificação principal do plano.</span>
                     </div>
                 </td>
             </tr>
         </table>
 
-        @foreach ($sections as $title => $fields)
+        @foreach ($sections as $moduleTitle => $fields)
             <div class="section">
-                <h2 class="section-title">{{ $title }}</h2>
+                <h2 class="section-title">{{ $moduleTitle }}</h2>
                 <table class="inner-table">
                     <tbody>
                         @foreach ($fields as $label => $value)
@@ -104,32 +105,6 @@
                 </table>
             </div>
         @endforeach
-
-        @if ($acolhido->avaliacoesPessoais->isNotEmpty())
-            <div class="section">
-                <h2 class="section-title">Avaliações pessoais registradas</h2>
-                <table class="inner-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Usuario</th>
-                            <th>Tempo de casa</th>
-                            <th>Media</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($acolhido->avaliacoesPessoais->sortByDesc('created_at') as $avaliacao)
-                            <tr>
-                                <td>{{ $avaliacao->created_at?->format('d/m/Y H:i') }}</td>
-                                <td>{{ $avaliacao->user?->name ?? '-' }}</td>
-                                <td>{{ $avaliacao->dias_na_casa ?? '-' }}</td>
-                                <td>{{ number_format((float) $avaliacao->Total, 2, ',', '.') }} / 3</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
 
         <div class="footer">
             Documento gerado automaticamente pelo sistema CERAPE.

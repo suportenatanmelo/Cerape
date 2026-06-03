@@ -82,7 +82,7 @@
         </div>
 
         <div class="footer">
-            Relatorio gerado automaticamente pelo sistema CERAPE.
+            Documento gerado automaticamente pelo sistema CERAPE.
         </div>
     </div>
 </body>

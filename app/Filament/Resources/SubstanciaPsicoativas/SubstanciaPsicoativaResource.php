@@ -42,11 +42,11 @@ class SubstanciaPsicoativaResource extends Resource
 {
     protected static ?string $model = SubstanciaPsicoativas::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
+    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
 
     protected static ?string $navigationLabel = 'Substâncias psicoativas';
 
-    protected static ?int $navigationSort = 7;
+    protected static ?int $navigationSort = 1;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-beaker';
 
@@ -68,7 +68,9 @@ class SubstanciaPsicoativaResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::portalNavigationGroup();
+        return PortalContext::isFamilyUser()
+            ? PortalContext::portalNavigationGroup()
+            : 'Cadastros';
     }
 
     public static function form(Schema $schema): Schema
@@ -656,7 +658,7 @@ class SubstanciaPsicoativaResource extends Resource
                 ViewAction::make()
                     ->label('Visualizar'),
                 Action::make('downloadRelatorio')
-                    ->label('Baixar relatorio')
+                    ->label('Baixar PDF')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
                     ->hidden(fn (): bool => PortalContext::isFamilyUser())
@@ -769,7 +771,7 @@ class SubstanciaPsicoativaResource extends Resource
         return [
             'record' => $record,
             'sections' => $sections,
-            'logoCerape' => static::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'formatValue' => fn(mixed $value): string => static::formatValue($value),
         ];
     }
@@ -781,7 +783,7 @@ class SubstanciaPsicoativaResource extends Resource
         $pdf = Pdf::loadView('pdf.substancia-psicoativa-report', static::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'relatorio-substancia-psicoativa-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'substancia-psicoativa-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn() => print($pdf->output()),
@@ -915,8 +917,4 @@ class SubstanciaPsicoativaResource extends Resource
         ];
     }
 
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

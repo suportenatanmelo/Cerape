@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Saudes\Schemas;
 
+use App\Support\PdfImage;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -27,7 +28,8 @@ class SaudeInfolist
                                 ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
-                                ->circular(),
+                                ->circular()
+                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
                         ]),
                         Section::make('Condições de saúde e tratamento')
                             ->schema([

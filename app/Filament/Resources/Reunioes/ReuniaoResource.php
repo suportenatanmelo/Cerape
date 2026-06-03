@@ -311,7 +311,7 @@ class ReuniaoResource extends Resource
             'responsavel' => $record->user?->name ?? 'Sistema',
             'descricao' => $record->descricao,
             'conteudoHtml' => (string) str((string) $record->ata)->sanitizeHtml(),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
         ];
     }
 
@@ -329,8 +329,4 @@ class ReuniaoResource extends Resource
         );
     }
 
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

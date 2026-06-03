@@ -5,19 +5,19 @@
     <title>{{ $record->titulo }}</title>
     <style>
         * { box-sizing: border-box; }
-        body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.55; margin: 0; }
-        .page { padding: 24px; }
-        .header { background: #fff; border: 1px solid #dbe4ea; border-radius: 14px; margin-bottom: 20px; padding: 14px 16px; }
+        body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
+        .page { padding: 22px; }
+        .header { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; margin-bottom: 16px; padding: 16px 18px; }
         .title { color: #0f172a; font-size: 22px; font-weight: bold; margin: 0 0 6px; }
         .subtitle { color: #475569; font-size: 12px; margin: 0 0 3px; }
         .meta { margin: 16px 0 20px; width: 100%; }
         .meta td { border: 1px solid #dbe4ea; padding: 8px 10px; vertical-align: top; }
-        .meta .label { background: #f8fafc; color: #334155; font-weight: bold; width: 26%; }
-        .section-title { color: #0f766e; font-size: 14px; font-weight: bold; margin: 20px 0 10px; }
-        .box { background: #fff; border: 1px solid #dbe4ea; border-radius: 8px; padding: 14px; }
+        .meta .label { background: #f8fafc; color: #475569; font-weight: bold; width: 26%; }
+        .section-title { color: #1d4ed8; font-size: 14px; font-weight: bold; margin: 20px 0 10px; }
+        .box { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; padding: 14px; }
         .content p { margin: 0 0 10px; }
         .content ul, .content ol { margin: 0 0 12px 18px; padding: 0; }
-        .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 28px; padding-top: 10px; text-align: center; }
+        .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 22px; padding-top: 10px; text-align: center; }
     </style>
 </head>
 <body>

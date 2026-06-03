@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 @php
+    use App\Support\PdfImage;
     use Illuminate\Support\Arr;
-    use Illuminate\Support\Facades\Storage;
 
     $storedImageUrl = function ($path, ?string $fallback = null): ?string {
         if (is_array($path)) {
             $path = Arr::first($path);
         }
 
-        return filled($path) ? Storage::disk('public')->url($path) : $fallback;
+        return PdfImage::publicUrl($path) ?? $fallback;
     };
 
     $homeImageUrl = $storedImageUrl($home?->hero_image, asset('grayscale/assets/img/bg-masthead.jpg'));

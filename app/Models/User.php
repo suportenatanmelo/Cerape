@@ -7,6 +7,7 @@ use Database\Factories\UserFactory;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
+use App\Support\PdfImage;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use App\Support\UserRoleManager;
@@ -26,6 +28,7 @@ use App\Support\UserRoleManager;
     'password',
     'avatar',
     'cpf',
+    'funcao_usuario',
     'endereco',
     'uf',
     'nacionalidade',
@@ -118,10 +121,49 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return trim(($slug !== '' ? $slug : 'usuario') . '-' . $this->getKey(), '-');
     }
 
-    //class User extends Authenticatable implements HasAvatar
+    public function resolveAvatarAbsolutePath(): ?string
+    {
+        $avatar = trim((string) $this->avatar);
+
+        if ($avatar === '') {
+            return null;
+        }
+
+        if (Str::startsWith($avatar, ['http://', 'https://', '//', 'data:'])) {
+            return null;
+        }
+
+        foreach ([
+            Storage::disk('public'),
+            Storage::disk('local'),
+        ] as $disk) {
+            foreach ([
+                $avatar,
+                'users/avatars/' . basename($avatar),
+                'avatars/' . basename($avatar),
+                'private/avatars/' . basename($avatar),
+                'private/' . basename($avatar),
+            ] as $candidate) {
+                if ($disk->exists($candidate)) {
+                    $path = $disk->path($candidate);
+
+                    if (is_file($path) && is_readable($path)) {
+                        return $path;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return asset('storage/' . $this->avatar);
+        if (blank($this->avatar)) {
+            return null;
+        }
+
+        return PdfImage::publicUrl($this->avatar)
+            ?? url('/user/avatar');
     }
 }

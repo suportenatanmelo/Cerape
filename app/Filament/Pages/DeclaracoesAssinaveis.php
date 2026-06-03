@@ -122,7 +122,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
 
         $pdf = Pdf::loadView('pdf.declaracoes-assinaveis', [
             'payload' => $payload,
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
         ])->setPaper('a4');
 
         return response()->streamDownload(
@@ -322,8 +322,4 @@ class DeclaracoesAssinaveis extends Page implements HasForms
         return 'declaracao-' . Str::slug((string) $payload['type']) . '-' . Str::slug((string) $name) . '.pdf';
     }
 
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

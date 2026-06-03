@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
-    <title>Relatorio consolidado de avaliacao pessoal</title>
+    <title>Documento consolidado de avaliação pessoal</title>
     <style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 9px; line-height: 1.45; margin: 0; }
@@ -53,7 +53,7 @@
                     </td>
                     <td class="brand-text-cell">
                         <div class="brand-title">CENTRO DE REABILITACAO DO PRESO E EGRESSO - CERAPE</div>
-                        <div class="brand-text">Relatorio institucional consolidado para acompanhamento de acolhidos avaliados.</div>
+                        <div class="brand-text">Documento institucional consolidado para acompanhamento de acolhidos avaliados.</div>
                         <div class="brand-text">WhatsApp: (61) 99320-841 | Site: www.cerape.com</div>
                         <div class="brand-text">CNPJ sede: 00.857.994/0001-67 | CNPJ filial: 00.857.994/0001-48</div>
                     </td>
@@ -63,7 +63,7 @@
 
         <div class="hero">
             <div class="eyebrow">Avaliacao pessoal consolidada</div>
-            <div class="title">Relatorio geral de acolhidos avaliados</div>
+            <div class="title">Documento geral de acolhidos avaliados</div>
             <div class="subtitle">Gerado em: {{ $generatedAt->format('d/m/Y H:i') }}</div>
             @if ($selectedDate)
                 <div class="subtitle">Filtro aplicado: {{ $selectedDate->format('d/m/Y') }}</div>
@@ -86,7 +86,7 @@
                     <div class="card">
                         <span class="card-label">Usuarios que votaram</span>
                         <span class="card-value">{{ $totalProfissionais }}</span>
-                        <span class="card-note">Avaliadores unicos considerados no relatorio.</span>
+                        <span class="card-note">Avaliadores únicos considerados no documento.</span>
                     </div>
                 </td>
                 <td>
@@ -154,7 +154,7 @@
         </div>
 
         <div class="footer">
-            Relatorio gerado automaticamente pelo sistema CERAPE para acompanhamento institucional.
+            Documento gerado automaticamente pelo sistema CERAPE para acompanhamento institucional.
         </div>
     </div>
 </body>

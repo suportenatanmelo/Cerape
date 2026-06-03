@@ -173,11 +173,10 @@ class AvaliacaoPessoalResource extends Resource
                     ->schema([
                         ImageEntry::make('acolhido.avatar')
                             ->label('Foto do acolhido')
-                            ->disk('public')
                             ->circular()
                             ->height(96)
                             ->width(96)
-                            ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => self::resolveAvatarPath($record->acolhido?->avatar)),
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => PdfImage::publicUrl($record->acolhido?->avatar)),
                         TextEntry::make('acolhido.nome_completo_paciente')
                             ->label('Acolhido')
                             ->badge()
@@ -515,8 +514,8 @@ class AvaliacaoPessoalResource extends Resource
             'ultimaAvaliacao' => $avaliacoes->first(),
             'primeiraAvaliacao' => $avaliacoes->last(),
             'periodComparisons' => $periodComparisons,
-            'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => PdfImage::storageDataUri($record->acolhido?->avatar),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'formatScore' => fn(float $score): string => self::formatScore($score),
             'scoreColor' => fn(float $score): string => self::scoreColor($score),
         ];
@@ -538,7 +537,7 @@ class AvaliacaoPessoalResource extends Resource
 
                 return [
                     'user' => $primeiraAvaliacao?->user,
-                    'foto' => self::imageDataUri($primeiraAvaliacao?->user?->avatar),
+                    'foto' => PdfImage::storageDataUri($primeiraAvaliacao?->user?->avatar),
                     'quantidade' => $avaliacoesDoUsuario->count(),
                     'media' => (float) $avaliacoesDoUsuario->avg('Total'),
                     'ultima_avaliacao' => $avaliacoesOrdenadas->first(),
@@ -775,7 +774,7 @@ class AvaliacaoPessoalResource extends Resource
 
         return [
             'acolhidos' => $acolhidos,
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'geradoEm' => now(),
         ];
     }
@@ -877,7 +876,7 @@ class AvaliacaoPessoalResource extends Resource
             'totalVotos' => $evaluations->count(),
             'overallMediaUsuarios' => $overallMediaUsuarios,
             'overallMediaVotos' => $overallMediaVotos,
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'formatScore' => fn (float $score): string => self::formatScore($score),
         ];
     }
@@ -906,21 +905,6 @@ class AvaliacaoPessoalResource extends Resource
     public static function formatScore(float $score): string
     {
         return number_format($score, 2, ',', '.') . ' / 3';
-    }
-
-    public static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    public static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    public static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
     }
 
     /**

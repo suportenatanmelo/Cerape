@@ -104,7 +104,7 @@ class ArquivosDiarioResource extends Resource
     public static function getReportData(ArquivosDiario $record): array
     {
         return [
-            'title' => 'Relatório institucional de arquivo enviado',
+            'title' => 'Documento institucional de arquivo enviado',
             'subtitle' => $record->titulo ?? 'Documento sem título',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
@@ -113,7 +113,7 @@ class ArquivosDiarioResource extends Resource
             'highlight' => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : 'Sem arquivo vinculado',
             'photoData' => null,
             'photoLabel' => 'PDF',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'sections' => [
                 'Dados do arquivo' => [
                     'Título' => $record->titulo,
@@ -131,7 +131,7 @@ class ArquivosDiarioResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'relatorio-arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
+        $fileName = 'arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
 
         return response()->streamDownload(
             fn() => print($pdf->output()),
@@ -151,8 +151,4 @@ class ArquivosDiarioResource extends Resource
         return $value !== '' ? $value : '-';
     }
 
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }

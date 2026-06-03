@@ -37,14 +37,16 @@ class SaudeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'acolhido_id';
 
-    public static function getNavigationGroup(): string | UnitEnum | null
-    {
-        return PortalContext::portalNavigationGroup();
-    }
-
     public static function getNavigationSort(): ?int
     {
-        return 5;
+        return 2;
+    }
+
+    public static function getNavigationGroup(): string | UnitEnum | null
+    {
+        return PortalContext::isFamilyUser()
+            ? PortalContext::portalNavigationGroup()
+            : 'Cadastros';
     }
 
     public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
@@ -115,16 +117,16 @@ class SaudeResource extends Resource
         $record->loadMissing('acolhido');
 
         return [
-            'title' => 'Relatório institucional da ficha de saúde',
+            'title' => 'Documento institucional da ficha de saúde',
             'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido não identificado',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
                 'Ficha de saúde consolidada para acompanhamento clínico.',
             ],
             'highlight' => $record->faz_tratamento_medico ? 'Em tratamento médico' : 'Acompanhamento sem tratamento médico atual',
-            'photoData' => self::imageDataUri($record->acolhido?->avatar),
+            'photoData' => PdfImage::storageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'Saúde',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'sections' => [
                 'Resumo do acolhido' => [
                     'Acolhido' => $record->acolhido?->nome_completo_paciente,
@@ -157,7 +159,7 @@ class SaudeResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'relatorio-saude-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'saude-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn () => print($pdf->output()),
@@ -185,18 +187,4 @@ class SaudeResource extends Resource
         return $value !== '' ? $value : '-';
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
-    {
-        return PdfImage::resolveStoragePath($path);
-    }
-
-    private static function imageDataUri(?string $path): ?string
-    {
-        return PdfImage::storageDataUri($path);
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        return PdfImage::publicDataUri($relativePath);
-    }
 }
