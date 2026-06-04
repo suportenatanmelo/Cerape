@@ -60,6 +60,8 @@ Relatório de Acolhidos
         border: 1px solid #e5e7eb;
         text-align: left;
         vertical-align: middle;
+        color: #000000;
+        font-weight: 500;
     }
     .data-table tbody tr:nth-child(odd) {
         background: #f9fafb;
