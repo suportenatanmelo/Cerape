@@ -1,107 +1,168 @@
 @extends('pdf.layout')
 
 @section('title')
-Checklist de cadastro do acolhido
+Relatório de Acolhidos
 @endsection
 
 @section('styles')
 <style>
     * { box-sizing: border-box; }
-    body { background: #ffffff; color: #0f172a; font-family: DejaVu Serif, serif; font-size: 12px; line-height: 1.5; margin: 0; }
-    .page { padding: 28px 30px; }
-    .hero { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; color: #0f172a; margin-bottom: 18px; padding: 18px; }
-    .hero-title { color: #0f172a; font-size: 18px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
-    .hero-subtitle { color: #475569; font-size: 11px; margin: 0; }
-    .details { margin-top: 16px; width: 100%; }
-    .details td { padding: 8px 10px; vertical-align: top; }
-    .details-label { color: #475569; font-size: 10px; font-weight: 700; text-transform: uppercase; width: 30%; }
-    .details-value { color: #0f172a; font-size: 12px; }
-    .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; overflow: hidden; page-break-inside: avoid; }
-    .section-title { background: #eff6ff; border-bottom: 1px solid #bfdbfe; color: #1d4ed8; font-size: 13px; font-weight: bold; margin: 0; padding: 10px 12px; }
-    .checklist { border-collapse: collapse; width: 100%; }
-    .checklist th,
-    .checklist td { border: 1px solid #dbe4ea; padding: 12px 10px; text-align: left; vertical-align: middle; }
-    .checklist th { background: #f8fafc; color: #334155; font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    .checkmark { color: #047857; font-size: 16px; text-align: center; width: 48px; }
-    .note { color: #475569; font-size: 10px; margin-top: 8px; }
-    .page-break { page-break-after: always; }
+    body { 
+        background: #ffffff; 
+        color: #1f2937; 
+        font-family: 'DejaVu Sans', Arial, sans-serif; 
+        font-size: 11px; 
+        line-height: 1.4; 
+        margin: 0; 
+    }
+    .page { 
+        padding: 20px 25px; 
+    }
+    .header {
+        margin-bottom: 25px;
+        border-bottom: 2px solid #1f2937;
+        padding-bottom: 15px;
+    }
+    .header-title {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 5px 0;
+        text-transform: uppercase;
+    }
+    .header-date {
+        font-size: 9px;
+        color: #6b7280;
+        margin: 0;
+    }
+    .table-wrapper {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .data-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+    }
+    .data-table th {
+        background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+        color: #ffffff;
+        padding: 10px 8px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        border: 1px solid #1f2937;
+    }
+    .data-table td {
+        padding: 9px 8px;
+        border: 1px solid #e5e7eb;
+        text-align: left;
+        vertical-align: middle;
+    }
+    .data-table tbody tr:nth-child(odd) {
+        background: #f9fafb;
+    }
+    .data-table tbody tr:nth-child(even) {
+        background: #ffffff;
+    }
+    .data-table tbody tr:hover {
+        background: #f3f4f6;
+    }
+    .footer {
+        margin-top: 30px;
+        padding-top: 15px;
+        border-top: 1px solid #d1d5db;
+        text-align: center;
+        font-size: 9px;
+        color: #9ca3af;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: #6b7280;
+    }
+    .empty-state-icon {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    .page-break { 
+        page-break-after: always; 
+    }
+    .total-row {
+        background: #f0f9ff !important;
+        font-weight: 700;
+        color: #0f172a;
+    }
 </style>
 @endsection
 
 @section('content')
     @php
         $acolhidos = collect($acolhidos ?? ($acolhido ? [$acolhido] : []));
+        $selectedColumns = $selectedColumns ?? ['nome_completo_paciente', 'numero_cpf', 'data_nascimento', 'created_at'];
+        $columnLabels = $columnLabels ?? [];
     @endphp
 
-    @forelse($acolhidos as $index => $acolhido)
-        <div class="hero">
-            <div class="hero-title">Checklist de cadastro</div>
-            <p class="hero-subtitle">Campos habilitados para conferência do acolhido selecionado.</p>
-        </div>
+    <div class="header">
+        <h1 class="header-title">Relatório de Acolhidos</h1>
+        <p class="header-date">Gerado em {{ now()->format('d/m/Y \à\s H:i') }} - Total: {{ $acolhidos->count() }} registro(s)</p>
+    </div>
 
-        <table class="details">
-            <tr>
-                <td class="details-label">Acolhido</td>
-                <td class="details-value">{{ $acolhido->nome_completo_paciente }}</td>
-            </tr>
-            <tr>
-                <td class="details-label">CPF</td>
-                <td class="details-value">{{ $acolhido->numero_cpf ?: '-' }}</td>
-            </tr>
-            <tr>
-                <td class="details-label">Data de nascimento</td>
-                <td class="details-value">{{ optional($acolhido->data_nascimento)->format('d/m/Y') ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td class="details-label">Data do acolhimento</td>
-                <td class="details-value">{{ optional($acolhido->created_at)->format('d/m/Y') ?? '-' }}</td>
-            </tr>
-        </table>
+    @forelse($acolhidos as $batchIndex => $batchGroup)
+        @php
+            // Agrupar por 20 acolhidos por página para melhor visualização
+            $batch = $batchIndex === 0 ? $acolhidos->chunk(20) : null;
+        @endphp
 
-        <div class="section" style="margin-top: 18px;">
-            <h2 class="section-title">Itens do checklist</h2>
-            <table class="checklist">
-                <thead>
-                    <tr>
-                        <th>Campo</th>
-                        <th>Valor</th>
-                        <th>Concluído</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Nome completo</td>
-                        <td>{{ $acolhido->nome_completo_paciente ?: 'Não preenchido' }}</td>
-                        <td class="checkmark">✓</td>
-                    </tr>
-                    <tr>
-                        <td>CPF</td>
-                        <td>{{ $acolhido->numero_cpf ?: 'Não preenchido' }}</td>
-                        <td class="checkmark">✓</td>
-                    </tr>
-                    <tr>
-                        <td>Data de nascimento</td>
-                        <td>{{ optional($acolhido->data_nascimento)->format('d/m/Y') ?? 'Não preenchido' }}</td>
-                        <td class="checkmark">✓</td>
-                    </tr>
-                    <tr>
-                        <td>Data do acolhimento</td>
-                        <td>{{ optional($acolhido->created_at)->format('d/m/Y') ?? 'Não preenchido' }}</td>
-                        <td class="checkmark">✓</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        @if($batchIndex === 0)
+            @foreach($acolhidos->chunk(20) as $pageIndex => $pageAcolhidos)
+                @if($pageIndex > 0)
+                    <div class="page-break"></div>
+                @endif
 
-        <p class="note">Este relatório foi gerado para facilitar a conferência dos campos principais de cadastro do acolhido.</p>
-
-        @if (!$loop->last)
-            <div class="page-break"></div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            @foreach($selectedColumns as $column)
+                                <th>{{ $columnLabels[$column] ?? ucfirst(str_replace('_', ' ', $column)) }}</th>
+                            @endforeach
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($pageAcolhidos as $acolhido)
+                            <tr>
+                                @foreach($selectedColumns as $column)
+                                    <td>
+                                        @php
+                                            $value = data_get($acolhido, $column);
+                                            
+                                            // Formatar valores específicos
+                                            if ($column === 'data_nascimento' || $column === 'created_at' || $column === 'updated_at') {
+                                                echo $value ? \Carbon\Carbon::parse($value)->format('d/m/Y') : '-';
+                                            } elseif ($column === 'numero_cpf' || $column === 'numero_telefone') {
+                                                echo $value ?: '-';
+                                            } else {
+                                                echo $value ?: '-';
+                                            }
+                                        @endphp
+                                    </td>
+                                @endforeach
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endforeach
         @endif
     @empty
-        <div class="hero">
-            <div class="hero-title">Nenhum acolhido encontrado</div>
-            <p class="hero-subtitle">Não há dados para gerar o checklist.</p>
+        <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>Nenhum acolhido encontrado para os critérios selecionados.</p>
         </div>
     @endforelse
+
+    <div class="footer">
+        <p>Cerape - Sistema de Gestão de Acolhidos</p>
+    </div>
 @endsection
