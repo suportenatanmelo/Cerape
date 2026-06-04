@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Quadro semanal de atividades</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Quadro semanal de atividades
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.4; margin: 0; }
         .page { padding: 20px; }
@@ -28,12 +30,10 @@
         .observacoes h2 { font-size: 11px; margin: 0 0 6px; text-transform: uppercase; }
         .footer { color: #64748b; font-size: 9px; margin-top: 10px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="title">
+@section('content')
+<div class="title">
             {{ $record->titulo }} <span>- {{ $periodoLabel }}</span>
         </div>
         <div class="meta">
@@ -81,9 +81,4 @@
             {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observações adicionais.' !!}
         </div>
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

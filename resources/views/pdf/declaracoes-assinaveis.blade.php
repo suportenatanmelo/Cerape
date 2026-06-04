@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>{{ $payload['title'] }}</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+{{ $payload['title'] }}
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.6; margin: 0; }
         .page { padding: 24px 28px; }
@@ -26,18 +28,11 @@
         .doc-multi-line + .doc-multi-line { margin-top: 10px; }
         .document-footer { color: #64748b; font-size: 10px; margin-top: 20px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="document-shell">
+@section('content')
+<div class="document-shell">
             @include('declaracoes.partials.documento', ['payload' => $payload, 'mode' => 'pdf'])
         </div>
 
-        <div class="document-footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

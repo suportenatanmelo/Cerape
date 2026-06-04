@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Mail;
+
+use App\Models\Acolhido;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class AcolhidoCreatedNotification extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public function __construct(public Acolhido $acolhido)
+    {
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Novo Acolhido Registrado - ' . ($this->acolhido->nome_completo_paciente ?? 'Cerape'),
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.acolhido-created',
+            with: [
+                'acolhido' => $this->acolhido,
+                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'profileUrl' => config('app.url') . '/admin/acolhidos/' . $this->acolhido->id,
+            ],
+        );
+    }
+}

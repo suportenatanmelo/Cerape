@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Documento de autoavaliação</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Documento de autoavaliação
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.4; margin: 0; }
         .page { padding: 20px; }
@@ -19,12 +21,10 @@
         .blank-cell { background: #fff; height: 30px; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 16px; padding-top: 8px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="header">
+@section('content')
+<div class="header">
             <h1>Autoavaliação dos acolhidos</h1>
             <div class="muted">Documento de apoio para preenchimento manual da equipe.</div>
             <div class="muted">Gerado em: {{ $geradoEm->format('d/m/Y H:i') }}</div>
@@ -65,9 +65,4 @@
             </tbody>
         </table>
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

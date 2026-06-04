@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Documento de substância psicoativa</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Documento de substância psicoativa
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.5; margin: 0; }
         .page { padding: 22px; }
@@ -20,12 +22,10 @@
         .section table { border-left: 0; border-right: 0; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 10px; margin-top: 22px; padding-top: 10px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="header">
+@section('content')
+<div class="header">
             <h1>Documento de substância psicoativa</h1>
             <div><strong>{{ $record->acolhido?->nome_completo_paciente ?? 'Acolhido nao informado' }}</strong></div>
             <div class="muted">Substancias: {{ $formatValue($record->nome) }}</div>
@@ -48,9 +48,4 @@
             </div>
         @endforeach
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Documento de avaliação pessoal</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Documento de avaliação pessoal
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.45; margin: 0; }
         .page { padding: 22px; }
@@ -67,13 +69,10 @@
         .evaluator-criteria-value { font-size: 12px; font-weight: bold; margin-top: 3px; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 18px; padding-top: 8px; text-align: center; }
     </style>
-</head>
-<body>
+@endsection
 
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
-
-        <div class="hero">
+@section('content')
+<div class="hero">
             <div class="hero-left">
                 <div class="profile-card">
                     @if ($fotoAcolhido)
@@ -294,9 +293,4 @@
             </tbody>
         </table>
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE. As médias foram calculadas com pontuação máxima de 3 por critério.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

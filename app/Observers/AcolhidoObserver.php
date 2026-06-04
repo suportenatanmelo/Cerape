@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Models\Acolhido;
+use App\Support\AcolhidoEmailNotificationService;
 use App\Support\BirthdayNotificationService;
 
 class AcolhidoObserver
@@ -13,7 +14,12 @@ class AcolhidoObserver
      */
     public function created(Acolhido $acolhido): void
     {
+        if (! $acolhido->ativo) {
+            return;
+        }
+
         BirthdayNotificationService::notifyAcolhidoBirthday($acolhido);
+        AcolhidoEmailNotificationService::notifyAcolhidoCreated($acolhido);
     }
 
     /**
@@ -21,8 +27,26 @@ class AcolhidoObserver
      */
     public function updated(Acolhido $acolhido): void
     {
-        if ($acolhido->wasChanged('data_nascimento') || $acolhido->wasChanged('ativo')) {
+        $changes = collect($acolhido->getChanges())
+            ->except(['updated_at', 'created_at'])
+            ->all();
+
+        if ($acolhido->wasChanged('ativo')) {
+            $oldStatus = (bool) $acolhido->getOriginal('ativo');
+            AcolhidoEmailNotificationService::notifyAcolhidoStatusChanged($acolhido, $oldStatus);
+
+            if (! $acolhido->ativo) {
+                return;
+            }
+        }
+
+        if ($acolhido->ativo && ! empty($changes)) {
+            AcolhidoEmailNotificationService::notifyAcolhidoUpdated($acolhido, $changes);
+        }
+
+        if ($acolhido->ativo && $acolhido->wasChanged('data_nascimento')) {
             BirthdayNotificationService::notifyAcolhidoBirthday($acolhido);
+            AcolhidoEmailNotificationService::notifyAcolhidoBirthday($acolhido);
         }
     }
 
@@ -31,7 +55,7 @@ class AcolhidoObserver
      */
     public function deleted(Acolhido $acolhido): void
     {
-        //
+        AcolhidoEmailNotificationService::notifyAcolhidoDeleted($acolhido);
     }
 
     /**

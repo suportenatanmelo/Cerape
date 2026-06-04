@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Documento de prontuário de evolução</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Documento de prontuário de evolução
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
         .page { padding: 22px; }
@@ -34,12 +36,10 @@
         .clinical-box th, .clinical-box td { border: 1px solid #dbe4ea; padding: 6px; vertical-align: top; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 24px; padding-top: 8px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="hero">
+@section('content')
+<div class="hero">
             <div class="photo-wrap">
                 @if ($fotoAcolhido)
                     <img src="{{ $fotoAcolhido }}" class="photo" alt="">
@@ -83,9 +83,4 @@
             <div class="clinical-box">{!! $conteudoHtml !!}</div>
         </div>
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

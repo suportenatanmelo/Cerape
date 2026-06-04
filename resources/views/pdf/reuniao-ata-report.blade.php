@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>{{ $record->titulo }}</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+{{ $record->titulo }}
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
         .page { padding: 22px; }
@@ -19,12 +21,10 @@
         .content ul, .content ol { margin: 0 0 12px 18px; padding: 0; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 22px; padding-top: 10px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="header">
+@section('content')
+<div class="header">
             <h1 class="title">Ata de reunião</h1>
             <div class="subtitle"><strong>{{ $record->titulo }}</strong></div>
             <div class="subtitle">Documento gerado em {{ now()->format('d/m/Y H:i') }}</div>
@@ -54,9 +54,4 @@
             {!! $conteudoHtml !!}
         </div>
 
-        <div class="footer">
-            Documento emitido pelo sistema CERAPE para registro administrativo e acompanhamento institucional.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

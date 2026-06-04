@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Documento consolidado de avaliação pessoal</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+Documento consolidado de avaliação pessoal
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 9px; line-height: 1.45; margin: 0; }
         .page { padding: 14px; }
@@ -40,10 +42,10 @@
         .formula-line { color: #334155; font-size: 8px; margin: 3px 0; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 8px; margin-top: 10px; padding-top: 6px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        <div class="brand-header">
+@endsection
+
+@section('content')
+<div class="brand-header">
             <table>
                 <tr>
                     <td class="brand-logo-cell">
@@ -153,9 +155,4 @@
             <div class="formula-line"><strong>Em palavras:</strong> a media de todos e a soma das medias de cada avaliador dividida pela quantidade de avaliadores.</div>
         </div>
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE para acompanhamento institucional.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

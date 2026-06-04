@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>PLANO INDIVIDUAL DE ACOLHIMENTO</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+PLANO INDIVIDUAL DE ACOLHIMENTO
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Serif, serif; font-size: 12px; line-height: 1.5; margin: 0; }
         .page { padding: 28px 30px; }
@@ -34,12 +36,10 @@
         .inner-table tr:last-child th, .inner-table tr:last-child td { border-bottom: none; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 20px; padding-top: 8px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="hero">
+@section('content')
+<div class="hero">
             <table class="hero-table">
                 <tr>
                     <td class="avatar-wrap">
@@ -106,9 +106,4 @@
             </div>
         @endforeach
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection

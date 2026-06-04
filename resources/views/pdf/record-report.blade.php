@@ -1,9 +1,11 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>{{ $title }}</title>
-    <style>
+@extends('pdf.layout')
+
+@section('title')
+{{ $title }}
+@endsection
+
+@section('styles')
+<style>
         * { box-sizing: border-box; }
         body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
         .page { padding: 22px; }
@@ -26,12 +28,10 @@
         .section table { border-left: 0; border-right: 0; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 22px; padding-top: 10px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
+@endsection
 
-        <div class="hero">
+@section('content')
+<div class="hero">
             @if (! empty($photoData))
                 <div class="hero-photo">
                     <img src="{{ $photoData }}" class="photo" alt="">
@@ -72,9 +72,4 @@
             </div>
         @endforeach
 
-        <div class="footer">
-            Documento gerado automaticamente pelo sistema CERAPE.
-        </div>
-    </div>
-</body>
-</html>
+@endsection
