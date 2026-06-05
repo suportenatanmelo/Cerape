@@ -145,7 +145,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'Declaração para uso de imagem',
             'desistencia_ptc' => 'Declaração de desistência do PTC',
             'acolhimento_voluntario' => 'Declaração de acolhimento voluntário',
-            'contrato_prevencao_recaida' => 'Contrato terapêutico - prevenção à recaída',
+            'contrato_prevencao_recaida' => 'Contrato terapêutico 105 - prevenção à recaída ',
         ];
     }
 

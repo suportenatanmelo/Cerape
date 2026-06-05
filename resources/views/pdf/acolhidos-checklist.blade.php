@@ -127,18 +127,16 @@ Relatório de Acolhidos
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Campo</th>
-                            <th>Valor</th>
+                            @foreach($selectedColumns as $column)
+                                <th>{{ $columnLabels[$column] ?? ucfirst(str_replace('_', ' ', $column)) }}</th>
+                            @endforeach
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($pageAcolhidos as $acolhido)
-                            @foreach($selectedColumns as $column)
-                                <tr>
-                                    <td style="font-weight: 700; background: #f0f9ff; width: 35%;">
-                                        {{ $columnLabels[$column] ?? ucfirst(str_replace('_', ' ', $column)) }}
-                                    </td>
-                                    <td style="width: 65%;">
+                            <tr>
+                                @foreach($selectedColumns as $column)
+                                    <td>
                                         @php
                                             $value = data_get($acolhido, $column);
                                             
@@ -152,13 +150,8 @@ Relatório de Acolhidos
                                             }
                                         @endphp
                                     </td>
-                                </tr>
-                            @endforeach
-                            @if (!$loop->last)
-                                <tr style="height: 8px; background: #ffffff;">
-                                    <td colspan="2"></td>
-                                </tr>
-                            @endif
+                                @endforeach
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>

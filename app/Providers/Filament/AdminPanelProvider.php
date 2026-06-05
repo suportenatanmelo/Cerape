@@ -62,11 +62,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation(false)
             ->navigationGroups($navigationGroups)
             ->navigationItems([
-                NavigationItem::make('Prontuário de evolução')
-                    ->group(fn (): string => PortalContext::portalNavigationGroup())
-                    ->icon(Heroicon::OutlinedDocumentText)
-                    ->url('/admin/prontuarios-evolucao/prontuario-evolucaos')
-                    ->sort(3),
+
                 NavigationItem::make('Chat')
                     ->group(fn (): string => PortalContext::communicationNavigationGroup())
                     ->icon(Heroicon::OutlinedChatBubbleLeftRight)
