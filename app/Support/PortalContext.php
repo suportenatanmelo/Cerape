@@ -28,14 +28,14 @@ class PortalContext
     {
         return static::isFamilyUser($user)
             ? 'Portal da Família'
-            : 'Cadastros e Acompanhamento';
+            : 'Acompanhamento';
     }
 
     public static function evaluationNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Avaliações e Indicadores';
+            : 'Avaliações pessoais';
     }
 
     public static function documentsNavigationGroup(Authenticatable | null $user = null): string
@@ -56,7 +56,7 @@ class PortalContext
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Comunicação';
+            : 'Chat';
     }
 
     public static function greeting(Authenticatable | null $user = null): string

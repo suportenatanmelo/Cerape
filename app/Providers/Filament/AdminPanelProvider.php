@@ -46,12 +46,22 @@ class AdminPanelProvider extends PanelProvider
                 PortalContext::communicationNavigationGroup(),
             ]
             : [
+                // 1 - Cadastros
+                'Cadastros',
+                // 2 - Documentos e Relatórios
+                'Documentos e Relatórios',
+                // 3 - Prontuario de evolução
+                'Prontuario de evolução',
+                // 4 - Acompanhamento (formerly Cadastros e Acompanhamento)
                 PortalContext::portalNavigationGroup(),
+                // 5 - Avaliações pessoais
                 PortalContext::evaluationNavigationGroup(),
-                PortalContext::documentsNavigationGroup(),
-                PortalContext::mediaNavigationGroup(),
+                // 6 - Chat
                 PortalContext::communicationNavigationGroup(),
-                'Administracao e Acesso',
+                // 7 - Mídia e Galeria
+                PortalContext::mediaNavigationGroup(),
+                // 8 - Funções
+                'Funções',
             ];
 
         return $panel
@@ -109,7 +119,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 ImageGalleryPlugin::make(),
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Administracao e Acesso')
+                    ->navigationGroup('Funções')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')

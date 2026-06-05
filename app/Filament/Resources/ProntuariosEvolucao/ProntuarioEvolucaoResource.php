@@ -31,7 +31,7 @@ class ProntuarioEvolucaoResource extends Resource
 {
     protected static ?string $model = ProntuarioEvolucao::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
+    protected static string | UnitEnum | null $navigationGroup = 'Prontuario de evolução';
 
     protected static ?string $navigationLabel = 'Prontuario de evolucao';
 
@@ -82,7 +82,7 @@ class ProntuarioEvolucaoResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::portalNavigationGroup();
+        return static::$navigationGroup;
     }
 
     public static function notifyUsers(ProntuarioEvolucao $record, string $event): void
