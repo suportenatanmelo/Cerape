@@ -15,12 +15,12 @@ class ManageHomes extends ManageRecords
     {
         return [
             CreateAction::make()
-                ->label('Novo conteúdo'),
+                ->label('Novo conteudo'),
         ];
     }
 
     protected function configureEditAction(EditAction $action): void
     {
-        $action->label('Editar conteúdo');
+        $action->label('Editar conteudo');
     }
 }

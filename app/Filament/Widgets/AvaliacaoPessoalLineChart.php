@@ -18,9 +18,9 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
 
     protected string $view = 'filament.widgets.avaliacao-pessoal-line-chart';
 
-    protected ?string $heading = 'Relatório de evolução do acolhido';
+    protected ?string $heading = 'Relatorio de evolucao do acolhido';
 
-    protected ?string $description = 'Selecione um acolhido para comparar a média das avaliações com a média consolidada dos avaliadores em cada período.';
+    protected ?string $description = 'Selecione um acolhido para comparar a media das avaliacoes com a media consolidada dos avaliadores em cada periodo.';
 
     protected ?string $maxHeight = '340px';
 
@@ -71,7 +71,7 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Média das avaliações de ' . $nomeAcolhido,
+                    'label' => 'Media das avaliacoes de ' . $nomeAcolhido,
                     'data' => $rawAverages,
                     'borderColor' => '#d97706',
                     'backgroundColor' => 'rgba(217, 119, 6, 0.12)',
@@ -81,7 +81,7 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
                     'pointHoverRadius' => 6,
                 ],
                 [
-                    'label' => 'Média consolidada dos avaliadores de ' . $nomeAcolhido,
+                    'label' => 'Media consolidada dos avaliadores de ' . $nomeAcolhido,
                     'data' => $voterAverages,
                     'borderColor' => '#0f766e',
                     'backgroundColor' => 'rgba(15, 118, 110, 0.10)',

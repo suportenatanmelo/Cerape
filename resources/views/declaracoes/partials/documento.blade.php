@@ -86,7 +86,7 @@
             A presente autorizacao e concedida para uso de imagem, sem nenhum onus para a instituicao acima mencionada em todo territorio nacional e no exterior, da forma que a instituicao achar conveniente, para uso em qualquer midia, seja ela impressa ou eletronica de qualquer forma, ou seja outdoors, folhetos em geral, encartes, malas direta, catalogo, folder, anuncios em revista e jornais, home page, paineis, video, televisao, cinema, programa de radio, entre outros.
         </p>
         <p class="doc-paragraph">
-            Por ser esta a expressão da minha vontade, declaro que autorizo o uso acima descrito sem que haja a ser reclamado a título de direitos conexos à minha imagem. Assino a presente autorização em 2 (duas) vias de igual teor e forma.
+            Por ser esta, a expressao da minha vontade, declaro que autorizo o uso acima descrito sem que haja a ser reclamado a titulo de direitos conexos a minha imagem, assino a presente autorizacao em 2 (duas) vias de igual teor e forma.
         </p>
         <p class="doc-date">{{ $payload['dateText'] }}</p>
         <div class="doc-signature">
@@ -143,7 +143,7 @@
             CLAUSULA 1&ordf; - Propoe-se o servico de tratamento e acompanhamento de prevencao e reabilitacao de recaida, conforme as normas internas, rotina terapeutica e orientacoes institucionais do CERAPE / CRC.
         </p>
         <p class="doc-paragraph">
-            CLÁUSULA 2&ordf; - O interventor declara estar ciente do funcionamento do programa, das condições de acompanhamento e da necessidade de cooperação com a equipe técnica durante o período de atendimento.
+            CLAUSULA 2&ordf; - O interventor declara estar ciente do funcionamento do programa, das condicoes de acompanhamento e da necessidade de cooperacao com a equipe tecnica durante o periodo de atendimento.
         </p>
         <p class="doc-paragraph">
             CLAUSULA 3&ordf; - O acolhido compromete-se a observar as regras internas, participar das atividades propostas e manter conduta compativel com o processo terapeutico.

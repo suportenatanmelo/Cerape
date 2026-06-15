@@ -6,7 +6,6 @@ use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Filament\Resources\Acolhidos\Schemas\AcolhidoForm;
 use App\Models\Acolhido;
 use App\Support\PortalContext;
-use App\Support\PdfImage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -42,29 +41,29 @@ class ViewAcolhido extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('downloadPdf')
-                ->label('Baixar PDF')
+            Action::make('downloadRelatorio')
+                ->label('Baixar relatorio PDF')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->form([
                     Placeholder::make('report_sections_info')
                         ->hiddenLabel()
-                    ->content('Marque os módulos que deseja incluir no PDF. Se marcar todos, o sistema gera o Plano Individual de Acolhimento.'),
+                        ->content('Marque as secoes que deseja incluir no PDF. Se marcar todas, o sistema gera um relatorio geral do acolhido.'),
                     Toggle::make('select_all_sections')
-                    ->label('Marcar todos os módulos')
+                        ->label('Marcar todas para gerar um relatorio geral')
                         ->live()
                         ->default(true)
                         ->afterStateUpdated(function (Set $set, ?bool $state): void {
                             $set('selected_sections', $state ? array_keys(self::reportSectionOptions()) : []);
                         }),
                     CheckboxList::make('selected_sections')
-                    ->label('Módulos do PIA')
+                        ->label('Secoes do relatorio')
                         ->options(self::reportSectionOptions())
                         ->default(array_keys(self::reportSectionOptions()))
                         ->columns(2)
                         ->required()
-                    ->helperText('Você pode gerar um PDF completo ou somente com os módulos selecionados.'),
+                        ->helperText('Voce pode gerar um PDF completo ou somente com as secoes selecionadas.'),
                 ])
                 ->action(function (array $data) {
                     $record = $this->getRecord();
@@ -78,7 +77,7 @@ class ViewAcolhido extends ViewRecord
                     $pdf = Pdf::loadView('pdf.acolhido-report', self::getReportData($record, $selectedSections))
                         ->setPaper('a4');
 
-                    $fileName = 'plano-individual-acolhimento-' . Str::slug($record->nome_completo_paciente) . '.pdf';
+                    $fileName = 'relatorio-acolhido-' . Str::slug($record->nome_completo_paciente) . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),
@@ -110,10 +109,10 @@ class ViewAcolhido extends ViewRecord
             'selectedSectionsCount' => count($sections),
             'availableSectionsCount' => count($allSections),
             'selectedSectionsLabel' => count($sections) === count($allSections)
-                ? 'PLANO INDIVIDUAL DE ACOLHIMENTO'
+                ? 'Relatorio geral com todas as secoes'
                 : implode(', ', array_keys($sections)),
-            'fotoAcolhido' => PdfImage::storageDataUri($acolhido->avatar),
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
         ];
     }
@@ -127,6 +126,7 @@ class ViewAcolhido extends ViewRecord
             'Identificacao' => [
                 'Status' => $acolhido->ativo ? 'Ativo' : 'Desativado',
                 'Nome completo' => $acolhido->nome_completo_paciente,
+                'Responsavel pelo cadastro' => $acolhido->user?->name,
                 'Data de nascimento' => $acolhido->data_nascimento,
                 'Estado civil' => $acolhido->estado_civil,
                 'Nome do conjuge' => $acolhido->nome_do_conjuge,
@@ -143,24 +143,24 @@ class ViewAcolhido extends ViewRecord
                 'Bairro' => $acolhido->bairro_do_paciente,
                 'Municipio' => $acolhido->municipio_do_paciente,
                 'UF' => $acolhido->uf_municipio_do_paciente,
-                'Moradia própria' => $acolhido->moradia_propria,
+                'Moradia propria' => $acolhido->moradia_propria,
                 'Casa alugada' => $acolhido->mora_em_casa_alugada,
                 'Tempo de aluguel' => $acolhido->quanto_tempo_de_aluguel,
                 'Regiao' => $acolhido->em_qual_regiao,
             ],
             'Documentacao' => [
-                'Tem documentação' => $acolhido->tem_documentacao,
-                'Motivo caso não tenha documentação' => $acolhido->razao_caso_nao_tenha_documentacao,
+                'Tem documentacao' => $acolhido->tem_documentacao,
+                'Motivo caso nao tenha documentacao' => $acolhido->razao_caso_nao_tenha_documentacao,
                 'Documentos civis' => $acolhido->documentos_civis,
                 'Outros documentos' => $acolhido->documentos_outros,
-                'Número do RG' => $acolhido->numero_rg,
-                'Número do CPF' => $acolhido->numero_cpf,
-                'Número da certidão de nascimento' => $acolhido->numero_certidao_nascimento,
-                'Número da certidão de casamento' => $acolhido->numero_certidao_casamento,
+                'Numero do RG' => $acolhido->numero_rg,
+                'Numero do CPF' => $acolhido->numero_cpf,
+                'Numero da certidao de nascimento' => $acolhido->numero_certidao_nascimento,
+                'Numero da certidao de casamento' => $acolhido->numero_certidao_casamento,
                 'Numero da carteira de trabalho' => $acolhido->numero_carteira_trabalho,
-                'Número do título de eleitor' => $acolhido->numero_titulo_eleitor,
-                'Número do NIS/PIS' => $acolhido->numero_nis,
-                'Número do cartão do SUS' => $acolhido->numero_cartao_sus,
+                'Numero do titulo de eleitor' => $acolhido->numero_titulo_eleitor,
+                'Numero do NIS/PIS' => $acolhido->numero_nis,
+                'Numero do cartao do SUS' => $acolhido->numero_cartao_sus,
             ],
             'Trabalho, contato e encaminhamento' => [
                 'Trabalha' => $acolhido->trabalha,
@@ -189,10 +189,10 @@ class ViewAcolhido extends ViewRecord
                 'Quantidade de filhos' => $acolhido->quantidade_filhos,
                 'Nome dos filhos' => $acolhido->qual_o_nome_dos_filhos,
                 'Telefone dos filhos' => $acolhido->numero_telefone_filhos,
-                'Responsável pelas crianças' => $acolhido->quem_responsavel_criancas,
+                'Responsavel pelas criancas' => $acolhido->quem_responsavel_criancas,
                 'Recebe pensao alimenticia' => $acolhido->pensao_alimenticia,
                 'Possui contato com os filhos' => $acolhido->possui_contato_dos_filhos,
-                'Responsável pela intervenção' => $acolhido->responsavel_pela_intervencao_do_acolhido,
+                'Responsavel pela intervencao' => $acolhido->responsavel_pela_intervencao_do_acolhido,
                 'Profissional de referencia' => $acolhido->profissional_referencia_acolhido_instituicao,
             ],
             'Controle do cadastro' => [
@@ -215,7 +215,7 @@ class ViewAcolhido extends ViewRecord
     private static function formatValue(mixed $value): string
     {
         if (is_bool($value)) {
-            return $value ? 'Sim' : 'Não';
+            return $value ? 'Sim' : 'Nao';
         }
 
         if ($value instanceof \Carbon\CarbonInterface) {
@@ -235,4 +235,53 @@ class ViewAcolhido extends ViewRecord
         return $value !== '' ? $value : '-';
     }
 
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    private static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
 }

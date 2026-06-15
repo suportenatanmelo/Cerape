@@ -27,13 +27,11 @@ class Pia extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Cadastros';
-
     protected static ?string $navigationLabel = 'PIA';
 
     protected static ?string $title = 'PLANO INDIVIDUAL DE ACOLHIMENTO';
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 7;
 
     protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
@@ -112,7 +110,7 @@ class Pia extends Page implements HasForms
 
     public static function getNavigationGroup(): string | \UnitEnum | null
     {
-        return 'Cadastros';
+        return PortalContext::portalNavigationGroup();
     }
 
     public function downloadPdf()

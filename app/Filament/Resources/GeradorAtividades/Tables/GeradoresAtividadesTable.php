@@ -19,21 +19,21 @@ class GeradoresAtividadesTable
         return $table
             ->defaultSort('data_programacao', 'desc')
             ->emptyStateHeading('Nenhum quadro semanal cadastrado')
-            ->emptyStateDescription('Os planejamentos semanais de atividades aparecerão aqui.')
+            ->emptyStateDescription('Os planejamentos semanais de atividades aparecerao aqui.')
             ->emptyStateIcon('heroicon-o-clipboard-document-list')
             ->columns([
 
                 TextColumn::make('data_programacao')
-                    ->label('Período')
+                    ->label('Periodo')
                     ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::getPeriodLabel($record))
                     ->sortable(),
                 TextColumn::make('atividades_planejadas')
-                    ->label('Atividades práticas')
+                    ->label('Atividades praticas')
                     ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record, 3))
                     ->tooltip(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record))
                     ->wrap(),
                 TextColumn::make('user.name')
-                    ->label('Responsável')
+                    ->label('Responsavel')
                     ->placeholder('-')
                     ->toggleable(),
                 TextColumn::make('updated_at')

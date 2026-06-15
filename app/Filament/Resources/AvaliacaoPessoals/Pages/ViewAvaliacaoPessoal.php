@@ -40,12 +40,12 @@ class ViewAvaliacaoPessoal extends ViewRecord
     {
         return [
             Action::make('visualizarRelatorio')
-                ->label('Visualizar PDF')
+                ->label('Visualizar relatorio')
                 ->icon('heroicon-o-document-chart-bar')
                 ->color('primary')
                 ->url(fn (): string => AvaliacaoPessoalResource::getUrl('report', ['record' => $this->getRecord()])),
             Action::make('downloadRelatorio')
-                ->label('Baixar PDF')
+                ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
@@ -56,7 +56,7 @@ class ViewAvaliacaoPessoal extends ViewRecord
                     $pdf = Pdf::loadView('pdf.avaliacao-pessoal-report', AvaliacaoPessoalResource::getReportData($record))
                         ->setPaper('a4');
 
-                    $fileName = 'avaliacao-pessoal-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+                    $fileName = 'relatorio-avaliacao-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),

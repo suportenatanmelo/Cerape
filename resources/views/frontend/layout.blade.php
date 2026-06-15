@@ -1,332 +1,334 @@
-<!DOCTYPE html>
-@php
-    use App\Support\PdfImage;
-    use Illuminate\Support\Arr;
+@extends('frontend.site')
 
-    $storedImageUrl = function ($path, ?string $fallback = null): ?string {
+@php
+    use Illuminate\Support\Arr;
+    use Illuminate\Support\Facades\Storage;
+    use Illuminate\Support\Str;
+
+    $resolveImage = function ($path, ?string $fallback = null): ?string {
+        if (blank($path)) {
+            return $fallback;
+        }
+
         if (is_array($path)) {
             $path = Arr::first($path);
         }
 
-        return PdfImage::publicUrl($path) ?? $fallback;
+        if (Str::startsWith((string) $path, ['http://', 'https://', '//'])) {
+            return (string) $path;
+        }
+
+        if (Storage::disk('public')->exists((string) $path)) {
+            return Storage::disk('public')->url((string) $path);
+        }
+
+        return asset((string) $path);
     };
 
-    $homeImageUrl = $storedImageUrl($home?->hero_image, asset('grayscale/assets/img/bg-masthead.jpg'));
-    $homeImageAlt = filled($home?->hero_image_alt) ? $home->hero_image_alt : 'CERAPE preview';
     $homeTitle = filled($home?->title) ? $home->title : 'CERAPE';
     $homeSubtitle = filled($home?->subtitle)
         ? $home->subtitle
-        : 'Página institucional responsiva do projeto CERAPE, desenvolvida com o tema Grayscale.';
-    $homeCtaLabel = filled($home?->cta_label) ? $home->cta_label : 'Começar';
-    $homeCtaUrl = filled($home?->cta_url) ? $home->cta_url : '#about';
+        : 'Acolhimento, acompanhamento e comunicacao institucional em um site elegante, claro e facil de atualizar pelo painel.';
 
-    $aboutImageUrl = $storedImageUrl($home?->about_image, $homeImageUrl);
-    $aboutImageAlt = filled($home?->about_image_alt) ? $home->about_image_alt : 'Imagem da seção sobre o CERAPE';
+    $heroImageUrl = $resolveImage($home?->hero_image, asset('grayscale/assets/img/bg-masthead.jpg'));
+    $heroImageAlt = filled($home?->hero_image_alt) ? $home->hero_image_alt : 'Equipe CERAPE em destaque';
+
     $aboutTitle = filled($home?->about_title) ? $home->about_title : 'Sobre o CERAPE';
     $aboutSubtitle = filled($home?->about_subtitle)
         ? $home->about_subtitle
-        : 'Edite este bloco pelo painel para apresentar a instituição, serviços, valores e links importantes.';
+        : 'O site publico foi desenhado para apresentar a instituicao, fortalecer a relacao com a familia e centralizar noticias, conteudos e contato em um unico lugar.';
+    $aboutImageUrl = $resolveImage($home?->about_image, asset('grayscale/assets/img/demo-image-01.jpg'));
+    $aboutImageAlt = filled($home?->about_image_alt) ? $home->about_image_alt : 'Institucional CERAPE';
 
-    $projectsImageUrl = $storedImageUrl($home?->projects_image, asset('grayscale/assets/img/bg-masthead.jpg'));
-    $projectsImageAlt = filled($home?->projects_image_alt) ? $home->projects_image_alt : 'Imagem da seção de projetos';
-    $projectsTitle = filled($home?->projects_title) ? $home->projects_title : 'Projetos';
+    $projectsTitle = filled($home?->projects_title) ? $home->projects_title : 'Servicos e iniciativas';
     $projectsSubtitle = filled($home?->projects_subtitle)
         ? $home->projects_subtitle
-        : 'Use este espaço para destacar projetos, serviços ou conteúdos importantes da página pública.';
+        : 'Use esta area para destacar projetos, programas e informacoes que merecem atencao especial na pagina inicial.';
+    $projectsImageUrl = $resolveImage($home?->projects_image, asset('grayscale/assets/img/demo-image-02.jpg'));
+    $projectsImageAlt = filled($home?->projects_image_alt) ? $home->projects_image_alt : 'Projetos do CERAPE';
 
-    $signupImageUrl = $storedImageUrl($home?->signup_image);
-    $signupImageAlt = filled($home?->signup_image_alt) ? $home->signup_image_alt : 'Imagem da seção de contato';
-    $signupTitle = filled($home?->signup_title) ? $home->signup_title : 'Entre em contato';
+    $signupTitle = filled($home?->signup_title) ? $home->signup_title : 'Fale com a equipe';
     $signupSubtitle = filled($home?->signup_subtitle)
         ? $home->signup_subtitle
-        : 'Preencha seus dados para falar com a equipe CERAPE.';
+        : 'Envie uma mensagem pelo formulario e retorne com facilidade. O contato tambem pode ser atualizado pelo painel, se necessario.';
 
-    $carouselItems = collect($home?->carousel_items ?? [])
-        ->map(function (array $item) use ($storedImageUrl): array {
-            $item['image_url'] = $storedImageUrl($item['image'] ?? null);
+    $carouselSlides = collect($carouselSlides ?? [])
+        ->map(function ($slide) use ($resolveImage): array {
+            $imagePath = data_get($slide, 'image') ?? data_get($slide, 'image_url');
 
-            return $item;
+            return [
+                'eyebrow' => data_get($slide, 'eyebrow'),
+                'title' => data_get($slide, 'title'),
+                'description' => data_get($slide, 'description'),
+                'image_url' => $resolveImage($imagePath, asset('grayscale/assets/img/bg-signup.jpg')),
+                'image_alt' => data_get($slide, 'image_alt') ?: data_get($slide, 'alt') ?: data_get($slide, 'title') ?: 'Slide do carrossel',
+                'cta_label' => data_get($slide, 'cta_label') ?: data_get($slide, 'link_label'),
+                'cta_url' => data_get($slide, 'cta_url') ?: data_get($slide, 'link_url'),
+            ];
         })
         ->filter(fn (array $item): bool => filled($item['image_url']))
         ->values();
 
-    $showCarousel = (bool) ($home?->enable_carousel ?? false) && $carouselItems->isNotEmpty();
+    $latestPosts = collect($blogPosts ?? []);
 @endphp
-<html lang="pt-BR">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="Pagina inicial do CERAPE." />
-        <meta name="author" content="CERAPE" />
-        <title>CERAPE</title>
-        <link rel="icon" type="image/x-icon" href="{{ asset('grayscale/assets/favicon.ico') }}" />
-        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
-        <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,800,900" rel="stylesheet" />
-        <link href="{{ asset('grayscale/css/styles.css') }}" rel="stylesheet" />
-        <style>
-            .masthead {
-                background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.7)), url('{{ $homeImageUrl }}');
-            }
 
-            .frontend-rich-text a {
-                color: inherit;
-                font-weight: 700;
-                text-decoration: underline;
-                text-underline-offset: 0.2rem;
-            }
+@section('title', 'CERAPE | Início')
+@section('meta_description', 'Pagina institucional do CERAPE com sobre, blog, carrossel e contato, administrada pelo Filament.')
 
-            .frontend-rich-text p:last-child {
-                margin-bottom: 0;
-            }
+@section('content')
+    <section class="relative">
+        <div class="mx-auto max-w-7xl px-4 pb-20 pt-10 sm:px-6 lg:px-8 lg:pb-28 lg:pt-16">
+            <div class="grid items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+                <div class="space-y-8">
+                    <span class="section-kicker">Frontend institucional gerenciado no /frontend</span>
 
-            .home-carousel-image {
-                aspect-ratio: 16 / 9;
-                object-fit: cover;
-            }
-
-            .contact-form-card {
-                background: rgba(255, 255, 255, 0.96);
-                border: 0;
-                border-radius: 0.5rem;
-                box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.2);
-            }
-        </style>
-    </head>
-    <body id="page-top">
-        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#page-top">CERAPE</a>
-                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Alternar navegação">
-                    Menu
-                    <i class="fas fa-bars"></i>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarResponsive">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="#about">Sobre</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#projects">Projetos</a></li>
-                        @if ($showCarousel)
-                            <li class="nav-item"><a class="nav-link" href="#carousel">Carrossel</a></li>
-                        @endif
-                        <li class="nav-item"><a class="nav-link" href="#signup">Contato</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <header class="masthead">
-            <div class="container px-4 px-lg-5 d-flex h-100 align-items-center justify-content-center">
-                <div class="d-flex justify-content-center">
-                    <div class="text-center">
-                        <h1 class="mx-auto my-0 text-uppercase">{{ $homeTitle }}</h1>
-                        <div class="text-white-50 mx-auto mt-2 mb-5 frontend-rich-text">{!! $homeSubtitle !!}</div>
-                        <a class="btn btn-primary" href="{{ $homeCtaUrl }}">{{ $homeCtaLabel }}</a>
+                    <div class="space-y-5">
+                        <h1 class="font-display text-5xl font-bold tracking-tight text-white sm:text-6xl lg:text-7xl">
+                            {{ $homeTitle }}
+                        </h1>
+                        <div class="max-w-2xl text-lg leading-8 text-slate-300">
+                            {!! $homeSubtitle !!}
+                        </div>
                     </div>
-                </div>
-            </div>
-        </header>
 
-        <section class="about-section text-center" id="about">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5 justify-content-center">
-                    <div class="col-lg-8">
-                        <h2 class="text-white mb-4">{{ $aboutTitle }}</h2>
-                        <div class="text-white-50 frontend-rich-text">{!! $aboutSubtitle !!}</div>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#about" class="inline-flex items-center justify-center rounded-full bg-amber-400 px-6 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-300">
+                            Conhecer o projeto
+                        </a>
+                        <a href="{{ route('blog') }}" class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+                            Ver blog
+                        </a>
                     </div>
-                </div>
-                <img class="img-fluid" src="{{ $aboutImageUrl }}" alt="{{ $aboutImageAlt }}" />
-             </div>
-        </section>
 
-        <section class="projects-section bg-light" id="projects">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-0 mb-4 mb-lg-5 align-items-center">
-                    <div class="col-xl-8 col-lg-7">
-                        <img class="img-fluid mb-3 mb-lg-0" src="{{ $projectsImageUrl }}" alt="{{ $projectsImageAlt }}" />
-                    </div>
-                    <div class="col-xl-4 col-lg-5">
-                        <div class="featured-text text-center text-lg-left">
-                            <h4>{{ $projectsTitle }}</h4>
-                            <div class="text-black-50 mb-0 frontend-rich-text">{!! $projectsSubtitle !!}</div>
+                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Gestao</div>
+                            <div class="mt-2 text-2xl font-display font-bold text-white">Filament</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Conteudo</div>
+                            <div class="mt-2 text-2xl font-display font-bold text-white">Blog</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Atendimento</div>
+                            <div class="mt-2 text-2xl font-display font-bold text-white">Contato</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Destaques</div>
+                            <div class="mt-2 text-2xl font-display font-bold text-white">Carrossel</div>
                         </div>
                     </div>
                 </div>
 
-                @if ($showCarousel)
-                    <div id="carousel" class="carousel slide shadow" data-bs-ride="carousel">
-                        <div class="carousel-indicators">
-                            @foreach ($carouselItems as $index => $slide)
-                                <button type="button" data-bs-target="#carousel" data-bs-slide-to="{{ $index }}" @class(['active' => $index === 0]) aria-current="{{ $index === 0 ? 'true' : 'false' }}" aria-label="Slide {{ $index + 1 }}"></button>
+                <div class="relative">
+                    <div class="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-[#f2c94c]/20 via-transparent to-[#2f6b45]/14 blur-2xl"></div>
+                    <div class="glass-card relative overflow-hidden p-4">
+                        <img src="{{ $heroImageUrl }}" alt="{{ $heroImageAlt }}" class="aspect-[4/5] w-full rounded-[1.75rem] object-cover" />
+                        <div class="absolute inset-x-8 bottom-8 rounded-[1.5rem] border border-[#d8c98f]/10 bg-[#071b12]/75 p-5 backdrop-blur">
+                            <div class="text-xs font-bold uppercase tracking-[0.3em] text-amber-200">Atualizacao rapida</div>
+                            <div class="mt-2 font-display text-2xl font-bold text-white">Visual profissional com manutencao simples</div>
+                            <p class="mt-3 text-sm leading-6 text-slate-300">O site foi desenhado para crescer com o time, mantendo o conteudo organizado no painel e a experiencia do visitante leve.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="grid gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
+                <div class="relative">
+                    <div class="absolute -inset-5 rounded-[2.5rem] bg-[#f2c94c]/10 blur-2xl"></div>
+                    <img src="{{ $aboutImageUrl }}" alt="{{ $aboutImageAlt }}" class="relative aspect-[4/5] w-full rounded-[2rem] object-cover shadow-2xl shadow-black/30" />
+                    <div class="glass-card absolute -bottom-8 left-5 max-w-sm p-5">
+                        <div class="text-xs font-bold uppercase tracking-[0.28em] text-amber-200">Pontos fortes</div>
+                        <div class="mt-3 grid gap-3 text-sm text-slate-300">
+                            <div class="flex items-center gap-3"><span class="h-2 w-2 rounded-full bg-amber-400"></span> Conteudo editavel pelo Filament</div>
+                            <div class="flex items-center gap-3"><span class="h-2 w-2 rounded-full bg-emerald-400"></span> Blog e carrossel integrados</div>
+                            <div class="flex items-center gap-3"><span class="h-2 w-2 rounded-full bg-[#8a6b34]"></span> Formulario de contato pronto</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-6">
+                    <span class="section-kicker">Sobre</span>
+                    <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                        {{ $aboutTitle }}
+                    </h2>
+                    <div class="prose-cerape max-w-2xl">
+                        {!! $aboutSubtitle !!}
+                    </div>
+
+                    <div class="grid gap-4 sm:grid-cols-3">
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Missao</div>
+                            <div class="mt-3 text-base leading-7 text-slate-200">Comunicar com clareza e acolher com consistencia.</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Visao</div>
+                            <div class="mt-3 text-base leading-7 text-slate-200">Manter um site vivo, confiavel e facil de atualizar.</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Valor</div>
+                            <div class="mt-3 text-base leading-7 text-slate-200">Unir design bonito, acesso rapido e gestao simples.</div>
+                        </div>
+                    </div>
+
+                    <div class="rounded-[2rem] border border-white/10 bg-gradient-to-br from-white/5 to-white/[0.03] p-6">
+                        <div class="grid gap-5 sm:grid-cols-2">
+                            <div>
+                                <div class="text-sm font-semibold uppercase tracking-[0.28em] text-amber-200">Conteudo institucional</div>
+                                <div class="mt-3 text-slate-300">Use essa area para apresentar a organizacao, a equipe, a proposta de trabalho e os principais servicos.</div>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-200">Atualizacao sem atrito</div>
+                                <div class="mt-3 text-slate-300">O painel `/frontend` concentra hero, sobre, blog e carrossel em um unico fluxo de manutencao.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div class="space-y-4">
+                    <span class="section-kicker">Projetos e carrossel</span>
+                    <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">{{ $projectsTitle }}</h2>
+                    <div class="prose-cerape max-w-3xl">
+                        {!! $projectsSubtitle !!}
+                    </div>
+                </div>
+                <a href="{{ route('blog') }}" class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+                    Ver todas as publicacoes
+                </a>
+            </div>
+
+            @if ($carouselSlides->isNotEmpty())
+                <div class="relative mt-10" data-carousel data-carousel-index="0">
+                    <div class="overflow-hidden rounded-[2rem] border border-white/10 bg-[#081f15]/60 shadow-2xl shadow-black/25">
+                        <div class="flex transition-transform duration-700 ease-out" data-carousel-track>
+                            @foreach ($carouselSlides as $slide)
+                                <article class="relative min-w-full">
+                                    <img src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? $slide['title'] ?? 'Slide do carrossel' }}" class="h-[26rem] w-full object-cover sm:h-[30rem]" />
+                                    <div class="absolute inset-0 bg-gradient-to-t from-[#071b12] via-[#071b12]/30 to-transparent"></div>
+                                    <div class="absolute inset-x-0 bottom-0 p-6 sm:p-10">
+                                        <div class="glass-card max-w-2xl p-6 sm:p-8">
+                                            <span class="section-kicker">Slide {{ $loop->iteration }}</span>
+                                            <h3 class="mt-4 font-display text-3xl font-bold text-white">
+                                                {{ $slide['title'] ?? 'Destaque institucional' }}
+                                            </h3>
+                                            @if (filled($slide['description'] ?? null))
+                                                <div class="prose-cerape mt-4 text-slate-300">{!! $slide['description'] !!}</div>
+                                            @endif
+                                            @if (filled($slide['cta_url'] ?? null) && filled($slide['cta_label'] ?? null))
+                                                <a href="{{ $slide['cta_url'] }}" class="mt-6 inline-flex items-center justify-center rounded-full bg-[#f2c94c] px-5 py-3 text-sm font-bold text-[#071b12] transition hover:bg-[#f5d76c]">
+                                                    {{ $slide['cta_label'] }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </article>
                             @endforeach
                         </div>
-                        <div class="carousel-inner">
-                            @foreach ($carouselItems as $index => $slide)
-                                <div @class(['carousel-item', 'active' => $index === 0])>
-                                    <img class="d-block w-100 home-carousel-image" src="{{ $slide['image_url'] }}" alt="{{ $slide['alt'] ?? $slide['title'] ?? 'Slide do carrossel' }}">
-                                    <div class="carousel-caption d-none d-md-block">
-                                        @if (filled($slide['title'] ?? null))
-                                            <h5>{{ $slide['title'] }}</h5>
-                                        @endif
-                                        @if (filled($slide['description'] ?? null))
-                                            <div class="frontend-rich-text">{!! $slide['description'] !!}</div>
-                                        @endif
-                                        @if (filled($slide['link_url'] ?? null) && filled($slide['link_label'] ?? null))
-                                            <a class="btn btn-primary mt-3" href="{{ $slide['link_url'] }}">{{ $slide['link_label'] }}</a>
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Anterior</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Próximo</span>
-                        </button>
                     </div>
-                @else
-                    <div class="row gx-0 mb-5 mb-lg-0 justify-content-center">
-                        <div class="col-lg-6"><img class="img-fluid" src="{{ asset('grayscale/assets/img/demo-image-01.jpg') }}" alt="CERAPE detail" /></div>
-                        <div class="col-lg-6">
-                            <div class="bg-black text-center h-100 project">
-                                <div class="d-flex h-100">
-                                    <div class="project-text w-100 my-auto text-center text-lg-left">
-                                        <h4 class="text-white">Conteúdo editável</h4>
-                                        <p class="mb-0 text-white-50">Ative o carrossel no painel para exibir várias imagens com textos, links e ordem personalizada.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row gx-0 justify-content-center">
-                        <div class="col-lg-6"><img class="img-fluid" src="{{ asset('grayscale/assets/img/demo-image-02.jpg') }}" alt="CERAPE detail" /></div>
-                        <div class="col-lg-6 order-lg-first">
-                            <div class="bg-black text-center h-100 project">
-                                <div class="d-flex h-100">
-                                    <div class="project-text w-100 my-auto text-center text-lg-right">
-                                        <h4 class="text-white">Imagens com links</h4>
-                                        <p class="mb-0 text-white-50">Cada slide pode ter imagem, título, descrição formatada e botão opcional.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </section>
 
-        <section class="signup-section" id="signup">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5">
-                    <div class="col-md-10 col-lg-8 mx-auto text-center">
-                        <i class="far fa-paper-plane fa-2x mb-2 text-white"></i>
-                        <h2 class="text-white mb-3">{{ $signupTitle }}</h2>
-                        <div class="text-white-50 mb-5 frontend-rich-text">{!! $signupSubtitle !!}</div>
-                        @if ($signupImageUrl)
-                            <img class="img-fluid rounded mb-4" src="{{ $signupImageUrl }}" alt="{{ $signupImageAlt }}" />
-                        @endif
-                        @if (session('contact_success'))
-                            <div class="alert alert-success text-start" role="alert">
-                                {{ session('contact_success') }}
-                            </div>
-                        @endif
-                        <form class="contact-form-card p-4 p-md-5 text-start" method="POST" action="{{ route('contact.store') }}">
-                            @csrf
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label" for="contactName">Nome</label>
-                                    <input @class(['form-control', 'is-invalid' => $errors->has('name')]) id="contactName" type="text" name="name" value="{{ old('name') }}" placeholder="Seu nome completo" required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="contactEmail">E-mail</label>
-                                    <input @class(['form-control', 'is-invalid' => $errors->has('email')]) id="contactEmail" type="email" name="email" value="{{ old('email') }}" placeholder="seuemail@exemplo.com" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="contactPhone">Telefone</label>
-                                    <input @class(['form-control', 'is-invalid' => $errors->has('phone')]) id="contactPhone" type="tel" name="phone" value="{{ old('phone') }}" placeholder="(00) 00000-0000">
-                                    @error('phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label" for="contactSubject">Assunto</label>
-                                    <input @class(['form-control', 'is-invalid' => $errors->has('subject')]) id="contactSubject" type="text" name="subject" value="{{ old('subject') }}" placeholder="Como podemos ajudar?" required>
-                                    @error('subject')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label" for="contactMessage">Mensagem</label>
-                                    <textarea @class(['form-control', 'is-invalid' => $errors->has('message')]) id="contactMessage" name="message" rows="5" placeholder="Escreva sua mensagem" required>{{ old('message') }}</textarea>
-                                    @error('message')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button class="btn btn-primary" type="submit">Enviar mensagem</button>
-                                </div>
-                            </div>
-                        </form>
+                    <button type="button" data-carousel-prev class="absolute left-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-[#071b12]/75 p-3 text-white shadow-lg shadow-black/20 transition hover:bg-white/10">
+                        <span class="sr-only">Anterior</span>
+                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <button type="button" data-carousel-next class="absolute right-4 top-1/2 inline-flex -translate-y-1/2 items-center justify-center rounded-full border border-white/10 bg-[#071b12]/75 p-3 text-white shadow-lg shadow-black/20 transition hover:bg-white/10">
+                        <span class="sr-only">Proximo</span>
+                        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <div class="mt-6 flex items-center justify-center gap-2" data-carousel-dots>
+                        @foreach ($carouselSlides as $slide)
+                            <button
+                                type="button"
+                                data-carousel-dot
+                                class="h-2.5 w-2.5 rounded-full bg-white/30 transition duration-300"
+                                aria-label="Ir para o slide {{ $loop->iteration }}"
+                                aria-current="{{ $loop->first ? 'true' : 'false' }}"
+                            ></button>
+                        @endforeach
                     </div>
                 </div>
-            </div>
-        </section>
+            @else
+                <div class="mt-10 rounded-[2rem] border border-dashed border-white/15 bg-white/5 p-8 text-center text-slate-300">
+                    O carrossel ainda nao foi configurado no painel.
+                </div>
+            @endif
+        </div>
+    </section>
 
-        <section class="contact-section bg-black">
-            <div class="container px-4 px-lg-5">
-                <div class="row gx-4 gx-lg-5">
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="card py-4 h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-map-marked-alt text-primary mb-2"></i>
-                                <h4 class="text-uppercase m-0">Endereco</h4>
-                                <hr class="my-4 mx-auto" />
-                                <div class="small text-black-50">CERAPE</div>
-                            </div>
-                        </div>
+    <section id="blog" class="py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div class="space-y-4">
+                    <span class="section-kicker">Blog</span>
+                    <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">Ultimas publicacoes</h2>
+                    <p class="max-w-2xl text-lg leading-8 text-slate-300">
+                        Conteudo institucional, avisos e novidades apresentados de forma clara para familias, equipe e visitantes.
+                    </p>
+                </div>
+                <a href="{{ route('blog') }}" class="inline-flex items-center justify-center rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10">
+                    Abrir blog completo
+                </a>
+            </div>
+
+            <div class="mt-10 grid gap-6 lg:grid-cols-3">
+                @forelse ($latestPosts as $post)
+                    @include('frontend.partials.post-card', ['post' => $post])
+                @empty
+                    <div class="lg:col-span-3 rounded-[2rem] border border-dashed border-white/15 bg-white/5 p-8 text-center text-slate-300">
+                        Nenhuma publicacao disponivel no momento.
                     </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="card py-4 h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-envelope text-primary mb-2"></i>
-                                <h4 class="text-uppercase m-0">E-mail</h4>
-                                <hr class="my-4 mx-auto" />
-                                <div class="small text-black-50"><a href="mailto:contato@cerape.test">contato@cerape.test</a></div>
-                            </div>
-                        </div>
+                @endforelse
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="grid gap-10 lg:grid-cols-[1fr_0.85fr]">
+                <div class="space-y-6">
+                    <span class="section-kicker">Contato</span>
+                    <h2 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">{{ $signupTitle }}</h2>
+                    <div class="prose-cerape max-w-2xl">
+                        {!! $signupSubtitle !!}
                     </div>
-                    <div class="col-md-4 mb-3 mb-md-0">
-                        <div class="card py-4 h-100">
-                            <div class="card-body text-center">
-                                <i class="fas fa-mobile-alt text-primary mb-2"></i>
-                                <h4 class="text-uppercase m-0">Telefone</h4>
-                                <hr class="my-4 mx-auto" />
-                                <div class="small text-black-50">+55 (00) 0000-0000</div>
-                            </div>
+
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">E-mail</div>
+                            <div class="mt-3 text-base font-medium text-white">contato@cerape.local</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Telefone</div>
+                            <div class="mt-3 text-base font-medium text-white">(00) 00000-0000</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Endereço</div>
+                            <div class="mt-3 text-base font-medium text-white">CERAPE</div>
+                        </div>
+                        <div class="soft-panel p-5">
+                            <div class="text-sm font-semibold text-slate-400">Painel</div>
+                            <div class="mt-3 text-base font-medium text-white">/frontend</div>
                         </div>
                     </div>
                 </div>
-                <div class="social d-flex justify-content-center">
-                    <a class="mx-2" href="#!"><i class="fab fa-twitter"></i></a>
-                    <a class="mx-2" href="#!"><i class="fab fa-facebook-f"></i></a>
-                    <a class="mx-2" href="#!"><i class="fab fa-github"></i></a>
-                </div>
+
+                @include('frontend.partials.contact-form')
             </div>
-        </section>
-
-        <footer class="footer bg-black small text-center text-white-50">
-            <div class="container px-4 px-lg-5">Copyright &copy; CERAPE 2026</div>
-        </footer>
-
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="{{ asset('grayscale/js/scripts.js') }}"></script>
-    </body>
-</html>
+        </div>
+    </section>
+@endsection

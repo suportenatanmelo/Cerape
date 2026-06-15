@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ProntuariosEvolucao\Pages;
 
 use App\Filament\Resources\ProntuariosEvolucao\ProntuarioEvolucaoResource;
-use App\Models\User;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Enums\Width;
 
@@ -25,9 +24,6 @@ class CreateProntuarioEvolucao extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['user_id'] ??= auth()->id();
-        $data['funcao_responsavel_informacao'] = User::query()
-            ->whereKey($data['user_id'] ?? null)
-            ->value('funcao_usuario');
 
         return $data;
     }

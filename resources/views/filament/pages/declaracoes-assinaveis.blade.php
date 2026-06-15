@@ -124,8 +124,8 @@
         <div class="declaration-preview">
             <div class="declaration-preview-header">
                 <div>
-                    <div style="font-size: 1.05rem; font-weight: 700;">Visualização da declaração</div>
-                    <div class="declaration-preview-meta">Documento preparado para conferência e assinatura manual.</div>
+                    <div style="font-size: 1.05rem; font-weight: 700;">Visualizacao da declaracao</div>
+                    <div class="declaration-preview-meta">Documento preparado para conferencia e assinatura manual.</div>
                 </div>
                 <div style="font-size: 0.88rem; font-weight: 600;">CERAPE / CRC</div>
             </div>
@@ -138,8 +138,8 @@
                 </div>
             @else
                 <div class="empty-state">
-                    <div style="font-size: 1.08rem; font-weight: 700;">Selecione uma declaração para continuar</div>
-                    <div class="page-note">Quando a declaração exigir acolhido, escolha um nome para liberar a visualização e o PDF.</div>
+                    <div style="font-size: 1.08rem; font-weight: 700;">Selecione uma declaracao para continuar</div>
+                    <div class="page-note">Quando a declaracao exigir acolhido, escolha um nome para liberar a visualizacao e o PDF.</div>
                 </div>
             @endif
         </div>

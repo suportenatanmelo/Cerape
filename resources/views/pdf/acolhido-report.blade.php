@@ -1,45 +1,45 @@
-@extends('pdf.layout')
-
-@section('title')
-Plano Individual de Acolhimento
-@endsection
-
-@section('styles')
-<style>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Relatorio geral do acolhido</title>
+    <style>
         * { box-sizing: border-box; }
-        body { background: #ffffff; color: #0f172a; font-family: DejaVu Serif, serif; font-size: 12px; line-height: 1.5; margin: 0; }
-        .page { padding: 28px 30px; }
-        .hero { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; color: #0f172a; margin-bottom: 14px; padding: 18px; }
+        body { background: #f8fafc; color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; margin: 0; }
+        .page { padding: 22px; }
+        .hero { background: linear-gradient(135deg, #92400e, #b45309); border-radius: 14px; color: #fff; margin-bottom: 14px; padding: 16px; }
         .hero-table { width: 100%; }
         .avatar-wrap { vertical-align: top; width: 92px; }
-        .avatar { background: #fff; border: 3px solid #cbd5e1; border-radius: 18px; height: 78px; object-fit: cover; width: 78px; }
-        .avatar-empty { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 18px; color: #334155; height: 78px; padding-top: 28px; text-align: center; width: 78px; }
+        .avatar { background: #fff; border: 3px solid rgba(255, 255, 255, 0.35); border-radius: 50%; height: 78px; object-fit: cover; width: 78px; }
+        .avatar-empty { background: rgba(255, 255, 255, 0.18); border: 2px dashed rgba(255, 255, 255, 0.45); border-radius: 50%; color: #fff; height: 78px; padding-top: 28px; text-align: center; width: 78px; }
         .eyebrow { font-size: 8px; font-weight: bold; letter-spacing: 0.14em; text-transform: uppercase; }
-        h1 { font-size: 19px; margin: 4px 0 6px; text-transform: uppercase; }
-        .hero-text { color: #334155; font-size: 9px; margin: 2px 0; }
+        h1 { font-size: 20px; margin: 4px 0 6px; }
+        .hero-text { color: rgba(255, 255, 255, 0.9); font-size: 9px; margin: 2px 0; }
         .status { border-radius: 999px; display: inline-block; font-size: 9px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
         .status-active { background: #dcfce7; color: #166534; }
         .status-inactive { background: #fee2e2; color: #991b1b; }
         .summary { margin: 0 0 14px; width: 100%; }
         .summary td { padding: 0 5px; vertical-align: top; width: 33.33%; }
-        .summary-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; min-height: 70px; padding: 10px; }
+        .summary-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; min-height: 70px; padding: 10px; }
         .summary-label { color: #6b7280; display: block; font-size: 8px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; }
         .summary-value { color: #111827; display: block; font-size: 13px; font-weight: bold; margin-top: 5px; }
         .summary-note { color: #475569; display: block; font-size: 8px; margin-top: 4px; }
-        .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
-        .section-title { background: #eff6ff; border-bottom: 1px solid #bfdbfe; color: #1d4ed8; font-size: 13px; font-weight: bold; margin: 0; padding: 10px 12px; }
+        .section { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
+        .section-title { background: #fff7ed; border-bottom: 1px solid #fed7aa; color: #9a3412; font-size: 13px; font-weight: bold; margin: 0; padding: 10px 12px; }
         table { border-collapse: collapse; width: 100%; }
-        th { background: #f8fafc; color: #334155; font-size: 9px; text-align: left; text-transform: uppercase; width: 34%; }
-        th, td { border: 1px solid #dbe4ea; padding: 7px; vertical-align: top; }
+        th { background: #f9fafb; color: #4b5563; font-size: 9px; text-align: left; text-transform: uppercase; width: 34%; }
+        th, td { border: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
         .inner-table th, .inner-table td { border-left: none; border-right: none; }
         .inner-table tr:first-child th, .inner-table tr:first-child td { border-top: none; }
         .inner-table tr:last-child th, .inner-table tr:last-child td { border-bottom: none; }
-        .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 20px; padding-top: 8px; text-align: center; }
+        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 20px; padding-top: 8px; text-align: center; }
     </style>
-@endsection
+</head>
+<body>
+    <div class="page">
+        @include('pdf.partials.cerape-brand-header')
 
-@section('content')
-<div class="hero">
+        <div class="hero">
             <table class="hero-table">
                 <tr>
                     <td class="avatar-wrap">
@@ -50,10 +50,10 @@ Plano Individual de Acolhimento
                         @endif
                     </td>
                     <td>
-                        <div class="eyebrow" style="color: #0f766e;">Perfil do acolhido</div>
-                        <h1>Plano Individual de Acolhimento</h1>
+                        <div class="eyebrow">Perfil do acolhido</div>
+                        <h1>Relatorio personalizado em PDF</h1>
                         <div class="hero-text"><strong>{{ $acolhido->nome_completo_paciente }}</strong></div>
-                        <div class="hero-text">Responsável pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
+                        <div class="hero-text">Responsavel pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
                         <div class="hero-text">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
                         <span class="status {{ $acolhido->ativo ? 'status-active' : 'status-inactive' }}">
                             {{ $acolhido->ativo ? 'Ativo' : 'Desativado' }}
@@ -67,21 +67,21 @@ Plano Individual de Acolhimento
             <tr>
                 <td>
                     <div class="summary-card">
-                        <span class="summary-label">Módulos selecionados</span>
+                        <span class="summary-label">Secoes selecionadas</span>
                         <span class="summary-value">{{ $selectedSectionsCount }} de {{ $availableSectionsCount }}</span>
                         <span class="summary-note">Quantidade de blocos incluidos neste PDF.</span>
                     </div>
                 </td>
                 <td>
                     <div class="summary-card">
-                        <span class="summary-label">Tipo de documento</span>
-                        <span class="summary-value">{{ $selectedSectionsCount === $availableSectionsCount ? 'Plano completo' : 'Seleção parcial' }}</span>
+                        <span class="summary-label">Tipo de relatorio</span>
+                        <span class="summary-value">{{ $selectedSectionsCount === $availableSectionsCount ? 'Geral' : 'Personalizado' }}</span>
                         <span class="summary-note">{{ $selectedSectionsCount === $availableSectionsCount ? 'Todas as secoes foram marcadas.' : 'Somente as secoes escolhidas foram exportadas.' }}</span>
                     </div>
                 </td>
                 <td>
                     <div class="summary-card">
-                        <span class="summary-label">Módulos incluídos</span>
+                        <span class="summary-label">Secoes incluidas</span>
                         <span class="summary-value">{{ $selectedSectionsLabel }}</span>
                         <span class="summary-note">Resumo das partes exibidas no documento.</span>
                     </div>
@@ -107,7 +107,7 @@ Plano Individual de Acolhimento
 
         @if ($acolhido->avaliacoesPessoais->isNotEmpty())
             <div class="section">
-                <h2 class="section-title">Avaliações pessoais registradas</h2>
+                <h2 class="section-title">Avaliacoes pessoais registradas</h2>
                 <table class="inner-table">
                     <thead>
                         <tr>
@@ -131,4 +131,9 @@ Plano Individual de Acolhimento
             </div>
         @endif
 
-@endsection
+        <div class="footer">
+            Relatorio gerado automaticamente pelo sistema Cerape.
+        </div>
+    </div>
+</body>
+</html>

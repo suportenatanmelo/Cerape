@@ -89,7 +89,7 @@
 <div class="{{ $wrapperClasses }}">
     <div class="relative border-b {{ $headerBorder }} px-6 py-6 sm:px-8">
         <p class="{{ $eyebrowClass }}">
-            {{ $isFamily ? 'Dashboard da família' : 'Dashboard institucional' }}
+            {{ $isFamily ? 'Dashboard da familia' : 'Dashboard institucional' }}
         </p>
         <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-3xl">
@@ -108,13 +108,13 @@
                     </span>
                     @if ($gallery?->ativo)
                         <span class="{{ $chipClass }}">
-                            Álbum ativo no portal
+                            Album ativo no portal
                         </span>
                     @endif
                 </div>
                 @if (filled($latestUpdate))
                     <p class="mt-3 text-[11px] font-semibold uppercase tracking-[0.24em] {{ $isFamily ? 'text-neutral-500' : 'text-slate-500' }}">
-                        Última atualização: {{ $latestUpdate }}
+                        Ultima atualizacao: {{ $latestUpdate }}
                     </p>
                 @endif
             </div>
@@ -130,14 +130,14 @@
                 <p class="{{ $statLabelClass }}">Acervo visual</p>
                 <p class="{{ $statValueClass }}">{{ $totalImages }}</p>
                 <p class="mt-2 text-sm {{ $isFamily ? 'text-neutral-600' : 'text-slate-600' }}">
-                    Fotografias e registros disponíveis neste álbum.
+                    Fotografias e registros disponiveis neste album.
                 </p>
             </div>
             <div class="{{ $statCardClass }}">
                 <p class="{{ $statLabelClass }}">Linha do tempo</p>
                 <p class="{{ $statValueClass }}">{{ $periodCount }}</p>
                 <p class="mt-2 text-sm {{ $isFamily ? 'text-neutral-600' : 'text-slate-600' }}">
-                    Datas agrupadas para leitura cronológica do material.
+                    Datas agrupadas para leitura cronologica do material.
                 </p>
             </div>
             <div class="{{ $statCardClass }}">
@@ -168,19 +168,19 @@
                     @endphp
 
                     <div class="hidden items-center gap-2 sm:flex">
-                    <button
-                        type="button"
-                        class="{{ $buttonClass }}"
-                        onclick="document.getElementById('{{ $galleryId }}').scrollBy({ left: -320, behavior: 'smooth' })"
-                    >
-                            Anterior
+                        <button
+                            type="button"
+                            class="{{ $buttonClass }}"
+                            onclick="document.getElementById('{{ $galleryId }}').scrollBy({ left: -320, behavior: 'smooth' })"
+                        >
+                            Prev
                         </button>
                         <button
                             type="button"
                             class="{{ $buttonClass }}"
                             onclick="document.getElementById('{{ $galleryId }}').scrollBy({ left: 320, behavior: 'smooth' })"
                         >
-                            Próximo
+                            Next
                         </button>
                     </div>
                 </div>

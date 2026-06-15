@@ -1,14 +1,14 @@
 <div class="space-y-5">
     <div class="grid gap-3 md:grid-cols-4">
         <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div class="text-sm text-gray-500 dark:text-gray-400">Média geral consolidada</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Media geral consolidada</div>
             <div class="mt-1 text-2xl font-semibold text-gray-950 dark:text-white">
                 {{ $formatScore((float) $mediaDeTodos) }}
             </div>
         </div>
 
         <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das médias individuais limitada a 3</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das medias individuais limitada a 3</div>
             <div class="mt-1 text-2xl font-semibold text-gray-950 dark:text-white">
                 {{ number_format((float) $somaMediasIndividuais, 2, ',', '.') }}
             </div>
@@ -22,7 +22,7 @@
         </div>
 
         <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliações registradas</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliacoes registradas</div>
             <div class="mt-1 text-2xl font-semibold text-gray-950 dark:text-white">
                 {{ $avaliacoes->count() }}
             </div>
@@ -44,7 +44,7 @@
 
                         <div>
                             <div class="font-semibold text-gray-950 dark:text-white">
-                                {{ $item['user']?->name ?? 'Profissional não informado' }}
+                                {{ $item['user']?->name ?? 'Profissional nao informado' }}
                             </div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">
                                 {{ $item['user']?->email ?? 'Sem e-mail cadastrado' }}

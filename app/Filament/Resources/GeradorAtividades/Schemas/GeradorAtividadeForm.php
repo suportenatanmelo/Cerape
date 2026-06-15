@@ -25,7 +25,7 @@ class GeradorAtividadeForm
         return $schema
             ->components([
                 Section::make('Planejamento semanal')
-                    ->description('Monte o quadro semanal das atividades práticas inclusivas com período de 7 dias, demandas detalhadas e acolhidos vinculados por linha.')
+                    ->description('Monte o quadro semanal das atividades praticas inclusivas com periodo de 7 dias, demandas detalhadas e acolhidos vinculados por linha.')
                     ->icon('heroicon-o-calendar-days')
                     ->columnSpanFull()
                     ->extraAttributes([
@@ -37,15 +37,15 @@ class GeradorAtividadeForm
                             'md' => 3,
                         ])->schema([
                             TextInput::make('titulo')
-                                ->label('Título do quadro')
-                                ->default('Atividades práticas inclusivas')
+                                ->label('Titulo do quadro')
+                                ->default('Atividades praticas inclusivas')
                                 ->maxLength(255),
                             DatePicker::make('data_programacao')
-                                ->label('Início do ciclo')
+                                ->label('Inicio do ciclo')
                                 ->native(false)
                                 ->live()
                                 ->default(now())
-                                ->helperText('O sistema fecha automaticamente o período em 7 dias.'),
+                                ->helperText('O sistema fecha automaticamente o periodo em 7 dias.'),
                             Placeholder::make('periodo_fim_visual')
                                 ->label('Fim do ciclo')
                                 ->content(function (Get $get): HtmlString {
@@ -61,12 +61,12 @@ class GeradorAtividadeForm
                                     return new HtmlString(
                                         '<div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">' .
                                         e($end->format('d/m/Y')) .
-                                        '<div class="mt-1 text-xs font-normal text-amber-700">Período completo: ' . e($start->format('d/m/Y') . ' a ' . $end->format('d/m/Y')) . '</div>' .
+                                        '<div class="mt-1 text-xs font-normal text-amber-700">Periodo completo: ' . e($start->format('d/m/Y') . ' a ' . $end->format('d/m/Y')) . '</div>' .
                                         '</div>'
                                     );
                                 }),
                             Select::make('user_id')
-                                ->label('Responsável')
+                                ->label('Responsavel')
                                 ->options(fn () => User::query()->orderBy('name')->pluck('name', 'id'))
                                 ->searchable()
                                 ->preload()
@@ -75,7 +75,7 @@ class GeradorAtividadeForm
                         ]),
                     ]),
                 Section::make('Tabela de atividades')
-                    ->description('Cada linha representa uma atividade prática com a sua demanda detalhada e os acolhidos que vão executá-la.')
+                    ->description('Cada linha representa uma atividade pratica com a sua demanda detalhada e os acolhidos que vao executa-la.')
                     ->icon('heroicon-o-table-cells')
                     ->columnSpanFull()
                     ->extraAttributes([
@@ -88,7 +88,7 @@ class GeradorAtividadeForm
                         ])->schema([
                             Placeholder::make('header_atividade_pratica')
                                 ->hiddenLabel()
-                                ->content(new HtmlString('<div class="rounded-t-xl border border-b-0 border-gray-200 bg-gray-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-700">Atividades práticas</div>'))
+                                ->content(new HtmlString('<div class="rounded-t-xl border border-b-0 border-gray-200 bg-gray-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.18em] text-gray-700">Atividades praticas</div>'))
                                 ->columnSpan(3),
                             Placeholder::make('header_demanda')
                                 ->hiddenLabel()
@@ -117,7 +117,7 @@ class GeradorAtividadeForm
                                 })
                                 ->schema([
                                     Select::make('atividade_pratica')
-                                        ->label('Atividade prática')
+                                        ->label('Atividade pratica')
                                         ->options(fn (Get $get, mixed $state): array => self::availableActivityOptions($get, $state))
                                         ->searchable()
                                         ->preload()
@@ -125,7 +125,7 @@ class GeradorAtividadeForm
                                         ->live()
                                         ->distinct()
                                         ->placeholder('Selecione uma atividade da lista')
-                                        ->helperText('Atividades já escolhidas em outra linha saem desta lista.')
+                                        ->helperText('Atividades ja escolhidas em outra linha saem desta lista.')
                                         ->columnSpan(3),
                                     RichEditor::make('demanda')
                                         ->label('Demanda')
@@ -139,7 +139,7 @@ class GeradorAtividadeForm
                                             'redo',
                                             'undo',
                                         ])
-                                        ->placeholder('Descreva com clareza o que esta atividade faz, o objetivo e os cuidados da execução.'),
+                                        ->placeholder('Descreva com clareza o que esta atividade faz, o objetivo e os cuidados da execucao.'),
                                     Select::make('acolhidos_ids')
                                         ->label('Acolhidos')
                                         ->options(self::acolhidoOptions())
@@ -155,8 +155,8 @@ class GeradorAtividadeForm
                                 ->columnSpanFull(),
                         ]),
                     ]),
-                Section::make('Observações complementares')
-                    ->description('Use este espaço para registrar combinados gerais da semana, observações da equipe e notas que não pertencem a uma linha específica.')
+                Section::make('Observacoes complementares')
+                    ->description('Use este espaco para registrar combinados gerais da semana, observacoes da equipe e notas que nao pertencem a uma linha especifica.')
                     ->icon('heroicon-o-chat-bubble-bottom-center-text')
                     ->columnSpanFull()
                     ->extraAttributes([
@@ -164,9 +164,9 @@ class GeradorAtividadeForm
                     ])
                     ->schema([
                         Textarea::make('observacoes')
-                            ->label('Observações')
+                            ->label('Observacoes')
                             ->rows(5)
-                            ->placeholder('Descreva observações importantes para a execução das atividades ao longo da semana.')
+                            ->placeholder('Descreva observacoes importantes para a execucao das atividades ao longo da semana.')
                             ->columnSpanFull(),
                     ]),
             ]);

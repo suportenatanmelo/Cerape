@@ -16,7 +16,7 @@ class GeradorAtividadeInfolist
         return $schema
             ->components([
                 Section::make('Resumo da semana')
-                    ->description('Visão geral do planejamento semanal, período e pessoas envolvidas.')
+                    ->description('Visao geral do planejamento semanal, periodo e pessoas envolvidas.')
                     ->icon('heroicon-o-clipboard-document-list')
                     ->columnSpanFull()
                     ->schema([
@@ -25,28 +25,28 @@ class GeradorAtividadeInfolist
                             'md' => 3,
                         ])->schema([
                             TextEntry::make('titulo')
-                                ->label('Título')
+                                ->label('Titulo')
                                 ->badge()
                                 ->color('primary'),
                             TextEntry::make('data_programacao')
-                                ->label('Período')
+                                ->label('Periodo')
                                 ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::getPeriodLabel($record))
                                 ->badge()
                                 ->color('warning'),
                             TextEntry::make('user.name')
-                                ->label('Responsável')
+                                ->label('Responsavel')
                                 ->badge()
                                 ->color('info')
                                 ->placeholder('-'),
                             TextEntry::make('updated_at')
-                                ->label('Última atualização')
+                                ->label('Ultima atualizacao')
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('gray'),
                         ]),
                     ]),
                 Section::make('Tabela semanal')
-                    ->description('Quadro organizado das atividades práticas, demandas e acolhidos por linha.')
+                    ->description('Quadro organizado das atividades praticas, demandas e acolhidos por linha.')
                     ->icon('heroicon-o-table-cells')
                     ->columnSpanFull()
                     ->schema([
@@ -55,13 +55,13 @@ class GeradorAtividadeInfolist
                             ->view('filament.resources.gerador-atividades.weekly-activities-table')
                             ->columnSpanFull(),
                     ]),
-                Section::make('Observações')
-                    ->description('Anotações adicionais da programação.')
+                Section::make('Observacoes')
+                    ->description('Anotacoes adicionais da programacao.')
                     ->icon('heroicon-o-pencil-square')
                     ->columnSpanFull()
                     ->schema([
                         TextEntry::make('observacoes')
-                            ->label('Observações complementares')
+                            ->label('Observacoes complementares')
                             ->columnSpanFull()
                             ->html()
                             ->placeholder('-'),

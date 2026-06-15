@@ -10,7 +10,6 @@ use App\Filament\Resources\Saudes\Tables\SaudesTable;
 use App\Models\Saude;
 use App\Support\AcolhidoAccess;
 use App\Support\PortalContext;
-use App\Support\PdfImage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Illuminate\Database\Eloquent\Builder;
@@ -37,16 +36,14 @@ class SaudeResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'acolhido_id';
 
-    public static function getNavigationSort(): ?int
-    {
-        return 2;
-    }
-
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::isFamilyUser()
-            ? PortalContext::portalNavigationGroup()
-            : 'Cadastros';
+        return PortalContext::portalNavigationGroup();
+    }
+
+    public static function getNavigationSort(): ?int
+    {
+        return 4;
     }
 
     public static function getRecordTitle(?\Illuminate\Database\Eloquent\Model $record): string
@@ -106,7 +103,7 @@ class SaudeResource extends Resource
 
     public static function getNavigationBadgeTooltip(): ?string
     {
-        return 'Fichas de saúde disponíveis';
+        return 'Fichas de saude disponiveis';
     }
 
     /**
@@ -117,35 +114,35 @@ class SaudeResource extends Resource
         $record->loadMissing('acolhido');
 
         return [
-            'title' => 'Documento institucional da ficha de saúde',
-            'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido não identificado',
+            'title' => 'Relatorio da ficha de saude',
+            'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido nao identificado',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
-                'Ficha de saúde consolidada para acompanhamento clínico.',
+                'Ficha de saude consolidada para acompanhamento clinico.',
             ],
-            'highlight' => $record->faz_tratamento_medico ? 'Em tratamento médico' : 'Acompanhamento sem tratamento médico atual',
-            'photoData' => PdfImage::storageDataUri($record->acolhido?->avatar),
-            'photoLabel' => 'Saúde',
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'highlight' => $record->faz_tratamento_medico ? 'Em tratamento medico' : 'Acompanhamento sem tratamento medico atual',
+            'photoData' => self::imageDataUri($record->acolhido?->avatar),
+            'photoLabel' => 'Saude',
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'sections' => [
                 'Resumo do acolhido' => [
                     'Acolhido' => $record->acolhido?->nome_completo_paciente,
                     'Data de nascimento' => $record->acolhido?->data_nascimento,
-                'Profissão' => $record->acolhido?->profissao,
+                    'Profissao' => $record->acolhido?->profissao,
                 ],
                 'Condicoes e tratamento' => [
                     'Faz tratamento medico' => $record->faz_tratamento_medico,
-                'Condições de saúde' => $record->condicoes_saude,
-                'Usa medicação psicoativa' => $record->usa_medicacao_psicoativa,
-                'Medicação psicoativa' => $record->nome_medicacao_psicoativa,
+                    'Condicoes de saude' => $record->condicoes_saude,
+                    'Usa medicacao psicoativa' => $record->usa_medicacao_psicoativa,
+                    'Medicacao psicoativa' => $record->nome_medicacao_psicoativa,
                     'Dosagem' => $record->dosagem_medicacao_psicoativa,
-                'Prescrição profissional' => $record->prescrito_profissional,
-                'Diagnósticos relacionados' => $record->diagnosticado,
+                    'Prescricao profissional' => $record->prescrito_profissional,
+                    'Diagnosticos relacionados' => $record->diagnosticado,
                 ],
-                'Observações clínicas' => [
+                'Observacoes clinicas' => [
                     'Medicamentos em uso' => $record->medicamentos_em_uso,
-                'Alergias ou restrições' => $record->alergias_restricoes,
-                'Observações clínicas' => $record->observacoes_clinicas,
+                    'Alergias ou restricoes' => $record->alergias_restricoes,
+                    'Observacoes clinicas' => $record->observacoes_clinicas,
                 ],
             ],
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
@@ -159,7 +156,7 @@ class SaudeResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'saude-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'relatorio-saude-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn () => print($pdf->output()),
@@ -171,7 +168,7 @@ class SaudeResource extends Resource
     private static function formatValue(mixed $value): string
     {
         if (is_bool($value)) {
-            return $value ? 'Sim' : 'Não';
+            return $value ? 'Sim' : 'Nao';
         }
 
         if ($value instanceof \Carbon\CarbonInterface) {
@@ -187,4 +184,47 @@ class SaudeResource extends Resource
         return $value !== '' ? $value : '-';
     }
 
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (array_unique([$path, 'acolhidos/avatars/' . basename($path), 'avatars/' . basename($path)]) as $candidate) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    private static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
 }

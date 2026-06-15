@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ProntuariosEvolucao\Schemas;
 
-use App\Support\PdfImage;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
@@ -30,17 +29,11 @@ class ProntuarioEvolucaoInfolist
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
-                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
                             TextEntry::make('user.name')
-                                ->label('Responsável pela informação')
+                                ->label('Registrado por')
                                 ->badge()
                                 ->color('primary')
-                                ->placeholder('-'),
-                            TextEntry::make('funcao_responsavel_informacao')
-                                ->label('Função do responsável pela informação')
-                                ->badge()
-                                ->color('success')
                                 ->placeholder('-'),
                             TextEntry::make('atividade')
                                 ->label('Atividade realizada')
@@ -59,12 +52,6 @@ class ProntuarioEvolucaoInfolist
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('info')
-                                ->placeholder('-'),
-                            TextEntry::make('nota_elogio')
-                                ->label('Nota de elogio')
-                                ->formatStateUsing(fn (mixed $state): string => ProntuarioEvolucaoForm::renderPraiseRating($state))
-                                ->html()
-                                ->columnSpanFull()
                                 ->placeholder('-'),
                             TextEntry::make('created_at')
                                 ->label('Lancado no sistema em')

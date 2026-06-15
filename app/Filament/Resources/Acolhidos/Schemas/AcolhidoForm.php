@@ -2,16 +2,19 @@
 
 namespace App\Filament\Resources\Acolhidos\Schemas;
 
+
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Models\Acolhido;
-use App\Services\CorreiosCepService;
+use App\Models\User;
 use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
-use App\Support\PdfImage;
 use Filament\Actions\Action;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Services\CorreiosCepService;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\RichEditor;
@@ -30,7 +33,7 @@ use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 
 class AcolhidoForm
 {
@@ -77,44 +80,40 @@ class AcolhidoForm
                 Wizard::make([
                     Step::make('Cadastro')
                         ->schema([
-                            Section::make('Cadastro e identificação')
-                                ->description('Dados principais do acolhido, com foco em identificação, foto e situação atual do cadastro.')
-                                ->icon('heroicon-o-identification')
+                            Section::make('Cadastro e identificacao')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
                                         'md' => 2,
                                     ])->schema([
                                         Select::make('user_id')
-                                            ->label('Responsável pelo cadastro')
+                                            ->label('Quem esta cadastrando?')
                                             ->relationship(
                                                 'user',
                                                 'name',
-                                                modifyQueryUsing: fn (Builder $query): Builder => $query
+                                                modifyQueryUsing: fn(Builder $query): Builder => $query
                                                     ->whereNull('acolhido_id')
                                                     ->orderBy('name'),
                                             )
                                             ->searchable()
                                             ->preload()
-                                            ->default(fn (): ?int => auth()->id())
+                                            ->default(fn(): ?int => auth()->id())
                                             ->required(),
                                         TextInput::make('nome_completo_paciente')
-                                            ->label('Nome completo do acolhido')
+                                            ->label('Nome completo do paciente')
                                             ->required(),
                                         DateTimePicker::make('created_at')
-                                            ->label('Data de criação do cadastro')
+                                            ->label('Data de criacao do cadastro')
                                             ->seconds(false)
-                                            ->native(false)
-                                            ->displayFormat('d/m/Y H:i')
                                             ->visibleOn('edit'),
                                         Toggle::make('ativo')
                                             ->label('Cadastro ativo')
                                             ->default(true)
                                             ->onColor('success')
                                             ->offColor('danger')
-                                            ->helperText('Desative quando o acolhido não estiver mais em acompanhamento ativo.'),
+                                            ->helperText('Desative quando o acolhido nao estiver mais em acompanhamento ativo.'),
                                         FileUpload::make('avatar')
-                                            ->label('Foto do acolhido')
+                                            ->label('Foto do Acolhido')
                                             ->image()
                                             ->imageEditor()
                                             ->avatar()
@@ -122,14 +121,12 @@ class AcolhidoForm
                                             ->directory('acolhidos/avatars')
                                             ->visibility('public')
                                             ->maxFiles(1)
-                                            ->columnSpanFull()
                                             ->getUploadedFileNameForStorageUsing(
-                                                fn (TemporaryUploadedFile $file): string => uniqid().'.'.$file->getClientOriginalExtension()
+                                                fn(TemporaryUploadedFile $file): string =>
+                                                uniqid() . '.' . $file->getClientOriginalExtension()
                                             ),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
-                                            ->native(false)
-                                            ->displayFormat('d/m/Y')
                                             ->required(),
                                         Radio::make('estado_civil')
                                             ->label('Estado civil')
@@ -137,9 +134,6 @@ class AcolhidoForm
                                                 'solteiro' => 'Solteiro',
                                                 'casado' => 'Casado',
                                                 'viuvo' => 'Viuvo',
-                                                'divorciado'    =>  'divorciado',
-                                                'amasiado'  =>  'amasiado',
-                                                'uniao_estavel' =>  'União Estavél',
                                             ])
                                             ->inline()
                                             ->live()
@@ -149,11 +143,11 @@ class AcolhidoForm
                                                 }
                                             }),
                                         TextInput::make('nome_do_conjuge')
-                                            ->label('Nome do cônjuge')
-                                            ->hidden(fn (Get $get): bool => self::shouldHideNomeDoConjuge($get))
+                                            ->label('Nome do conjuge')
+                                            ->hidden(fn(Get $get): bool => self::shouldHideNomeDoConjuge($get))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('nome_da_mae')
-                                            ->label('Nome da mãe')
+                                            ->label('Nome da mae')
                                             ->required(),
                                         TextInput::make('nome_do_pai')
                                             ->label('Nome do pai')
@@ -172,20 +166,18 @@ class AcolhidoForm
                                             ->placeholder('Ex.: cursando, interrompido, incompleto, EJA, supletivo...')
                                             ->maxLength(255),
                                         TextInput::make('profissao')
-                                            ->label('Profissão')
+                                            ->label('Profissao')
                                             ->required(),
                                         TextInput::make('religiao')
-                                            ->label('Religião do acolhido')
-                                            ->placeholder('Informe a religião do acolhido')
+                                            ->label('Qual a religiao do acolhido?')
+                                            ->placeholder('Informe a religiao do acolhido')
                                             ->required(),
                                     ]),
                                 ]),
                         ]),
-                    Step::make('Endereço')
+                    Step::make('Endereco')
                         ->schema([
-                            Section::make('Endereço e moradia')
-                                ->description('Localização, moradia e referências do domicílio para acompanhamento institucional.')
-                                ->icon('heroicon-o-home')
+                            Section::make('Endereco e moradia')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
@@ -221,8 +213,8 @@ class AcolhidoForm
                                                             ->warning()
                                                             ->send(),
                                                         default => Notification::make()
-                                                            ->title('Não foi possível consultar o CEP')
-                                                            ->body('O serviço do ViaCEP está indisponível no momento. Tente novamente mais tarde.')
+                                                            ->title('Nao foi possivel consultar o CEP')
+                                                            ->body('O servico do ViaCEP esta indisponivel no momento. Tente novamente mais tarde.')
                                                             ->danger()
                                                             ->send(),
                                                     };
@@ -235,15 +227,15 @@ class AcolhidoForm
                                                 $set('municipio_do_paciente', $address['municipio'] ?? null);
                                                 $set('uf_municipio_do_paciente', $address['uf'] ?? null);
                                             })
-                                            ->helperText('Ao informar o CEP, o endereço será preenchido automaticamente pelo ViaCEP.'),
+                                            ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
-                                            ->label('Endereço do acolhido')
+                                            ->label('Endereco do paciente')
                                             ->required(),
                                         TextInput::make('bairro_do_paciente')
-                                            ->label('Bairro')
+                                            ->label('Bairro do paciente')
                                             ->required(),
                                         TextInput::make('municipio_do_paciente')
-                                            ->label('Município')
+                                            ->label('Municipio')
                                             ->required(),
                                         Select::make('uf_municipio_do_paciente')
                                             ->label('UF')
@@ -251,8 +243,8 @@ class AcolhidoForm
                                             ->searchable()
                                             ->required(),
                                         Radio::make('moradia_propria')
-                                            ->label('Moradia própria')
-                                            ->boolean('Sim', 'Não')
+                                            ->label('Moradia propria')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->required()
@@ -268,11 +260,11 @@ class AcolhidoForm
                                             }),
                                         Radio::make('mora_em_casa_aluguada')
                                             ->label('Mora em casa alugada?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
-                                            ->hidden(fn (Get $get): bool => self::isYes($get('moradia_propria')))
+                                            ->hidden(fn(Get $get): bool => self::isYes($get('moradia_propria')))
                                             ->dehydratedWhenHidden()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -288,32 +280,29 @@ class AcolhidoForm
                                                 '6 meses' => '6 meses',
                                                 'Mais de 1 ano' => 'Mais de 1 ano',
                                             ])
-                                            ->hidden(fn (Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
+                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('em_qual_regiao')
                                             ->label('Em qual regiao')
-                                            ->hidden(fn (Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
+                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
-                            Section::make('Documentação')
-                                ->description('Documentos, numeros de registro e arquivos que ajudam na conferência cadastral.')
-                                ->icon('heroicon-o-folder')
+                            Section::make('Documentacao')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
                                         'md' => 2,
                                     ])->schema([
                                         Radio::make('tem_documentacao')
-                                            ->label('Tem documentação?')
-                                            ->boolean('Sim', 'Não')
+                                            ->label('Tem documentacao?')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
                                                     $set('razao_caso_nao_tenha_documentacao', null);
-
                                                     return;
                                                 }
 
@@ -323,89 +312,87 @@ class AcolhidoForm
                                             }),
                                         TextInput::make('razao_caso_nao_tenha_documentacao')
                                             ->label('Caso nao tenha documento')
-                                            ->hidden(fn (Get $get): bool => self::isYes($get('tem_documentacao')))
-                                            ->required(fn (Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->hidden(fn(Get $get): bool => self::isYes($get('tem_documentacao')))
+                                            ->required(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_civis')
                                             ->label('Documentos civis')
                                             ->options([
                                                 'rg' => 'RG',
                                                 'cpf' => 'CPF',
-                                                'certidao_nascimento' => 'Certidão de nascimento',
-                                                'certidao_casamento' => 'Certidão de casamento',
+                                                'certidao_nascimento' => 'Certidao de nascimento',
+                                                'certidao_casamento' => 'Certidao de casamento',
                                                 'carteira_trabalho' => 'Carteira de trabalho',
                                                 'titulo_eleitor' => 'Titulo de eleitor',
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
                                             ->live()
-                                            ->afterStateUpdated(fn (Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::civilDocumentNumberFields()))
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::civilDocumentNumberFields()))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_rg')
-                                            ->label('Número do RG')
+                                            ->label('Numero do RG')
                                             ->mask('99.999.999-9')
                                             ->maxLength(12)
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'rg'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'rg'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_cpf')
-                                            ->label('Número do CPF')
+                                            ->label('Numero do CPF')
                                             ->mask('999.999.999-99')
                                             ->maxLength(14)
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'cpf'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'cpf'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_certidao_nascimento')
-                                            ->label('Número da certidão de nascimento')
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_nascimento'))
+                                            ->label('Numero da certidao de nascimento')
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_nascimento'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_certidao_casamento')
-                                            ->label('Número da certidão de casamento')
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_casamento'))
+                                            ->label('Numero da certidao de casamento')
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'certidao_casamento'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_carteira_trabalho')
                                             ->label('Numero da carteira de trabalho')
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'carteira_trabalho'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'carteira_trabalho'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_titulo_eleitor')
-                                            ->label('Número do título de eleitor')
+                                            ->label('Numero do titulo de eleitor')
                                             ->mask('9999 9999 9999')
                                             ->maxLength(14)
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'titulo_eleitor'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'titulo_eleitor'))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_outros')
                                             ->label('Outros documentos')
                                             ->options([
                                                 'comprovante_residencia' => 'Comprovante de residencia',
                                                 'nis' => 'NIS/PIS',
-                                                'cartao_sus' => 'Cartão do SUS',
-                                                'certidao_antecedentes' => 'Certidão de antecedentes',
+                                                'cartao_sus' => 'Cartao do SUS',
+                                                'certidao_antecedentes' => 'Certidao de antecedentes',
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
                                             ->live()
-                                            ->afterStateUpdated(fn (Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::otherDocumentNumberFields()))
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::otherDocumentNumberFields()))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_nis')
-                                            ->label('Número do NIS/PIS')
+                                            ->label('Numero do NIS/PIS')
                                             ->mask('999.99999.99-9')
                                             ->maxLength(14)
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'nis'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'nis'))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_cartao_sus')
-                                            ->label('Número do cartão do SUS')
+                                            ->label('Numero do cartao do SUS')
                                             ->mask('999 9999 9999 9999')
                                             ->maxLength(18)
-                                            ->hidden(fn (Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'cartao_sus'))
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_outros', 'cartao_sus'))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
                         ]),
-                    Step::make('Saúde')
+                    Step::make('Saude')
                         ->schema([
-                            Section::make('Trabalho, contato e saúde')
-                                ->description('Informações de trabalho, contato, encaminhamentos e condições relacionadas à saúde.')
-                                ->icon('heroicon-o-heart')
+                            Section::make('Trabalho, contato e saude')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
@@ -413,7 +400,7 @@ class AcolhidoForm
                                     ])->schema([
                                         Radio::make('trabalha')
                                             ->label('Trabalha?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
@@ -426,11 +413,11 @@ class AcolhidoForm
                                             }),
                                         TextInput::make('nome_da_empresa_que_trabalha')
                                             ->label('Nome da empresa em que trabalha')
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('trabalha')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('trabalha')))
                                             ->dehydratedWhenHidden(),
                                         Radio::make('tem_telefone')
                                             ->label('Tem telefone?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
@@ -442,13 +429,13 @@ class AcolhidoForm
                                                 $set('numero_do_telefone', null);
                                             }),
                                         TextInput::make('numero_do_telefone')
-                                            ->label('Número do telefone')
+                                            ->label('Numero do telefone')
                                             ->mask('(99) 99999-9999')
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_telefone')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_telefone')))
                                             ->dehydratedWhenHidden(),
                                         Radio::make('tem_meio_de_encaminhamento')
                                             ->label('Tem meio de encaminhamento?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
@@ -462,11 +449,28 @@ class AcolhidoForm
                                             }),
                                         CheckboxList::make('meio_de_encaminhamento')
                                             ->label('Selecione os meios de encaminhamento')
-                                            ->options(self::uploadEncaminhamento())
+                                            ->options([
+                                                'POP' => 'POP',
+                                                'Centro Religioso' => 'Centro Religioso',
+                                                'CRAS' => 'CRAS',
+                                                'CREAS' => 'CREAS',
+                                                'Familiares/amigos' => 'Familiares/amigos',
+                                                'Hospital Geral' => 'Hospital Geral',
+                                                'Consultorio de Rua' => 'Consultorio de Rua',
+                                                'Posto de Saude' => 'Posto de Saude',
+                                                'Programa do Governo do Estado' => 'Programa do Governo do Estado',
+                                                'Programa da Prefeitura' => 'Programa da Prefeitura',
+                                                'CAPS AD III' => 'CAPS AD III',
+                                                'CAPS' => 'CAPS',
+                                                'Sozinho' => 'Sozinho',
+                                                'Unidade de Acolhimento' => 'Unidade de Acolhimento',
+                                                'Outra Unidade de Saude' => 'Outra Unidade de Saude',
+                                                'Outro meio de acolhimento' => 'Outro meio de acolhimento',
+                                            ])
                                             ->columns(2)
                                             ->columnSpanFull()
                                             ->live()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_meio_de_encaminhamento')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_meio_de_encaminhamento')))
                                             ->dehydratedWhenHidden()
                                             ->afterStateUpdated(function (Get $get, Set $set): void {
                                                 if (in_array('Outro meio de acolhimento', $get('meio_de_encaminhamento') ?? [], true)) {
@@ -475,20 +479,15 @@ class AcolhidoForm
 
                                                 $set('outro_meio_de_encaminhamento_qual', null);
                                             }),
-                                            FileUpload::make('Upload Encaminhamento')
-                                                ->multiple()
-                                                ->disk('public')
-                                                ->directory('upload/encaminhamento'),
                                         TextInput::make('outro_meio_de_encaminhamento_qual')
                                             ->label('Outro meio de encaminhamento: qual?')
-                                            ->hidden(fn (Get $get): bool => self::shouldHideOutroMeioDeEncaminhamento($get))
+                                            ->hidden(fn(Get $get): bool => self::shouldHideOutroMeioDeEncaminhamento($get))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('indicacao')
-                                            ->label('Indicação')
-                                            ->required(),
+                                            ->label('Indicacao'),
                                         Radio::make('toma_medicamento')
                                             ->label('Toma medicamento?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->required()
@@ -503,8 +502,8 @@ class AcolhidoForm
                                                 $set('receituario', null);
                                             }),
                                         TagsInput::make('qual_sao_as_medicacao')
-                                            ->label('Quais são as medicações psicoativas')
-                                            ->placeholder('Digite a medicação e pressione Enter')
+                                            ->label('Quais sao as medicacoes psicoativas')
+                                            ->placeholder('Digite a medicaçao e pressione Enter')
                                             ->suggestions([
                                                 'Amitriptilina',
                                                 'Clomipramina',
@@ -524,16 +523,16 @@ class AcolhidoForm
                                             ])
                                             ->reorderable()
                                             ->columnSpanFull()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('toma_medicamento')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('toma_medicamento')))
                                             ->dehydratedWhenHidden(),
                                         Radio::make('tem_receituario')
-                                            ->label('Tem receituário?')
-                                            ->boolean('Sim', 'Não')
+                                            ->label('Tem receituario?')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(null)
                                             ->live()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('toma_medicamento')))
-                                            ->required(fn (Get $get): bool => self::isYes($get('toma_medicamento')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('toma_medicamento')))
+                                            ->required(fn(Get $get): bool => self::isYes($get('toma_medicamento')))
                                             ->validationMessages([
                                                 'required' => 'Informe se o acolhido tem receituario quando ele toma medicamento.',
                                             ])
@@ -549,7 +548,7 @@ class AcolhidoForm
 
                                                     Notification::make()
                                                         ->title('Resposta incorreta')
-                                                        ->body('Se o acolhido toma medicamentos psicoativos, ele precisa de receituário. Por isso, não marque "Não" neste campo.')
+                                                        ->body('Se o acolhido toma medicamentos psicoativos, ele precisa de receituario. Por isso, nao marque "Nao" neste campo.')
                                                         ->danger()
                                                         ->duration(8000)
                                                         ->send();
@@ -570,13 +569,13 @@ class AcolhidoForm
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
-                                            ->getUploadedFileNameForStorageUsing(fn (TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_receituario')))
-                                            ->required(fn (Get $get): bool => self::isYes($get('tem_receituario')))
-                                            ->dehydrated(fn (Get $get): bool => self::isYes($get('tem_receituario'))),
+                                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
+                                            ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
+                                            ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),
                                         Radio::make('exames_laboratoriais')
                                             ->label('Possui exames laboratoriais?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->columnSpanFull()
                                             ->live()
@@ -588,23 +587,16 @@ class AcolhidoForm
 
                                                 $set('outros', null);
                                             }),
-                                            FileUpload::make('Possui exames laboratoriais')
-                                                ->multiple()
-                                                ->disk('public')
-                                                ->directory('upload/exames_laboratoriais')
-                                                ,
                                         TextInput::make('outros')
                                             ->label('Detalhes dos exames')
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('exames_laboratoriais')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('exames_laboratoriais')))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
                         ]),
-                    Step::make('Família')
+                    Step::make('Familia')
                         ->schema([
-                            Section::make('Filhos e responsáveis')
-                                ->description('Organize os dados familiares, responsáveis e a figura de intervenção do acolhido.')
-                                ->icon('heroicon-o-users')
+                            Section::make('Filhos e responsaveis')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
@@ -612,7 +604,7 @@ class AcolhidoForm
                                     ])->schema([
                                         Radio::make('tem_filhos')
                                             ->label('Tem filhos?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
                                             ->live()
@@ -629,44 +621,42 @@ class AcolhidoForm
                                                 $set('possui_contato_dos_filhos', null);
                                             }),
                                         TextInput::make('profissional_referencia_acolhido_instituicao')
-                                            ->label('Profissional de referência na instituição')
+                                            ->label('Profissional de referencia na instituicao')
                                             ->columnSpanFull(),
                                         TextInput::make('quantidade_filhos')
                                             ->label('Quantidade de filhos')
                                             ->numeric()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                         RichEditor::make('qual_o_nome_dos_filhos')
                                             ->label('Nome dos filhos')
                                             ->columnSpanFull()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_telefone_filhos')
-                                            ->label('Número de telefone dos filhos')
+                                            ->label('Numero de telefone dos filhos')
                                             ->mask('(99) 99999-9999')
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('quem_responsavel_criancas')
-                                            ->label('Quem é responsável pelas crianças')
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->label('Quem e responsavel pelas criancas')
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                         Radio::make('pensao_alimenticia')
-                                            ->label('Recebe pensão alimentícia?')
-                                            ->boolean('Sim', 'Não')
+                                            ->label('Recebe pensao alimenticia?')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                         Radio::make('possui_contato_dos_filhos')
                                             ->label('Possui contato com os filhos?')
-                                            ->boolean('Sim', 'Não')
+                                            ->boolean('Sim', 'Nao')
                                             ->inline()
-                                            ->hidden(fn (Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
-                            Section::make('Interventor do acolhido')
-                                ->description('Dados de quem responde legalmente ou acompanha o acolhido de perto.')
-                                ->icon('heroicon-o-user-group')
+                            Section::make('interventor do acolhido')
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
@@ -687,11 +677,9 @@ class AcolhidoForm
                                             ->options(self::getBrazilianStates())
                                             ->searchable(),
                                         TextInput::make('interventor_profissao')
-                                            ->label('Profissão'),
+                                            ->label('Profissao'),
                                         DatePicker::make('interventor_data_nascimento')
-                                            ->label('Data de nascimento')
-                                            ->native(false)
-                                            ->displayFormat('d/m/Y'),
+                                            ->label('Data de nascimento'),
                                         TextInput::make('interventor_residente')
                                             ->label('Residente'),
                                         TextInput::make('interventor_complemento')
@@ -723,27 +711,6 @@ class AcolhidoForm
     /**
      * @return array<string, string>
      */
-    private static function uploadEncaminhamento(): array
-    {
-        return [
-                                                'POP' => 'POP',
-                                                'Centro Religioso' => 'Centro Religioso',
-                                                'CRAS' => 'CRAS',
-                                                'CREAS' => 'CREAS',
-                                                'Familiares/amigos' => 'Familiares/amigos',
-                                                'Hospital Geral' => 'Hospital Geral',
-                                                'Consultorio de Rua' => 'Consultorio de Rua',
-                                                'Posto de Saude' => 'Posto de Saude',
-                                                'Programa do Governo do Estado' => 'Programa do Governo do Estado',
-                                                'Programa da Prefeitura' => 'Programa da Prefeitura',
-                                                'CAPS AD III' => 'CAPS AD III',
-                                                'CAPS' => 'CAPS',
-                                                'Sozinho' => 'Sozinho',
-                                                'Unidade de Acolhimento' => 'Unidade de Acolhimento',
-                                                'Outra Unidade de Saude' => 'Outra Unidade de Saude',
-                                              'Outro meio de acolhimento' => 'Outro meio de acolhimento',
-                                            ];
-    }
     private static function getBrazilianStates(): array
     {
         return [
@@ -783,7 +750,7 @@ class AcolhidoForm
     public static function getBrazilianEducationLevels(): array
     {
         return [
-            'nao_alfabetizado' => 'Não alfabetizado(a)',
+            'nao_alfabetizado' => 'Nao alfabetizado(a)',
             'alfabetizado' => 'Alfabetizado(a)',
             'ensino_fundamental_incompleto' => 'Ensino fundamental incompleto',
             'ensino_fundamental_completo' => 'Ensino fundamental completo',
@@ -847,7 +814,7 @@ class AcolhidoForm
         }
 
         if (filled($data['avatar'] ?? null)) {
-            $data['avatar'] = PdfImage::resolveStoragePath((string) $data['avatar']);
+            $data['avatar'] = self::resolveAvatarPath((string) $data['avatar']);
         }
 
         if (in_array((string) ($data['estado_civil'] ?? null), ['solteiro', 'viuvo'], true)) {
@@ -975,7 +942,7 @@ class AcolhidoForm
 
     private static function notificationKey(Acolhido $acolhido, string $event): string
     {
-        return "acolhido_{$event}_{$acolhido->getKey()}_".($acolhido->updated_at?->timestamp ?? now()->timestamp);
+        return "acolhido_{$event}_{$acolhido->getKey()}_" . ($acolhido->updated_at?->timestamp ?? now()->timestamp);
     }
 
     private static function notificationUrl(Acolhido $acolhido): string
@@ -1016,6 +983,31 @@ class AcolhidoForm
 
         return in_array($value, [true, 1, '1'], true)
             || in_array($normalized, ['true', 'sim', 'yes', 'on'], true);
+    }
+
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'avatars/' . basename($path),
+                'acolhidos/avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
     }
 
     private static function makeUploadFileName(TemporaryUploadedFile $file, Get $get): string
@@ -1130,6 +1122,7 @@ class AcolhidoForm
     }
 
     /**
+     * @param  mixed  $value
      * @return array<int, mixed>
      */
     private static function normalizeList(mixed $value): array
@@ -1138,6 +1131,6 @@ class AcolhidoForm
             return [];
         }
 
-        return array_values(array_filter($value, static fn (mixed $item): bool => filled($item)));
+        return array_values(array_filter($value, static fn(mixed $item): bool => filled($item)));
     }
 }

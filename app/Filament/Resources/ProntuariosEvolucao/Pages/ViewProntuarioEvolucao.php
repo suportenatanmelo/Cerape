@@ -34,7 +34,7 @@ class ViewProntuarioEvolucao extends ViewRecord
     {
         return [
             Action::make('downloadRelatorio')
-                ->label('Baixar PDF')
+                ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
@@ -44,7 +44,7 @@ class ViewProntuarioEvolucao extends ViewRecord
                     $pdf = Pdf::loadView('pdf.prontuario-evolucao-report', ProntuarioEvolucaoResource::getReportData($record))
                         ->setPaper('a4');
 
-                    $fileName = 'prontuario-evolucao-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+                    $fileName = 'relatorio-prontuario-evolucao-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),

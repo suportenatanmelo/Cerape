@@ -15,7 +15,7 @@
         <div class="grid gap-6 px-6 py-6 lg:grid-cols-[minmax(0,1fr)_280px] lg:px-8">
             <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.28em]" style="color: {{ $familyTheme['secondary'] }};">
-                    Portal da Família
+                    Portal da Familia
                 </p>
                 <h1 class="mt-2 text-2xl font-semibold tracking-tight" style="color: {{ $familyTheme['ink'] }};">
                     {{ $familyBanner['title'] }}
@@ -39,7 +39,7 @@
                     {{ $acolhido?->nome_completo_paciente ?? 'Acolhido vinculado' }}
                 </p>
                 <p class="mt-1 text-sm" style="color: color-mix(in srgb, {{ $familyTheme['ink'] }} 70%, white);">
-                    Informações do acolhido disponíveis no menu lateral.
+                    Informacoes do acolhido disponiveis no menu lateral.
                 </p>
                 <p class="mt-3 text-xs uppercase tracking-[0.18em]" style="color: {{ $familyTheme['primary'] }};">
                     Tema de hoje: {{ $familyTheme['name'] }}

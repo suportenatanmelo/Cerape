@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\AtividadesDesenvolvidas\Schemas;
 
 use App\Filament\Resources\AtividadesDesenvolvidas\Schemas\AtividadeDesenvolvidaForm;
-use App\Support\PdfImage;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -27,21 +26,20 @@ class AtividadeDesenvolvidaInfolist
                                 ->label('Acolhido')
                                 ->badge()
                                 ->color('primary')
-                                ->placeholder('Não vinculado'),
+                                ->placeholder('Nao vinculado'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
-                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
                         ]),
                     ]),
-                Section::make('Atividades terapêuticas')
+                Section::make('Atividades terapeuticas')
                     ->schema([
                         IconEntry::make('atendimento_grupo_12_passos')
-                            ->label('Estudo sistemático dos 12 passos')
+                            ->label('Estudo sistematico dos 12 passos')
                             ->boolean(),
                         TextEntry::make('horario_atendimento_grupo_12_passos')
-                            ->label('Horário - 12 passos')
+                            ->label('Horario - 12 passos')
                             ->badge()
                             ->color('warning')
                             ->placeholder('-'),
@@ -49,7 +47,7 @@ class AtividadeDesenvolvidaInfolist
                             ->label('Atendimentos em grupos')
                             ->boolean(),
                         TextEntry::make('horario_atendimentos_grupos')
-                            ->label('Horário - grupos')
+                            ->label('Horario - grupos')
                             ->badge()
                             ->color('warning')
                             ->placeholder('-'),
@@ -57,31 +55,31 @@ class AtividadeDesenvolvidaInfolist
                             ->label('Atendimentos individuais')
                             ->boolean(),
                         TextEntry::make('horario_atendimentos_individuais_conselheiros')
-                            ->label('Horário - atendimentos individuais')
+                            ->label('Horario - atendimentos individuais')
                             ->badge()
                             ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('conhecimento_dependencia_spa')
-                            ->label('Conhecimento sobre dependência de SPA')
+                            ->label('Conhecimento sobre dependencia de SPA')
                             ->boolean(),
                         TextEntry::make('horario_conhecimento_dependencia_spa')
-                            ->label('Horário - dependência de SPA')
+                            ->label('Horario - dependencia de SPA')
                             ->badge()
                             ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('atendimento_familia')
-                            ->label('Atendimento à família')
+                            ->label('Atendimento a familia')
                             ->boolean(),
                         TextEntry::make('detalhes_atendimento_familia')
-                            ->label('Detalhes do atendimento à família')
+                            ->label('Detalhes do atendimento a familia')
                             ->badge()
                             ->color('info')
                             ->placeholder('-'),
                         IconEntry::make('visitacao_familiares_responsaveis')
-                            ->label('Visitação de familiares e responsáveis')
+                            ->label('Visitacao de familiares e responsaveis')
                             ->boolean(),
                         TextEntry::make('dia_visitacao_familiares_responsaveis')
-                            ->label('Dia da visitação')
+                            ->label('Dia da visitacao')
                             ->badge()
                             ->color('info')
                             ->placeholder('-'),
@@ -96,13 +94,13 @@ class AtividadeDesenvolvidaInfolist
                             ->listWithLineBreaks()
                             ->placeholder('-'),
                         TextEntry::make('salao_jogos')
-                            ->label('Salão de jogos')
+                            ->label('Salao de jogos')
                             ->formatStateUsing(fn (mixed $state): array | string => self::formatChecklistState($state))
                             ->badge()
                             ->listWithLineBreaks()
                             ->placeholder('-'),
                         TextEntry::make('atividades_ludicas_culturais_musicais')
-                            ->label('Atividades lúdicas, culturais e musicais')
+                            ->label('Atividades ludicas, culturais e musicais')
                             ->formatStateUsing(fn (mixed $state): array | string => self::formatChecklistState($state))
                             ->badge()
                             ->listWithLineBreaks()
@@ -126,21 +124,21 @@ class AtividadeDesenvolvidaInfolist
                             ->label('Detalhes da AACS')
                             ->placeholder('-'),
                         TextEntry::make('atividades_aprendizagem')
-                            ->label('Aprendizagem e alfabetização')
+                            ->label('Aprendizagem e alfabetizacao')
                             ->formatStateUsing(fn (mixed $state): array | string => self::formatChecklistState($state))
                             ->badge()
                             ->listWithLineBreaks()
                             ->placeholder('-'),
                         TextEntry::make('detalhes_atividades_praticas_inclusivas')
-                            ->label('Atividades práticas inclusivas')
+                            ->label('Atividades praticas inclusivas')
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ])
                     ->columns(2),
-                Section::make('Saída do acolhido')
+                Section::make('Saida do acolhido')
                     ->schema([
                         TextEntry::make('planejamento_saida')
-                            ->label('Planejamento de saída')
+                            ->label('Planejamento de saida')
                             ->formatStateUsing(fn (mixed $state): array | string => self::formatChecklistState($state))
                             ->badge()
                             ->listWithLineBreaks()
@@ -152,7 +150,7 @@ class AtividadeDesenvolvidaInfolist
                             ->listWithLineBreaks()
                             ->placeholder('-'),
                         TextEntry::make('planejamento_saida_observacoes')
-                            ->label('Observações do planejamento')
+                            ->label('Observacoes do planejamento')
                             ->placeholder('-')
                             ->columnSpanFull(),
                         TextEntry::make('detalhes_eixos_planejamento_saida')
@@ -160,17 +158,17 @@ class AtividadeDesenvolvidaInfolist
                             ->placeholder('-')
                             ->columnSpanFull(),
                         TextEntry::make('saida_comunidade')
-                            ->label('Saída da comunidade')
+                            ->label('Saida da comunidade')
                             ->formatStateUsing(fn (mixed $state): array | string => self::formatChecklistState($state))
                             ->badge()
                             ->listWithLineBreaks()
                             ->placeholder('-'),
                         TextEntry::make('saida_comunidade_outros')
-                            ->label('Outras informações sobre a saída')
+                            ->label('Outras informacoes sobre a saida')
                             ->placeholder('-')
                             ->columnSpanFull(),
                         TextEntry::make('observacoes_gerais')
-                            ->label('Observações gerais')
+                            ->label('Observacoes gerais')
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ])

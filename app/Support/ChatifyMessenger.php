@@ -98,10 +98,6 @@ class ChatifyMessenger extends BaseChatifyMessenger
             return $avatar;
         }
 
-        if ($url = PdfImage::publicUrl($avatar)) {
-            return $url;
-        }
-
         if (str_contains($avatar, '/')) {
             return $disk->url($avatar);
         }

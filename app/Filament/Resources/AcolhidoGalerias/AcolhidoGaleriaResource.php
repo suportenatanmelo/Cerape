@@ -23,13 +23,13 @@ class AcolhidoGaleriaResource extends Resource
 {
     protected static ?string $model = AcolhidoGaleria::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reuniões';
+    protected static string|UnitEnum|null $navigationGroup = 'Documentos e Reunioes';
 
-    protected static ?string $navigationLabel = 'Álbuns de imagens';
+    protected static ?string $navigationLabel = 'Albuns de imagens';
 
-    protected static ?string $modelLabel = 'álbum de imagens';
+    protected static ?string $modelLabel = 'album de imagens';
 
-    protected static ?string $pluralModelLabel = 'álbuns de imagens';
+    protected static ?string $pluralModelLabel = 'albuns de imagens';
 
     protected static ?int $navigationSort = 1;
 
@@ -143,14 +143,14 @@ class AcolhidoGaleriaResource extends Resource
 
     public static function getGlobalSearchResultTitle(Model $record): string
     {
-        return (string) ($record->titulo ?: $record->acolhido?->nome_completo_paciente ?: 'Álbum');
+        return (string) ($record->titulo ?: $record->acolhido?->nome_completo_paciente ?: 'Album');
     }
 
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
             'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
-            'Descrição' => $record->descricao ?: '-',
+            'Descricao' => $record->descricao ?: '-',
         ];
     }
 }

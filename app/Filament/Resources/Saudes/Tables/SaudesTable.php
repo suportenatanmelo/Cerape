@@ -17,8 +17,8 @@ class SaudesTable
     {
         return $table
             ->defaultSort('updated_at', 'desc')
-            ->emptyStateHeading('Nenhuma ficha de saúde cadastrada')
-            ->emptyStateDescription('Quando houver registros clínicos vinculados ao acolhido, eles aparecerão aqui.')
+            ->emptyStateHeading('Nenhuma ficha de saude cadastrada')
+            ->emptyStateDescription('Quando houver registros clinicos vinculados ao acolhido, eles aparecerao aqui.')
             ->emptyStateIcon('heroicon-o-heart')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
@@ -26,7 +26,7 @@ class SaudesTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('condicoes_saude')
-                    ->label('Condições de saúde')
+                    ->label('Condicoes de saude')
                     ->formatStateUsing(function (mixed $state): string {
                         if (blank($state)) {
                             return '-';
@@ -40,7 +40,7 @@ class SaudesTable
                     })
                     ->wrap()
                     ->limit(80)
-                    ->description(fn ($record): string => $record->observacoes_clinicas ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_clinicas), 70) : 'Sem observações clínicas'),
+                    ->description(fn ($record): string => $record->observacoes_clinicas ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_clinicas), 70) : 'Sem observacoes clinicas'),
                 IconColumn::make('faz_tratamento_medico')
                     ->label('Em tratamento')
                     ->boolean(),

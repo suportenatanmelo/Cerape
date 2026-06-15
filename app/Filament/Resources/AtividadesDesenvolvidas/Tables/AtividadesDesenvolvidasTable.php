@@ -20,12 +20,12 @@ class AtividadesDesenvolvidasTable
         return $table
             ->defaultSort('updated_at', 'desc')
             ->emptyStateHeading('Nenhuma atividade CRC registrada')
-            ->emptyStateDescription('Os planos de atividades e acompanhamento CRC ficarão visíveis aqui.')
+            ->emptyStateDescription('Os planos de atividades e acompanhamento CRC ficarao visiveis aqui.')
             ->emptyStateIcon('heroicon-o-clipboard-document-check')
             ->columns([
                 TextColumn::make('acolhido.nome_completo_paciente')
                     ->label('Acolhido')
-                    ->placeholder('Não vinculado')
+                    ->placeholder('Nao vinculado')
                     ->searchable()
                     ->sortable(),
                 IconColumn::make('atendimento_grupo_12_passos')
@@ -37,11 +37,11 @@ class AtividadesDesenvolvidasTable
                     ->limit(50)
                     ->wrap(),
                 TextColumn::make('planejamento_saida')
-                    ->label('Planejamento de saída')
+                    ->label('Planejamento de saida')
                     ->formatStateUsing(fn (mixed $state): string => self::formatList($state))
                     ->limit(60)
                     ->wrap()
-                    ->description(fn ($record): string => $record->observacoes_gerais ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_gerais), 70) : 'Sem observações gerais'),
+                    ->description(fn ($record): string => $record->observacoes_gerais ? \Illuminate\Support\Str::limit(strip_tags((string) $record->observacoes_gerais), 70) : 'Sem observacoes gerais'),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()

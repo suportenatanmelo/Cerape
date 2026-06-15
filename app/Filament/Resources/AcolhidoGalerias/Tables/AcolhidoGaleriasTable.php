@@ -25,8 +25,8 @@ class AcolhidoGaleriasTable
                 'md' => 2,
                 'xl' => 2,
             ])
-            ->emptyStateHeading('Nenhum álbum cadastrado')
-            ->emptyStateDescription('Quando um álbum for criado para um acolhido, ele aparecerá aqui para manutenção da equipe e exibição no portal.')
+            ->emptyStateHeading('Nenhum album cadastrado')
+            ->emptyStateDescription('Quando um album for criado para um acolhido, ele aparecera aqui para manutencao da equipe e exibicao no portal.')
             ->emptyStateIcon('heroicon-o-photo')
             ->columns([
                 ImageGalleryColumn::make('gallery_preview')
@@ -46,9 +46,9 @@ class AcolhidoGaleriasTable
                     ->description(fn ($record): ?string => $record->descricao ?: null)
                     ->wrap(),
                 TextColumn::make('titulo')
-                    ->label('Álbum')
+                    ->label('Album')
                     ->searchable()
-                    ->placeholder('Sem título')
+                    ->placeholder('Sem titulo')
                     ->sortable(),
                 TextColumn::make('gallery_count')
                     ->label('Total de imagens')
@@ -58,7 +58,7 @@ class AcolhidoGaleriasTable
                     ->label('Atualizado em')
                     ->dateTime()
                     ->sortable()
-                    ->description(fn ($record): ?string => $record->lastGalleryUpdateLabel() ? 'Última imagem em ' . $record->lastGalleryUpdateLabel() : null),
+                    ->description(fn ($record): ?string => $record->lastGalleryUpdateLabel() ? 'Ultima imagem em ' . $record->lastGalleryUpdateLabel() : null),
                 IconColumn::make('ativo')
                     ->label('Ativa')
                     ->boolean(),
@@ -70,7 +70,7 @@ class AcolhidoGaleriasTable
                         DatePicker::make('data_inicial')
                             ->label('De'),
                         DatePicker::make('data_final')
-                            ->label('Até'),
+                            ->label('Ate'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         $startDate = $data['data_inicial'] ?? null;
@@ -112,12 +112,12 @@ class AcolhidoGaleriasTable
                 ViewAction::make()
                     ->label('Visualizar'),
                 EditAction::make()
-                    ->label('Gerenciar álbum'),
+                    ->label('Gerenciar album'),
                 DeleteAction::make(),
             ])
             ->headerActions([
                 \Filament\Actions\CreateAction::make()
-                    ->label('Novo álbum'),
+                    ->label('Novo album'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

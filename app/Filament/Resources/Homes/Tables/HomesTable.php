@@ -30,10 +30,6 @@ class HomesTable
                     ->limit(60)
                     ->searchable()
                     ->placeholder('-'),
-                TextColumn::make('carousel_items')
-                    ->label('Slides')
-                    ->state(fn ($record): int => count($record->carousel_items ?? []))
-                    ->badge(),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()

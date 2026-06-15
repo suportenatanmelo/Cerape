@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\DemandasAcolhidos\Schemas;
 
-use App\Support\PdfImage;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
@@ -16,7 +15,7 @@ class DemandaAcolhidoInfolist
         return $schema
             ->components([
                 Section::make('Resumo da demanda')
-                    ->description('Visualização rápida da demanda agendada para o acolhido.')
+                    ->description('Visualizacao rapida da demanda agendada para o acolhido.')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->schema([
                         Grid::make([
@@ -30,35 +29,34 @@ class DemandaAcolhidoInfolist
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
-                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
                             TextEntry::make('demanda')
                                 ->label('Demanda')
                                 ->badge()
                                 ->color('primary')
                                 ->columnSpanFull(),
                             TextEntry::make('saida_prevista_em')
-                                ->label('Saída da clínica CERAPE')
+                                ->label('Saida da clinica CERAPE')
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('warning'),
                             TextEntry::make('retorno_previsto_em')
-                                ->label('Chegada na clínica CERAPE')
+                                ->label('Chegada na clinica CERAPE')
                                 ->dateTime('d/m/Y H:i')
                                 ->badge()
                                 ->color('success'),
                             TextEntry::make('duracao_prevista')
-                                ->label('Duração prevista')
+                                ->label('Duracao prevista')
                                 ->badge()
                                 ->color('info')
                                 ->state(fn ($record): string => self::formatDuration($record?->saida_prevista_em, $record?->retorno_previsto_em)),
                             TextEntry::make('situacao_agenda')
-                                ->label('Situação')
+                                ->label('Situacao')
                                 ->badge()
                                 ->color(fn ($record): string => self::scheduleStatusColor($record?->saida_prevista_em, $record?->retorno_previsto_em))
                                 ->state(fn ($record): string => self::scheduleStatusLabel($record?->saida_prevista_em, $record?->retorno_previsto_em)),
                             TextEntry::make('observacoes')
-                                ->label('Observações')
+                                ->label('Observacoes')
                                 ->placeholder('-')
                                 ->columnSpanFull(),
                         ]),

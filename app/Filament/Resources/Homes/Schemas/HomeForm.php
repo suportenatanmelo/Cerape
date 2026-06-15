@@ -19,8 +19,8 @@ class HomeForm
     {
         return $schema
             ->components([
-                Section::make('Topo da página')
-                    ->description('Configure a primeira área que o visitante vê: imagem, título, texto com links e botão de ação.')
+                Section::make('Topo da pagina')
+                    ->description('Configure a primeira area que o visitante ve: imagem, titulo, texto com links e botao de acao.')
                     ->icon('heroicon-o-photo')
                     ->columnSpanFull()
                     ->schema([
@@ -29,37 +29,37 @@ class HomeForm
                             'md' => 2,
                         ])->schema([
                             self::imageUpload('hero_image', 'Imagem principal', 'homes')
-                                ->helperText('Use uma imagem horizontal com boa resolução. Ela será o fundo do topo da página.'),
+                                ->helperText('Use uma imagem horizontal com boa resolucao. Ela sera o fundo do topo da pagina.'),
                             TextInput::make('hero_image_alt')
-                                ->label('Descrição da imagem')
+                                ->label('Descricao da imagem')
                                 ->placeholder('Ex.: Fachada ou equipe do CERAPE')
                                 ->helperText('Texto usado por leitores de tela e acessibilidade.')
                                 ->maxLength(255),
                             TextInput::make('title')
-                                ->label('Título principal')
+                                ->label('Titulo principal')
                                 ->placeholder('Ex.: CERAPE')
-                                ->helperText('Título grande exibido no topo da página.')
+                                ->helperText('Titulo grande exibido no topo da pagina.')
                                 ->maxLength(255),
                             TextInput::make('cta_label')
-                                ->label('Texto do botão')
+                                ->label('Texto do botao')
                                 ->placeholder('Ex.: Fale conosco')
-                                ->helperText('Deixe vazio se não quiser personalizar o texto do botão.')
+                                ->helperText('Deixe vazio se nao quiser personalizar o texto do botao.')
                                 ->maxLength(255),
                             TextInput::make('cta_url')
-                                ->label('Link do botão')
+                                ->label('Link do botao')
                                 ->placeholder('Ex.: #signup, #projects ou https://site.com')
-                                ->helperText('Aceita links internos da página ou links externos.')
+                                ->helperText('Aceita links internos da pagina ou links externos.')
                                 ->maxLength(255),
                             RichEditor::make('subtitle')
                                 ->label('Texto de apoio')
                                 ->toolbarButtons(self::textToolbar())
-                                ->placeholder('Escreva o texto de apoio. Use o botão de link da barra para inserir links.')
-                                ->helperText('Você pode usar negrito, listas e links.')
+                                ->placeholder('Escreva o texto de apoio. Use o botao de link da barra para inserir links.')
+                                ->helperText('Voce pode usar negrito, listas e links.')
                                 ->columnSpanFull(),
                         ]),
                     ]),
-                Section::make('Seção sobre')
-                    ->description('Apresente a instituição, valores, serviços e links importantes.')
+                Section::make('Secao sobre')
+                    ->description('Apresente a instituicao, valores, servicos e links importantes.')
                     ->icon('heroicon-o-information-circle')
                     ->columnSpanFull()
                     ->schema([
@@ -67,25 +67,25 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('about_image', 'Imagem da seção sobre', 'homes/about'),
+                            self::imageUpload('about_image', 'Imagem da secao sobre', 'homes/about'),
                             TextInput::make('about_image_alt')
-                                ->label('Descrição da imagem')
-                                ->placeholder('Ex.: Imagem da seção sobre o CERAPE')
+                                ->label('Descricao da imagem')
+                                ->placeholder('Ex.: Imagem da secao sobre o CERAPE')
                                 ->maxLength(255),
                             TextInput::make('about_title')
-                                ->label('Título da seção')
+                                ->label('Titulo da secao')
                                 ->placeholder('Ex.: Sobre o CERAPE')
                                 ->maxLength(255),
                             RichEditor::make('about_subtitle')
-                                ->label('Texto da seção')
+                                ->label('Texto da secao')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Conte a historia, missao ou diferenciais. Links podem ser inseridos pela barra.')
                                 ->helperText('Ideal para texto institucional com links uteis.')
                                 ->columnSpanFull(),
                         ]),
                     ]),
-                Section::make('Seção projetos')
-                    ->description('Configure o destaque visual e textual da área de projetos, serviços ou conteúdos importantes.')
+                Section::make('Secao projetos')
+                    ->description('Configure o destaque visual e textual da area de projetos, servicos ou conteudos importantes.')
                     ->icon('heroicon-o-rectangle-stack')
                     ->columnSpanFull()
                     ->schema([
@@ -93,25 +93,25 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('projects_image', 'Imagem da seção projetos', 'homes/projects'),
+                            self::imageUpload('projects_image', 'Imagem da secao projetos', 'homes/projects'),
                             TextInput::make('projects_image_alt')
-                                ->label('Descrição da imagem')
+                                ->label('Descricao da imagem')
                                 ->placeholder('Ex.: Imagem representando projetos do CERAPE')
                                 ->maxLength(255),
                             TextInput::make('projects_title')
-                                ->label('Título da seção')
+                                ->label('Titulo da secao')
                                 ->placeholder('Ex.: Projetos')
                                 ->maxLength(255),
                             RichEditor::make('projects_subtitle')
-                                ->label('Texto da seção')
+                                ->label('Texto da secao')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Explique os projetos, acoes ou servicos. Voce tambem pode inserir links.')
-                                ->helperText('Este texto aparece ao lado da imagem principal da seção.')
+                                ->helperText('Este texto aparece ao lado da imagem principal da secao.')
                                 ->columnSpanFull(),
                         ]),
                     ]),
-                Section::make('Chamada e formulário de contato')
-                    ->description('Ajuste a chamada exibida acima do formulário público de contato.')
+                Section::make('Chamada e formulario de contato')
+                    ->description('Ajuste a chamada exibida acima do formulario publico de contato.')
                     ->icon('heroicon-o-envelope')
                     ->columnSpanFull()
                     ->schema([
@@ -120,74 +120,22 @@ class HomeForm
                             'md' => 2,
                         ])->schema([
                             self::imageUpload('signup_image', 'Imagem opcional da chamada', 'homes/signup')
-                                ->helperText('Opcional. Quando enviada, aparece acima do formulário de contato.'),
+                                ->helperText('Opcional. Quando enviada, aparece acima do formulario de contato.'),
                             TextInput::make('signup_image_alt')
-                                ->label('Descrição da imagem')
-                                ->placeholder('Ex.: Imagem da seção de contato')
+                                ->label('Descricao da imagem')
+                                ->placeholder('Ex.: Imagem da secao de contato')
                                 ->maxLength(255),
                             TextInput::make('signup_title')
-                                ->label('Título da chamada')
+                                ->label('Titulo da chamada')
                                 ->placeholder('Ex.: Entre em contato')
                                 ->maxLength(255),
                             RichEditor::make('signup_subtitle')
                                 ->label('Texto de apoio')
                                 ->toolbarButtons(self::textToolbar())
-                                ->placeholder('Oriente o visitante antes do formulário. Links podem ser inseridos pela barra.')
-                                ->helperText('O formulário público já coleta nome, e-mail, telefone, assunto e mensagem.')
+                                ->placeholder('Oriente o visitante antes do formulario. Links podem ser inseridos pela barra.')
+                                ->helperText('O formulario publico ja coleta nome, e-mail, telefone, assunto e mensagem.')
                                 ->columnSpanFull(),
                         ]),
-                    ]),
-                Section::make('Carrossel opcional')
-                    ->description('Ative quando quiser exibir várias imagens com textos e botões na seção de projetos.')
-                    ->icon('heroicon-o-queue-list')
-                    ->columnSpanFull()
-                    ->schema([
-                        Toggle::make('enable_carousel')
-                            ->label('Exibir carrossel na seção de projetos')
-                            ->helperText('Quando desligado, a página usa os blocos fixos do layout padrão.')
-                            ->default(false),
-                        Repeater::make('carousel_items')
-                            ->label('Slides do carrossel')
-                            ->addActionLabel('Adicionar slide')
-                            ->collapsible()
-                            ->reorderable()
-                            ->defaultItems(0)
-                            ->itemLabel(fn (array $state): ?string => filled($state['title'] ?? null) ? $state['title'] : 'Novo slide')
-                            ->schema([
-                                Grid::make([
-                                    'default' => 1,
-                                    'md' => 2,
-                                ])->schema([
-                                    self::imageUpload('image', 'Imagem do slide', 'homes/carousel')
-                                        ->required()
-                                        ->helperText('Obrigatória para o slide aparecer no site. Prefira imagens horizontais.'),
-                                    TextInput::make('alt')
-                                        ->label('Descrição da imagem')
-                                        ->placeholder('Ex.: Equipe em atendimento')
-                                        ->maxLength(255),
-                                    TextInput::make('title')
-                                        ->label('Título do slide')
-                                        ->placeholder('Ex.: Atendimento acolhedor')
-                                        ->maxLength(255),
-                                    TextInput::make('link_url')
-                                        ->label('Link opcional do botão')
-                                        ->placeholder('Ex.: #signup ou https://site.com')
-                                        ->helperText('Preencha junto com o texto do botão para mostrar uma chamada clicável.')
-                                        ->maxLength(255),
-                                    TextInput::make('link_label')
-                                        ->label('Texto do botão')
-                                        ->placeholder('Ex.: Saiba mais')
-                                        ->maxLength(255),
-                                    RichEditor::make('description')
-                                        ->label('Descrição do slide')
-                                        ->toolbarButtons(self::textToolbar())
-                                        ->placeholder('Descreva o slide. Links também podem ser inseridos aqui.')
-                                        ->helperText('A descricao aparece sobre a imagem em telas medias e grandes.')
-                                        ->columnSpanFull(),
-                                ]),
-                            ])
-                            ->helperText('Arraste os slides para mudar a ordem. Se o carrossel estiver desligado, estes slides ficam salvos, mas não aparecem no site.')
-                            ->columnSpanFull(),
                     ]),
             ]);
     }

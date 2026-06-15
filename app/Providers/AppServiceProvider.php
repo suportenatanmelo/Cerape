@@ -11,12 +11,10 @@ use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use App\Observers\UserObserver;
 use App\Support\ChatifyMessenger;
-use Filament\Forms\Components\DatePicker;
 use Carbon\Carbon;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -43,7 +41,6 @@ class AppServiceProvider extends ServiceProvider
                 : null;
         });
 
-        app()->setLocale('pt_BR');
         Carbon::setLocale('pt_BR');
 
         DateTimePicker::configureUsing(function (DateTimePicker $component): void {
@@ -58,16 +55,6 @@ class AppServiceProvider extends ServiceProvider
                 ->defaultDateTimeWithSecondsDisplayFormat('d/m/Y H:i:s')
                 ->defaultTimeDisplayFormat('H:i')
                 ->defaultTimeWithSecondsDisplayFormat('H:i:s');
-        });
-
-        DatePicker::configureUsing(function (DatePicker $component): void {
-            $component
-                ->locale('pt_BR')
-                ->timezone(config('app.timezone'))
-                ->firstDayOfWeek(1)
-                ->native(false)
-                ->placeholder('__/__/____')
-                ->defaultDateDisplayFormat('d/m/Y');
         });
 
         Schema::configureUsing(function (Schema $schema): void {

@@ -20,50 +20,50 @@ class PortalContext
     public static function brandName(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
-            ? 'Portal da Família'
+            ? 'Portal da Familia'
             : 'SISTEMA CERAPE';
     }
 
     public static function portalNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
-            ? 'Portal da Família'
-            : 'Acompanhamento';
+            ? 'Portal da Familia'
+            : 'Cadastros e Acompanhamento';
     }
 
     public static function evaluationNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Avaliações pessoais';
+            : 'Avaliacoes e Indicadores';
     }
 
     public static function documentsNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Documentos e Relatórios';
+            : 'Documentos e Relatorios';
     }
 
     public static function mediaNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Mídia e Galeria';
+            : 'Midia e Galeria';
     }
 
     public static function communicationNavigationGroup(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? static::portalNavigationGroup($user)
-            : 'Chat';
+            : 'Comunicacao';
     }
 
     public static function greeting(Authenticatable | null $user = null): string
     {
         return static::isFamilyUser($user)
             ? 'Acompanhamento com carinho, clareza e proximidade.'
-            : 'Gestão institucional e acompanhamento clínico.';
+            : 'Gestao institucional e acompanhamento clinico.';
     }
 
     public static function familyDashboardUrl(Authenticatable | null $user = null): ?string
@@ -208,8 +208,8 @@ class PortalContext
         $name = $user instanceof User ? Str::of($user->name)->trim()->explode(' ')->first() : 'familia';
 
         return [
-            'title' => 'Que bom ter você aqui, ' . $name,
-            'subtitle' => 'Seu portal foi preparado para acompanhar informações com mais leveza, organização e proximidade.',
+            'title' => 'Que bom ter voce aqui, ' . $name,
+            'subtitle' => 'Seu portal foi preparado para acompanhar informacoes com mais leveza, organizacao e proximidade.',
         ];
     }
 }

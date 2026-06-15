@@ -15,7 +15,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use App\Support\PdfImage;
+use Illuminate\Support\Facades\Storage;
 
 class ArquivosDiariosTable
 {
@@ -24,7 +24,7 @@ class ArquivosDiariosTable
         return $table
             ->columns([
                 TextColumn::make('titulo')
-                    ->label('Título')
+                    ->label('Titulo')
                     ->searchable(),
                 TextColumn::make('upload_arquivo')
                     ->label('Arquivo salvo')
@@ -42,10 +42,10 @@ class ArquivosDiariosTable
             ])
             ->filters([
                 Filter::make('titulo')
-                    ->label('Título')
+                    ->label('Titulo')
                     ->form([
                         TextInput::make('titulo')
-                            ->label('Buscar por título'),
+                            ->label('Buscar por titulo'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query->when(
@@ -59,7 +59,7 @@ class ArquivosDiariosTable
                         DatePicker::make('data_inicial')
                             ->label('De'),
                         DatePicker::make('data_final')
-                            ->label('Até'),
+                            ->label('Ate'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
@@ -80,7 +80,7 @@ class ArquivosDiariosTable
                     ->label('Baixar')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->url(fn ($record): ?string => PdfImage::publicUrl($record->upload_arquivo), shouldOpenInNewTab: true)
+                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? Storage::disk('public')->url($record->upload_arquivo) : null, shouldOpenInNewTab: true)
                     ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 EditAction::make(),
                 DeleteAction::make(),

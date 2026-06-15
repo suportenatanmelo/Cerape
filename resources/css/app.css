@@ -6,6 +6,80 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        color: #f7f5ea;
+        background-color: #071b12;
+        background-image:
+            radial-gradient(circle at top left, rgba(242, 201, 76, 0.16), transparent 28%),
+            radial-gradient(circle at top right, rgba(46, 107, 69, 0.12), transparent 30%),
+            radial-gradient(circle at bottom left, rgba(107, 74, 44, 0.12), transparent 28%),
+            linear-gradient(180deg, #071b12 0%, #0b2b1d 46%, #071b12 100%);
+    }
+}
+
+.font-display {
+    font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+}
+
+.section-kicker {
+    @apply inline-flex items-center rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.28em];
+    border: 1px solid rgba(242, 201, 76, 0.25);
+    background: rgba(242, 201, 76, 0.1);
+    color: #f7d96c;
+}
+
+.glass-card {
+    @apply rounded-[2rem] border shadow-2xl shadow-black/20 backdrop-blur-xl;
+    border-color: rgba(216, 201, 143, 0.15);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.soft-panel {
+    @apply rounded-[1.5rem];
+    border: 1px solid rgba(199, 180, 108, 0.12);
+    background: rgba(8, 31, 21, 0.72);
+}
+
+.prose-cerape {
+    color: rgb(231 236 225);
+}
+
+.prose-cerape > * + * {
+    margin-top: 1rem;
+}
+
+.prose-cerape p {
+    line-height: 1.9;
+}
+
+.prose-cerape a {
+    font-weight: 700;
+    color: rgb(252 211 77);
+    text-decoration-line: underline;
+    text-decoration-color: rgb(252 211 77 / 0.35);
+    text-underline-offset: 0.25rem;
+}
+
+.prose-cerape h2,
+.prose-cerape h3 {
+    font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+    color: white;
+}
+
+.prose-cerape ul,
+.prose-cerape ol {
+    padding-left: 1.5rem;
+}
+
+.prose-cerape li + li {
+    margin-top: 0.5rem;
 }

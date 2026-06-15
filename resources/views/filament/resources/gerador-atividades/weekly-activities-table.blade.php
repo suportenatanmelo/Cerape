@@ -8,7 +8,7 @@
 <div class="space-y-4">
     <div class="grid gap-4 md:grid-cols-1">
         <div class="rounded-2xl border border-primary-100 bg-gradient-to-br from-primary-50 to-white p-4 shadow-sm">
-            <div class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Período</div>
+            <div class="text-xs font-semibold uppercase tracking-[0.18em] text-primary-700">Periodo</div>
             <div class="mt-2 text-base font-semibold text-gray-900">{{ $periodo }}</div>
         </div>
     </div>
@@ -19,7 +19,7 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-gray-600">Ordem</th>
-                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-gray-600">Atividades práticas</th>
+                    <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-gray-600">Atividades praticas</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-gray-600">Demanda</th>
                     <th class="px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.18em] text-gray-600">Acolhidos</th>
                 </tr>

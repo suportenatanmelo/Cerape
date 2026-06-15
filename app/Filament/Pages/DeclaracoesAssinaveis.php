@@ -4,7 +4,6 @@ namespace App\Filament\Pages;
 
 use App\Models\Acolhido;
 use App\Models\User;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use App\Support\ShieldPermission;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,11 +23,11 @@ class DeclaracoesAssinaveis extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Declarações Assináveis';
+    protected static string | \UnitEnum | null $navigationGroup = 'Declaracoes Assinaveis';
 
-    protected static ?string $navigationLabel = 'Gerador de declarações';
+    protected static ?string $navigationLabel = 'Gerador de declaracoes';
 
-    protected static ?string $title = 'Declarações assináveis';
+    protected static ?string $title = 'Declaracoes assinaveis';
 
     protected static ?int $navigationSort = 1;
 
@@ -51,7 +50,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
         return $schema
             ->schema([
                 Select::make('declaracao')
-                    ->label('Declaração')
+                    ->label('Declaracao')
                     ->options(self::declarationOptions())
                     ->default('leitura_ptc')
                     ->required()
@@ -70,7 +69,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
                 Placeholder::make('orientacoes')
                     ->label('Como funciona')
                     ->content(fn (): HtmlString => new HtmlString(
-                        'Escolha a declaração, selecione o acolhido quando necessário e use o botão <strong>Baixar PDF</strong> no topo para gerar o documento pronto para assinatura.'
+                        'Escolha a declaracao, selecione o acolhido quando necessario e use o botao <strong>Baixar PDF</strong> no topo para gerar o documento pronto para assinatura.'
                     )),
             ])
             ->statePath('data');
@@ -122,7 +121,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
 
         $pdf = Pdf::loadView('pdf.declaracoes-assinaveis', [
             'payload' => $payload,
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
         ])->setPaper('a4');
 
         return response()->streamDownload(
@@ -140,12 +139,12 @@ class DeclaracoesAssinaveis extends Page implements HasForms
     private static function declarationOptions(): array
     {
         return [
-            'leitura_ptc' => 'Declaração de leitura do PTC',
-            'termo_desligamento' => 'Termo de desligamento',
-            'uso_imagem' => 'Declaração para uso de imagem',
-            'desistencia_ptc' => 'Declaração de desistência do PTC',
-            'acolhimento_voluntario' => 'Declaração de acolhimento voluntário',
-            'contrato_prevencao_recaida' => 'Contrato terapêutico 105 - prevenção à recaída ',
+            'leitura_ptc' => 'Declaracao de leitura do PTC',
+            'termo_desligamento' => 'Declaracao de termo de desligamento',
+            'uso_imagem' => 'Declaracao para uso de imagem',
+            'desistencia_ptc' => 'Declaracao de desistencia do PTC',
+            'acolhimento_voluntario' => 'Declaracao de acolhimento voluntario',
+            'contrato_prevencao_recaida' => 'Contrato terapeutico - prevencao a recaida',
         ];
     }
 
@@ -208,13 +207,13 @@ class DeclaracoesAssinaveis extends Page implements HasForms
     private static function documentTitle(string $type): string
     {
         return match ($type) {
-            'leitura_ptc' => 'DECLARAÇÃO DE LEITURA DO PTC',
+            'leitura_ptc' => 'DECLARACAO DE LEITURA DO PTC',
             'termo_desligamento' => 'TERMO DE DESLIGAMENTO',
-            'uso_imagem' => 'DECLARAÇÃO PARA USO DE IMAGEM',
-            'desistencia_ptc' => 'DECLARAÇÃO DE DESISTÊNCIA DO PTC',
-            'acolhimento_voluntario' => 'DECLARAÇÃO DE ACOLHIMENTO VOLUNTÁRIO',
-            'contrato_prevencao_recaida' => 'CONTRATO TERAPÊUTICO - PREVENÇÃO À RECAÍDA',
-            default => 'DECLARAÇÃO',
+            'uso_imagem' => 'DECLARACAO PARA USO DE IMAGEM',
+            'desistencia_ptc' => 'DECLARACAO DE DESISTENCIA DO PTC',
+            'acolhimento_voluntario' => 'DECLARACAO DE ACOLHIMENTO VOLUNTARIO',
+            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO - PREVENCAO A RECAIDA',
+            default => 'DECLARACAO',
         };
     }
 
@@ -223,7 +222,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
         return [
             1 => 'janeiro',
             2 => 'fevereiro',
-            3 => 'março',
+            3 => 'marco',
             4 => 'abril',
             5 => 'maio',
             6 => 'junho',
@@ -322,4 +321,16 @@ class DeclaracoesAssinaveis extends Page implements HasForms
         return 'declaracao-' . Str::slug((string) $payload['type']) . '-' . Str::slug((string) $name) . '.pdf';
     }
 
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
 }

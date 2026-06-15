@@ -10,9 +10,9 @@ class AvaliacaoPessoalAcolhidoChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
 
-    protected ?string $heading = 'Evolução das médias por avaliador';
+    protected ?string $heading = 'Evolucao das medias por avaliador';
 
-    protected ?string $description = 'Visualização das médias individuais que compõem a média consolidada do acolhido.';
+    protected ?string $description = 'Visualizacao das medias individuais que compoem a media consolidada do acolhido.';
 
     protected ?string $maxHeight = '320px';
 
@@ -34,7 +34,7 @@ class AvaliacaoPessoalAcolhidoChart extends LineChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Média individual por avaliador',
+                    'label' => 'Media individual por avaliador',
                     'data' => $usuarios->map(fn(array $item): float => round((float) $item['media'], 2))->all(),
                     'backgroundColor' => 'rgba(217, 119, 6, 0.12)',
                     'borderColor' => '#b45309',
@@ -44,7 +44,7 @@ class AvaliacaoPessoalAcolhidoChart extends LineChartWidget
                     'pointHoverRadius' => 6,
                 ],
             ],
-            'labels' => $usuarios->map(fn (array $item): string => $item['user']?->name ?? 'Usuário não informado')->all(),
+            'labels' => $usuarios->map(fn (array $item): string => $item['user']?->name ?? 'Usuario nao informado')->all(),
         ];
     }
 

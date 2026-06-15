@@ -7,7 +7,6 @@ use Database\Factories\UserFactory;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
-use App\Support\PdfImage;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use App\Support\UserRoleManager;
@@ -28,7 +26,6 @@ use App\Support\UserRoleManager;
     'password',
     'avatar',
     'cpf',
-    'funcao_usuario',
     'endereco',
     'uf',
     'nacionalidade',
@@ -40,6 +37,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+
+    public const ROLE_SUPER_ADMIN = 'super_admin';
+    public const ROLE_ADMIN = 'admin';
+    public const ROLE_CADASTROS = 'cadastros';
+    public const ROLE_LEITURA = 'leitura';
+
+    public const PERMISSION_STATUS_ACTIVE = 'active';
+    public const PERMISSION_DASHBOARD_VIEW = 'View:Dashboard';
+    public const PERMISSION_WIDGETS_VIEW = 'View:Widgets';
+    public const PERMISSION_USER_VIEW = 'View:User';
 
 
     /**
@@ -121,49 +128,48 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return trim(($slug !== '' ? $slug : 'usuario') . '-' . $this->getKey(), '-');
     }
 
-    public function resolveAvatarAbsolutePath(): ?string
+    public function hasAclPermission(string $permission): bool
     {
-        $avatar = trim((string) $this->avatar);
-
-        if ($avatar === '') {
-            return null;
-        }
-
-        if (Str::startsWith($avatar, ['http://', 'https://', '//', 'data:'])) {
-            return null;
-        }
-
-        foreach ([
-            Storage::disk('public'),
-            Storage::disk('local'),
-        ] as $disk) {
-            foreach ([
-                $avatar,
-                'users/avatars/' . basename($avatar),
-                'avatars/' . basename($avatar),
-                'private/avatars/' . basename($avatar),
-                'private/' . basename($avatar),
-            ] as $candidate) {
-                if ($disk->exists($candidate)) {
-                    $path = $disk->path($candidate);
-
-                    if (is_file($path) && is_readable($path)) {
-                        return $path;
-                    }
-                }
-            }
-        }
-
-        return null;
+        return $this->can($permission);
     }
+
+    public static function permissionLabel(string $permission): string
+    {
+        return match ($permission) {
+            self::PERMISSION_DASHBOARD_VIEW => 'Visualizar dashboard',
+            self::PERMISSION_WIDGETS_VIEW => 'Visualizar widgets',
+            self::PERMISSION_USER_VIEW => 'Visualizar usuarios',
+            default => str($permission)->replace([':', '_', '-'], ' ')->title()->toString(),
+        };
+    }
+
+    public function getAccessStatusLabelAttribute(): string
+    {
+        return (bool) ($this->attributes['is_blocked'] ?? false) ? 'Bloqueado' : 'Liberado';
+    }
+
+    public function getPermissionStatusLabelAttribute(): string
+    {
+        $status = $this->attributes['permission_status'] ?? self::PERMISSION_STATUS_ACTIVE;
+
+        return match ($status) {
+            self::PERMISSION_STATUS_ACTIVE => 'Ativo',
+            'inactive' => 'Inativo',
+            'pending' => 'Pendente',
+            'blocked' => 'Bloqueado',
+            default => str((string) $status)->replace(['_', '-'], ' ')->title()->toString(),
+        };
+    }
+
+    //class User extends Authenticatable implements HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if (blank($this->avatar)) {
+        if (! filled($this->avatar)) {
             return null;
         }
 
-        return PdfImage::publicUrl($this->avatar)
-            ?? url('/user/avatar');
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar);
     }
+
 }

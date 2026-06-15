@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\ProntuariosEvolucao\Pages;
 
 use App\Filament\Resources\ProntuariosEvolucao\ProntuarioEvolucaoResource;
-use App\Models\User;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Width;
@@ -34,9 +33,6 @@ class EditProntuarioEvolucao extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         $data['user_id'] ??= $this->getRecord()->user_id ?? auth()->id();
-        $data['funcao_responsavel_informacao'] = User::query()
-            ->whereKey($data['user_id'] ?? null)
-            ->value('funcao_usuario');
 
         return $data;
     }

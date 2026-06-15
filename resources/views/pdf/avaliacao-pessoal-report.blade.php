@@ -1,38 +1,36 @@
-@extends('pdf.layout')
-
-@section('title')
-Documento de avaliação pessoal
-@endsection
-
-@section('styles')
-<style>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Relatorio de avaliacao pessoal</title>
+    <style>
         * { box-sizing: border-box; }
-        body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.45; margin: 0; }
-        .page { padding: 22px; }
-        .brand-bar { border-bottom: 1px solid #dbe4ea; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
+        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
+        .page { padding: 20px; }
+        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
         .brand-table { display: table; width: 100%; }
         .brand-logo-cell, .brand-info-cell { display: table-cell; vertical-align: middle; }
         .brand-logo-cell { width: 235px; padding-right: 14px; }
         .brand-logo { display: block; height: auto; max-height: 60px; max-width: 220px; }
         .brand-info-cell { text-align: left; }
-        .brand-info { color: #475569; font-size: 9px; line-height: 1.45; }
-        .brand-info strong { color: #0f172a; display: block; font-size: 10px; letter-spacing: 0.2px; margin-bottom: 2px; }
+        .brand-info { color: #374151; font-family: DejaVu Serif, serif; font-size: 9px; line-height: 1.45; }
+        .brand-info strong { color: #111827; display: block; font-size: 10px; letter-spacing: 0.2px; margin-bottom: 2px; }
         .brand-info-line { margin: 1px 0; }
-        .hero { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; display: table; margin-bottom: 14px; padding: 16px; width: 100%; }
+        .hero { display: table; width: 100%; }
         .hero-left, .hero-right { display: table-cell; vertical-align: top; }
         .hero-left { width: 150px; padding-right: 14px; }
         .hero-right { padding-left: 14px; }
-        .profile-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; padding: 12px; text-align: center; }
-        .avatar { border: 3px solid #cbd5e1; border-radius: 14px; height: 148px; object-fit: cover; width: 112px; }
-        .avatar-empty { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 14px; color: #334155; font-size: 24px; font-weight: bold; height: 148px; line-height: 148px; margin: 0 auto; text-align: center; width: 112px; }
+        .profile-card { border: 1px solid #e5e7eb; padding: 12px; text-align: center; }
+        .avatar { border: 2px solid #e5e7eb; border-radius: 14px; height: 148px; object-fit: cover; width: 112px; }
+        .avatar-empty { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 14px; color: #6b7280; font-size: 24px; font-weight: bold; height: 148px; line-height: 148px; margin: 0 auto; text-align: center; width: 112px; }
         .profile-name { font-size: 13px; font-weight: bold; margin-top: 8px; }
         .profile-meta { color: #6b7280; font-size: 9px; margin-top: 3px; }
-        .title-panel { border-bottom: 2px solid #1d4ed8; padding-bottom: 12px; }
+        .title-panel { border-bottom: 2px solid #d97706; padding-bottom: 12px; }
         h1 { font-size: 19px; margin: 0 0 4px; }
-        h2 { color: #1d4ed8; font-size: 12px; margin: 16px 0 8px; }
+        h2 { color: #92400e; font-size: 12px; margin: 16px 0 8px; }
         .muted { color: #6b7280; }
         .cards { display: table; margin-top: 14px; width: 100%; }
-        .card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; display: table-cell; padding: 10px; width: 25%; }
+        .card { border: 1px solid #e5e7eb; display: table-cell; padding: 10px; width: 25%; }
         .card + .card { border-left: 0; }
         .card-label { color: #6b7280; font-size: 8px; text-transform: uppercase; }
         .card-value { font-size: 14px; font-weight: bold; margin-top: 3px; }
@@ -40,39 +38,42 @@ Documento de avaliação pessoal
         .two-col-left, .two-col-right { display: table-cell; vertical-align: top; width: 50%; }
         .two-col-left { padding-right: 6px; }
         .two-col-right { padding-left: 6px; }
-        .info-table td { border: 1px solid #dbe4ea; padding: 6px; vertical-align: top; }
-        .info-label { background: #f8fafc; color: #334155; font-size: 8px; font-weight: bold; text-transform: uppercase; width: 38%; }
+        .info-table td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
+        .info-label { background: #f9fafb; color: #4b5563; font-size: 8px; font-weight: bold; text-transform: uppercase; width: 38%; }
         table { border-collapse: collapse; width: 100%; }
-        th { background: #f8fafc; color: #334155; font-size: 8px; text-align: left; text-transform: uppercase; }
-        th, td { border: 1px solid #dbe4ea; padding: 6px; vertical-align: top; }
+        th { background: #f9fafb; color: #4b5563; font-size: 8px; text-align: left; text-transform: uppercase; }
+        th, td { border: 1px solid #e5e7eb; padding: 6px; vertical-align: top; }
         .criteria-grid { display: table; width: 100%; }
-        .criteria-item { background: #fff; border: 1px solid #dbe4ea; display: table-cell; padding: 8px; width: 20%; }
+        .criteria-item { border: 1px solid #e5e7eb; display: table-cell; padding: 8px; width: 20%; }
         .criteria-label { color: #6b7280; font-size: 8px; text-transform: uppercase; }
         .criteria-value { font-size: 13px; font-weight: bold; margin-top: 3px; }
-        .comparison-box { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 8px; padding: 8px; }
+        .comparison-box { border: 1px solid #e5e7eb; margin-bottom: 8px; padding: 8px; }
         .comparison-title { font-size: 11px; font-weight: bold; margin-bottom: 3px; }
         .comparison-range { color: #6b7280; font-size: 8px; margin-bottom: 6px; }
-        .evaluator-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 10px; page-break-inside: avoid; }
-        .evaluator-head { background: #f8fafc; border-bottom: 1px solid #dbe4ea; display: table; padding: 8px; width: 100%; }
+        .evaluator-card { border: 1px solid #e5e7eb; margin-bottom: 10px; page-break-inside: avoid; }
+        .evaluator-head { background: #f9fafb; border-bottom: 1px solid #e5e7eb; display: table; padding: 8px; width: 100%; }
         .evaluator-photo-wrap, .evaluator-head-content { display: table-cell; vertical-align: middle; }
         .evaluator-photo-wrap { width: 52px; }
-        .evaluator-photo { border: 1px solid #dbe4ea; border-radius: 50%; height: 38px; object-fit: cover; width: 38px; }
-        .evaluator-photo-empty { background: #e2e8f0; border: 1px solid #d1d5db; border-radius: 50%; color: #334155; font-size: 11px; font-weight: bold; height: 38px; line-height: 36px; text-align: center; width: 38px; }
+        .evaluator-photo { border: 1px solid #d1d5db; border-radius: 50%; height: 38px; object-fit: cover; width: 38px; }
+        .evaluator-photo-empty { background: #e5e7eb; border: 1px solid #d1d5db; border-radius: 50%; color: #4b5563; font-size: 11px; font-weight: bold; height: 38px; line-height: 36px; text-align: center; width: 38px; }
         .evaluator-name { font-size: 11px; font-weight: bold; }
         .evaluator-meta { color: #6b7280; font-size: 8px; }
         .evaluator-summary { display: table; width: 100%; }
         .evaluator-summary-item { display: table-cell; padding: 8px; text-align: center; width: 33.33%; }
         .evaluator-criteria { display: table; width: 100%; }
-        .evaluator-criteria-item { border-top: 1px solid #dbe4ea; border-right: 1px solid #dbe4ea; display: table-cell; padding: 8px; text-align: center; width: 20%; }
+        .evaluator-criteria-item { border-top: 1px solid #e5e7eb; border-right: 1px solid #e5e7eb; display: table-cell; padding: 8px; text-align: center; width: 20%; }
         .evaluator-criteria-item:last-child { border-right: 0; }
         .evaluator-criteria-label { color: #6b7280; font-size: 8px; text-transform: uppercase; }
         .evaluator-criteria-value { font-size: 12px; font-weight: bold; margin-top: 3px; }
-        .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 18px; padding-top: 8px; text-align: center; }
+        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 18px; padding-top: 8px; }
     </style>
-@endsection
+</head>
+<body>
 
-@section('content')
-<div class="hero">
+    <div class="page">
+        @include('pdf.partials.cerape-brand-header')
+
+        <div class="hero">
             <div class="hero-left">
                 <div class="profile-card">
                     @if ($fotoAcolhido)
@@ -82,34 +83,34 @@ Documento de avaliação pessoal
                     @endif
                     <div class="profile-name">{{ $acolhido?->nome_completo_paciente ?? '-' }}</div>
                     <div class="profile-meta">{{ $record->dias_na_casa ?? '-' }}</div>
-                    <div class="profile-meta">Documento profissional de evolução pessoal</div>
+                    <div class="profile-meta">Relatorio profissional de evolucao pessoal</div>
                 </div>
             </div>
 
             <div class="hero-right">
                 <div class="title-panel">
-                    <h1>Documento detalhado de avaliação pessoal</h1>
+                    <h1>Relatorio detalhado de avaliacao pessoal</h1>
                     <div class="muted">Acolhido: <strong>{{ $acolhido?->nome_completo_paciente ?? '-' }}</strong></div>
                     <div class="muted">Tempo de casa: {{ $record->dias_na_casa ?? '-' }}</div>
-                    <div class="muted">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
-                    <div class="muted">Última avaliação registrada: {{ $ultimaAvaliacao?->created_at?->format('d/m/Y H:i') ?? '-' }}</div>
+                    <div class="muted">Emitido em: {{ now()->format('d/m/Y') }}</div>
+                    <div class="muted">Ultima avaliacao registrada: {{ $ultimaAvaliacao?->created_at?->format('d/m/Y') ?? '-' }}</div>
                 </div>
 
                 <div class="cards">
                     <div class="card">
-                        <div class="card-label">Média geral consolidada</div>
+                        <div class="card-label">Media geral consolidada</div>
                         <div class="card-value">{{ $formatScore((float) $mediaDeTodos) }}</div>
                     </div>
                     <div class="card">
-                        <div class="card-label">Soma das médias individuais limitada a 3</div>
+                        <div class="card-label">Soma das medias individuais limitada a 3</div>
                         <div class="card-value">{{ number_format((float) $somaMediasIndividuais, 2, ',', '.') }}</div>
                     </div>
                     <div class="card">
-                        <div class="card-label">Usuários avaliadores</div>
+                        <div class="card-label">Usuarios avaliadores</div>
                         <div class="card-value">{{ $totalAvaliadores }}</div>
                     </div>
                     <div class="card">
-                        <div class="card-label">Avaliações registradas</div>
+                        <div class="card-label">Avaliacoes registradas</div>
                         <div class="card-value">{{ $totalAvaliacoes }}</div>
                     </div>
                 </div>
@@ -145,7 +146,7 @@ Documento de avaliação pessoal
             </div>
         </div>
 
-        <h2>Média geral por critério</h2>
+        <h2>Media geral por criterio</h2>
         <div class="criteria-grid">
             @foreach ($criteriaAverages as $label => $value)
                 <div class="criteria-item">
@@ -155,7 +156,7 @@ Documento de avaliação pessoal
             @endforeach
         </div>
 
-        <h2>Comparativos de período</h2>
+        <h2>Comparativos de periodo</h2>
         @foreach (['semanal', 'mensal', 'semestral'] as $comparisonKey)
             @php($comparison = $periodComparisons[$comparisonKey])
             <div class="comparison-box">
@@ -164,21 +165,21 @@ Documento de avaliação pessoal
                 <table>
                     <thead>
                         <tr>
-                            <th>Métrica</th>
-                            <th>Período atual</th>
-                            <th>Período anterior</th>
+                            <th>Metrica</th>
+                            <th>Periodo atual</th>
+                            <th>Periodo anterior</th>
                             <th>Variacao</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Média das avaliações</td>
+                            <td>Media das avaliacoes</td>
                             <td>{{ $formatScore((float) $comparison['raw_current']) }}</td>
                             <td>{{ $formatScore((float) $comparison['raw_previous']) }}</td>
                             <td>{{ ($comparison['raw_delta'] >= 0 ? '+' : '') . number_format((float) $comparison['raw_delta'], 2, ',', '.') }}</td>
                         </tr>
                         <tr>
-                            <td>Média consolidada dos avaliadores</td>
+                            <td>Media consolidada dos avaliadores</td>
                             <td>{{ $formatScore((float) $comparison['consolidated_current']) }}</td>
                             <td>{{ $formatScore((float) $comparison['consolidated_previous']) }}</td>
                             <td>{{ ($comparison['consolidated_delta'] >= 0 ? '+' : '') . number_format((float) $comparison['consolidated_delta'], 2, ',', '.') }}</td>
@@ -188,7 +189,7 @@ Documento de avaliação pessoal
             </div>
         @endforeach
 
-        <h2>Resumo por usuário avaliador</h2>
+        <h2>Resumo por usuario avaliador</h2>
         @forelse ($usuarios as $item)
             <div class="evaluator-card">
                 <div class="evaluator-head">
@@ -200,7 +201,7 @@ Documento de avaliação pessoal
                         @endif
                     </div>
                     <div class="evaluator-head-content">
-                        <div class="evaluator-name">{{ $item['user']?->name ?? 'Usuário não informado' }}</div>
+                        <div class="evaluator-name">{{ $item['user']?->name ?? 'Usuario nao informado' }}</div>
                         <div class="evaluator-meta">{{ $item['user']?->email ?? '-' }}</div>
                     </div>
                 </div>
@@ -211,11 +212,11 @@ Documento de avaliação pessoal
                         <div class="card-value">{{ $item['quantidade'] }}</div>
                     </div>
                     <div class="evaluator-summary-item">
-                        <div class="card-label">Média individual</div>
+                        <div class="card-label">Media individual</div>
                         <div class="card-value">{{ $formatScore((float) $item['media']) }}</div>
                     </div>
                     <div class="evaluator-summary-item">
-                        <div class="card-label">Último voto</div>
+                        <div class="card-label">Ultimo voto</div>
                         <div class="card-value" style="font-size: 11px;">{{ $item['ultima_avaliacao']?->created_at?->format('d/m/Y') ?? '-' }}</div>
                     </div>
                 </div>
@@ -273,7 +274,7 @@ Documento de avaliação pessoal
             </tbody>
         </table>
 
-        <h2>Lógica de cálculo das médias</h2>
+        <h2>Logica de calculo das medias</h2>
         <table>
             <thead>
                 <tr>
@@ -293,4 +294,9 @@ Documento de avaliação pessoal
             </tbody>
         </table>
 
-@endsection
+        <div class="footer">
+            Relatorio gerado automaticamente pelo sistema Cerape. As medias foram calculadas com pontuacao maxima de 3 por criterio.
+        </div>
+    </div>
+</body>
+</html>

@@ -9,7 +9,6 @@ use App\Filament\Resources\Reunioes\Pages\ViewReuniao;
 use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Models\Reuniao;
 use App\Models\User;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use App\Support\ShieldPermission;
 use BackedEnum;
@@ -61,7 +60,7 @@ class ReuniaoResource extends Resource
                 Grid::make(1)
                     ->schema([
                         Section::make('Ata da reuniao')
-                            ->description('Registre o título, a data, os participantes internos e o conteúdo formal da ata.')
+                            ->description('Registre o titulo, a data, os participantes internos e o conteudo formal da ata.')
                             ->icon('heroicon-o-document-text')
                             ->schema([
                                 Grid::make([
@@ -69,20 +68,20 @@ class ReuniaoResource extends Resource
                                     'md' => 2,
                                 ])->schema([
                                     TextInput::make('titulo')
-                                        ->label('Título')
+                                        ->label('Titulo')
                                         ->required()
                                         ->maxLength(255),
                                     TextInput::make('usuario_responsavel')
-                                        ->label('Responsável pelo registro')
+                                        ->label('Responsavel pelo registro')
                                         ->default(fn (): string => auth()->user()?->name ?? 'Sistema')
                                         ->disabled()
                                         ->dehydrated(false),
                                     Textarea::make('descricao')
-                                        ->label('Descrição')
+                                        ->label('Descricao')
                                         ->rows(3)
                                         ->columnSpanFull(),
                                     DateTimePicker::make('data_reuniao')
-                                        ->label('Data e hora da reunião')
+                                        ->label('Data e hora da reuniao')
                                         ->seconds(false)
                                         ->native(false)
                                         ->default(now())
@@ -93,7 +92,7 @@ class ReuniaoResource extends Resource
                                         ->multiple()
                                         ->searchable()
                                         ->preload()
-                                        ->helperText('Selecione os usuários internos que participaram da reunião.')
+                                        ->helperText('Selecione os usuarios internos que participaram da reuniao.')
                                         ->columnSpanFull(),
                                 ]),
                             ])
@@ -101,7 +100,7 @@ class ReuniaoResource extends Resource
                             ->columnStart(1),
                     ])->columnSpanFull(),
                 Section::make('Conteudo da ata')
-                    ->description('Registre os participantes, a pauta discutida, as deliberações e as decisões finais.')
+                    ->description('Registre os participantes, a pauta discutida, as deliberacoes e as decisoes finais.')
                     ->icon('heroicon-o-pencil-square')
                     ->schema([
                         RichEditor::make('ata')
@@ -134,15 +133,15 @@ class ReuniaoResource extends Resource
                     ])
                     ->schema([
                         TextEntry::make('titulo')
-                            ->label('Título')
+                            ->label('Titulo')
                             ->weight('bold'),
                         TextEntry::make('user.name')
-                            ->label('Responsável pelo registro')
+                            ->label('Responsavel pelo registro')
                             ->badge()
                             ->color('primary')
                             ->placeholder('-'),
                         TextEntry::make('data_reuniao')
-                            ->label('Data e hora da reunião')
+                            ->label('Data e hora da reuniao')
                             ->dateTime(),
                         TextEntry::make('created_at')
                             ->label('Criado em')
@@ -153,15 +152,15 @@ class ReuniaoResource extends Resource
                             ->placeholder('-')
                             ->columnSpanFull(),
                         TextEntry::make('descricao')
-                            ->label('Descrição')
+                            ->label('Descricao')
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ]),
-                Section::make('Documento de visualização')
+                Section::make('Documento de visualizacao')
                     ->icon('heroicon-o-document')
                     ->schema([
                         TextEntry::make('ata')
-                            ->label('Conteúdo da ata')
+                            ->label('Conteudo da ata')
                             ->html()
                             ->columnSpanFull(),
                     ]),
@@ -173,11 +172,11 @@ class ReuniaoResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('titulo')
-                    ->label('Título')
+                    ->label('Titulo')
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
-                    ->label('Responsável')
+                    ->label('Responsavel')
                     ->badge()
                     ->searchable(),
                 TextColumn::make('participantes_resumo')
@@ -311,7 +310,7 @@ class ReuniaoResource extends Resource
             'responsavel' => $record->user?->name ?? 'Sistema',
             'descricao' => $record->descricao,
             'conteudoHtml' => (string) str((string) $record->ata)->sanitizeHtml(),
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
         ];
     }
 
@@ -329,4 +328,16 @@ class ReuniaoResource extends Resource
         );
     }
 
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:'.$mimeType.';base64,'.base64_encode((string) file_get_contents($absolutePath));
+    }
 }

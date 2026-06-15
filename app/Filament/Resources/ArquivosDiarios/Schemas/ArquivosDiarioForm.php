@@ -16,7 +16,7 @@ class ArquivosDiarioForm
         return $schema
             ->components([
                 Section::make('Arquivo para arquivamento')
-                    ->description('Centralize os documentos neste módulo de uploads com visual simples e organizado.')
+                    ->description('Centralize os documentos neste modulo de uploads com visual simples e organizado.')
                     ->icon('heroicon-o-folder')
                     ->schema([
                         Grid::make([
@@ -24,8 +24,8 @@ class ArquivosDiarioForm
                             'md' => 2,
                         ])->schema([
                             TextInput::make('titulo')
-                                ->label('Título do documento')
-                                ->placeholder('Ex.: Relatório mensal, ofício, declaração')
+                                ->label('Titulo do documento')
+                                ->placeholder('Ex.: Relatorio mensal, oficio, declaracao')
                                 ->maxLength(255)
                                 ->required()
                                 ->columnSpanFull(),
@@ -43,7 +43,7 @@ class ArquivosDiarioForm
                                     'application/msword',
                                     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                 ])
-                                ->helperText('O sistema renomeia o arquivo com o padrão ID_DDMMAAAA para facilitar o arquivamento.')
+                                ->helperText('O sistema renomeia o arquivo com o padrao ID_DDMMAAAA para facilitar o arquivamento.')
                                 ->required(),
                             DateTimePicker::make('updated_at')
                                 ->label('Data do arquivo')

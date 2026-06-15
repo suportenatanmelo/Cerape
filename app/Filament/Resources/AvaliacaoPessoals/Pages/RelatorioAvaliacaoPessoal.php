@@ -28,12 +28,12 @@ class RelatorioAvaliacaoPessoal extends Page
 
     public function getTitle(): string | Htmlable
     {
-        return 'Detalhamento da avaliação pessoal';
+        return 'Relatorio detalhado da avaliacao pessoal';
     }
 
     public function getBreadcrumb(): string
     {
-        return 'Detalhamento';
+        return 'Relatorio detalhado';
     }
 
     protected function getHeaderActions(): array
@@ -51,7 +51,7 @@ class RelatorioAvaliacaoPessoal extends Page
                     $pdf = Pdf::loadView('pdf.avaliacao-pessoal-report', AvaliacaoPessoalResource::getReportData($record))
                         ->setPaper('a4');
 
-                    $fileName = 'avaliacao-pessoal-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+                    $fileName = 'relatorio-avaliacao-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),
@@ -60,7 +60,7 @@ class RelatorioAvaliacaoPessoal extends Page
                     );
                 }),
             Action::make('voltar')
-                ->label('Voltar para avaliação')
+                ->label('Voltar para avaliacao')
                 ->icon('heroicon-o-arrow-left')
                 ->color('gray')
                 ->url(fn (): string => AvaliacaoPessoalResource::getUrl('view', ['record' => $this->getRecord()])),

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Filament\Resources\Acolhidos\Schemas;
-use App\Support\PdfImage;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -9,6 +8,10 @@ use Filament\Infolists\Components\ViewEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
+
+
+
 class AcolhidoInfolist
 {
     public static function configure(Schema $schema): Schema
@@ -26,11 +29,12 @@ class AcolhidoInfolist
                         ->schema([
                             ImageEntry::make('avatar')
                                 ->label('Foto')
+                                ->disk('public')
                                 ->circular()
                                 ->height(120)
                                 ->width(120)
                                 ->getStateUsing(
-                                    fn($record): ?string => PdfImage::publicUrl($record->avatar)
+                                    fn($record): ?string => self::resolveAvatarPath($record->avatar)
                                 )
                                 ->extraImgAttributes([
                                     'style' => 'object-fit: cover;'
@@ -40,7 +44,7 @@ class AcolhidoInfolist
                                 ->size('xl')
                                 ->weight('bold'),
                             TextEntry::make('user.name')
-                            ->label('Responsável pelo cadastro')
+                                ->label('Responsavel pelo cadastro')
                                 ->badge()
                                 ->color('primary')
                                 ->placeholder('-'),
@@ -58,8 +62,8 @@ class AcolhidoInfolist
                                 ->color('gray')
                                 ->placeholder('-'),
                         ]),
-                        Section::make('Resumo do acolhido')
-                        ->description('Informações principais para identificação rápida do cadastro.')
+                    Section::make('Resumo do acolhido')
+                        ->description('Informacoes principais para identificacao rapida do cadastro.')
                         ->icon('heroicon-o-identification')
                         ->compact()
                         ->schema([
@@ -72,7 +76,7 @@ class AcolhidoInfolist
                                     ->size('lg')
                                     ->weight('bold'),
                                 TextEntry::make('user.name')
-                                    ->label('Usuário responsável')
+                                    ->label('Usuario responsavel')
                                     ->badge()
                                     ->color('primary')
                                     ->placeholder('-'),
@@ -134,7 +138,7 @@ class AcolhidoInfolist
                             ->color('warning')
                             ->placeholder('-'),
                         IconEntry::make('moradia_propria')
-                            ->label('Moradia própria')
+                            ->label('Moradia propria')
                             ->boolean(),
                         IconEntry::make('mora_em_casa_aluguada')
                             ->label('Casa alugada')
@@ -158,7 +162,7 @@ class AcolhidoInfolist
                     ])
                     ->schema([
                         IconEntry::make('tem_documentacao')
-                            ->label('Tem documentação?')
+                            ->label('Tem documentacao?')
                             ->boolean(),
                         TextEntry::make('razao_caso_nao_tenha_documentacao')
                             ->label('Motivo da ausencia')
@@ -179,35 +183,35 @@ class AcolhidoInfolist
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->documentos_outros)),
                         TextEntry::make('numero_rg')
-                            ->label('Número do RG')
+                            ->label('Numero do RG')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_rg)),
                         TextEntry::make('numero_cpf')
-                            ->label('Número do CPF')
+                            ->label('Numero do CPF')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_cpf)),
                         TextEntry::make('numero_certidao_nascimento')
-                            ->label('Número da certidão de nascimento')
+                            ->label('Numero da certidao de nascimento')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_certidao_nascimento)),
                         TextEntry::make('numero_certidao_casamento')
-                            ->label('Número da certidão de casamento')
+                            ->label('Numero da certidao de casamento')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_certidao_casamento)),
                         TextEntry::make('numero_carteira_trabalho')
-                            ->label('Número da carteira de trabalho')
+                            ->label('Numero da carteira de trabalho')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_carteira_trabalho)),
                         TextEntry::make('numero_titulo_eleitor')
-                            ->label('Número do título de eleitor')
+                            ->label('Numero do titulo de eleitor')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_titulo_eleitor)),
                         TextEntry::make('numero_nis')
-                            ->label('Número do NIS/PIS')
+                            ->label('Numero do NIS/PIS')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_nis)),
                         TextEntry::make('numero_cartao_sus')
-                            ->label('Número do cartão do SUS')
+                            ->label('Numero do cartao do SUS')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_cartao_sus)),
                     ]),
@@ -252,7 +256,7 @@ class AcolhidoInfolist
                             ->label('Tem telefone?')
                             ->boolean(),
                         TextEntry::make('numero_do_telefone')
-                            ->label('Número do telefone')
+                            ->label('Numero do telefone')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_do_telefone)),
                         IconEntry::make('tem_meio_de_encaminhamento')
@@ -341,7 +345,7 @@ class AcolhidoInfolist
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->quantidade_filhos)),
                         TextEntry::make('quem_responsavel_criancas')
-                            ->label('Responsável pelas crianças')
+                            ->label('Responsavel pelas criancas')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->quem_responsavel_criancas)),
                         TextEntry::make('qual_o_nome_dos_filhos')
@@ -363,7 +367,7 @@ class AcolhidoInfolist
                             ->boolean()
                             ->hidden(fn($record) => is_null($record?->possui_contato_dos_filhos)),
                         TextEntry::make('responsavel_pela_intervencao_do_acolhido')
-                            ->label('Responsável pela intervenção')
+                            ->label('Responsavel pela intervencao')
                             ->columnSpanFull(),
                         TextEntry::make('profissional_referencia_acolhido_instituicao')
                             ->label('Profissional de referencia')
@@ -395,4 +399,26 @@ class AcolhidoInfolist
             ]);
     }
 
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
 }

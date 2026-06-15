@@ -1,17 +1,15 @@
-@extends('pdf.layout')
-
-@section('title')
-{{ $payload['title'] }}
-@endsection
-
-@section('styles')
-<style>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>{{ $payload['title'] }}</title>
+    <style>
         * { box-sizing: border-box; }
-        body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.6; margin: 0; }
-        .page { padding: 24px 28px; }
-        .brand-bar { border-bottom: 1px solid #dbe4ea; margin-bottom: 20px; padding-bottom: 12px; width: 100%; }
+        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.6; margin: 0; }
+        .page { padding: 26px 30px; }
+        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; padding-bottom: 12px; width: 100%; }
         .brand-logo { display: block; height: auto; max-height: 62px; max-width: 220px; }
-        .document-shell { background: #fff; border: 1px solid #dbe4ea; border-radius: 14px; padding: 26px 28px; }
+        .document-shell { background: #fffef9; border: 1px solid #e5e7eb; padding: 26px 28px; }
         .doc-title { color: #0f172a; font-size: 18px; font-weight: bold; letter-spacing: 0.06em; margin: 0 0 26px; text-align: center; text-transform: uppercase; }
         .doc-paragraph { margin: 0 0 14px; text-align: justify; }
         .doc-date { margin: 26px 0 22px; text-align: left; }
@@ -26,13 +24,20 @@
         .blank-full { display: block; margin-top: 8px; min-width: 100%; }
         .doc-multi-line { border-bottom: 1px solid #111827; display: block; height: 20px; margin-top: 6px; width: 100%; }
         .doc-multi-line + .doc-multi-line { margin-top: 10px; }
-        .document-footer { color: #64748b; font-size: 10px; margin-top: 20px; text-align: center; }
+        .document-footer { color: #6b7280; font-size: 10px; margin-top: 20px; text-align: center; }
     </style>
-@endsection
+</head>
+<body>
+    <div class="page">
+        @include('pdf.partials.cerape-brand-header')
 
-@section('content')
-<div class="document-shell">
+        <div class="document-shell">
             @include('declaracoes.partials.documento', ['payload' => $payload, 'mode' => 'pdf'])
         </div>
 
-@endsection
+        <div class="document-footer">
+            Documento gerado automaticamente pelo sistema Cerape.
+        </div>
+    </div>
+</body>
+</html>

@@ -11,7 +11,6 @@ use App\Filament\Resources\ArquivosDiarios\Schemas\ArquivosDiarioInfolist;
 use App\Filament\Resources\ArquivosDiarios\Tables\ArquivosDiariosTable;
 use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Models\ArquivosDiario;
-use App\Support\PdfImage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -104,19 +103,19 @@ class ArquivosDiarioResource extends Resource
     public static function getReportData(ArquivosDiario $record): array
     {
         return [
-            'title' => 'Documento institucional de arquivo enviado',
-            'subtitle' => $record->titulo ?? 'Documento sem título',
+            'title' => 'Relatorio de arquivo enviado',
+            'subtitle' => $record->titulo ?? 'Documento sem titulo',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
-                'Registro de arquivamento digital no módulo de uploads.',
+                'Registro de arquivamento digital no modulo de uploads.',
             ],
             'highlight' => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : 'Sem arquivo vinculado',
             'photoData' => null,
             'photoLabel' => 'PDF',
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'sections' => [
                 'Dados do arquivo' => [
-                    'Título' => $record->titulo,
+                    'Titulo' => $record->titulo,
                     'Nome salvo' => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : null,
                     'Caminho interno' => $record->upload_arquivo,
                     'Data do arquivo' => $record->updated_at,
@@ -131,7 +130,7 @@ class ArquivosDiarioResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
+        $fileName = 'relatorio-arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
 
         return response()->streamDownload(
             fn() => print($pdf->output()),
@@ -151,4 +150,16 @@ class ArquivosDiarioResource extends Resource
         return $value !== '' ? $value : '-';
     }
 
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
 }

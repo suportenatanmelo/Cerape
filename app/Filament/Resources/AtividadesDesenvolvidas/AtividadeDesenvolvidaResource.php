@@ -11,7 +11,6 @@ use App\Models\AtividadeDesenvolvida;
 use App\Models\User;
 use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
@@ -29,11 +28,11 @@ class AtividadeDesenvolvidaResource extends Resource
 {
     protected static ?string $model = AtividadeDesenvolvida::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Atividades CRC';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-clipboard-document-check';
 
@@ -80,9 +79,7 @@ class AtividadeDesenvolvidaResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::isFamilyUser()
-            ? PortalContext::portalNavigationGroup()
-            : 'Cadastros';
+        return PortalContext::portalNavigationGroup();
     }
 
     public static function notifyUsers(AtividadeDesenvolvida $record, string $event): void
@@ -198,16 +195,16 @@ class AtividadeDesenvolvidaResource extends Resource
         $record->loadMissing('acolhido');
 
         return [
-            'title' => 'Documento institucional de atividade CRC',
-            'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido não identificado',
+            'title' => 'Relatorio de atividade CRC',
+            'subtitle' => $record->acolhido?->nome_completo_paciente ?? 'Acolhido nao identificado',
             'metaLines' => [
                 'Emitido em: ' . now()->format('d/m/Y H:i'),
-                'Plano de atividades terapêuticas e de reintegração.',
+                'Plano de atividades terapeuticas e de reintegracao.',
             ],
             'highlight' => 'Resumo profissional das atividades desenvolvidas',
-            'photoData' => PdfImage::storageDataUri($record->acolhido?->avatar),
+            'photoData' => self::imageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'CRC',
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'sections' => [
                 'Atividades terapeuticas' => [
                     'Estudo sistematico dos 12 passos' => $record->atendimento_grupo_12_passos,
@@ -218,30 +215,30 @@ class AtividadeDesenvolvidaResource extends Resource
                     'Horario atendimentos individuais' => $record->horario_atendimentos_individuais_conselheiros,
                     'Conhecimento sobre dependencia de SPA' => $record->conhecimento_dependencia_spa,
                     'Horario dependencia de SPA' => $record->horario_conhecimento_dependencia_spa,
-                    'Atendimento à família' => $record->atendimento_familia,
-                    'Detalhes do atendimento à família' => $record->detalhes_atendimento_familia,
-                    'Visitação de familiares' => $record->visitacao_familiares_responsaveis,
-                    'Dia da visitação' => $record->dia_visitacao_familiares_responsaveis,
+                    'Atendimento a familia' => $record->atendimento_familia,
+                    'Detalhes do atendimento a familia' => $record->detalhes_atendimento_familia,
+                    'Visitacao de familiares' => $record->visitacao_familiares_responsaveis,
+                    'Dia da visitacao' => $record->dia_visitacao_familiares_responsaveis,
                 ],
                 'Vivencias e participacoes' => [
                     'Atividades esportivas' => self::formatChecklistState($record->atividades_esportivas),
-                    'Salão de jogos' => self::formatChecklistState($record->salao_jogos),
-                    'Atividades lúdicas, culturais e musicais' => self::formatChecklistState($record->atividades_ludicas_culturais_musicais),
+                    'Salao de jogos' => self::formatChecklistState($record->salao_jogos),
+                    'Atividades ludicas, culturais e musicais' => self::formatChecklistState($record->atividades_ludicas_culturais_musicais),
                     'Biblioteca e clube de leitura' => $record->biblioteca_clube_leitura,
                     'Espiritualidade' => self::formatChecklistState($record->atividades_espiritualidade),
                     'Auto cuidado e sociabilidade' => $record->atividade_auto_cuidado_sociabilidade,
                     'Detalhes da AACS' => $record->detalhes_auto_cuidado_sociabilidade,
-                    'Aprendizagem e alfabetização' => self::formatChecklistState($record->atividades_aprendizagem),
-                    'Atividades práticas inclusivas' => $record->detalhes_atividades_praticas_inclusivas,
+                    'Aprendizagem e alfabetizacao' => self::formatChecklistState($record->atividades_aprendizagem),
+                    'Atividades praticas inclusivas' => $record->detalhes_atividades_praticas_inclusivas,
                 ],
                 'Planejamento de saida' => [
-                    'Planejamento de saída' => self::formatChecklistState($record->planejamento_saida),
-                    'Observações do planejamento' => $record->planejamento_saida_observacoes,
+                    'Planejamento de saida' => self::formatChecklistState($record->planejamento_saida),
+                    'Observacoes do planejamento' => $record->planejamento_saida_observacoes,
                     'Eixos de apoio' => self::formatChecklistState($record->eixos_planejamento_saida),
                     'Detalhes dos eixos' => $record->detalhes_eixos_planejamento_saida,
-                    'Saída da comunidade' => self::formatChecklistState($record->saida_comunidade),
-                    'Outras informações sobre a saída' => $record->saida_comunidade_outros,
-                    'Observações gerais' => $record->observacoes_gerais,
+                    'Saida da comunidade' => self::formatChecklistState($record->saida_comunidade),
+                    'Outras informacoes sobre a saida' => $record->saida_comunidade_outros,
+                    'Observacoes gerais' => $record->observacoes_gerais,
                 ],
             ],
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
@@ -255,7 +252,7 @@ class AtividadeDesenvolvidaResource extends Resource
         $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
             ->setPaper('a4');
 
-        $fileName = 'atividade-crc-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
+        $fileName = 'relatorio-atividade-crc-' . Str::slug($record->acolhido?->nome_completo_paciente ?? 'acolhido') . '.pdf';
 
         return response()->streamDownload(
             fn () => print($pdf->output()),
@@ -289,7 +286,7 @@ class AtividadeDesenvolvidaResource extends Resource
     private static function formatValue(mixed $value): string
     {
         if (is_bool($value)) {
-            return $value ? 'Sim' : 'Não';
+            return $value ? 'Sim' : 'Nao';
         }
 
         if (is_array($value)) {
@@ -308,4 +305,47 @@ class AtividadeDesenvolvidaResource extends Resource
         return mb_convert_case($value, MB_CASE_TITLE, 'UTF-8');
     }
 
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (array_unique([$path, 'acolhidos/avatars/' . basename($path), 'avatars/' . basename($path)]) as $candidate) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    private static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
 }

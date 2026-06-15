@@ -12,7 +12,6 @@ use Filament\Actions\DeleteAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Filament\Tables\Columns\ToggleColumn;
 
 class AcolhidosTable
 {
@@ -30,8 +29,9 @@ class AcolhidosTable
                 TextColumn::make('nome_completo_paciente')
                     ->label('Nome do paciente')
                     ->searchable(),
-                ToggleColumn::make('ativo')
-                    ->label('Status')
+                IconColumn::make('ativo')
+                    ->label('Ativo')
+                    ->boolean()
                     ->sortable(),
                 TextColumn::make('data_nascimento')
                     ->label('Data de nascimento')
@@ -45,7 +45,7 @@ class AcolhidosTable
                     ->searchable()
                     ->placeholder('-'),
                 IconColumn::make('tem_documentacao')
-                    ->label('Tem documentação?')
+                    ->label('Tem documentacao?')
                     ->boolean(),
                 IconColumn::make('trabalha')
                     ->label('Trabalha?')

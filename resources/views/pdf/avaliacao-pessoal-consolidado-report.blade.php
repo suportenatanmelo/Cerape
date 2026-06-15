@@ -1,13 +1,11 @@
-@extends('pdf.layout')
-
-@section('title')
-Documento consolidado de avaliação pessoal
-@endsection
-
-@section('styles')
-<style>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>Relatorio consolidado de avaliacao pessoal</title>
+    <style>
         * { box-sizing: border-box; }
-        body { background: #f5f7fb; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 9px; line-height: 1.45; margin: 0; }
+        body { background: #f8fafc; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 9px; line-height: 1.4; margin: 0; }
         .page { padding: 14px; }
         .brand-header { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; padding: 10px 12px; }
         .brand-logo-cell { vertical-align: middle; width: 86px; }
@@ -29,7 +27,7 @@ Documento consolidado de avaliação pessoal
         .panel { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; overflow: hidden; }
         table { border-collapse: separate; border-spacing: 0; width: 100%; }
         th { background: #ecfeff; color: #0f172a; font-size: 8px; font-weight: bold; letter-spacing: 0.08em; padding: 7px; text-align: left; text-transform: uppercase; }
-        td { border-bottom: 1px solid #dbe4ea; padding: 7px; vertical-align: top; }
+        td { border-bottom: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
         tbody tr:nth-child(even) td { background: #fafcfc; }
         tbody tr:last-child td { border-bottom: none; }
         .center { text-align: center; }
@@ -42,10 +40,10 @@ Documento consolidado de avaliação pessoal
         .formula-line { color: #334155; font-size: 8px; margin: 3px 0; }
         .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 8px; margin-top: 10px; padding-top: 6px; text-align: center; }
     </style>
-@endsection
-
-@section('content')
-<div class="brand-header">
+</head>
+<body>
+    <div class="page">
+        <div class="brand-header">
             <table>
                 <tr>
                     <td class="brand-logo-cell">
@@ -55,7 +53,7 @@ Documento consolidado de avaliação pessoal
                     </td>
                     <td class="brand-text-cell">
                         <div class="brand-title">CENTRO DE REABILITACAO DO PRESO E EGRESSO - CERAPE</div>
-                        <div class="brand-text">Documento institucional consolidado para acompanhamento de acolhidos avaliados.</div>
+                        <div class="brand-text">Relatorio institucional consolidado para acompanhamento de acolhidos avaliados.</div>
                         <div class="brand-text">WhatsApp: (61) 99320-841 | Site: www.cerape.com</div>
                         <div class="brand-text">CNPJ sede: 00.857.994/0001-67 | CNPJ filial: 00.857.994/0001-48</div>
                     </td>
@@ -65,12 +63,12 @@ Documento consolidado de avaliação pessoal
 
         <div class="hero">
             <div class="eyebrow">Avaliacao pessoal consolidada</div>
-            <div class="title">Documento geral de acolhidos avaliados</div>
+            <div class="title">Relatorio geral de acolhidos avaliados</div>
             <div class="subtitle">Gerado em: {{ $generatedAt->format('d/m/Y H:i') }}</div>
             @if ($selectedDate)
                 <div class="subtitle">Filtro aplicado: {{ $selectedDate->format('d/m/Y') }}</div>
             @else
-                <div class="subtitle">Período analisado: histórico completo das avaliações registradas.</div>
+                <div class="subtitle">Periodo analisado: historico completo das avaliacoes registradas.</div>
             @endif
             <div class="subtitle">O documento mostra todos os acolhidos que receberam votos, a quantidade total de votos e a media consolidada dos usuarios que avaliaram.</div>
         </div>
@@ -88,7 +86,7 @@ Documento consolidado de avaliação pessoal
                     <div class="card">
                         <span class="card-label">Usuarios que votaram</span>
                         <span class="card-value">{{ $totalProfissionais }}</span>
-                        <span class="card-note">Avaliadores únicos considerados no documento.</span>
+                        <span class="card-note">Avaliadores unicos considerados no relatorio.</span>
                     </div>
                 </td>
                 <td>
@@ -130,7 +128,7 @@ Documento consolidado de avaliação pessoal
                             <td>
                                 <div class="name">{{ $row['acolhido_nome'] }}</div>
                                 <div class="muted">Primeira avaliacao: {{ $row['primeira_avaliacao_em']?->format('d/m/Y H:i') ?? '-' }}</div>
-                                <div class="muted">Última avaliação: {{ $row['ultima_avaliacao_em']?->format('d/m/Y H:i') ?? '-' }}</div>
+                                <div class="muted">Ultima avaliacao: {{ $row['ultima_avaliacao_em']?->format('d/m/Y H:i') ?? '-' }}</div>
                             </td>
                             <td>
                                 <div>{{ $row['profissional_nome'] }}</div>
@@ -155,4 +153,9 @@ Documento consolidado de avaliação pessoal
             <div class="formula-line"><strong>Em palavras:</strong> a media de todos e a soma das medias de cada avaliador dividida pela quantidade de avaliadores.</div>
         </div>
 
-@endsection
+        <div class="footer">
+            Relatorio gerado automaticamente pelo Sistema Cerape para acompanhamento institucional.
+        </div>
+    </div>
+</body>
+</html>

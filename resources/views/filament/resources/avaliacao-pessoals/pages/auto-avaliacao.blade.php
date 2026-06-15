@@ -1,8 +1,8 @@
 <x-filament-panels::page>
     <div class="mx-auto max-w-7xl space-y-6">
         <x-filament::section
-            heading="Autoavaliação"
-            description="Relatório de apoio para preenchimento manual das categorias de autoavaliação dos acolhidos."
+            heading="Auto Avaliacao"
+            description="Relatorio de apoio para preenchimento manual das categorias de auto avaliacao dos acolhidos."
         >
             <div class="grid gap-4 md:grid-cols-3">
                 <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -21,8 +21,8 @@
         </x-filament::section>
 
         <x-filament::section
-            heading="Prévia da lista"
-            description="As colunas de avaliação são mantidas em branco no PDF para preenchimento manual."
+            heading="Previa da lista"
+            description="As colunas de avaliacao sao mantidas em branco no PDF para preenchimento manual."
         >
             <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
                 <div class="overflow-x-auto">
@@ -36,7 +36,7 @@
                                 <th class="px-4 py-3">Autonomia</th>
                                 <th class="px-4 py-3">Transparencia</th>
                                 <th class="px-4 py-3">Superacao</th>
-                                <th class="px-4 py-3">Autocuidado</th>
+                                <th class="px-4 py-3">AutoCuidado</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 dark:divide-gray-800">

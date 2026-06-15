@@ -24,7 +24,7 @@ class AcolhidoResource extends Resource
 {
     protected static ?string $model = Acolhido::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Acolhidos';
 
@@ -91,9 +91,7 @@ class AcolhidoResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::isFamilyUser()
-            ? PortalContext::portalNavigationGroup()
-            : 'Cadastros';
+        return PortalContext::portalNavigationGroup();
     }
 
     public static function getNavigationBadge(): ?string

@@ -16,12 +16,12 @@ class AutoAvaliacao extends Page
 
     public function getTitle(): string
     {
-        return 'Autoavaliação';
+        return 'Auto Avaliacao';
     }
 
     public function getBreadcrumb(): string
     {
-        return 'Autoavaliação';
+        return 'Auto Avaliacao';
     }
 
     protected function getHeaderActions(): array
@@ -43,7 +43,7 @@ class AutoAvaliacao extends Page
                     );
                 }),
             Action::make('voltar')
-                ->label('Voltar para avaliações')
+                ->label('Voltar para avaliacoes')
                 ->icon('heroicon-o-arrow-left')
                 ->color('gray')
                 ->url(fn (): string => AvaliacaoPessoalResource::getUrl('index')),

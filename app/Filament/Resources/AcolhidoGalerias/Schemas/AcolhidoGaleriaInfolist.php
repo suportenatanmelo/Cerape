@@ -20,8 +20,8 @@ class AcolhidoGaleriaInfolist
                     'xl' => 3,
                 ])
                     ->schema([
-                        Section::make('Resumo do álbum')
-                            ->description('Informações principais do álbum e do acolhido em uma visão rápida.')
+                        Section::make('Resumo do album')
+                            ->description('Informacoes principais do album e do acolhido em uma visao rapida.')
                             ->icon('heroicon-o-identification')
                             ->columnSpan([
                                 'default' => 1,
@@ -38,27 +38,27 @@ class AcolhidoGaleriaInfolist
                                     ->weight('bold')
                                     ->placeholder('-'),
                                 TextEntry::make('titulo')
-                                    ->label('Álbum')
+                                    ->label('Album')
                                     ->badge()
                                     ->color('primary')
-                                    ->placeholder('Galeria sem título'),
+                                    ->placeholder('Galeria sem titulo'),
                                 TextEntry::make('ativo')
                                     ->label('Status')
                                     ->badge()
                                     ->formatStateUsing(fn (bool $state): string => $state ? 'Publicado no portal' : 'Oculto no portal')
                                     ->color(fn (bool $state): string => $state ? 'success' : 'gray'),
                                 TextEntry::make('updated_at')
-                                    ->label('Última atualização')
+                                    ->label('Ultima atualizacao')
                                     ->dateTime('d/m/Y H:i')
                                     ->badge()
                                     ->color('warning'),
                                 TextEntry::make('descricao')
-                                    ->label('Descrição')
-                                    ->placeholder('Sem descrição cadastrada para este álbum.')
+                                    ->label('Descricao')
+                                    ->placeholder('Sem descricao cadastrada para este album.')
                                     ->columnSpanFull(),
                             ]),
                         Section::make('Panorama visual')
-                            ->description('Indicadores que ajudam a entender o ritmo e o volume do álbum.')
+                            ->description('Indicadores que ajudam a entender o ritmo e o volume do album.')
                             ->icon('heroicon-o-sparkles')
                             ->compact()
                             ->columnSpan(1)
@@ -74,12 +74,12 @@ class AcolhidoGaleriaInfolist
                                     ->color('success')
                                     ->getStateUsing(fn ($record): string => (string) $record->galleryPeriodsCount()),
                                 TextEntry::make('created_at')
-                                    ->label('Álbum criado em')
+                                    ->label('Album criado em')
                                     ->dateTime('d/m/Y H:i')
                                     ->badge()
                                     ->color('gray'),
                                 IconEntry::make('ativo')
-                                    ->label('Disponível para famílias')
+                                    ->label('Disponivel para familias')
                                     ->boolean(),
                             ]),
                     ]),

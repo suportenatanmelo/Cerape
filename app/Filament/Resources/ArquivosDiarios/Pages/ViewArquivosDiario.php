@@ -16,7 +16,7 @@ class ViewArquivosDiario extends ViewRecord
     {
         return [
             Action::make('downloadRelatorio')
-                ->label('Baixar PDF')
+                ->label('Baixar relatorio')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())

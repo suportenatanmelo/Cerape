@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Saudes\Schemas;
 
-use App\Support\PdfImage;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
@@ -16,7 +15,7 @@ class SaudeInfolist
     {
         return $schema
             ->components([
-                Section::make('Resumo da ficha de saúde')
+                Section::make('Resumo da ficha de saude')
                     ->schema([
                         Grid::make([
                             'default' => 1,
@@ -28,60 +27,59 @@ class SaudeInfolist
                                 ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
-                                ->circular()
-                                ->getStateUsing(fn ($record): ?string => PdfImage::publicUrl($record?->acolhido?->avatar)),
+                                ->circular(),
                         ]),
-                        Section::make('Condições de saúde e tratamento')
+                        Section::make('Condicoes de saude e tratamento')
                             ->schema([
                                 IconEntry::make('faz_tratamento_medico')
-                                ->label('Tratamento médico atual')
+                                    ->label('Tratamento medico atual')
                                     ->boolean(),
                                 TextEntry::make('condicoes_saude')
-                                ->label('Condições de saúde')
+                                    ->label('Condicoes de saude')
                                     ->badge()
                                     ->color('info')
                                     ->listWithLineBreaks()
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                             ]),
-                        Section::make('Uso e dosagem da medicação')
+                        Section::make('Uso e dosagem da medicacao')
                             ->schema([
                                 IconEntry::make('usa_medicacao_psicoativa')
-                                ->label('Uso de medicação psicoativa')
+                                    ->label('Uso de medicacao psicoativa')
                                     ->boolean(),
                                 TextEntry::make('nome_medicacao_psicoativa')
-                                    ->label('Nome da medicação psicoativa ou princípio ativo')
+                                    ->label('Nome da medicacao psicoativa ou principio ativo')
                                     ->badge()
                                     ->color('primary')
                                     ->listWithLineBreaks()
                                     ->placeholder('-'),
                                 TextEntry::make('dosagem_medicacao_psicoativa')
-                                    ->label('Dosagem da medicação psicoativa')
+                                    ->label('Dosagem da medicacao psicoativa')
                                     ->badge()
                                     ->color('warning')
                                     ->placeholder('-'),
                                 IconEntry::make('prescrito_profissional')
-                                ->label('Medicação prescrita por profissional de saúde')
+                                    ->label('Medicacao prescrita por profissional de saude')
                                     ->boolean(),
                                 TextEntry::make('diagnosticado')
-                                    ->label('Condições diagnosticadas relacionadas à saúde mental ou uso de substâncias')
+                                    ->label('Condicoes diagnosticadas relacionadas a saude mental ou uso de substancias')
                                     ->badge()
                                     ->color('danger')
                                     ->listWithLineBreaks()
                                     ->placeholder('-'),
                             ]),
-                        Section::make('Observações clínicas')
+                        Section::make('Observacoes clinicas')
                             ->schema([
                                 TextEntry::make('medicamentos_em_uso')
                                     ->label('Medicamentos em uso')
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                                 TextEntry::make('alergias_restricoes')
-                                    ->label('Alergias, restrições ou cuidados especiais')
+                                    ->label('Alergias, restricoes ou cuidados especiais')
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                                 TextEntry::make('observacoes_clinicas')
-                                    ->label('Observações clínicas')
+                                    ->label('Observacoes clinicas')
                                     ->placeholder('-')
                                     ->columnSpanFull(),
                             ]),

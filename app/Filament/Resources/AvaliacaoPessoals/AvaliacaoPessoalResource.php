@@ -13,7 +13,6 @@ use App\Models\AvaliacaoPessoal;
 use App\Models\User;
 use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use BackedEnum;
 use Carbon\Carbon;
@@ -173,10 +172,11 @@ class AvaliacaoPessoalResource extends Resource
                     ->schema([
                         ImageEntry::make('acolhido.avatar')
                             ->label('Foto do acolhido')
+                            ->disk('public')
                             ->circular()
                             ->height(96)
                             ->width(96)
-                            ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => PdfImage::publicUrl($record->acolhido?->avatar)),
+                            ->getStateUsing(fn(AvaliacaoPessoal $record): ?string => self::resolveAvatarPath($record->acolhido?->avatar)),
                         TextEntry::make('acolhido.nome_completo_paciente')
                             ->label('Acolhido')
                             ->badge()
@@ -483,18 +483,18 @@ class AvaliacaoPessoalResource extends Resource
         $somaMediasIndividuais = min(3, (float) $usuarios->sum('media'));
         $logicasMedias = [
             [
-                'titulo' => 'Lógica da média individual de um avaliador',
-                'descricao' => 'Para cada avaliador, a média individual é calculada pela soma das médias finais registradas por esse avaliador para o acolhido, dividida pela quantidade de avaliações que ele realizou.',
+                'titulo' => 'Logica da média individual de um avaliador',
+                'descricao' => 'Para cada avaliador, a média individual e calculada pela soma das médias finais registradas por esse avaliador para o acolhido, dividida pela quantidade de avaliações que ele realizou.',
                 'formula' => 'Média individual = soma das médias finais do avaliador / quantidade de avaliações do avaliador',
             ],
             [
-                'titulo' => 'Lógica da média de todos os avaliadores',
+                'titulo' => 'Logica da média de todos os avaliadores',
                 'descricao' => 'A média de todos considera a média individual de cada avaliador com o mesmo peso. Primeiro calculamos a média individual de cada profissional. Depois calculamos a média dessas médias individuais.',
                 'formula' => 'Média de todos = soma das médias individuais dos avaliadores / quantidade de avaliadores',
             ],
             [
-                'titulo' => 'Regra de apresentação da soma das médias individuais',
-                'descricao' => 'Nos relatórios, a soma das médias individuais exibida em tela e no PDF nunca ultrapassa 3, respeitando a escala máxima da avaliação pessoal.',
+                'titulo' => 'Regra de apresentacao da soma das médias individuais',
+                'descricao' => 'Nos relatorios, a soma das médias individuais exibida em tela e no PDF nunca ultrapassa 3, respeitando a escala máxima da avaliação pessoal.',
                 'formula' => 'Soma exibida = menor valor entre 3 e a soma das médias individuais',
             ],
         ];
@@ -514,8 +514,8 @@ class AvaliacaoPessoalResource extends Resource
             'ultimaAvaliacao' => $avaliacoes->first(),
             'primeiraAvaliacao' => $avaliacoes->last(),
             'periodComparisons' => $periodComparisons,
-            'fotoAcolhido' => PdfImage::storageDataUri($record->acolhido?->avatar),
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatScore' => fn(float $score): string => self::formatScore($score),
             'scoreColor' => fn(float $score): string => self::scoreColor($score),
         ];
@@ -537,7 +537,7 @@ class AvaliacaoPessoalResource extends Resource
 
                 return [
                     'user' => $primeiraAvaliacao?->user,
-                    'foto' => PdfImage::storageDataUri($primeiraAvaliacao?->user?->avatar),
+                    'foto' => self::imageDataUri($primeiraAvaliacao?->user?->avatar),
                     'quantidade' => $avaliacoesDoUsuario->count(),
                     'media' => (float) $avaliacoesDoUsuario->avg('Total'),
                     'ultima_avaliacao' => $avaliacoesOrdenadas->first(),
@@ -585,12 +585,12 @@ class AvaliacaoPessoalResource extends Resource
             ['label' => 'Idade', 'value' => $acolhido->data_nascimento?->age ? $acolhido->data_nascimento->age . ' anos' : '-'],
             ['label' => 'Estado civil', 'value' => (string) ($acolhido->estado_civil ?? '-')],
             ['label' => 'Escolaridade', 'value' => (string) ($acolhido->escolaridade ?? '-')],
-            ['label' => 'Profissão', 'value' => (string) ($acolhido->profissao ?? '-')],
+            ['label' => 'Profissao', 'value' => (string) ($acolhido->profissao ?? '-')],
             ['label' => 'Telefone', 'value' => (string) ($acolhido->numero_do_telefone ?? '-')],
-            ['label' => 'Município / UF', 'value' => trim(((string) ($acolhido->municipio_do_paciente ?? '')) . ' / ' . ((string) ($acolhido->uf_municipio_do_paciente ?? '')), ' /') ?: '-'],
-            ['label' => 'Endereço', 'value' => (string) ($acolhido->endereco_paciente ?? '-')],
-            ['label' => 'Responsável pela intervenção', 'value' => (string) ($acolhido->responsavel_pela_intervencao_do_acolhido ?? '-')],
-            ['label' => 'Profissional de referência', 'value' => (string) ($acolhido->profissional_referencia_acolhido_instituicao ?? '-')],
+            ['label' => 'Municipio / UF', 'value' => trim(((string) ($acolhido->municipio_do_paciente ?? '')) . ' / ' . ((string) ($acolhido->uf_municipio_do_paciente ?? '')), ' /') ?: '-'],
+            ['label' => 'Endereco', 'value' => (string) ($acolhido->endereco_paciente ?? '-')],
+            ['label' => 'Responsavel pela intervencao', 'value' => (string) ($acolhido->responsavel_pela_intervencao_do_acolhido ?? '-')],
+            ['label' => 'Profissional de referencia', 'value' => (string) ($acolhido->profissional_referencia_acolhido_instituicao ?? '-')],
             ['label' => 'Data de cadastro', 'value' => $acolhido->created_at?->format('d/m/Y H:i') ?? '-'],
         ];
 
@@ -774,7 +774,7 @@ class AvaliacaoPessoalResource extends Resource
 
         return [
             'acolhidos' => $acolhidos,
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'geradoEm' => now(),
         ];
     }
@@ -876,7 +876,7 @@ class AvaliacaoPessoalResource extends Resource
             'totalVotos' => $evaluations->count(),
             'overallMediaUsuarios' => $overallMediaUsuarios,
             'overallMediaVotos' => $overallMediaVotos,
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatScore' => fn (float $score): string => self::formatScore($score),
         ];
     }
@@ -905,6 +905,57 @@ class AvaliacaoPessoalResource extends Resource
     public static function formatScore(float $score): string
     {
         return number_format($score, 2, ',', '.') . ' / 3';
+    }
+
+    public static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'users/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    public static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    public static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
 
     /**

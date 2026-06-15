@@ -1,37 +1,35 @@
-@extends('pdf.layout')
-
-@section('title')
-{{ $title }}
-@endsection
-
-@section('styles')
-<style>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <title>{{ $title }}</title>
+    <style>
         * { box-sizing: border-box; }
-        body { background: #ffffff; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
-        .page { padding: 22px; }
-        .brand-bar { border-bottom: 1px solid #dbe4ea; margin-bottom: 16px; padding-bottom: 12px; width: 100%; }
+        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; margin: 0; }
+        .page { padding: 26px; }
+        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; padding-bottom: 12px; width: 100%; }
         .brand-logo { display: block; height: auto; max-height: 62px; max-width: 220px; }
-        .hero { background: #f8fafc; border: 1px solid #dbe4ea; border-radius: 16px; color: #0f172a; display: table; margin-bottom: 14px; padding: 18px; width: 100%; }
+        .hero { border-bottom: 2px solid #d97706; display: table; padding-bottom: 18px; width: 100%; }
         .hero-photo, .hero-content { display: table-cell; vertical-align: top; }
         .hero-photo { width: 128px; }
-        .photo { border: 3px solid #cbd5e1; border-radius: 18px; height: 116px; object-fit: cover; width: 116px; }
-        .photo-empty { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 18px; color: #334155; height: 116px; line-height: 116px; text-align: center; width: 116px; }
+        .photo { border: 2px solid #e5e7eb; border-radius: 14px; height: 116px; object-fit: cover; width: 116px; }
+        .photo-empty { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 14px; color: #6b7280; height: 116px; line-height: 116px; text-align: center; width: 116px; }
         h1 { font-size: 21px; margin: 0 0 6px; }
-        h2 { color: #1d4ed8; font-size: 14px; margin: 22px 0 10px; }
-        .muted { color: #475569; margin-bottom: 3px; }
-        .highlight { background: #dcfce7; border-radius: 999px; color: #166534; display: inline-block; font-size: 10px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
+        h2 { color: #92400e; font-size: 14px; margin: 22px 0 10px; }
+        .muted { color: #6b7280; margin-bottom: 3px; }
+        .highlight { background: #fef3c7; border-radius: 999px; color: #92400e; display: inline-block; font-size: 10px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
         table { border-collapse: collapse; width: 100%; }
-        th { background: #f8fafc; color: #475569; font-size: 10px; text-align: left; text-transform: uppercase; width: 34%; }
-        th, td { border: 1px solid #dbe4ea; padding: 8px; vertical-align: top; }
-        .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
-        .section h2 { background: #eff6ff; border-bottom: 1px solid #bfdbfe; margin: 0; padding: 10px 12px; }
-        .section table { border-left: 0; border-right: 0; }
-        .footer { border-top: 1px solid #dbe4ea; color: #64748b; font-size: 9px; margin-top: 22px; padding-top: 10px; text-align: center; }
+        th { background: #f9fafb; color: #4b5563; font-size: 10px; text-align: left; text-transform: uppercase; width: 34%; }
+        th, td { border: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
+        .section { page-break-inside: avoid; }
+        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 26px; padding-top: 10px; }
     </style>
-@endsection
+</head>
+<body>
+    <div class="page">
+        @include('pdf.partials.cerape-brand-header')
 
-@section('content')
-<div class="hero">
+        <div class="hero">
             @if (! empty($photoData))
                 <div class="hero-photo">
                     <img src="{{ $photoData }}" class="photo" alt="">
@@ -44,9 +42,7 @@
 
             <div class="hero-content">
                 <h1>{{ $title }}</h1>
-                @if (! empty($subtitle))
-                    <div class="muted"><strong>{{ $subtitle }}</strong></div>
-                @endif
+                <div class="muted"><strong>{{ $subtitle }}</strong></div>
                 @foreach ($metaLines as $line)
                     <div class="muted">{{ $line }}</div>
                 @endforeach
@@ -72,4 +68,9 @@
             </div>
         @endforeach
 
-@endsection
+        <div class="footer">
+            Relatorio gerado automaticamente pelo sistema Cerape.
+        </div>
+    </div>
+</body>
+</html>

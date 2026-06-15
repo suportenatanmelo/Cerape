@@ -14,9 +14,9 @@ class FeedbackFamiliar extends Page
 {
     protected static ?string $navigationParentItem = 'Chat';
 
-    protected static ?string $navigationLabel = 'Comunicação familiar';
+    protected static ?string $navigationLabel = 'Chat familiar';
 
-    protected static ?string $title = 'Comunicação familiar';
+    protected static ?string $title = 'Chat familiar';
 
     protected static ?int $navigationSort = 4;
 

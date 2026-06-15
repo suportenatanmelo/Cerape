@@ -87,10 +87,6 @@ class UserResource extends Resource
                                 ->mask('999.999.999-99')
                                 ->maxLength(14)
                                 ->unique(ignoreRecord: true),
-                            TextInput::make('funcao_usuario')
-                                ->label('Função do usuário no sistema')
-                                ->maxLength(255)
-                                ->placeholder('Ex.: Psicólogo, Assistente social, Coordenador'),
                             DatePicker::make('data_nascimento')
                                 ->label('Data de nascimento')
                                 ->native(false)
@@ -160,10 +156,10 @@ class UserResource extends Resource
             ->components([
                 ImageEntry::make('avatar')
                     ->label('Imagem')
+                    ->disk('public')
                     ->circular()
                     ->height(96)
-                    ->width(96)
-                    ->getStateUsing(fn (User $record): ?string => $record->getFilamentAvatarUrl()),
+                    ->width(96),
                 TextEntry::make('name')
                     ->label('Nome completo')
                     ->badge()
@@ -181,11 +177,6 @@ class UserResource extends Resource
                     ->label('CPF')
                     ->badge()
                     ->color('gray')
-                    ->placeholder('-'),
-                TextEntry::make('funcao_usuario')
-                    ->label('Função do usuário no sistema')
-                    ->badge()
-                    ->color('success')
                     ->placeholder('-'),
                 TextEntry::make('endereco')
                     ->label('Endereco')
@@ -244,8 +235,8 @@ class UserResource extends Resource
             ->columns([
                 ImageColumn::make('avatar')
                     ->label('Imagem')
-                    ->circular()
-                    ->getStateUsing(fn (User $record): ?string => $record->getFilamentAvatarUrl()),
+                    ->disk('public')
+                    ->circular(),
                 TextColumn::make('name')
                     ->label('Nome')
                     ->searchable(),
@@ -258,10 +249,6 @@ class UserResource extends Resource
                     ->placeholder('-'),
                 TextColumn::make('cpf')
                     ->label('CPF')
-                    ->searchable()
-                    ->placeholder('-'),
-                TextColumn::make('funcao_usuario')
-                    ->label('Função')
                     ->searchable()
                     ->placeholder('-'),
                 TextColumn::make('uf')
@@ -332,7 +319,6 @@ class UserResource extends Resource
             'name',
             'email',
             'cpf',
-            'funcao_usuario',
             'uf',
             'acolhido.nome_completo_paciente',
         ];
@@ -348,7 +334,6 @@ class UserResource extends Resource
         return [
             'Email' => $record->email ?: '-',
             'CPF' => $record->cpf ?: '-',
-            'Função' => $record->funcao_usuario ?: '-',
             'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
         ];
     }

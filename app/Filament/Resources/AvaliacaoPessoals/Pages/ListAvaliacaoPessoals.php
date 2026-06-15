@@ -20,12 +20,12 @@ class ListAvaliacaoPessoals extends ListRecords
     {
         return [
             Action::make('autoAvaliacao')
-                ->label('Autoavaliação')
+                ->label('Auto Avaliacao')
                 ->icon('heroicon-o-document-text')
                 ->color('gray')
                 ->url(AvaliacaoPessoalResource::getUrl('auto-avaliacao')),
             Action::make('downloadConsolidatedReport')
-                ->label('PDF geral')
+                ->label('Relatorio PDF geral')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
@@ -34,8 +34,8 @@ class ListAvaliacaoPessoals extends ListRecords
 
                     if ($payload['rows']->isEmpty()) {
                         Notification::make()
-                            ->title('Nenhuma avaliação encontrada')
-                            ->body('Não existem avaliações registradas para gerar o documento geral.')
+                            ->title('Nenhuma avaliacao encontrada')
+                            ->body('Nao existem avaliacoes registradas para gerar o relatorio geral.')
                             ->warning()
                             ->send();
 
@@ -45,7 +45,7 @@ class ListAvaliacaoPessoals extends ListRecords
                     $pdf = Pdf::loadView('pdf.avaliacao-pessoal-consolidado-report', $payload)
                         ->setPaper('a4');
 
-                    $fileName = 'avaliacoes-acolhidos-' . Str::slug(now()->format('d-m-Y-H-i')) . '.pdf';
+                    $fileName = 'relatorio-geral-avaliacoes-acolhidos-' . Str::slug(now()->format('d-m-Y-H-i')) . '.pdf';
 
                     return response()->streamDownload(
                         fn () => print($pdf->output()),
@@ -54,7 +54,7 @@ class ListAvaliacaoPessoals extends ListRecords
                     );
                 }),
             CreateAction::make()
-                ->label('Nova avaliação'),
+                ->label('Nova avaliacao'),
         ];
     }
 

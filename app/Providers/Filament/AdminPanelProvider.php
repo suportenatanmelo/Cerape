@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
-use App\Filament\Pages\Pia;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
@@ -14,7 +13,6 @@ use App\Filament\Widgets\DemandasAcolhidosLineChart;
 use App\Filament\Widgets\UsuariosCriadosLineChart;
 use App\Filament\Widgets\UsuariosVinculadosAcolhidoLineChart;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -46,22 +44,12 @@ class AdminPanelProvider extends PanelProvider
                 PortalContext::communicationNavigationGroup(),
             ]
             : [
-                // 1 - Cadastros
-                'Cadastros',
-                // 2 - Documentos e Relatórios
-                'Documentos e Relatórios',
-                // 3 - Prontuario de evolução
-                'Prontuario de evolução',
-                // 4 - Acompanhamento (formerly Cadastros e Acompanhamento)
                 PortalContext::portalNavigationGroup(),
-                // 5 - Avaliações pessoais
                 PortalContext::evaluationNavigationGroup(),
-                // 6 - Chat
-                PortalContext::communicationNavigationGroup(),
-                // 7 - Mídia e Galeria
+                PortalContext::documentsNavigationGroup(),
                 PortalContext::mediaNavigationGroup(),
-                // 8 - Funções
-                'Funções',
+                PortalContext::communicationNavigationGroup(),
+                'Administracao e Acesso',
             ];
 
         return $panel
@@ -72,7 +60,6 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation(false)
             ->navigationGroups($navigationGroups)
             ->navigationItems([
-
                 NavigationItem::make('Chat')
                     ->group(fn (): string => PortalContext::communicationNavigationGroup())
                     ->icon(Heroicon::OutlinedChatBubbleLeftRight)
@@ -86,7 +73,7 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->brandName(fn (): string => PortalContext::brandName())
-            ->brandLogo(PdfImage::publicUrl('storage/images/logo.png') ?? asset('grayscale/assets/favicon.ico'))
+            ->brandLogo(asset('storage/images/logo.png'))
             ->brandLogoHeight(fn (): string => PortalContext::isFamilyUser() ? '52px' : '60px')
             ->homeUrl(fn (): ?string => PortalContext::familyDashboardUrl())
             // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
@@ -119,7 +106,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 ImageGalleryPlugin::make(),
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Funções')
+                    ->navigationGroup('Administracao e Acesso')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')
@@ -149,7 +136,6 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
-                Pia::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([

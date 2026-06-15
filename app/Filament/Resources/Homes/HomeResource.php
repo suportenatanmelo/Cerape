@@ -20,13 +20,13 @@ class HomeResource extends Resource
 
     protected static ?string $model = Home::class;
 
-    protected static ?string $navigationLabel = 'Conteúdo da página inicial';
+    protected static ?string $navigationLabel = 'Conteudo da Home';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static ?string $modelLabel = 'conteúdo da página inicial';
+    protected static ?string $modelLabel = 'conteudo da home';
 
-    protected static ?string $pluralModelLabel = 'conteúdos da página inicial';
+    protected static ?string $pluralModelLabel = 'conteudos da home';
 
     protected static ?string $recordTitleAttribute = 'title';
 

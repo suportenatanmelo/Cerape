@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Filament\Resources\Acolhidos\AcolhidoResource;
 use App\Models\Acolhido;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
@@ -32,7 +33,7 @@ class AcolhidoUpdatedNotification extends Mailable
                 'acolhido' => $this->acolhido,
                 'changes' => $this->changes,
                 'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
-                'profileUrl' => config('app.url') . '/admin/acolhidos/' . $this->acolhido->id,
+                'profileUrl' => AcolhidoResource::getUrl('view', ['record' => $this->acolhido], panel: 'admin'),
             ],
         );
     }

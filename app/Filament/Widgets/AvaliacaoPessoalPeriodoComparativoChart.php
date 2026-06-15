@@ -10,9 +10,9 @@ class AvaliacaoPessoalPeriodoComparativoChart extends LineChartWidget
 {
     protected static bool $isDiscovered = false;
 
-    protected ?string $heading = 'Comparativo entre período atual e anterior';
+    protected ?string $heading = 'Comparativo entre periodo atual e anterior';
 
-    protected ?string $description = 'Comparação da média das avaliações e da média consolidada dos avaliadores entre períodos consecutivos.';
+    protected ?string $description = 'Comparacao da media das avaliacoes e da media consolidada dos avaliadores entre periodos consecutivos.';
 
     protected ?string $maxHeight = '320px';
 
@@ -35,7 +35,7 @@ class AvaliacaoPessoalPeriodoComparativoChart extends LineChartWidget
     public function getDescription(): ?string
     {
         if (! $this->record) {
-            return 'Selecione uma avaliação para comparar os períodos.';
+            return 'Selecione uma avaliacao para comparar os periodos.';
         }
 
         $comparison = AvaliacaoPessoalResource::calculatePeriodComparison(
@@ -62,12 +62,12 @@ class AvaliacaoPessoalPeriodoComparativoChart extends LineChartWidget
 
         return [
             'labels' => [
-                'Período anterior',
-                'Período atual',
+                'Periodo anterior',
+                'Periodo atual',
             ],
             'datasets' => [
                 [
-                    'label' => 'Média das avaliações',
+                    'label' => 'Media das avaliacoes',
                     'data' => [
                         round((float) $comparison['raw_previous'], 2),
                         round((float) $comparison['raw_current'], 2),
@@ -80,7 +80,7 @@ class AvaliacaoPessoalPeriodoComparativoChart extends LineChartWidget
                     'pointHoverRadius' => 6,
                 ],
                 [
-                    'label' => 'Média consolidada dos avaliadores',
+                    'label' => 'Media consolidada dos avaliadores',
                     'data' => [
                         round((float) $comparison['consolidated_previous'], 2),
                         round((float) $comparison['consolidated_current'], 2),

@@ -21,28 +21,28 @@
                         </div>
 
                         <div class="mt-4 inline-flex rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
-                            Relatório profissional de evolução pessoal
+                            Relatorio profissional de evolucao pessoal
                         </div>
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Média geral consolidada</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Media geral consolidada</div>
                             <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $mediaDeTodos) }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das médias individuais limitada a 3</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Soma das medias individuais limitada a 3</div>
                             <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ number_format((float) $somaMediasIndividuais, 2, ',', '.') }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Usuários avaliadores</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Usuarios avaliadores</div>
                             <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $totalAvaliadores }}</div>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-                            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliações registradas</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">Avaliacoes registradas</div>
                             <div class="mt-2 text-3xl font-semibold text-gray-950 dark:text-white">{{ $totalAvaliacoes }}</div>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
 
                     <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
                         <div class="mb-4">
-                            <div class="text-base font-semibold text-gray-950 dark:text-white">Média geral por critério</div>
+                            <div class="text-base font-semibold text-gray-950 dark:text-white">Media geral por criterio</div>
                             <div class="text-sm text-gray-500 dark:text-gray-400">Consolidado de todos os votos por categoria avaliada.</div>
                         </div>
 
@@ -77,8 +77,8 @@
 
         <div class="space-y-6">
             <x-filament::section
-                heading="Comparativos de período"
-                description="Acompanhe como a média atual se comporta em relação ao período imediatamente anterior."
+                heading="Comparativos de periodo"
+                description="Acompanhe como a media atual se comporta em relacao ao periodo imediatamente anterior."
             >
                 <div class="grid gap-4 lg:grid-cols-3">
                     @foreach (['semanal', 'mensal', 'semestral'] as $comparisonKey)
@@ -89,7 +89,7 @@
 
                             <div class="mt-4 space-y-4">
                                 <div class="rounded-xl bg-amber-50 p-4 dark:bg-amber-500/10">
-                                    <div class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">Média das avaliações</div>
+                                    <div class="text-xs font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">Media das avaliacoes</div>
                                     <div class="mt-2 flex items-end justify-between gap-3">
                                         <div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400">Atual</div>
@@ -106,7 +106,7 @@
                                 </div>
 
                                 <div class="rounded-xl bg-teal-50 p-4 dark:bg-teal-500/10">
-                                    <div class="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Média consolidada dos avaliadores</div>
+                                    <div class="text-xs font-semibold uppercase tracking-wide text-teal-700 dark:text-teal-300">Media consolidada dos avaliadores</div>
                                     <div class="mt-2 flex items-end justify-between gap-3">
                                         <div>
                                             <div class="text-xs text-gray-500 dark:text-gray-400">Atual</div>
@@ -124,11 +124,11 @@
 
                                 <div class="grid gap-3 sm:grid-cols-2">
                                     <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliações no período atual</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliacoes no periodo atual</div>
                                         <div class="mt-1 text-lg font-semibold text-gray-950 dark:text-white">{{ $comparison['current_total_evaluations'] }}</div>
                                     </div>
                                     <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
-                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliações no período anterior</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Avaliacoes no periodo anterior</div>
                                         <div class="mt-1 text-lg font-semibold text-gray-950 dark:text-white">{{ $comparison['previous_total_evaluations'] }}</div>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
 
             <x-filament::section
                 heading="Resumo detalhado por avaliador"
-                description="Média individual, categorias votadas e histórico resumido de cada profissional."
+                description="Media individual, categorias votadas e historico resumido de cada profissional."
             >
                 <div class="space-y-4">
                     @forelse ($usuarios as $item)
@@ -167,11 +167,11 @@
                                         <div class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">{{ $item['quantidade'] }}</div>
                                     </div>
                                     <div class="rounded-xl bg-white px-4 py-3 text-center shadow-sm dark:bg-gray-900">
-                                        <div class="text-xs uppercase tracking-wide text-gray-500">Média individual</div>
+                                        <div class="text-xs uppercase tracking-wide text-gray-500">Media individual</div>
                                         <div class="mt-1 text-xl font-semibold text-gray-950 dark:text-white">{{ $formatScore((float) $item['media']) }}</div>
                                     </div>
                                     <div class="rounded-xl bg-white px-4 py-3 text-center shadow-sm dark:bg-gray-900">
-                                        <div class="text-xs uppercase tracking-wide text-gray-500">Último voto</div>
+                                        <div class="text-xs uppercase tracking-wide text-gray-500">Ultimo voto</div>
                                         <div class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $item['ultima_avaliacao']?->created_at?->format('d/m/Y') ?? '-' }}</div>
                                     </div>
                                 </div>
@@ -194,10 +194,10 @@
                                                 <th class="px-4 py-3">Data</th>
                                                 <th class="px-4 py-3">Controle</th>
                                                 <th class="px-4 py-3">Autonomia</th>
-                                                <th class="px-4 py-3">Transparência</th>
-                                                <th class="px-4 py-3">Superação</th>
+                                                <th class="px-4 py-3">Transparencia</th>
+                                                <th class="px-4 py-3">Superacao</th>
                                                 <th class="px-4 py-3">Autocuidado</th>
-                                                <th class="px-4 py-3">Média final</th>
+                                                <th class="px-4 py-3">Media final</th>
                                             </tr>
                                         </thead>
                                         <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -241,7 +241,7 @@
                                     <th class="px-4 py-3">Transparencia</th>
                                     <th class="px-4 py-3">Superacao</th>
                                     <th class="px-4 py-3">Autocuidado</th>
-                                    <th class="px-4 py-3">Média final</th>
+                                    <th class="px-4 py-3">Media final</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -270,8 +270,8 @@
             </x-filament::section>
 
             <x-filament::section
-                heading="Lógica de cálculo das médias"
-                description="Explicação objetiva de como o sistema consolida as notas apresentadas neste relatório."
+                heading="Logica de calculo das medias"
+                description="Explicacao objetiva de como o sistema consolida as notas apresentadas neste relatorio."
             >
                 <div class="grid gap-4">
                     @foreach ($logicasMedias as $logica)

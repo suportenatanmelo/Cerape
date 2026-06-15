@@ -28,22 +28,9 @@ class ProntuariosEvolucaoTable
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('user.name')
-                    ->label('Responsável pela informação')
+                    ->label('Registrado por')
                     ->placeholder('-')
                     ->searchable(),
-                TextColumn::make('funcao_responsavel_informacao')
-                    ->label('Função')
-                    ->badge()
-                    ->color('success')
-                    ->placeholder('-')
-                    ->searchable()
-                    ->toggleable(),
-                TextColumn::make('nota_elogio')
-                    ->label('Nota')
-                    ->formatStateUsing(fn (mixed $state): string => filled($state) ? ProntuarioEvolucaoForm::renderPraiseRating($state) : '-')
-                    ->html()
-                    ->sortable()
-                    ->placeholder('-'),
                 TextColumn::make('atividade')
                     ->label('Atividade')
                     ->badge()

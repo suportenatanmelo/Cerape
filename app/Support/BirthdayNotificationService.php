@@ -6,7 +6,6 @@ use App\Models\Acolhido;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 class BirthdayNotificationService
 {
@@ -48,8 +47,8 @@ class BirthdayNotificationService
 
         User::query()
             ->whereNotNull('data_nascimento')
-            ->whereMonth(DB::raw('data_nascimento'), now()->month)
-            ->whereDay(DB::raw('data_nascimento'), now()->day)
+            ->whereMonth('data_nascimento', now()->month)
+            ->whereDay('data_nascimento', now()->day)
             ->chunkById(100, function ($users) use (&$userCount): void {
                 foreach ($users as $user) {
                     if (self::notifyUserBirthday($user)) {
@@ -61,8 +60,8 @@ class BirthdayNotificationService
         Acolhido::query()
             ->where('ativo', true)
             ->whereNotNull('data_nascimento')
-            ->whereMonth(DB::raw('data_nascimento'), now()->month)
-            ->whereDay(DB::raw('data_nascimento'), now()->day)
+            ->whereMonth('data_nascimento', now()->month)
+            ->whereDay('data_nascimento', now()->day)
             ->chunkById(100, function ($acolhidos) use (&$acolhidoCount): void {
                 foreach ($acolhidos as $acolhido) {
                     $acolhidoCount += self::notifyAcolhidoBirthday($acolhido);

@@ -7,7 +7,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use App\Support\PdfImage;
+use Illuminate\Support\Facades\Storage;
 
 class ArquivosDiarioInfolist
 {
@@ -38,8 +38,8 @@ class ArquivosDiarioInfolist
                                 ->state(fn ($record): bool => filled($record->upload_arquivo)),
                             TextEntry::make('download')
                                 ->label('Link do arquivo')
-                                ->state(fn ($record): string => PdfImage::publicUrl($record->upload_arquivo) ?? '-')
-                                ->url(fn ($record): ?string => PdfImage::publicUrl($record->upload_arquivo))
+                                ->state(fn ($record): string => filled($record->upload_arquivo) ? Storage::disk('public')->url($record->upload_arquivo) : '-')
+                                ->url(fn ($record): ?string => filled($record->upload_arquivo) ? Storage::disk('public')->url($record->upload_arquivo) : null)
                                 ->openUrlInNewTab(),
                         ]),
                     ]),

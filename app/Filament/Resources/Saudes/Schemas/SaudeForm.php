@@ -16,8 +16,8 @@ class SaudeForm
     {
         return $schema
             ->components([
-                Section::make('Identificação do registro')
-                    ->description('Vincule esta ficha de saúde ao acolhido correto.')
+                Section::make('Identificacao do registro')
+                    ->description('Vincule esta ficha de saude ao acolhido correto.')
                     ->icon('heroicon-o-identification')
                     ->schema([
                         Grid::make([
@@ -32,14 +32,14 @@ class SaudeForm
                                 ->required(),
                         ]),
                     ]),
-                Section::make('Condições e diagnósticos informados')
-                    ->description('Registre as condições de saúde relatadas ou observadas usando uma tag para cada item.')
+                Section::make('Condicoes e diagnosticos informados')
+                    ->description('Registre as condicoes de saude relatadas ou observadas usando uma tag para cada item.')
                     ->icon('heroicon-o-heart')
                     ->schema([
                         TagsInput::make('condicoes_saude')
-                            ->label('Condições de saúde')
-                            ->placeholder('Digite uma condição de saúde e pressione Enter')
-                            ->helperText('Use uma tag para cada condição clínica relevante.')
+                            ->label('Condicoes de saude')
+                            ->placeholder('Digite uma condicao de saude e pressione Enter')
+                            ->helperText('Use uma tag para cada condicao clinica relevante.')
                             ->suggestions(self::healthSuggestions())
                             ->splitKeys(['Tab', 'Enter', ','])
                             ->separator(',')
@@ -48,9 +48,9 @@ class SaudeForm
                             ->required()
                             ->columnSpanFull(),
                         TagsInput::make('diagnosticado')
-                            ->label('Diagnósticos informados')
-                            ->placeholder('Digite um diagnóstico e pressione Enter')
-                            ->helperText('Use uma tag para cada diagnóstico ou hipótese clínica informada.')
+                            ->label('Diagnosticos informados')
+                            ->placeholder('Digite um diagnostico e pressione Enter')
+                            ->helperText('Use uma tag para cada diagnostico ou hipotese clinica informada.')
                             ->suggestions(self::diagnosisSuggestions())
                             ->splitKeys(['Tab', 'Enter', ','])
                             ->separator(',')
@@ -58,8 +58,8 @@ class SaudeForm
                             ->nestedRecursiveRules(['distinct'])
                             ->columnSpanFull(),
                         Textarea::make('observacoes_clinicas')
-                            ->label('Observações clínicas')
-                            ->placeholder('Descreva sintomas importantes, cuidados necessários, limitações ou informações complementares.')
+                            ->label('Observacoes clinicas')
+                            ->placeholder('Descreva sintomas importantes, cuidados necessarios, limitacoes ou informacoes complementares.')
                             ->rows(4)
                             ->maxLength(2000)
                             ->columnSpanFull(),
@@ -73,8 +73,8 @@ class SaudeForm
                             'md' => 2,
                         ])->schema([
                             Radio::make('faz_tratamento_medico')
-                                ->label('Faz tratamento médico atualmente?')
-                                ->boolean('Sim', 'Não')
+                                ->label('Faz tratamento medico atualmente?')
+                                ->boolean('Sim', 'Nao')
                                 ->inline()
                                 ->live()
                                 ->default(false)
@@ -87,20 +87,20 @@ class SaudeForm
                                 }),
                             Textarea::make('medicamentos_em_uso')
                                 ->label('Medicamentos em uso')
-                                ->placeholder('Informe medicações de uso contínuo, dosagens ou orientações relevantes.')
+                                ->placeholder('Informe medicacoes de uso continuo, dosagens ou orientacoes relevantes.')
                                 ->rows(4)
                                 ->hidden(fn ($get): bool => ! (bool) $get('faz_tratamento_medico'))
                                 ->required(fn ($get): bool => (bool) $get('faz_tratamento_medico'))
                                 ->dehydratedWhenHidden(),
                             Textarea::make('alergias_restricoes')
-                            ->label('Alergias, restrições ou cuidados especiais')
-                            ->placeholder('Ex.: alergia medicamentosa, restrição alimentar, risco de crise, acompanhamento específico.')
+                                ->label('Alergias, restricoes ou cuidados especiais')
+                                ->placeholder('Ex.: alergia medicamentosa, restricao alimentar, risco de crise, acompanhamento especifico.')
                                 ->rows(4)
                                 ->columnSpanFull(),
                         ]),
                     ]),
-                Section::make('Medicação psicoativa')
-                    ->description('Registre o uso de medicação psicoativa, o nome das medicações, a dosagem e a existência de prescrição profissional.')
+                Section::make('Medicacao psicoativa')
+                    ->description('Registre o uso de medicacao psicoativa, o nome das medicacoes, a dosagem e a existencia de prescricao profissional.')
                     ->icon('heroicon-o-beaker')
                     ->schema([
                         Grid::make([
@@ -108,8 +108,8 @@ class SaudeForm
                             'md' => 2,
                         ])->schema([
                             Radio::make('usa_medicacao_psicoativa')
-                                ->label('Usa medicação psicoativa?')
-                                ->boolean('Sim', 'Não')
+                                ->label('Usa medicacao psicoativa?')
+                                ->boolean('Sim', 'Nao')
                                 ->inline()
                                 ->live()
                                 ->default(false)
@@ -123,17 +123,17 @@ class SaudeForm
                                     $set('prescrito_profissional', false);
                                 }),
                             Radio::make('prescrito_profissional')
-                                ->label('Medicação prescrita por profissional de saúde?')
-                                ->boolean('Sim', 'Não')
+                                ->label('Medicacao prescrita por profissional de saude?')
+                                ->boolean('Sim', 'Nao')
                                 ->inline()
                                 ->default(false)
                                 ->hidden(fn ($get): bool => ! (bool) $get('usa_medicacao_psicoativa'))
                                 ->required(fn ($get): bool => (bool) $get('usa_medicacao_psicoativa'))
                                 ->dehydratedWhenHidden(),
                             TagsInput::make('nome_medicacao_psicoativa')
-                                ->label('Nome da medicação psicoativa')
-                                ->placeholder('Digite a medicação e pressione Enter')
-                                ->helperText('Use uma tag para cada medicação psicoativa em uso.')
+                                ->label('Nome da medicacao psicoativa')
+                                ->placeholder('Digite a medicacao e pressione Enter')
+                                ->helperText('Use uma tag para cada medicacao psicoativa em uso.')
                                 ->suggestions(self::psychotropicMedicationSuggestions())
                                 ->splitKeys(['Tab', 'Enter', ','])
                                 ->separator(',')
@@ -144,8 +144,8 @@ class SaudeForm
                                 ->dehydratedWhenHidden()
                                 ->columnSpanFull(),
                             Textarea::make('dosagem_medicacao_psicoativa')
-                                ->label('Dosagem e orientações')
-                                ->placeholder('Ex.: Clonazepam 2 mg à noite; Fluoxetina 20 mg pela manhã.')
+                                ->label('Dosagem e orientacoes')
+                                ->placeholder('Ex.: Clonazepam 2 mg a noite; Fluoxetina 20 mg pela manha.')
                                 ->rows(4)
                                 ->hidden(fn ($get): bool => ! (bool) $get('usa_medicacao_psicoativa'))
                                 ->required(fn ($get): bool => (bool) $get('usa_medicacao_psicoativa'))

@@ -20,7 +20,7 @@ class AcolhidoGaleriaForm
         return $schema
             ->components([
                 Section::make('Galeria de imagens do acolhido')
-                    ->description('Cadastre álbuns autorizados para exibição no portal da família. Cada álbum respeita a permissão liberada no Shield ACL.')
+                    ->description('Cadastre albuns autorizados para exibicao no portal da familia. Cada album respeita a permissao liberada no Shield ACL.')
                     ->icon('heroicon-o-photo')
                     ->schema([
                         Grid::make([
@@ -29,7 +29,7 @@ class AcolhidoGaleriaForm
                         ])->schema([
                             Placeholder::make('gallery_flow_notice')
                                 ->label('Como funciona')
-                                ->content(new HtmlString('Agora cada acolhido pode ter <strong>vários álbuns</strong>. Crie um novo álbum sempre que quiser separar momentos, visitas, atividades ou períodos diferentes no portal da família.'))
+                                ->content(new HtmlString('Agora cada acolhido pode ter <strong>varios albuns</strong>. Crie um novo album sempre que quiser separar momentos, visitas, atividades ou periodos diferentes no portal da familia.'))
                                 ->columnSpanFull(),
                             Select::make('acolhido_id')
                                 ->label('Acolhido')
@@ -37,25 +37,25 @@ class AcolhidoGaleriaForm
                                 ->searchable()
                                 ->preload()
                                 ->required()
-                                ->helperText('Você pode criar mais de um álbum para o mesmo acolhido.'),
+                                ->helperText('Voce pode criar mais de um album para o mesmo acolhido.'),
                             Toggle::make('ativo')
-                                ->label('Álbum ativo no portal')
+                                ->label('Album ativo no portal')
                                 ->default(true)
                                 ->inline(false),
                             TextInput::make('titulo')
-                                ->label('Título do álbum')
+                                ->label('Titulo do album')
                                 ->required()
                                 ->maxLength(150)
-                                ->placeholder('Ex.: Visita da família em maio')
+                                ->placeholder('Ex.: Visita da familia em maio')
                                 ->columnSpanFull(),
                             Textarea::make('descricao')
-                                ->label('Descrição')
+                                ->label('Descricao')
                                 ->rows(3)
                                 ->maxLength(500)
-                                ->placeholder('Mensagem breve para contextualizar este álbum no portal.')
+                                ->placeholder('Mensagem breve para contextualizar este album no portal.')
                                 ->columnSpanFull(),
                             SpatieMediaLibraryFileUpload::make('gallery')
-                                ->label('Imagens do álbum')
+                                ->label('Imagens do album')
                                 ->collection('gallery')
                                 ->image()
                                 ->imageEditor()
@@ -71,7 +71,7 @@ class AcolhidoGaleriaForm
                                 ->maxFiles(50)
                                 ->minFiles(1)
                                 ->required()
-                                ->helperText('Envie várias imagens, reorganize na ordem desejada e mantenha apenas imagens aprovadas para a família. Cada cadastro representa um álbum separado.')
+                                ->helperText('Envie varias imagens, reorganize na ordem desejada e mantenha apenas imagens aprovadas para a familia. Cada cadastro representa um album separado.')
                                 ->columnSpanFull(),
                         ]),
                     ]),

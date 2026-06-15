@@ -17,8 +17,8 @@ class DemandaAcolhidoForm
     {
         return $schema
             ->components([
-                Section::make('Identificação da demanda')
-                    ->description('Registre de forma objetiva qual é a demanda do acolhido e vincule o compromisso ao cadastro correto.')
+                Section::make('Identificacao da demanda')
+                    ->description('Registre de forma objetiva qual e a demanda do acolhido e vincule o compromisso ao cadastro correto.')
                     ->icon('heroicon-o-identification')
                     ->schema([
                         Grid::make([
@@ -33,14 +33,14 @@ class DemandaAcolhidoForm
                                 ->required(),
                             TextInput::make('demanda')
                                 ->label('Demanda do acolhido')
-                                ->placeholder('Ex.: Consulta médica, audiência, visita familiar, documentação')
-                                ->helperText('Use uma descrição curta e clara para facilitar a organização da equipe.')
+                                ->placeholder('Ex.: Consulta medica, audiencia, visita familiar, documentacao')
+                                ->helperText('Use uma descricao curta e clara para facilitar a organizacao da equipe.')
                                 ->maxLength(255)
                                 ->required(),
                         ]),
                     ]),
-                Section::make('Agenda da saída e retorno')
-                    ->description('Defina o dia e a hora previstos para a saída do acolhido da clínica CERAPE e para o retorno.')
+                Section::make('Agenda da saida e retorno')
+                    ->description('Defina o dia e a hora previstos para a saida do acolhido da clinica CERAPE e para o retorno.')
                     ->icon('heroicon-o-calendar-days')
                     ->schema([
                         Grid::make([
@@ -48,32 +48,32 @@ class DemandaAcolhidoForm
                             'md' => 2,
                         ])->schema([
                             DateTimePicker::make('saida_prevista_em')
-                                ->label('Saída da clínica CERAPE')
+                                ->label('Saida da clinica CERAPE')
                                 ->seconds(false)
                                 ->native(false)
                                 ->displayFormat('d/m/Y H:i')
-                                ->helperText('Informe quando o acolhido sairá da clínica.')
+                                ->helperText('Informe quando o acolhido saira da clinica.')
                                 ->required(),
                             DateTimePicker::make('retorno_previsto_em')
-                                ->label('Chegada na clínica CERAPE')
+                                ->label('Chegada na clinica CERAPE')
                                 ->seconds(false)
                                 ->native(false)
                                 ->displayFormat('d/m/Y H:i')
-                                ->helperText('Informe quando o acolhido deverá retornar à clínica.')
+                                ->helperText('Informe quando o acolhido devera retornar a clinica.')
                                 ->required()
                                 ->afterOrEqual('saida_prevista_em')
                                 ->validationMessages([
-                                    'after_or_equal' => 'A chegada deve ser igual ou posterior à saída.',
+                                    'after_or_equal' => 'A chegada deve ser igual ou posterior a saida.',
                                 ]),
                         ]),
                     ]),
-                Section::make('Observações operacionais')
-                    ->description('Use este espaço para registrar orientações práticas, responsáveis, destino ou observações relevantes para a equipe.')
+                Section::make('Observacoes operacionais')
+                    ->description('Use este espaco para registrar orientacoes praticas, responsaveis, destino ou observacoes relevantes para a equipe.')
                     ->icon('heroicon-o-clipboard-document-list')
                     ->schema([
                         Textarea::make('observacoes')
-                            ->label('Observações')
-                            ->placeholder('Ex.: Responsável pela condução, local da demanda, documentos necessários, contato do destino.')
+                            ->label('Observacoes')
+                            ->placeholder('Ex.: Responsavel pela conducao, local da demanda, documentos necessarios, contato do destino.')
                             ->rows(4)
                             ->columnSpanFull(),
                     ]),
@@ -86,7 +86,7 @@ class DemandaAcolhidoForm
                             ->disabled()
                             ->dehydrated(false)
                             ->formatStateUsing(fn (?string $state, ?object $record, Get $get): string => self::buildSchedulePreview($get))
-                            ->placeholder('Selecione a data e hora de saída e de chegada para visualizar o resumo.'),
+                            ->placeholder('Selecione a data e hora de saida e de chegada para visualizar o resumo.'),
                     ]),
             ]);
     }
@@ -97,16 +97,16 @@ class DemandaAcolhidoForm
         $retorno = $get('retorno_previsto_em');
 
         if (blank($saida) || blank($retorno)) {
-            return 'Selecione a data e hora de saída e de chegada para visualizar o resumo.';
+            return 'Selecione a data e hora de saida e de chegada para visualizar o resumo.';
         }
 
         try {
             $saidaFormatada = \Illuminate\Support\Carbon::parse($saida)->format('d/m/Y H:i');
             $retornoFormatado = \Illuminate\Support\Carbon::parse($retorno)->format('d/m/Y H:i');
         } catch (\Throwable) {
-            return 'Não foi possível montar o resumo da agenda com os valores informados.';
+            return 'Nao foi possivel montar o resumo da agenda com os valores informados.';
         }
 
-        return "Saída prevista em {$saidaFormatada} e chegada prevista em {$retornoFormatado}.";
+        return "Saida prevista em {$saidaFormatada} e chegada prevista em {$retornoFormatado}.";
     }
 }

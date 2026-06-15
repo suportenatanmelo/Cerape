@@ -20,8 +20,8 @@ class AcolhidoVideoForm
     {
         return $schema
             ->components([
-                Section::make('Vídeo para o portal da família')
-                    ->description('Cadastre links do YouTube para compartilhar orientações, registros e conteúdos aprovados.')
+                Section::make('Video para o portal da familia')
+                    ->description('Cadastre links do YouTube para compartilhar orientacoes, registros e conteudos aprovados.')
                     ->icon('heroicon-o-play-circle')
                     ->schema([
                         Grid::make([
@@ -35,14 +35,14 @@ class AcolhidoVideoForm
                                 ->preload()
                                 ->required(),
                             Toggle::make('ativo')
-                                ->label('Vídeo ativo no portal')
+                                ->label('Video ativo no portal')
                                 ->default(true)
                                 ->inline(false),
                             TextInput::make('titulo')
-                                ->label('Título')
+                                ->label('Titulo')
                                 ->required()
                                 ->maxLength(150)
-                                ->placeholder('Ex.: Mensagem da equipe para a família')
+                                ->placeholder('Ex.: Mensagem da equipe para a familia')
                                 ->columnSpanFull(),
                             TextInput::make('youtube_url')
                                 ->label('Link do YouTube')
@@ -50,15 +50,15 @@ class AcolhidoVideoForm
                                 ->url()
                                 ->live(onBlur: true)
                                 ->placeholder('https://www.youtube.com/watch?v=...')
-                                ->helperText('Aceita links youtube.com, youtu.be, shorts ou apenas o ID do vídeo.')
+                                ->helperText('Aceita links youtube.com, youtu.be, shorts ou apenas o ID do video.')
                                 ->columnSpanFull(),
                             Placeholder::make('preview')
-                                ->label('Pré-visualização')
+                                ->label('Pre-visualizacao')
                                 ->content(function (Get $get): HtmlString {
                                     $videoId = AcolhidoVideo::extractYoutubeId((string) $get('youtube_url'));
 
                                     if (blank($videoId)) {
-                                        return new HtmlString('<span class="text-sm text-gray-500">Informe um link válido do YouTube para habilitar a pré-visualização.</span>');
+                                        return new HtmlString('<span class="text-sm text-gray-500">Informe um link valido do YouTube para habilitar a pre-visualizacao.</span>');
                                     }
 
                                     $embedUrl = 'https://www.youtube.com/embed/'.$videoId;
@@ -76,10 +76,10 @@ class AcolhidoVideoForm
                                 ->default(0)
                                 ->minValue(0),
                             Textarea::make('descricao')
-                            ->label('Descrição')
+                                ->label('Descricao')
                                 ->rows(3)
                                 ->maxLength(500)
-                            ->placeholder('Contextualize o vídeo para a família.')
+                                ->placeholder('Contextualize o video para a familia.')
                                 ->columnSpanFull(),
                         ]),
                     ]),

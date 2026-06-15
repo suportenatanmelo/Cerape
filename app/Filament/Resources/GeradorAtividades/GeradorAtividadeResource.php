@@ -33,7 +33,7 @@ class GeradorAtividadeResource extends Resource
 
     protected static ?string $model = GeradorAtividade::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Documentos e Relatórios';
+    protected static string | UnitEnum | null $navigationGroup = 'Documentos e Relatorios';
 
     protected static ?string $navigationLabel = 'Gerador de atividades';
 
@@ -100,9 +100,9 @@ class GeradorAtividadeResource extends Resource
     public static function getGlobalSearchResultDetails(Model $record): array
     {
         return [
-            'Período' => self::getPeriodLabel($record instanceof GeradorAtividade ? $record : null),
+            'Periodo' => self::getPeriodLabel($record instanceof GeradorAtividade ? $record : null),
             'Acolhidos' => $record instanceof GeradorAtividade ? self::formatAcolhidos($record->acolhidos_ids, 3) : '-',
-            'Responsável' => $record->user?->name ?: '-',
+            'Responsavel' => $record->user?->name ?: '-',
         ];
     }
 

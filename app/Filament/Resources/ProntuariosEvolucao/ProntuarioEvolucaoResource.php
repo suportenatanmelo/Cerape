@@ -14,7 +14,6 @@ use App\Models\ProntuarioEvolucao;
 use App\Models\User;
 use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use BackedEnum;
 use Filament\Actions\Action;
@@ -31,11 +30,11 @@ class ProntuarioEvolucaoResource extends Resource
 {
     protected static ?string $model = ProntuarioEvolucao::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Prontuario de evolução';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
     protected static ?string $navigationLabel = 'Prontuario de evolucao';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 2;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
@@ -82,7 +81,7 @@ class ProntuarioEvolucaoResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return static::$navigationGroup;
+        return PortalContext::portalNavigationGroup();
     }
 
     public static function notifyUsers(ProntuarioEvolucao $record, string $event): void
@@ -132,13 +131,11 @@ class ProntuarioEvolucaoResource extends Resource
         return [
             'record' => $record,
             'acolhido' => $acolhido,
-            'fotoAcolhido' => PdfImage::storageDataUri($acolhido?->avatar),
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
+            'fotoAcolhido' => self::imageDataUri($acolhido?->avatar),
+            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'personalData' => self::buildAcolhidoPersonalData($acolhido),
             'atividadeLabel' => ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade),
             'proximaDataProntuario' => $record->proxima_data_prontuario?->format('d/m/Y H:i'),
-            'notaElogioLabel' => ProntuarioEvolucaoForm::getPraiseRatingLabel($record->nota_elogio),
-            'notaElogioStars' => self::buildPraiseRatingStars($record->nota_elogio),
             'conteudoHtml' => self::normalizeReportContent((string) $record->conteudo),
         ];
     }
@@ -238,11 +235,61 @@ class ProntuarioEvolucaoResource extends Resource
             ['label' => 'Profissao', 'value' => (string) ($acolhido->profissao ?? '-')],
             ['label' => 'Telefone', 'value' => (string) ($acolhido->numero_do_telefone ?? '-')],
             ['label' => 'Municipio / UF', 'value' => trim(((string) ($acolhido->municipio_do_paciente ?? '')) . ' / ' . ((string) ($acolhido->uf_municipio_do_paciente ?? '')), ' /') ?: '-'],
-            ['label' => 'Responsável pelo cadastro', 'value' => (string) ($acolhido->user?->name ?? '-')],
+            ['label' => 'Responsavel pelo cadastro', 'value' => (string) ($acolhido->user?->name ?? '-')],
             ['label' => 'Cadastro no sistema', 'value' => $acolhido->created_at?->format('d/m/Y H:i') ?? '-'],
         ];
 
         return array_values(array_filter($items, fn(array $item): bool => filled($item['value'])));
+    }
+
+    private static function resolveAvatarPath(?string $path): ?string
+    {
+        if (blank($path)) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+
+        foreach (
+            array_unique([
+                $path,
+                'acolhidos/avatars/' . basename($path),
+                'avatars/' . basename($path),
+            ]) as $candidate
+        ) {
+            if ($disk->exists($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return $path;
+    }
+
+    private static function imageDataUri(?string $path): ?string
+    {
+        $path = self::resolveAvatarPath($path);
+
+        if (blank($path) || ! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        $absolutePath = Storage::disk('public')->path($path);
+        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+    }
+
+    private static function publicImageDataUri(string $relativePath): ?string
+    {
+        $absolutePath = public_path($relativePath);
+
+        if (! is_file($absolutePath)) {
+            return null;
+        }
+
+        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+
+        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
 
     private static function normalizeReportContent(string $content): string
@@ -266,15 +313,5 @@ class ProntuarioEvolucaoResource extends Resource
         }, $content) ?? $content;
 
         return (string) str($content)->sanitizeHtml();
-    }
-
-    /**
-     * @return array<int, bool>
-     */
-    private static function buildPraiseRatingStars(int|string|null $value): array
-    {
-        $rating = max(0, min(5, (int) $value));
-
-        return array_map(fn (int $star): bool => $star <= $rating, range(1, 5));
     }
 }
