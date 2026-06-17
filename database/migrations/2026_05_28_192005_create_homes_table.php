@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title')->nullable();
             $table->text('subtitle')->nullable();
-            $table->string('hero_image')->nullable();
+            $table->string('hero_image', 512)->nullable();
             $table->string('hero_image_alt')->nullable();
             $table->string('cta_label')->nullable();
             $table->string('cta_url')->nullable();

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
-    protected static ?string $navigationLabel = 'Painel';
+    protected static ?string $navigationLabel = 'Área Administrativa';
 
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
 
@@ -17,7 +17,7 @@ class Dashboard extends \Filament\Pages\Dashboard
 
     public function getTitle(): string|Htmlable
     {
-        return 'Painel institucional';
+        return 'Área Administrativa';
     }
 
     public function getWidgets(): array

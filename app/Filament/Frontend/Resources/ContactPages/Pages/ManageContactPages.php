@@ -15,6 +15,7 @@ class ManageContactPages extends ManageRecords
     public function mount(): void
     {
         FrontendSchema::ensureContactPagesTableExists();
+        FrontendSchema::ensureContactPagesColumns();
 
         parent::mount();
     }

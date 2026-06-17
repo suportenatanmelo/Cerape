@@ -31,7 +31,7 @@ $lastMessageBody = strlen($lastMessageBody) > 30 ? mb_substr($lastMessageBody, 0
                 <span class="activeStatus"></span>
             @endif
         <div class="avatar av-m"
-        style="background-image: url('{{ $user->avatar }}');">
+        style="background-image: url('{{ Chatify::getUserWithAvatar($user)->avatar }}');">
         </div>
         </td>
         {{-- center side --}}
@@ -69,7 +69,7 @@ $lastMessageBody = strlen($lastMessageBody) > 30 ? mb_substr($lastMessageBody, 0
         {{-- Avatar side --}}
         <td>
         <div class="avatar av-m"
-        style="background-image: url('{{ $user->avatar }}');">
+        style="background-image: url('{{ Chatify::getUserWithAvatar($user)->avatar }}');">
         </div>
         </td>
         {{-- center side --}}
@@ -86,5 +86,4 @@ $lastMessageBody = strlen($lastMessageBody) > 30 ? mb_substr($lastMessageBody, 0
 @if($get == 'sharedPhoto')
 <div class="shared-photo chat-image" style="background-image: url('{{ $image }}')"></div>
 @endif
-
 

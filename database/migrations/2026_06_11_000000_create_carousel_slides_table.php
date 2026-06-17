@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('eyebrow')->nullable();
             $table->string('title');
             $table->longText('description')->nullable();
-            $table->string('image')->nullable();
+            $table->string('image', 512)->nullable();
             $table->string('image_alt')->nullable();
             $table->string('cta_label')->nullable();
             $table->string('cta_url')->nullable();

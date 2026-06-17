@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -16,6 +18,7 @@ class BlogPost extends Model
         'content',
         'cover_image',
         'cover_image_alt',
+        'author_id',
         'author_name',
         'status',
         'is_featured',
@@ -34,11 +37,20 @@ class BlogPost extends Model
                 $post->slug = Str::slug($post->title);
             }
         });
+
+        static::saved(function (BlogPost $post): void {
+            ImageStorageNaming::syncStoredImage($post, 'cover_image', 'frontend/blog/posts', $post->title);
+        });
     }
 
     public function getRouteKeyName(): string
     {
         return 'slug';
+    }
+
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'author_id');
     }
 
     public function scopePublished(Builder $query): Builder

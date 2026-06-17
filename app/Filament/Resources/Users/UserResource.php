@@ -31,8 +31,8 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\ImageStorageNaming;
 
 class UserResource extends Resource
 {
@@ -60,11 +60,11 @@ class UserResource extends Resource
                                 ->imageEditor()
                                 ->avatar()
                                 ->disk('public')
-                                ->directory('users/avatars')
+                                ->directory(ImageStorageNaming::datedDirectory('backend/users/avatars'))
                                 ->visibility('public')
                                 ->maxFiles(1)
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid().'.'.$file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file): string => ImageStorageNaming::filename($file, 'backend-users-avatars', 'avatar')
                                 ),
                             TextInput::make('name')
                                 ->label('Nome completo')

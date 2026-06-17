@@ -12,8 +12,8 @@ use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\ImageStorageNaming;
 
 class Profile extends EditProfile
 {
@@ -71,11 +71,11 @@ class Profile extends EditProfile
                                 ->imageEditor()
                                 ->avatar()
                                 ->disk('public')
-                                ->directory('users/avatars')
+                                ->directory(ImageStorageNaming::datedDirectory('backend/users/avatars'))
                                 ->visibility('public')
                                 ->maxFiles(1)
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file): string => ImageStorageNaming::filename($file, 'backend-users-avatars', 'avatar')
                                 ),
                         ]),
                     Section::make('Dados de acesso')

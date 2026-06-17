@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\BlogPost;
+use App\Models\FrontendThemeProfile;
+use App\Models\FrontendTestimonial;
 use App\Models\Home;
 use App\Support\BlogPostSchema;
+use App\Support\FrontendThemePresets;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
@@ -20,6 +23,9 @@ class FrontendContentSeeder extends Seeder
         } else {
             Home::create($this->homePayload());
         }
+
+        $this->seedThemeProfiles();
+        $this->seedTestimonials();
 
         BlogPostSchema::ensureTableExists();
 
@@ -55,6 +61,43 @@ class FrontendContentSeeder extends Seeder
             'signup_subtitle' => 'Envie uma mensagem pelo formulario e retorne com facilidade. O contato tambem pode ser atualizado pelo painel, se necessario.',
             'signup_image' => null,
             'signup_image_alt' => null,
+            'testimonials' => [
+                [
+                    'name' => 'Família acolhida',
+                    'role' => 'Cuidado e acompanhamento',
+                    'summary' => 'O atendimento ficou mais humano, claro e organizado depois que o site passou a comunicar melhor cada etapa.',
+                    'image' => 'grayscale/assets/img/demo-image-01.jpg',
+                    'image_alt' => 'Família recebendo orientações',
+                ],
+                [
+                    'name' => 'Equipe técnica',
+                    'role' => 'Fluxo de trabalho',
+                    'summary' => 'Os conteúdos estão muito mais fáceis de atualizar, e isso deixou a rotina da equipe bem mais leve.',
+                    'image' => 'grayscale/assets/img/demo-image-02.jpg',
+                    'image_alt' => 'Equipe reunida em trabalho',
+                ],
+                [
+                    'name' => 'Acompanhamento social',
+                    'role' => 'Comunicação institucional',
+                    'summary' => 'A identidade visual transmite confiança e acolhimento sem perder a formalidade necessária.',
+                    'image' => 'grayscale/assets/img/bg-signup.jpg',
+                    'image_alt' => 'Acolhimento institucional',
+                ],
+                [
+                    'name' => 'Rede de apoio',
+                    'role' => 'Experiência do visitante',
+                    'summary' => 'A navegação ficou intuitiva e o layout tornou a leitura rápida, bonita e muito mais convidativa.',
+                    'image' => 'grayscale/assets/img/demo-image-01.jpg',
+                    'image_alt' => 'Rede de apoio e orientação',
+                ],
+                [
+                    'name' => 'Gestão e cuidado',
+                    'role' => 'Atualização contínua',
+                    'summary' => 'Ter tudo concentrado no painel `/frontend` ajuda bastante na manutenção e no crescimento do projeto.',
+                    'image' => 'grayscale/assets/img/demo-image-02.jpg',
+                    'image_alt' => 'Gestão de conteúdo',
+                ],
+            ],
             'enable_carousel' => true,
             'carousel_items' => [
                 [
@@ -75,6 +118,90 @@ class FrontendContentSeeder extends Seeder
                 ],
             ],
         ];
+    }
+
+    private function seedThemeProfiles(): void
+    {
+        foreach (FrontendThemePresets::profiles() as $key => $profile) {
+            FrontendThemeProfile::query()->updateOrCreate(
+                ['slug' => $key],
+                [
+                    'name' => $profile['name'],
+                    'description' => $profile['description'],
+                    'preset_key' => $key,
+                    'primary_color' => $profile['primary_color'],
+                    'secondary_color' => $profile['secondary_color'],
+                    'accent_color' => $profile['accent_color'],
+                    'background_color' => $profile['background_color'],
+                    'surface_color' => $profile['surface_color'],
+                    'surface_strong_color' => $profile['surface_strong_color'],
+                    'ink_color' => $profile['ink_color'],
+                    'text_color' => $profile['text_color'],
+                    'muted_color' => $profile['muted_color'],
+                    'body_font' => $profile['body_font'],
+                    'display_font' => $profile['display_font'],
+                    'is_active' => $key === FrontendThemePresets::defaultProfileKey(),
+                ]
+            );
+        }
+    }
+
+    private function seedTestimonials(): void
+    {
+        $payloads = [
+            [
+                'name' => 'Família acolhida',
+                'role' => 'Cuidado e acompanhamento',
+                'summary' => 'O atendimento ficou mais humano, claro e organizado depois que o site passou a comunicar melhor cada etapa.',
+                'image' => 'grayscale/assets/img/demo-image-01.jpg',
+                'image_alt' => 'Família recebendo orientações',
+                'sort_order' => 1,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Equipe técnica',
+                'role' => 'Fluxo de trabalho',
+                'summary' => 'Os conteúdos estão muito mais fáceis de atualizar, e isso deixou a rotina da equipe bem mais leve.',
+                'image' => 'grayscale/assets/img/demo-image-02.jpg',
+                'image_alt' => 'Equipe reunida em trabalho',
+                'sort_order' => 2,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Acompanhamento social',
+                'role' => 'Comunicação institucional',
+                'summary' => 'A identidade visual transmite confiança e acolhimento sem perder a formalidade necessária.',
+                'image' => 'grayscale/assets/img/bg-signup.jpg',
+                'image_alt' => 'Acolhimento institucional',
+                'sort_order' => 3,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Rede de apoio',
+                'role' => 'Experiência do visitante',
+                'summary' => 'A navegação ficou intuitiva e o layout tornou a leitura rápida, bonita e muito mais convidativa.',
+                'image' => 'grayscale/assets/img/demo-image-01.jpg',
+                'image_alt' => 'Rede de apoio e orientação',
+                'sort_order' => 4,
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Gestão e cuidado',
+                'role' => 'Atualização contínua',
+                'summary' => 'Ter tudo concentrado no painel `/frontend` ajuda bastante na manutenção e no crescimento do projeto.',
+                'image' => 'grayscale/assets/img/demo-image-02.jpg',
+                'image_alt' => 'Gestão de conteúdo',
+                'sort_order' => 5,
+                'is_active' => true,
+            ],
+        ];
+
+        foreach ($payloads as $payload) {
+            FrontendTestimonial::query()->updateOrCreate(
+                ['name' => $payload['name']],
+                $payload,
+            );
+        }
     }
 
     /**

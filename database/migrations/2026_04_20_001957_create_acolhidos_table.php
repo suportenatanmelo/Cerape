@@ -18,7 +18,7 @@ return new class extends Migration
 
             //--------------------------------------------------
             //Dados pessoais do paciênte
-            $table->string('avatar')->nullable();
+            $table->string('avatar', 512)->nullable();
             $table->string('nome_completo_paciente');
             $table->date('data_nascimento');
             $table->string('estado_civil')->nullable();

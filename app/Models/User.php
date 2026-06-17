@@ -17,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use App\Support\UserRoleManager;
+use App\Support\ImageStorageNaming;
 
 
 #[Fillable([
@@ -63,6 +64,14 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'active_status' => 'boolean',
         ];
     }
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $user): void {
+            ImageStorageNaming::syncStoredImage($user, 'avatar', 'backend/users/avatars', $user->name);
+        });
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($this->isRestrictedToAcolhido()) {
@@ -165,11 +174,32 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        if (! filled($this->avatar)) {
+        $avatar = $this->normalizePublicPath($this->avatar);
+
+        if (! filled($avatar)) {
             return null;
         }
 
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($this->avatar);
+        if (Str::startsWith($avatar, ['http://', 'https://', '//', 'data:'])) {
+            return $avatar;
+        }
+
+        return \Illuminate\Support\Facades\Storage::disk('public')->url($avatar);
+    }
+
+    private function normalizePublicPath(?string $path): ?string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            return $path;
+        }
+
+        return ltrim(Str::replaceFirst('storage/', '', $path), '/');
     }
 
 }

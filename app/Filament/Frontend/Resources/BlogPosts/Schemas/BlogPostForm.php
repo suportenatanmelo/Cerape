@@ -10,10 +10,13 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\FrontendTextColors;
+use App\Support\ImageStorageNaming;
 
 class BlogPostForm
 {
@@ -52,6 +55,13 @@ class BlogPostForm
                                 ->label('Autor')
                                 ->default('CERAPE')
                                 ->maxLength(150),
+                            Select::make('author_id')
+                                ->label('Perfil do autor')
+                                ->relationship('author', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->helperText('Quando selecionado, o blog mostra foto e dados do perfil do usuario.')
+                                ->columnSpanFull(),
                             Select::make('status')
                                 ->label('Status')
                                 ->options([
@@ -86,7 +96,7 @@ class BlogPostForm
                                 ->image()
                                 ->imageEditor()
                                 ->disk('public')
-                                ->directory('blog/posts')
+                                ->directory(ImageStorageNaming::datedDirectory('frontend/blog/posts'))
                                 ->visibility('public')
                                 ->downloadable()
                                 ->openable()
@@ -94,7 +104,11 @@ class BlogPostForm
                                 ->maxSize(4096)
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid().'.'.$file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file, Get $get): string => ImageStorageNaming::filename(
+                                        $file,
+                                        'frontend-blog-posts',
+                                        (string) $get('title'),
+                                    )
                                 )
                                 ->helperText('Prefira imagens horizontais com boa luz e enquadramento.')
                                 ->columnSpanFull(),
@@ -107,6 +121,7 @@ class BlogPostForm
                                 ->toolbarButtons([
                                     'bold',
                                     'italic',
+                                    'textColor',
                                     'link',
                                     'bulletList',
                                     'orderedList',
@@ -115,7 +130,9 @@ class BlogPostForm
                                 ])
                                 ->required()
                                 ->placeholder('Escreva um resumo curto e convincente para a home e o blog.')
-                                ->helperText('Este texto aparece nos cards do site e nos previews das listagens.')
+                                ->helperText('Selecione um trecho e escolha a cor do texto. Paleta sugerida: ' . implode(', ', FrontendTextColors::paletteExamples()) . '.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
@@ -129,6 +146,7 @@ class BlogPostForm
                                 'bold',
                                 'italic',
                                 'underline',
+                                'textColor',
                                 'bulletList',
                                 'orderedList',
                                 'blockquote',
@@ -138,6 +156,9 @@ class BlogPostForm
                             ])
                             ->required()
                             ->placeholder('Desenvolva o artigo com introducao, informacoes principais e chamada final.')
+                            ->helperText('O editor permite texto colorido. Use a paleta sugerida ou uma cor personalizada.')
+                            ->textColors(FrontendTextColors::palette())
+                            ->customTextColors()
                             ->columnSpanFull(),
                     ]),
             ]);

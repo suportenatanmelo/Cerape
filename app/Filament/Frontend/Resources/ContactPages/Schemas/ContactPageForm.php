@@ -6,13 +6,17 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\FrontendTextColors;
+use App\Support\ImageStorageNaming;
 
 class ContactPageForm
 {
@@ -56,6 +60,7 @@ class ContactPageForm
                                 ->toolbarButtons([
                                     'bold',
                                     'italic',
+                                    'textColor',
                                     'link',
                                     'bulletList',
                                     'orderedList',
@@ -63,7 +68,9 @@ class ContactPageForm
                                     'undo',
                                 ])
                                 ->placeholder('Escreva o texto que aparece antes dos cards de contato.')
-                                ->helperText('Use para orientar o visitante antes do formulario.')
+                                ->helperText('Selecione um trecho e escolha a cor do texto. Paleta sugerida: ' . implode(', ', FrontendTextColors::paletteExamples()) . '.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
@@ -80,7 +87,7 @@ class ContactPageForm
                                 ->image()
                                 ->imageEditor()
                                 ->disk('public')
-                                ->directory('frontend/contact')
+                                ->directory(ImageStorageNaming::datedDirectory('frontend/contact'))
                                 ->visibility('public')
                                 ->downloadable()
                                 ->openable()
@@ -88,7 +95,11 @@ class ContactPageForm
                                 ->maxSize(4096)
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file, Get $get): string => ImageStorageNaming::filename(
+                                        $file,
+                                        'frontend-contact',
+                                        (string) $get('title'),
+                                    )
                                 ),
                             TextInput::make('hero_image_alt')
                                 ->label('Descricao da imagem')
@@ -120,11 +131,19 @@ class ContactPageForm
                             TextInput::make('address')
                                 ->label('Endereco')
                                 ->placeholder('Rua, numero, bairro, cidade')
+                                ->default('Fazenda - R. 5 A - Parque Alvorada III, Luziânia - GO, 72859-899')
+                                ->helperText('Use o mesmo endereco do rodape para manter o site centralizado.')
                                 ->maxLength(255),
                             TextInput::make('opening_hours')
                                 ->label('Horario de atendimento')
                                 ->placeholder('Seg. a Sex., 08h as 17h')
                                 ->maxLength(255),
+                            Textarea::make('map_embed_code')
+                                ->label('Mapa do Google')
+                                ->placeholder('<iframe src="https://www.google.com/maps/embed?..."></iframe>')
+                                ->helperText('Cole o iframe completo ou a URL de embed. O site vai converter automaticamente.')
+                                ->rows(7)
+                                ->columnSpanFull(),
                             TextInput::make('cta_label')
                                 ->label('Texto do botao')
                                 ->placeholder('Ex.: Abrir contato')
@@ -134,9 +153,9 @@ class ContactPageForm
                                 ->placeholder('Ex.: mailto:contato@cerape.local')
                                 ->maxLength(255),
                             TextInput::make('map_embed_url')
-                                ->label('Link do mapa')
-                                ->placeholder('URL do iframe do Google Maps')
-                                ->helperText('Se estiver preenchido, um mapa sera exibido na pagina de contato.')
+                                ->label('Link curto do mapa')
+                                ->placeholder('https://www.google.com/maps/embed?...')
+                                ->helperText('Opcional. Se quiser salvar apenas a URL, use este campo.')
                                 ->columnSpanFull()
                                 ->maxLength(255),
                             Repeater::make('social_links')

@@ -88,7 +88,7 @@ class ChatifyMessenger extends BaseChatifyMessenger
     public function getUserAvatarUrl($userAvatarName)
     {
         $disk = Storage::disk(config('chatify.storage_disk_name'));
-        $avatar = trim((string) $userAvatarName);
+        $avatar = $this->normalizePublicPath($userAvatarName);
 
         if ($avatar === '') {
             $avatar = config('chatify.user_avatar.default');
@@ -103,5 +103,20 @@ class ChatifyMessenger extends BaseChatifyMessenger
         }
 
         return $disk->url(trim(config('chatify.user_avatar.folder'), '/') . '/' . $avatar);
+    }
+
+    private function normalizePublicPath(mixed $path): string
+    {
+        $path = trim((string) $path);
+
+        if ($path === '') {
+            return '';
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            return $path;
+        }
+
+        return ltrim(Str::replaceFirst('storage/', '', $path), '/');
     }
 }

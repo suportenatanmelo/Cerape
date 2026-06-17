@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -11,11 +12,15 @@ class CarouselSlide extends Model
     protected $fillable = [
         'slug',
         'eyebrow',
+        'eyebrow_color',
         'title',
+        'title_color',
         'description',
+        'description_color',
         'image',
         'image_alt',
         'cta_label',
+        'cta_text_color',
         'cta_url',
         'sort_order',
         'is_active',
@@ -32,6 +37,10 @@ class CarouselSlide extends Model
             if (filled($slide->title) && blank($slide->slug)) {
                 $slide->slug = Str::slug($slide->title);
             }
+        });
+
+        static::saved(function (CarouselSlide $slide): void {
+            ImageStorageNaming::syncStoredImage($slide, 'image', 'frontend/carousel', $slide->title);
         });
     }
 

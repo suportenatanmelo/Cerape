@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -107,6 +108,18 @@ class Acolhido extends Model
         'documentos_civis' => 'array',
         'documentos_outros' => 'array',
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(function (self $acolhido): void {
+            ImageStorageNaming::syncStoredImage(
+                $acolhido,
+                'avatar',
+                'backend/acolhidos/avatars',
+                $acolhido->nome_completo_paciente,
+            );
+        });
+    }
 
     public function user(): BelongsTo
     {

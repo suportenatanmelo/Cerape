@@ -14,8 +14,8 @@
                 <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                     <div class="space-y-5">
                         <span class="section-kicker">Blog institucional</span>
-                        <h1 class="font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">Publicacoes, avisos e novidades</h1>
-                        <p class="max-w-3xl text-lg leading-8 text-slate-300">Acompanhe os conteudos publicados pela equipe, organizados para leitura rapida e exibidos em cards elegantes.</p>
+                        <h1 class="font-display text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">Publicacoes, avisos e novidades</h1>
+                        <p class="max-w-3xl text-lg leading-8 text-slate-600">Acompanhe os conteudos publicados pela equipe, organizados para leitura rapida e exibidos em cards elegantes.</p>
                     </div>
                     <a href="{{ route('contact') }}" class="inline-flex items-center justify-center rounded-full bg-amber-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-amber-300">
                         Falar com a equipe
@@ -40,7 +40,7 @@
                     </div>
                 @endif
             @else
-                <div class="rounded-[2rem] border border-dashed border-white/15 bg-white/5 p-8 text-center text-slate-300">
+                <div class="rounded-[2rem] border border-dashed border-slate-200 bg-white p-8 text-center text-slate-600">
                     Nenhuma publicacao foi cadastrada ainda.
                 </div>
             @endif

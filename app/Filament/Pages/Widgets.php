@@ -10,6 +10,8 @@ use Filament\Schemas\Schema;
 
 class Widgets extends Page
 {
+    protected static bool $shouldRegisterNavigation = false;
+
     protected static ?string $slug = 'widgets';
 
     protected static ?string $title = 'Widgets';
@@ -24,7 +26,7 @@ class Widgets extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->hasAclPermission('View:Widgets') ?? false;
+        return false;
     }
 
     public function content(Schema $schema): Schema

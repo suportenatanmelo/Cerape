@@ -3,15 +3,19 @@
 namespace App\Filament\Frontend\Resources\CarouselSlides\Schemas;
 
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\ColorPicker;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\FrontendTextColors;
+use App\Support\ImageStorageNaming;
 
 class CarouselSlideForm
 {
@@ -46,14 +50,30 @@ class CarouselSlideForm
                                 ->label('Etiqueta')
                                 ->placeholder('Ex.: Destaque institucional')
                                 ->maxLength(120),
+                            ColorPicker::make('eyebrow_color')
+                                ->label('Cor da etiqueta')
+                                ->default('#f2c94c')
+                                ->helperText('Ex.: #f2c94c, #ffffff ou #140f05.'),
                             TextInput::make('cta_label')
                                 ->label('Texto do botao')
                                 ->placeholder('Ex.: Saiba mais')
                                 ->maxLength(255),
+                            ColorPicker::make('cta_text_color')
+                                ->label('Cor do texto do botao')
+                                ->default('#140f05')
+                                ->helperText('Ex.: #140f05, #ffffff ou #1f2937.'),
                             TextInput::make('cta_url')
                                 ->label('Link do botao')
                                 ->placeholder('Ex.: #contact ou https://site.com')
                                 ->maxLength(255),
+                            ColorPicker::make('title_color')
+                                ->label('Cor do titulo')
+                                ->default('#ffffff')
+                                ->helperText('Ex.: #ffffff, #f2c94c ou #1f2937.'),
+                            ColorPicker::make('description_color')
+                                ->label('Cor da descricao')
+                                ->default('#e5e7eb')
+                                ->helperText('Ex.: #e5e7eb, #f9dd84 ou #1f2937.'),
                             TextInput::make('sort_order')
                                 ->label('Ordem')
                                 ->numeric()
@@ -69,6 +89,7 @@ class CarouselSlideForm
                                 ->toolbarButtons([
                                     'bold',
                                     'italic',
+                                    'textColor',
                                     'link',
                                     'bulletList',
                                     'orderedList',
@@ -76,7 +97,9 @@ class CarouselSlideForm
                                     'undo',
                                 ])
                                 ->placeholder('Conte a mensagem do slide em poucas linhas.')
-                                ->helperText('A descricao aparece sobre a imagem no carrossel.')
+                                ->helperText('Selecione um trecho e use a cor do texto. Paleta sugerida: ' . implode(', ', FrontendTextColors::paletteExamples()) . '.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
@@ -93,7 +116,7 @@ class CarouselSlideForm
                                 ->image()
                                 ->imageEditor()
                                 ->disk('public')
-                                ->directory('frontend/carousel')
+                                ->directory(ImageStorageNaming::datedDirectory('frontend/carousel'))
                                 ->visibility('public')
                                 ->downloadable()
                                 ->openable()
@@ -101,7 +124,11 @@ class CarouselSlideForm
                                 ->maxSize(4096)
                                 ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                                 ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                                    fn (TemporaryUploadedFile $file, Get $get): string => ImageStorageNaming::filename(
+                                        $file,
+                                        'frontend-carousel',
+                                        (string) $get('title'),
+                                    )
                                 )
                                 ->required(),
                             TextInput::make('image_alt')

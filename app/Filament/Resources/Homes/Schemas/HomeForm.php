@@ -6,12 +6,13 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use App\Support\FrontendTextColors;
+use App\Support\ImageStorageNaming;
 
 class HomeForm
 {
@@ -28,7 +29,7 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('hero_image', 'Imagem principal', 'homes')
+                            self::imageUpload('hero_image', 'Imagem principal', 'frontend/homes/hero', 'home-hero')
                                 ->helperText('Use uma imagem horizontal com boa resolucao. Ela sera o fundo do topo da pagina.'),
                             TextInput::make('hero_image_alt')
                                 ->label('Descricao da imagem')
@@ -54,9 +55,84 @@ class HomeForm
                                 ->label('Texto de apoio')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Escreva o texto de apoio. Use o botao de link da barra para inserir links.')
-                                ->helperText('Voce pode usar negrito, listas e links.')
+                                ->helperText('Voce pode usar negrito, listas, links e cor de texto. Paleta sugerida: ' . implode(', ', FrontendTextColors::paletteExamples()) . '.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
+                    ]),
+                Section::make('Destaques da Home')
+                    ->description('Substitua os cards fixos por destaques editaveis com icone e texto profissional.')
+                    ->icon('heroicon-o-star')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('feature_cards')
+                            ->label('Cards de destaque')
+                            ->addActionLabel('Adicionar destaque')
+                            ->default(self::defaultFeatureCards())
+                            ->reorderable()
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => filled($state['title'] ?? null) ? (string) $state['title'] : 'Destaque')
+                            ->schema([
+                                Grid::make([
+                                    'default' => 1,
+                                    'md' => 2,
+                                ])->schema([
+                                    TextInput::make('title')
+                                        ->label('Titulo')
+                                        ->placeholder('Ex.: Acolhimento Humanizado')
+                                        ->required()
+                                        ->maxLength(255),
+                                    TextInput::make('icon')
+                                        ->label('Icone')
+                                        ->placeholder('heroicon-o-heart')
+                                        ->helperText('Use um nome de icone do Heroicon para manter o visual elegante.')
+                                        ->required()
+                                        ->maxLength(255),
+                                    TextInput::make('description')
+                                        ->label('Descricao')
+                                        ->placeholder('Ex.: Atendimento com empatia, respeito e dedicacao.')
+                                        ->required()
+                                        ->columnSpanFull(),
+                                ]),
+                            ])
+                            ->columnSpanFull(),
+                    ]),
+                Section::make('Tratamentos da Home')
+                    ->description('Organize os cards visuais que aparecem na secao de tratamentos da pagina inicial.')
+                    ->icon('heroicon-o-photo')
+                    ->columnSpanFull()
+                    ->schema([
+                        Repeater::make('treatment_cards')
+                            ->label('Cards de tratamentos')
+                            ->addActionLabel('Adicionar tratamento')
+                            ->default(self::defaultTreatmentCards())
+                            ->reorderable()
+                            ->collapsible()
+                            ->itemLabel(fn (array $state): ?string => filled($state['title'] ?? null) ? (string) $state['title'] : 'Tratamento')
+                            ->schema([
+                                Grid::make([
+                                    'default' => 1,
+                                    'md' => 2,
+                                ])->schema([
+                                    self::imageUpload('image', 'Imagem do card', 'frontend/homes/treatments', 'home-treatment'),
+                                    TextInput::make('image_alt')
+                                        ->label('Descricao da imagem')
+                                        ->placeholder('Ex.: Imagem do tratamento')
+                                        ->maxLength(255),
+                                    TextInput::make('title')
+                                        ->label('Titulo')
+                                        ->placeholder('Ex.: Dependencia Quimica')
+                                        ->required()
+                                        ->maxLength(255),
+                                    TextInput::make('description')
+                                        ->label('Descricao')
+                                        ->placeholder('Ex.: Tratamento completo com suporte, escuta e rotina.')
+                                        ->required()
+                                        ->columnSpanFull(),
+                                ]),
+                            ])
+                            ->columnSpanFull(),
                     ]),
                 Section::make('Secao sobre')
                     ->description('Apresente a instituicao, valores, servicos e links importantes.')
@@ -67,7 +143,7 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('about_image', 'Imagem da secao sobre', 'homes/about'),
+                            self::imageUpload('about_image', 'Imagem da secao sobre', 'frontend/homes/about', 'home-about'),
                             TextInput::make('about_image_alt')
                                 ->label('Descricao da imagem')
                                 ->placeholder('Ex.: Imagem da secao sobre o CERAPE')
@@ -80,7 +156,9 @@ class HomeForm
                                 ->label('Texto da secao')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Conte a historia, missao ou diferenciais. Links podem ser inseridos pela barra.')
-                                ->helperText('Ideal para texto institucional com links uteis.')
+                                ->helperText('Ideal para texto institucional com links uteis e cor de texto.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
@@ -93,7 +171,7 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('projects_image', 'Imagem da secao projetos', 'homes/projects'),
+                            self::imageUpload('projects_image', 'Imagem da secao projetos', 'frontend/homes/projects', 'home-projects'),
                             TextInput::make('projects_image_alt')
                                 ->label('Descricao da imagem')
                                 ->placeholder('Ex.: Imagem representando projetos do CERAPE')
@@ -106,7 +184,9 @@ class HomeForm
                                 ->label('Texto da secao')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Explique os projetos, acoes ou servicos. Voce tambem pode inserir links.')
-                                ->helperText('Este texto aparece ao lado da imagem principal da secao.')
+                                ->helperText('Este texto aparece ao lado da imagem principal da secao e aceita cor de texto.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
@@ -119,7 +199,7 @@ class HomeForm
                             'default' => 1,
                             'md' => 2,
                         ])->schema([
-                            self::imageUpload('signup_image', 'Imagem opcional da chamada', 'homes/signup')
+                            self::imageUpload('signup_image', 'Imagem opcional da chamada', 'frontend/homes/signup', 'home-signup')
                                 ->helperText('Opcional. Quando enviada, aparece acima do formulario de contato.'),
                             TextInput::make('signup_image_alt')
                                 ->label('Descricao da imagem')
@@ -133,21 +213,23 @@ class HomeForm
                                 ->label('Texto de apoio')
                                 ->toolbarButtons(self::textToolbar())
                                 ->placeholder('Oriente o visitante antes do formulario. Links podem ser inseridos pela barra.')
-                                ->helperText('O formulario publico ja coleta nome, e-mail, telefone, assunto e mensagem.')
+                                ->helperText('O formulario publico ja coleta nome, e-mail, telefone, assunto e mensagem. Texto com cor personalizada tambem e permitido.')
+                                ->textColors(FrontendTextColors::palette())
+                                ->customTextColors()
                                 ->columnSpanFull(),
                         ]),
                     ]),
             ]);
     }
 
-    private static function imageUpload(string $name, string $label, string $directory): FileUpload
+    private static function imageUpload(string $name, string $label, string $directory, string $identifier): FileUpload
     {
         return FileUpload::make($name)
             ->label($label)
             ->image()
             ->imageEditor()
             ->disk('public')
-            ->directory($directory)
+            ->directory(ImageStorageNaming::datedDirectory($directory))
             ->visibility('public')
             ->downloadable()
             ->openable()
@@ -155,8 +237,74 @@ class HomeForm
             ->maxSize(4096)
             ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
             ->getUploadedFileNameForStorageUsing(
-                fn (TemporaryUploadedFile $file): string => Str::uuid() . '.' . $file->getClientOriginalExtension()
+                fn (TemporaryUploadedFile $file): string => ImageStorageNaming::filename(
+                    $file,
+                    Str::of($directory)->replace('/', '-')->value(),
+                    $identifier,
+                )
             );
+    }
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    private static function defaultFeatureCards(): array
+    {
+        return [
+            [
+                'title' => 'Acolhimento Humanizado',
+                'description' => 'Atendimento com empatia, respeito e dedicação.',
+                'icon' => 'heroicon-o-heart',
+            ],
+            [
+                'title' => 'Equipe Especializada',
+                'description' => 'Profissionais capacitados e experientes.',
+                'icon' => 'heroicon-o-users',
+            ],
+            [
+                'title' => 'Tratamentos Personalizados',
+                'description' => 'Planos terapêuticos individualizados.',
+                'icon' => 'heroicon-o-sparkles',
+            ],
+            [
+                'title' => 'Reintegração Social',
+                'description' => 'Apoio para retornar à vida em sociedade.',
+                'icon' => 'heroicon-o-arrow-top-right-on-square',
+            ],
+        ];
+    }
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    private static function defaultTreatmentCards(): array
+    {
+        return [
+            [
+                'title' => 'Dependência Química',
+                'description' => 'Tratamento completo com suporte, escuta e construção de rotina.',
+                'image_alt' => 'Tratamento para dependência quimica',
+                'image' => null,
+            ],
+            [
+                'title' => 'Alcoolismo',
+                'description' => 'Apoio especializado para superar e recomeçar.',
+                'image_alt' => 'Tratamento para alcoolismo',
+                'image' => null,
+            ],
+            [
+                'title' => 'Terapia em Grupo',
+                'description' => 'Fortalecimento emocional com atividades terapêuticas.',
+                'image_alt' => 'Terapia em grupo',
+                'image' => null,
+            ],
+            [
+                'title' => 'Reintegração Social',
+                'description' => 'Preparação gradual para retomar vínculos e autonomia.',
+                'image_alt' => 'Reintegração social',
+                'image' => null,
+            ],
+        ];
     }
 
     /**
@@ -168,6 +316,7 @@ class HomeForm
             'bold',
             'italic',
             'underline',
+            'textColor',
             'bulletList',
             'orderedList',
             'link',

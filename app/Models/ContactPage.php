@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -20,6 +21,7 @@ class ContactPage extends Model
         'whatsapp',
         'address',
         'opening_hours',
+        'map_embed_code',
         'map_embed_url',
         'cta_label',
         'cta_url',
@@ -38,6 +40,10 @@ class ContactPage extends Model
             if (filled($page->title) && blank($page->slug)) {
                 $page->slug = Str::slug($page->title);
             }
+        });
+
+        static::saved(function (ContactPage $page): void {
+            ImageStorageNaming::syncStoredImage($page, 'hero_image', 'frontend/contact', $page->title);
         });
     }
 

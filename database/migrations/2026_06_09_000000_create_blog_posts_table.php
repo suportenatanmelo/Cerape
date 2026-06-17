@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('category')->nullable();
             $table->text('excerpt');
             $table->longText('content');
-            $table->string('cover_image')->nullable();
+            $table->string('cover_image', 512)->nullable();
             $table->string('cover_image_alt')->nullable();
             $table->string('author_name')->nullable();
             $table->string('status')->default('draft')->index();

@@ -8,6 +8,7 @@ use App\Models\Acolhido;
 use App\Models\User;
 use App\Support\AcolhidoAccess;
 use App\Support\FilamentDatabaseNotifications;
+use App\Support\ImageStorageNaming;
 use Filament\Actions\Action;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use App\Services\CorreiosCepService;
@@ -118,12 +119,15 @@ class AcolhidoForm
                                             ->imageEditor()
                                             ->avatar()
                                             ->disk('public')
-                                            ->directory('acolhidos/avatars')
+                                            ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/avatars'))
                                             ->visibility('public')
                                             ->maxFiles(1)
                                             ->getUploadedFileNameForStorageUsing(
-                                                fn(TemporaryUploadedFile $file): string =>
-                                                uniqid() . '.' . $file->getClientOriginalExtension()
+                                                fn(TemporaryUploadedFile $file, Get $get): string => ImageStorageNaming::filename(
+                                                    $file,
+                                                    'backend-acolhidos-avatars',
+                                                    (string) $get('nome_completo_paciente'),
+                                                )
                                             ),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
@@ -557,7 +561,7 @@ class AcolhidoForm
                                         FileUpload::make('receituario')
                                             ->label('Receituario')
                                             ->disk('public')
-                                            ->directory('acolhidos/receituarios')
+                                            ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/receituarios'))
                                             ->visibility('public')
                                             ->multiple()
                                             ->acceptedFileTypes([
@@ -1012,22 +1016,10 @@ class AcolhidoForm
 
     private static function makeUploadFileName(TemporaryUploadedFile $file, Get $get): string
     {
-        $baseName = Str::of((string) $get('nome_completo_paciente'))
-            ->ascii()
-            ->lower()
-            ->replaceMatches('/[^a-z0-9]+/', '_')
-            ->trim('_')
-            ->value();
-
-        if ($baseName === '') {
-            $baseName = 'acolhido';
-        }
-
-        return sprintf(
-            '%s_%s.%s',
-            $baseName,
-            now()->format('Y_m_d_His'),
-            $file->getClientOriginalExtension(),
+        return ImageStorageNaming::filename(
+            $file,
+            'backend-acolhidos-receituarios',
+            (string) $get('nome_completo_paciente'),
         );
     }
 

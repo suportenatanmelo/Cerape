@@ -2,6 +2,7 @@
 
 namespace App\Filament\Frontend\Resources\BlogPosts\Tables;
 
+use App\Models\BlogPost;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -32,6 +33,9 @@ class BlogPostsTable
                     ->badge()
                     ->color('warning')
                     ->placeholder('-'),
+                TextColumn::make('author.name')
+                    ->label('Autor')
+                    ->formatStateUsing(fn (?string $state, BlogPost $record): string => $state ?: ($record->author_name ?: '-')),
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
