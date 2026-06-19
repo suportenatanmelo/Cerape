@@ -27,7 +27,7 @@ class AcolhidosTable
                     ->label('Funcionário responsável')
                     ->searchable(),
                 TextColumn::make('nome_completo_paciente')
-                    ->label('Nome do paciente')
+                    ->label('Nome do acolhido')
                     ->searchable(),
                 IconColumn::make('ativo')
                     ->label('Ativo')

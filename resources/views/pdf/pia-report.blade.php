@@ -43,11 +43,7 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
             <table class="hero-table">
                 <tr>
                     <td class="avatar-wrap">
-                        @if ($photoData)
-                            <img src="{{ $photoData }}" class="avatar" alt="">
-                        @else
-                            <div class="avatar-empty">{{ $photoLabel ?? 'PIA' }}</div>
-                        @endif
+                        <div class="avatar-empty">{{ $photoLabel ?? 'PIA' }}</div>
                     </td>
                     <td>
                         <div class="eyebrow" style="color: #0f766e;">Plano individual</div>

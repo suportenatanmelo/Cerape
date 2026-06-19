@@ -124,37 +124,104 @@
 
     @case('contrato_prevencao_recaida')
         <h1 class="doc-title">{{ $payload['title'] }}</h1>
+        <p class="doc-paragraph">CENTRO DE REABILITAÇÃO DO CERAPE - CRC</p>
+        <p class="doc-paragraph">CONTRATO TERAPEUTICO - PROGRAMA DE PREVENÇÃO A RECAIDA E REABILITAÇÃO</p>
+        <p class="doc-paragraph"><strong>CONTRATANTE</strong></p>
         <p class="doc-paragraph">
-            CONTRATADO: CENTRO DE REABILITACAO DO CERAPE - CRC, CNPJ n&ordm; 00.857.994/0002-48, estabelecido na Area Rural, Park Alvorada III, Fazenda Quintas, Chacara da Igreja Batista Rhema, Luzi&acirc;nia - GO.
+            <strong>INTERVENTOR DO ACOLHIMENTO:</strong><br>
+            Nome: {{ $interventor['nome'] ?? '________________________________________________________________' }}, CPF {{ $interventor['cpf'] ?? '___________________' }}, RG: {{ $interventor['rg'] ?? '___________' }} Exp. {{ $interventor['exp'] ?? '___________' }} UF {{ $interventor['rgUf'] ?? '______' }}<br>
+            Profissão: {{ $interventor['profissao'] ?? '______________' }} Data de Nascimento: {{ $interventor['dataNascimento'] ?? '__/__/____' }}<br>
+            Residente: {{ $interventor['residente'] ?? '____________________________________________________________' }}, Complemento: {{ $interventor['complemento'] ?? '_____________________' }}, Bairro: {{ $interventor['bairro'] ?? '_________________________' }}, Cidade: {{ $interventor['cidade'] ?? '_______________________________' }}, UF: {{ $interventor['uf'] ?? '______' }}<br>
+            Tel: {{ $interventor['telefone'] ?? '___________________________' }}
         </p>
-        <p class="doc-paragraph doc-compact">
-            INTERVENTOR DO ACOLHIMENTO:<br>
-            Nome: {{ $interventor['nome'] ?? '________________________________________________________________' }}, CPF {{ $interventor['cpf'] ?? '___________________' }}, RG: {{ $interventor['rg'] ?? '___________' }}, Exp. {{ $interventor['exp'] ?? '___________' }}, UF {{ $interventor['rgUf'] ?? '______' }}<br>
-            Profissao: {{ $interventor['profissao'] ?? '______________' }} Data de Nascimento: {{ $interventor['dataNascimento'] ?? '__/__/____' }},<br>
-            Residente: {{ $interventor['residente'] ?? '____________________________________________________________' }}, Complemento: {{ $interventor['complemento'] ?? '_____________________' }}, Bairro: {{ $interventor['bairro'] ?? '_________________________' }} Cidade: {{ $interventor['cidade'] ?? '_______________________________' }}, UF: {{ $interventor['uf'] ?? '______' }},<br>
-            Tel: {{ $interventor['telefone'] ?? '___________________________' }},
-        </p>
-        <p class="doc-paragraph doc-compact">
-            ACOLHIDO: {{ $acolhidoProfile['nome'] ?? '________________________________________________________' }} Data de Nascimento: {{ $acolhidoProfile['dataNascimento'] ?? '__/__/____' }}, CPF: {{ $acolhidoProfile['cpf'] ?? '___________________' }},<br>
-            RG: {{ $acolhidoProfile['rg'] ?? '_______________________' }}, Profissao: {{ $acolhidoProfile['profissao'] ?? '_____________________________' }}, Naturalidade: {{ $acolhidoProfile['naturalidade'] ?? '___________________________________' }} UF {{ $acolhidoProfile['uf'] ?? '______' }}<br>
+        <p class="doc-paragraph">
+            <strong>ACOLHIDO:</strong> {{ $acolhidoProfile['nome'] ?? '________________________________________________________' }} Data de Nascimento: {{ $acolhidoProfile['dataNascimento'] ?? '__/__/____' }}, CPF: {{ $acolhidoProfile['cpf'] ?? '___________________' }}<br>
+            RG: {{ $acolhidoProfile['rg'] ?? '_______________________' }}, Profissão: {{ $acolhidoProfile['profissao'] ?? '_____________________________' }}, Naturalidade: {{ $acolhidoProfile['naturalidade'] ?? '___________________________________' }} UF {{ $acolhidoProfile['uf'] ?? '______' }}<br>
             Nacionalidade: {{ $acolhidoProfile['nacionalidade'] ?? '______________' }}.
         </p>
         <p class="doc-paragraph">
-            CLAUSULA 1&ordf; - Propoe-se o servico de tratamento e acompanhamento de prevencao e reabilitacao de recaida, conforme as normas internas, rotina terapeutica e orientacoes institucionais do CERAPE / CRC.
+            <strong>CONTRATADO:</strong><br>
+            CENTRO DE REABILITACAO DO CERAPE - CRC, CNPJ nº 857.994.0002-48, estabelecido na Área Rural, Park Alvorada III, Fazenda Quintas, Chácara da Igreja Batista Rhema. As partes ajustam entre si, por este instrumento particular e na melhor forma de direito, a prestação de serviços terapêuticos para tratamento da dependência química, com as seguintes cláusulas e condições:
         </p>
         <p class="doc-paragraph">
-            CLAUSULA 2&ordf; - O interventor declara estar ciente do funcionamento do programa, das condicoes de acompanhamento e da necessidade de cooperacao com a equipe tecnica durante o periodo de atendimento.
+            <strong>CLÁUSULA 1ª</strong> - Propoe-se o serviço de tratamento e acompanhamento de prevenção e reabilitação de recaída, desenvolvido por meio do Programa Terapêutico do CRC, voltado à abstinência e a conscientização do uso e abuso de substâncias psicoativas, bem como a promoção individual e social do dependente químico, sendo ele o principal responsável pelo seu processo de recuperação e construção de um novo estilo de vida, levando em consideração suas potencialidades e a força presente na coletividade, com foco na abstinência total.
         </p>
         <p class="doc-paragraph">
-            CLAUSULA 3&ordf; - O acolhido compromete-se a observar as regras internas, participar das atividades propostas e manter conduta compativel com o processo terapeutico.
+            <strong>§ 1º O ACOLHIDO</strong> - De agora em diante, declara, neste ato, do acolhimento que é de livre e espontânea vontade, que se compromete a seguir todas as normas estabelecidas pelo CRC, contidas no Regimento Interno e Programa Terapêutico, o qual declara conhecer.
         </p>
         <p class="doc-paragraph">
-            E, por estarem de acordo, firmam o presente contrato para que produza seus efeitos.
+            <strong>§ 2º DURAÇÃO</strong> - O Programa Terapêutico de Prevenção e Reabilitação de Recaída - PTPRR tem duração de até 105 (cento e cinco) dias, equivalente a três meses e meio, sendo os primeiros 45 dias sem direito a visita, ou convívio familiar, uso do telefone, fone de ouvido e para quaisquer contatos com sua rede familiar ou amigos, cerceado também neste período o uso de fone de ouvido. Aos 60 (sessenta) dias o acolhido poderá utilizar seu aparelho celular, para o uso restrito e pessoal, de acordo com o Regimento do CRC, sem no entanto poder emprestar, em nenhuma hipótese. Finaliza-se o PTPRR, completos os 105 dias, faremos uma avaliação considerando a opinião da Equipe Técnica, da Família ou Interventores e do Acolhido. Podendo, de comum acordo, decidir sobre um aditivo para ampliar o programa para até 240 (duzentos e quarenta) dias considerando as quatro fases do Programa Terapêutico do Cerape - PTC.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 3º SERVIÇOS</strong> - Além do Programa Terapêutico em regime de acolhimento, estão inclusos os serviços de hospedagem completa incluindo quatro refeições diárias.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 4º ATIVIDADES</strong> - Nas rotinas diárias são realizados atividades físicas, atividades práticas de manutenção e conservação interna e externa da casa, cultivo de horticultura orgânica, plantio de árvores nativas para revitalização do solo e nascentes, oficina de reciclagem, artesanato, preparo de refeições, lavanderia, aconselhamento individual e em grupo, espiritualidade por meio de leituras, estudos bíblicos, rodas terapêuticas e cultos, cursos de formação continuada, quer sejam presenciais ou EAD, programas EJA e ENCEJA, dinâmicas e reuniões, aulas teóricas e práticas de ética e cidadania, aplicação dos 12 (doze) passos na metodologia do "Celebrando a Recuperação", dentre outras atividades propostas pelo CRC durante o acolhimento.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 5º ATENDIMENTO</strong> - O atendimento é realizado nas dependências do CENTRO DE REABILITAÇÃO DO CERAPE - CRC, localizado na Área Rural, Park Alvorada III, Fazenda Quintas, Chácara CERAPE, e poderá se estender em ambientes externos quando se fizer necessário.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 6º VISITAS</strong> - Mediante as visitas estabelecidas previamente pela Instituição, a família deverá acompanhar a evolução do tratamento oferecido pela CONTRATADA, por intermédio do Grupo de Familiares e reuniões convocadas pela Gestão da Instituição.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 7º CONVÍVIO FAMILIAR</strong> - O acolhido terá direito a convívio familiar, com duração de 72 horas, a partir dos 60 (sessenta) dias, podendo variar de acordo com a evolução do mesmo mediante adaptação ao tratamento e cumprimento do estabelecido.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 2ª</strong> - Para a execução dos serviços de acolhimento, com todos os recursos previstos no Programa Terapêutico, visando a reabilitação do acolhido, a CONTRATADA efetivará o pagamento de R$ 2.625,00 (dois mil, seiscentos e vinte e cinco reais), por 105 (cento e cinco) dias, o que equivale à diária de R$ 25,00 (vinte e cinco reais), sendo cobrada apenas taxa para o uso das camisetas referente às fases.
+        </p>
+        <p class="doc-paragraph">
+            <strong>Parágrafo único</strong> - Até o décimo quinto dia a CONTRATADA se compromete a depositar R$ 70,00 (setenta reais) no pix da empresa fornecedora dos uniformes do Cerape, referente a uma camiseta e uma mochila da instituição que será utilizada no interior da chácara e em ocasiões que se fizer necessária, ficando bem claro que este uniforme não poderá ser levado pelo acolhido quando no encerramento do programa, para preservar a exposição da marca da instituição.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 3ª</strong> - As despesas com medicamentos, objetos de uso pessoal, locomoção do acolhido para perícias, consultas médicas e dentárias, audiências judiciais ou quaisquer outras necessidades são de responsabilidade da CONTRATANTE, mediante comprovação.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 4ª</strong> - Visitas, ligações, acesso a lan house, fones de ouvido só serão permitidos após 45 dias de acolhimento. As visitas acontecem aos sábados e domingos, das 14hs às 17hs, desde que previamente agendadas.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 1º</strong> - Os contatos telefônicos são feitos por meio do celular da casa, que é de uso coletivo, tendo cada acolhido direito a 20 minutos semanais de ligação.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 2º</strong> - Fica proibido o uso de telefone de terceiros ou de acolhidos que já possuem aparelho para uso próprio, sem prévia autorização.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 5ª</strong> - Em caso de eventuais danos contra o patrimônio da Instituição que o acolhido der causa, serão de responsabilidade da CONTRATANTE.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 1º</strong> - Em caso de desistência do programa com evasão do acolhido, os pertences serão doados num prazo máximo de 15 (quinze) dias, a partir da data do desligamento.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 2º</strong> - Em caso de óbito do acolhido, a família será comunicada e providenciará todos os trâmites legais de cartório, funeral e sepultamento, inclusive locomoção do corpo.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 6ª</strong> - A Contratante fica ciente de que, caso o acolhido possua pendências com a Justiça ou que venha a ser expedido mandado de prisão durante o período de tratamento, a Contratada comunicará de imediato o Poder Judiciário.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 1º</strong> - Caso o acolhido seja foragido da Justiça, não será admitido na instituição, a menos que se torne público mediante comunicado ao Juizado competente.
+        </p>
+        <p class="doc-paragraph">
+            <strong>§ 2º</strong> - Não serão admitidos acolhidos portadores de qualquer tipo de doença mental comprovada e/ou caso seja constatada a enfermidade no decorrer do tratamento, serão desligados e entregues à Contratante ou, em casos específicos, encaminhados para um local adequado, caso não tenha encaminhamento médico que garanta a capacidade de boa convivência entre os pares e em grupo.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 7ª</strong> - A Contratada não se responsabiliza por atos de agressão física ou verbal cometidos entre os acolhidos. Se ocorrerem, a responsabilidade será apurada pela equipe multidisciplinar que poderá promover o desligamento dos envolvidos e efetuar denúncia formal, nos órgãos competentes.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 8ª</strong> - A família é considerada parte integrante do Programa Terapêutico, portanto, fica estabelecida a sua participação frequente nas reuniões do CERAPE, que acontecem durante todo o ano, em datas previamente estabelecidas, via link encaminhado no grupo de WhatsApp da família.
+        </p>
+        <p class="doc-paragraph">
+            A não participação do representante familiar e/ou interventor nas reuniões mensais poderá motivar impedimento na visitação do acolhido ou em convívio familiar. O cumprimento de regras também pode interferir nas visitas familiares.
+        </p>
+        <p class="doc-paragraph">
+            <strong>CLÁUSULA 9ª</strong> - O acolhido deverá assinar os seguintes documentos: Declaração referente ao uso de imagem; Declaração da leitura do PTC; Declaração de desistência; Declaração do acolhimento voluntário e Termo de desligamento.
+        </p>
+        <p class="doc-paragraph">
+            Por estarem de pleno acordo, as partes firmam o presente.
         </p>
         <p class="doc-date">{{ $payload['signatureDateLine'] }}</p>
         <div class="two-lines">
-            <span class="signature-line">Interventor do acolhimento</span>
-            <span class="signature-line">Acolhido</span>
+            <span class="signature-line">ASSINATURA RESPONSÁVEL PELA INTERVENÇÃO DO ACOLHIDO</span>
+            <span class="signature-line">ASSINATURA DO ACOLHIDO</span>
         </div>
         @break
 @endswitch

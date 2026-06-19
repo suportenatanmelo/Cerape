@@ -109,10 +109,6 @@
 </head>
 <body>
     <header class="header">
-        @if ($avatarPath)
-            <img class="avatar" src="{{ $avatarPath }}" alt="Avatar de {{ $user->name }}">
-        @endif
-
         <div class="eyebrow">Relatório do usuário</div>
         <h1>{{ $user->name ?: 'Usuário sem nome informado' }}</h1>
         <div class="meta">

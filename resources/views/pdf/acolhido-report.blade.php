@@ -37,21 +37,12 @@
 </head>
 <body>
     <div class="page">
-        @include('pdf.partials.cerape-brand-header')
-
         <div class="hero">
             <table class="hero-table">
                 <tr>
-                    <td class="avatar-wrap">
-                        @if ($fotoAcolhido)
-                            <img src="{{ $fotoAcolhido }}" class="avatar" alt="">
-                        @else
-                            <div class="avatar-empty">Sem foto</div>
-                        @endif
-                    </td>
                     <td>
                         <div class="eyebrow">Perfil do acolhido</div>
-                        <h1>Relatorio personalizado em PDF</h1>
+                        <h1>Relatorio personalizado do acolhido em PDF</h1>
                         <div class="hero-text"><strong>{{ $acolhido->nome_completo_paciente }}</strong></div>
                         <div class="hero-text">Responsavel pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
                         <div class="hero-text">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>

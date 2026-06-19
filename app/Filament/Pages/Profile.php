@@ -72,11 +72,10 @@ class Profile extends EditProfile
                                 ->avatar()
                                 ->disk('public')
                                 ->directory(ImageStorageNaming::datedDirectory('backend/users/avatars'))
+                                ->preserveFilenames()
                                 ->visibility('public')
                                 ->maxFiles(1)
-                                ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => ImageStorageNaming::filename($file, 'backend-users-avatars', 'avatar')
-                                ),
+                                ->helperText('A imagem será salva na pasta do perfil mantendo o nome original enviado.'),
                         ]),
                     Section::make('Dados de acesso')
                         ->description('Informacoes principais da conta.')

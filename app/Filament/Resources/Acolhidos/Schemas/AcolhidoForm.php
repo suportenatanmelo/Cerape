@@ -101,7 +101,7 @@ class AcolhidoForm
                                             ->default(fn(): ?int => auth()->id())
                                             ->required(),
                                         TextInput::make('nome_completo_paciente')
-                                            ->label('Nome completo do paciente')
+                                            ->label('Nome completo do acolhido')
                                             ->required(),
                                         DateTimePicker::make('created_at')
                                             ->label('Data de criacao do cadastro')
@@ -120,15 +120,10 @@ class AcolhidoForm
                                             ->avatar()
                                             ->disk('public')
                                             ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/avatars'))
+                                            ->preserveFilenames()
                                             ->visibility('public')
                                             ->maxFiles(1)
-                                            ->getUploadedFileNameForStorageUsing(
-                                                fn(TemporaryUploadedFile $file, Get $get): string => ImageStorageNaming::filename(
-                                                    $file,
-                                                    'backend-acolhidos-avatars',
-                                                    (string) $get('nome_completo_paciente'),
-                                                )
-                                            ),
+                                            ->helperText('A imagem será salva na pasta do acolhido mantendo o nome original enviado.'),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
                                             ->required(),
@@ -233,10 +228,10 @@ class AcolhidoForm
                                             })
                                             ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
-                                            ->label('Endereco do paciente')
+                                            ->label('Endereco do acolhido')
                                             ->required(),
                                         TextInput::make('bairro_do_paciente')
-                                            ->label('Bairro do paciente')
+                                            ->label('Bairro do acolhido')
                                             ->required(),
                                         TextInput::make('municipio_do_paciente')
                                             ->label('Municipio')
@@ -562,6 +557,7 @@ class AcolhidoForm
                                             ->label('Receituario')
                                             ->disk('public')
                                             ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/receituarios'))
+                                            ->preserveFilenames()
                                             ->visibility('public')
                                             ->multiple()
                                             ->acceptedFileTypes([
@@ -573,7 +569,7 @@ class AcolhidoForm
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
-                                            ->getUploadedFileNameForStorageUsing(fn(TemporaryUploadedFile $file, Get $get): string => self::makeUploadFileName($file, $get))
+                                            ->helperText('Os arquivos serão salvos na pasta do receituario mantendo os nomes originais enviados.')
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),

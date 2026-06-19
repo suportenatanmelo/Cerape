@@ -7,8 +7,6 @@
         * { box-sizing: border-box; }
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 12px; line-height: 1.6; margin: 0; }
         .page { padding: 26px 30px; }
-        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 20px; padding-bottom: 12px; width: 100%; }
-        .brand-logo { display: block; height: auto; max-height: 62px; max-width: 220px; }
         .document-shell { background: #fffef9; border: 1px solid #e5e7eb; padding: 26px 28px; }
         .doc-title { color: #0f172a; font-size: 18px; font-weight: bold; letter-spacing: 0.06em; margin: 0 0 26px; text-align: center; text-transform: uppercase; }
         .doc-paragraph { margin: 0 0 14px; text-align: justify; }
@@ -29,8 +27,6 @@
 </head>
 <body>
     <div class="page">
-        @include('pdf.partials.cerape-brand-header')
-
         <div class="document-shell">
             @include('declaracoes.partials.documento', ['payload' => $payload, 'mode' => 'pdf'])
         </div>

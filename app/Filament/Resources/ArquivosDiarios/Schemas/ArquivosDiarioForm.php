@@ -33,17 +33,13 @@ class ArquivosDiarioForm
                                 ->label('Arquivo')
                                 ->disk('public')
                                 ->directory('arquivos-diarios')
+                                ->preserveFilenames()
                                 ->downloadable()
                                 ->openable()
                                 ->acceptedFileTypes([
                                     'application/pdf',
-                                    'image/png',
-                                    'image/jpeg',
-                                    'image/jpg',
-                                    'application/msword',
-                                    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                 ])
-                                ->helperText('O sistema renomeia o arquivo com o padrao ID_DDMMAAAA para facilitar o arquivamento.')
+                                ->helperText('O arquivo será salvo na pasta arquivos-diarios mantendo o nome original enviado.')
                                 ->required(),
                             DateTimePicker::make('updated_at')
                                 ->label('Data do arquivo')

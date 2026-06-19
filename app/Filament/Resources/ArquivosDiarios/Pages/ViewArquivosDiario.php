@@ -15,8 +15,22 @@ class ViewArquivosDiario extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Action::make('downloadRelatorio')
-                ->label('Baixar relatorio')
+            Action::make('visualizarArquivo')
+                ->label('Visualizar PDF')
+                ->icon('heroicon-o-eye')
+                ->color('primary')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
+                ->visible(fn (): bool => filled($this->getRecord()->upload_arquivo))
+                ->url(fn () => route('arquivos-diarios.preview', $this->getRecord()), shouldOpenInNewTab: true),
+            Action::make('baixarArquivo')
+                ->label('Baixar arquivo')
+                ->icon('heroicon-o-arrow-down-tray')
+                ->color('success')
+                ->hidden(fn (): bool => PortalContext::isFamilyUser())
+                ->visible(fn (): bool => filled($this->getRecord()->upload_arquivo))
+                ->url(fn () => route('arquivos-diarios.download', $this->getRecord()), shouldOpenInNewTab: true),
+            Action::make('downloadArquivo')
+                ->label('Baixar arquivo')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())

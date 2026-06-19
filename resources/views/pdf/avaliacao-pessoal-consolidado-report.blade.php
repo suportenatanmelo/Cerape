@@ -8,11 +8,6 @@
         body { background: #f8fafc; color: #0f172a; font-family: DejaVu Sans, sans-serif; font-size: 9px; line-height: 1.4; margin: 0; }
         .page { padding: 14px; }
         .brand-header { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; padding: 10px 12px; }
-        .brand-logo-cell { vertical-align: middle; width: 86px; }
-        .brand-logo { display: block; height: auto; margin: 0 auto; max-height: 54px; max-width: 54px; }
-        .brand-text-cell { padding-left: 10px; vertical-align: middle; }
-        .brand-title { color: #0f172a; font-size: 11px; font-weight: bold; margin-bottom: 3px; }
-        .brand-text { color: #475569; font-size: 8px; line-height: 1.45; }
         .hero { background: linear-gradient(135deg, #0f766e, #134e4a); border-radius: 14px; color: #fff; margin-bottom: 12px; padding: 16px; }
         .eyebrow { font-size: 8px; font-weight: bold; letter-spacing: 0.14em; text-transform: uppercase; }
         .title { font-size: 17px; font-weight: bold; margin: 6px 0 4px; }
@@ -44,21 +39,10 @@
 <body>
     <div class="page">
         <div class="brand-header">
-            <table>
-                <tr>
-                    <td class="brand-logo-cell">
-                        @if (! empty($logoCerape))
-                            <img src="{{ $logoCerape }}" class="brand-logo" alt="Logo Cerape">
-                        @endif
-                    </td>
-                    <td class="brand-text-cell">
-                        <div class="brand-title">CENTRO DE REABILITACAO DO PRESO E EGRESSO - CERAPE</div>
-                        <div class="brand-text">Relatorio institucional consolidado para acompanhamento de acolhidos avaliados.</div>
-                        <div class="brand-text">WhatsApp: (61) 99320-841 | Site: www.cerape.com</div>
-                        <div class="brand-text">CNPJ sede: 00.857.994/0001-67 | CNPJ filial: 00.857.994/0001-48</div>
-                    </td>
-                </tr>
-            </table>
+            <div class="brand-title">CENTRO DE REABILITACAO DO PRESO E EGRESSO - CERAPE</div>
+            <div class="brand-text">Relatorio institucional consolidado para acompanhamento de acolhidos avaliados.</div>
+            <div class="brand-text">WhatsApp: (61) 99320-841 | Site: www.cerape.com</div>
+            <div class="brand-text">CNPJ sede: 00.857.994/0001-67 | CNPJ filial: 00.857.994/0001-48</div>
         </div>
 
         <div class="hero">

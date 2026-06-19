@@ -7,7 +7,6 @@ use App\Models\AtividadeDesenvolvida;
 use App\Models\DemandaAcolhido;
 use App\Models\Saude;
 use App\Models\SubstanciaPsicoativas;
-use App\Support\PdfImage;
 use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Filament\Actions\Action;
@@ -178,9 +177,7 @@ class Pia extends Page implements HasForms
             'highlight' => count($modules) === count(self::moduleOptions())
                 ? 'PLANO COMPLETO'
                 : 'PLANO PARCIAL',
-            'photoData' => PdfImage::storageDataUri($acolhido->avatar),
             'photoLabel' => 'PIA',
-            'logoCerape' => PdfImage::publicDataUri('storage/images/logo.png'),
             'sections' => $sections,
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
             'acolhido' => $acolhido,

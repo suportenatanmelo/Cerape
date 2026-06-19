@@ -11,13 +11,13 @@ use App\Filament\Resources\ArquivosDiarios\Schemas\ArquivosDiarioInfolist;
 use App\Filament\Resources\ArquivosDiarios\Tables\ArquivosDiariosTable;
 use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Models\ArquivosDiario;
-use Barryvdh\DomPDF\Facade\Pdf;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 use UnitEnum;
 
 class ArquivosDiarioResource extends Resource
@@ -110,9 +110,7 @@ class ArquivosDiarioResource extends Resource
                 'Registro de arquivamento digital no modulo de uploads.',
             ],
             'highlight' => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : 'Sem arquivo vinculado',
-            'photoData' => null,
             'photoLabel' => 'PDF',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'sections' => [
                 'Dados do arquivo' => [
                     'Titulo' => $record->titulo,
@@ -127,39 +125,41 @@ class ArquivosDiarioResource extends Resource
 
     public static function downloadReportResponse(ArquivosDiario $record)
     {
-        $pdf = Pdf::loadView('pdf.record-report', self::getReportData($record))
-            ->setPaper('a4');
-
-        $fileName = 'relatorio-arquivo-' . Str::slug($record->titulo ?? 'documento') . '.pdf';
-
-        return response()->streamDownload(
-            fn() => print($pdf->output()),
-            $fileName,
-            ['Content-Type' => 'application/pdf'],
-        );
-    }
-
-    private static function formatValue(mixed $value): string
-    {
-        if ($value instanceof \Carbon\CarbonInterface) {
-            return $value->format('d/m/Y H:i');
+        if (! filled($record->upload_arquivo)) {
+            abort(404);
         }
 
-        $value = trim(strip_tags((string) $value));
+        $disk = Storage::disk('public');
 
-        return $value !== '' ? $value : '-';
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        $absolutePath = public_path($relativePath);
-
-        if (! is_file($absolutePath)) {
-            return null;
+        if (! $disk->exists($record->upload_arquivo)) {
+            abort(404);
         }
 
-        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
+        $path = $disk->path($record->upload_arquivo);
+        $fileName = basename($record->upload_arquivo);
 
-        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+        return response()->download($path, $fileName, [
+            'Content-Type' => $disk->mimeType($record->upload_arquivo) ?: 'application/octet-stream',
+        ]);
+    }
+
+    public static function previewResponse(ArquivosDiario $record): Response
+    {
+        if (! filled($record->upload_arquivo)) {
+            abort(404);
+        }
+
+        $disk = Storage::disk('public');
+
+        if (! $disk->exists($record->upload_arquivo)) {
+            abort(404);
+        }
+
+        $path = $disk->path($record->upload_arquivo);
+
+        return response()->file($path, [
+            'Content-Type' => $disk->mimeType($record->upload_arquivo) ?: 'application/pdf',
+            'Content-Disposition' => 'inline; filename="' . basename($record->upload_arquivo) . '"',
+        ]);
     }
 }

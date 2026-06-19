@@ -61,11 +61,10 @@ class UserResource extends Resource
                                 ->avatar()
                                 ->disk('public')
                                 ->directory(ImageStorageNaming::datedDirectory('backend/users/avatars'))
+                                ->preserveFilenames()
                                 ->visibility('public')
                                 ->maxFiles(1)
-                                ->getUploadedFileNameForStorageUsing(
-                                    fn (TemporaryUploadedFile $file): string => ImageStorageNaming::filename($file, 'backend-users-avatars', 'avatar')
-                                ),
+                                ->helperText('A imagem será salva na pasta de avatares mantendo o nome original enviado.'),
                             TextInput::make('name')
                                 ->label('Nome completo')
                                 ->required()

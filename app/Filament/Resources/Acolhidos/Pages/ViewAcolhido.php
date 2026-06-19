@@ -33,8 +33,8 @@ class ViewAcolhido extends ViewRecord
 
         return trim(implode(' • ', array_filter([
             $record->nome_completo_paciente,
-            $record->municipio_do_paciente,
-            $record->uf_municipio_do_paciente,
+            $record->municipio_do_acolhido ?? $record->municipio_do_paciente,
+            $record->uf_municipio_do_acolhido ?? $record->uf_municipio_do_paciente,
         ])));
     }
 
@@ -111,8 +111,6 @@ class ViewAcolhido extends ViewRecord
             'selectedSectionsLabel' => count($sections) === count($allSections)
                 ? 'Relatorio geral com todas as secoes'
                 : implode(', ', array_keys($sections)),
-            'fotoAcolhido' => self::imageDataUri($acolhido->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
             'formatValue' => fn (mixed $value): string => self::formatValue($value),
         ];
     }
@@ -139,10 +137,10 @@ class ViewAcolhido extends ViewRecord
             ],
             'Endereco e moradia' => [
                 'CEP' => $acolhido->CEP,
-                'Endereco' => $acolhido->endereco_paciente,
-                'Bairro' => $acolhido->bairro_do_paciente,
-                'Municipio' => $acolhido->municipio_do_paciente,
-                'UF' => $acolhido->uf_municipio_do_paciente,
+                'Endereco' => $acolhido->endereco_acolhido ?? $acolhido->endereco_paciente,
+                'Bairro' => $acolhido->bairro_do_acolhido ?? $acolhido->bairro_do_paciente,
+                'Municipio' => $acolhido->municipio_do_acolhido ?? $acolhido->municipio_do_paciente,
+                'UF' => $acolhido->uf_municipio_do_acolhido ?? $acolhido->uf_municipio_do_paciente,
                 'Moradia propria' => $acolhido->moradia_propria,
                 'Casa alugada' => $acolhido->mora_em_casa_alugada,
                 'Tempo de aluguel' => $acolhido->quanto_tempo_de_aluguel,
@@ -162,7 +160,7 @@ class ViewAcolhido extends ViewRecord
                 'Numero do NIS/PIS' => $acolhido->numero_nis,
                 'Numero do cartao do SUS' => $acolhido->numero_cartao_sus,
             ],
-            'Trabalho, contato e encaminhamento' => [
+            'Trabalho, contato e encaminhamento do acolhido' => [
                 'Trabalha' => $acolhido->trabalha,
                 'Empresa' => $acolhido->nome_da_empresa_que_trabalha,
                 'Tem telefone' => $acolhido->tem_telefone,
@@ -184,7 +182,7 @@ class ViewAcolhido extends ViewRecord
                 'Possui exames laboratoriais' => $acolhido->exames_laboratoriais,
                 'Detalhes dos exames' => $acolhido->outros,
             ],
-            'Familia e responsaveis' => [
+            'Familia e responsaveis do acolhido' => [
                 'Tem filhos' => $acolhido->tem_filhos,
                 'Quantidade de filhos' => $acolhido->quantidade_filhos,
                 'Nome dos filhos' => $acolhido->qual_o_nome_dos_filhos,
@@ -195,7 +193,7 @@ class ViewAcolhido extends ViewRecord
                 'Responsavel pela intervencao' => $acolhido->responsavel_pela_intervencao_do_acolhido,
                 'Profissional de referencia' => $acolhido->profissional_referencia_acolhido_instituicao,
             ],
-            'Controle do cadastro' => [
+            'Controle do cadastro do acolhido' => [
                 'Criado em' => $acolhido->created_at,
                 'Atualizado em' => $acolhido->updated_at,
             ],
@@ -258,30 +256,4 @@ class ViewAcolhido extends ViewRecord
         return $path;
     }
 
-    private static function imageDataUri(?string $path): ?string
-    {
-        $path = self::resolveAvatarPath($path);
-
-        if (blank($path) || ! Storage::disk('public')->exists($path)) {
-            return null;
-        }
-
-        $absolutePath = Storage::disk('public')->path($path);
-        $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
-
-        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
-    }
-
-    private static function publicImageDataUri(string $relativePath): ?string
-    {
-        $absolutePath = public_path($relativePath);
-
-        if (! is_file($absolutePath)) {
-            return null;
-        }
-
-        $mimeType = mime_content_type($absolutePath) ?: 'image/png';
-
-        return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
-    }
 }

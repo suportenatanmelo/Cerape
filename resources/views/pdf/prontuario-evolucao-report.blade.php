@@ -7,8 +7,6 @@
         * { box-sizing: border-box; }
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.5; margin: 0; }
         .page { padding: 26px; }
-        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 16px; padding-bottom: 12px; width: 100%; }
-        .brand-logo { display: block; height: auto; max-height: 60px; max-width: 220px; }
         .hero { border-bottom: 2px solid #0f766e; display: table; padding-bottom: 18px; width: 100%; }
         .photo-wrap { display: table-cell; vertical-align: top; width: 126px; }
         .photo { border: 2px solid #d1d5db; border-radius: 14px; height: 156px; object-fit: cover; width: 116px; }
@@ -34,15 +32,9 @@
 </head>
 <body>
     <div class="page">
-        @include('pdf.partials.cerape-brand-header')
-
         <div class="hero">
             <div class="photo-wrap">
-                @if ($fotoAcolhido)
-                    <img src="{{ $fotoAcolhido }}" class="photo" alt="">
-                @else
-                    <div class="photo-empty">Sem foto</div>
-                @endif
+                <div class="photo-empty">Sem foto</div>
             </div>
             <div class="hero-content">
                 <h1>Relatorio de prontuario de evolucao</h1>

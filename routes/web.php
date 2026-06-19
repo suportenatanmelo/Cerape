@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ContactMessageController;
+use App\Filament\Resources\ArquivosDiarios\ArquivosDiarioResource;
+use App\Models\ArquivosDiario;
 use App\Models\ChMessage;
 use App\Models\User;
 use App\Support\PortalContext;
@@ -9,14 +9,8 @@ use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/sobre', [HomeController::class, 'about'])->name('about');
-Route::get('/blog', [HomeController::class, 'blog'])->name('blog');
-Route::get('/blog/{slug}', [HomeController::class, 'show'])->name('blog.show');
-Route::get('/contato', [HomeController::class, 'contact'])->name('contact');
-Route::post('/contato', [ContactMessageController::class, 'store'])->name('contact.store');
-Route::get('/home', fn () => redirect()->route('home'));
+Route::view('/', 'welcome')->name('home');
+Route::get('/home', fn () => redirect('/'));
 
 Route::middleware('auth')->get('/browser-alerts/status', function (Request $request) {
     $user = $request->user();
@@ -36,6 +30,14 @@ Route::middleware('auth')->get('/browser-alerts/status', function (Request $requ
         'total_unread' => $chatUnread + $notificationUnread,
     ]);
 })->name('browser-alerts.status');
+
+Route::middleware('auth')->get('/arquivos-diarios/{record}/visualizar', function (ArquivosDiario $record) {
+    return ArquivosDiarioResource::previewResponse($record);
+})->name('arquivos-diarios.preview');
+
+Route::middleware('auth')->get('/arquivos-diarios/{record}/baixar', function (ArquivosDiario $record) {
+    return ArquivosDiarioResource::downloadReportResponse($record);
+})->name('arquivos-diarios.download');
 
 Route::middleware('auth')->get('/user/{slug}', function (Request $request, string $slug) {
     $user = $request->user();

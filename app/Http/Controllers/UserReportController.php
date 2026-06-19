@@ -23,7 +23,6 @@ class UserReportController extends Controller
 
         return Pdf::loadView('pdf.user-report', [
             'user' => $user,
-            'avatarPath' => $this->resolveAvatarPath($user),
             'sections' => $this->getReportSections($user),
         ])
             ->setPaper('a4')
@@ -65,17 +64,6 @@ class UserReportController extends Controller
                 'Atualizado em' => $user->updated_at?->format('d/m/Y H:i') ?? '-',
             ],
         ];
-    }
-
-    private function resolveAvatarPath(User $user): ?string
-    {
-        if (blank($user->avatar) || str($user->avatar)->startsWith(['http://', 'https://', 'data:image/'])) {
-            return null;
-        }
-
-        $path = public_path('storage/'.ltrim($user->avatar, '/'));
-
-        return file_exists($path) ? $path : null;
     }
 
     private function roleLabel(string $role): string

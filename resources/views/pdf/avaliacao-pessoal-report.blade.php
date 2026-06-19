@@ -7,15 +7,6 @@
         * { box-sizing: border-box; }
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
         .page { padding: 20px; }
-        .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
-        .brand-table { display: table; width: 100%; }
-        .brand-logo-cell, .brand-info-cell { display: table-cell; vertical-align: middle; }
-        .brand-logo-cell { width: 235px; padding-right: 14px; }
-        .brand-logo { display: block; height: auto; max-height: 60px; max-width: 220px; }
-        .brand-info-cell { text-align: left; }
-        .brand-info { color: #374151; font-family: DejaVu Serif, serif; font-size: 9px; line-height: 1.45; }
-        .brand-info strong { color: #111827; display: block; font-size: 10px; letter-spacing: 0.2px; margin-bottom: 2px; }
-        .brand-info-line { margin: 1px 0; }
         .hero { display: table; width: 100%; }
         .hero-left, .hero-right { display: table-cell; vertical-align: top; }
         .hero-left { width: 150px; padding-right: 14px; }
@@ -71,16 +62,10 @@
 <body>
 
     <div class="page">
-        @include('pdf.partials.cerape-brand-header')
-
         <div class="hero">
             <div class="hero-left">
                 <div class="profile-card">
-                    @if ($fotoAcolhido)
-                        <img src="{{ $fotoAcolhido }}" class="avatar" alt="">
-                    @else
-                        <div class="avatar-empty">{{ str($acolhido?->nome_completo_paciente ?? '?')->substr(0, 1)->upper() }}</div>
-                    @endif
+                    <div class="avatar-empty">{{ str($acolhido?->nome_completo_paciente ?? '?')->substr(0, 1)->upper() }}</div>
                     <div class="profile-name">{{ $acolhido?->nome_completo_paciente ?? '-' }}</div>
                     <div class="profile-meta">{{ $record->dias_na_casa ?? '-' }}</div>
                     <div class="profile-meta">Relatorio profissional de evolucao pessoal</div>
@@ -193,13 +178,9 @@
         @forelse ($usuarios as $item)
             <div class="evaluator-card">
                 <div class="evaluator-head">
-                    <div class="evaluator-photo-wrap">
-                        @if ($item['foto'])
-                            <img src="{{ $item['foto'] }}" class="evaluator-photo" alt="">
-                        @else
+                        <div class="evaluator-photo-wrap">
                             <div class="evaluator-photo-empty">{{ str($item['user']?->name ?? '?')->substr(0, 1)->upper() }}</div>
-                        @endif
-                    </div>
+                        </div>
                     <div class="evaluator-head-content">
                         <div class="evaluator-name">{{ $item['user']?->name ?? 'Usuario nao informado' }}</div>
                         <div class="evaluator-meta">{{ $item['user']?->email ?? '-' }}</div>

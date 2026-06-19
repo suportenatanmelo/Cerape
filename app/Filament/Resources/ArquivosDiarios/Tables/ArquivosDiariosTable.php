@@ -7,7 +7,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\IconColumn;
@@ -15,7 +14,6 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Storage;
 
 class ArquivosDiariosTable
 {
@@ -74,13 +72,16 @@ class ArquivosDiariosTable
                     }),
             ])
             ->recordActions([
-                ViewAction::make()
-                    ->label('Visualizar'),
+                Action::make('visualizar')
+                    ->label('Visualizar')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-diarios.preview', $record) : null, shouldOpenInNewTab: true)
+                    ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 Action::make('download')
                     ->label('Baixar')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? Storage::disk('public')->url($record->upload_arquivo) : null, shouldOpenInNewTab: true)
+                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-diarios.download', $record) : null, shouldOpenInNewTab: true)
                     ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 EditAction::make(),
                 DeleteAction::make(),

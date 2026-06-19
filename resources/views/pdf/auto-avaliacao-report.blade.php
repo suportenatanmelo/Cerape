@@ -8,7 +8,6 @@
         body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
         .page { padding: 20px; }
         .brand-bar { border-bottom: 1px solid #e5e7eb; margin-bottom: 14px; padding-bottom: 10px; width: 100%; }
-        .brand-logo { display: block; height: auto; max-height: 58px; max-width: 220px; }
         .header { border-bottom: 2px solid #0f766e; padding-bottom: 12px; }
         h1 { font-size: 18px; margin: 0 0 4px; }
         .muted { color: #6b7280; }

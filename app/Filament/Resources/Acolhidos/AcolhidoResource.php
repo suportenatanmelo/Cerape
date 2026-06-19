@@ -83,7 +83,7 @@ class AcolhidoResource extends Resource
     public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
     {
         return [
-            'Telefone' => $record->numero_do_telefone ?: '-',
+            'Telefone do acolhido' => $record->numero_do_telefone ?: '-',
             'Municipio' => $record->municipio_do_paciente ?: '-',
             'UF' => $record->uf_municipio_do_paciente ?: '-',
         ];
