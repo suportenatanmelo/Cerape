@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ArquivosDiarios\Schemas;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
+use App\Support\ImageStorageNaming;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -32,14 +33,13 @@ class ArquivosDiarioForm
                             FileUpload::make('upload_arquivo')
                                 ->label('Arquivo')
                                 ->disk('public')
-                                ->directory('arquivos-diarios')
-                                ->preserveFilenames()
+                                ->directory(ImageStorageNaming::directory('receituario'))
                                 ->downloadable()
                                 ->openable()
                                 ->acceptedFileTypes([
                                     'application/pdf',
                                 ])
-                                ->helperText('O arquivo será salvo na pasta arquivos-diarios mantendo o nome original enviado.')
+                                ->helperText('O arquivo será salvo em imagens/receituario e receberá o nome padronizado do sistema.')
                                 ->required(),
                             DateTimePicker::make('updated_at')
                                 ->label('Data do arquivo')

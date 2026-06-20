@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 use App\Support\UserRoleManager;
@@ -68,7 +69,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     protected static function booted(): void
     {
         static::saved(function (self $user): void {
-            ImageStorageNaming::syncStoredImage($user, 'avatar', 'backend/users/avatars', $user->name);
+            ImageStorageNaming::syncStoredImage($user, 'avatar', 'avatar', $user->name);
         });
     }
 
@@ -180,11 +181,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             return null;
         }
 
-        if (Str::startsWith($avatar, ['http://', 'https://', '//', 'data:'])) {
-            return $avatar;
-        }
-
-        return \Illuminate\Support\Facades\Storage::disk('public')->url($avatar);
+        return $avatar;
     }
 
     private function normalizePublicPath(?string $path): ?string
@@ -196,10 +193,22 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         }
 
         if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            $parsed = parse_url($path);
+
+            if (is_array($parsed) && filled($parsed['path'] ?? null)) {
+                $normalized = ltrim((string) $parsed['path'], '/');
+
+                return Str::startsWith($normalized, 'storage/')
+                    ? '/' . $normalized
+                    : '/storage/' . $normalized;
+            }
+
             return $path;
         }
 
-        return ltrim(Str::replaceFirst('storage/', '', $path), '/');
+        $path = ltrim(Str::replaceFirst('storage/', '', $path), '/');
+
+        return Storage::disk('public')->url($path);
     }
 
 }

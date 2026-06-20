@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,6 +22,9 @@ class ArquivosDiario extends Model
 
     protected static function booted(): void
     {
+        static::saved(function (self $arquivo): void {
+            ImageStorageNaming::syncStoredFile($arquivo, 'upload_arquivo', 'receituario', $arquivo->titulo);
+        });
         static::deleted(function (self $arquivo): void {
             if (filled($arquivo->upload_arquivo)) {
                 Storage::disk('public')->delete($arquivo->upload_arquivo);

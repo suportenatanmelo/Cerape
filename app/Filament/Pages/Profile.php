@@ -71,11 +71,10 @@ class Profile extends EditProfile
                                 ->imageEditor()
                                 ->avatar()
                                 ->disk('public')
-                                ->directory(ImageStorageNaming::datedDirectory('backend/users/avatars'))
-                                ->preserveFilenames()
+                                ->directory(ImageStorageNaming::directory('avatar'))
                                 ->visibility('public')
                                 ->maxFiles(1)
-                                ->helperText('A imagem será salva na pasta do perfil mantendo o nome original enviado.'),
+                                ->helperText('A imagem será salva em imagens/avatar e receberá o nome padronizado do sistema.'),
                         ]),
                     Section::make('Dados de acesso')
                         ->description('Informacoes principais da conta.')

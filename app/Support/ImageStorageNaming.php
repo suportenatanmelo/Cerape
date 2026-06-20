@@ -14,11 +14,6 @@ final class ImageStorageNaming
         return 'imagens/' . trim($category, '/');
     }
 
-    public static function datedDirectory(string $category): string
-    {
-        return self::directory($category) . '/' . now()->format('Y/m/d');
-    }
-
     public static function filename(
         TemporaryUploadedFile $file,
         string $category,
@@ -28,10 +23,10 @@ final class ImageStorageNaming
         $label = self::shortLabel($label ?: pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
 
         $segments = array_filter([
-            now()->format('H-i-s'),
+            self::slug($identifier ?: 'sem-id'),
             self::slug($category),
-            self::slug($identifier ?: 'novo'),
             $label,
+            now()->format('Y-m-d-H-i-s'),
         ]);
 
         return implode('-', $segments) . '.' . $file->getClientOriginalExtension();
@@ -46,10 +41,10 @@ final class ImageStorageNaming
         $label = self::shortLabel($label ?? 'imagem');
 
         $segments = array_filter([
-            now()->format('H-i-s'),
-            self::slug($category),
             self::slug((string) $identifier),
+            self::slug($category),
             $label,
+            now()->format('Y-m-d-H-i-s'),
         ]);
 
         return implode('-', $segments) . '.' . self::sanitizeExtension($extension);
@@ -61,7 +56,7 @@ final class ImageStorageNaming
         ?string $label = null,
         ?string $extension = null,
     ): string {
-        return self::datedDirectory($category) . '/' . self::canonicalFilename($category, $identifier, $label, $extension);
+        return self::directory($category) . '/' . self::canonicalFilename($category, $identifier, $label, $extension);
     }
 
     public static function syncStoredImage(
@@ -107,6 +102,77 @@ final class ImageStorageNaming
 
         $model->forceFill([
             $attribute => $finalPath,
+        ])->saveQuietly();
+    }
+
+    public static function syncStoredFile(
+        Model $model,
+        string $attribute,
+        string $category,
+        ?string $label = null,
+    ): void {
+        $currentValue = $model->getAttribute($attribute);
+
+        if (is_array($currentValue)) {
+            self::syncStoredFileArray($model, $attribute, $category, $label, $currentValue);
+
+            return;
+        }
+
+        self::syncStoredImage($model, $attribute, $category, $label);
+    }
+
+    /**
+     * @param array<int, mixed> $paths
+     */
+    private static function syncStoredFileArray(
+        Model $model,
+        string $attribute,
+        string $category,
+        ?string $label,
+        array $paths,
+    ): void {
+        if (! $model->exists) {
+            return;
+        }
+
+        $disk = Storage::disk('public');
+        $updated = [];
+
+        foreach (array_values($paths) as $index => $path) {
+            $currentPath = self::normalizePath($path);
+
+            if ($currentPath === null || Str::startsWith($currentPath, ['http://', 'https://', '//', 'data:'])) {
+                $updated[] = $path;
+
+                continue;
+            }
+
+            if (! $disk->exists($currentPath)) {
+                $updated[] = $currentPath;
+
+                continue;
+            }
+
+            $extension = pathinfo($currentPath, PATHINFO_EXTENSION) ?: 'jpg';
+            $itemLabel = trim((string) $label . '-' . ($index + 1), '-');
+            $finalPath = self::canonicalPath($category, (string) $model->getKey(), $itemLabel, $extension);
+
+            if ($currentPath !== $finalPath) {
+                $disk->makeDirectory(dirname($finalPath));
+
+                if ($disk->exists($finalPath)) {
+                    $disk->delete($finalPath);
+                }
+
+                $disk->move($currentPath, $finalPath);
+            }
+
+            $updated[] = $finalPath;
+        }
+
+        $model->forceFill([
+            $attribute => $updated,
         ])->saveQuietly();
     }
 

@@ -119,11 +119,10 @@ class AcolhidoForm
                                             ->imageEditor()
                                             ->avatar()
                                             ->disk('public')
-                                            ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/avatars'))
-                                            ->preserveFilenames()
+                                            ->directory(ImageStorageNaming::directory('avatar'))
                                             ->visibility('public')
                                             ->maxFiles(1)
-                                            ->helperText('A imagem será salva na pasta do acolhido mantendo o nome original enviado.'),
+                                            ->helperText('A imagem será salva em imagens/avatar e receberá o nome padronizado do sistema.'),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
                                             ->required(),
@@ -556,8 +555,7 @@ class AcolhidoForm
                                         FileUpload::make('receituario')
                                             ->label('Receituario')
                                             ->disk('public')
-                                            ->directory(ImageStorageNaming::datedDirectory('backend/acolhidos/receituarios'))
-                                            ->preserveFilenames()
+                                            ->directory(ImageStorageNaming::directory('receituario'))
                                             ->visibility('public')
                                             ->multiple()
                                             ->acceptedFileTypes([
@@ -569,7 +567,7 @@ class AcolhidoForm
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
-                                            ->helperText('Os arquivos serão salvos na pasta do receituario mantendo os nomes originais enviados.')
+                                            ->helperText('Os arquivos serão salvos em imagens/receituario e receberão o nome padronizado do sistema.')
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),

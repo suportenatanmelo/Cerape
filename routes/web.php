@@ -1,15 +1,55 @@
 <?php
 
 use App\Filament\Resources\ArquivosDiarios\ArquivosDiarioResource;
+use App\Models\BlogPost;
 use App\Models\ArquivosDiario;
+use App\Models\HeroSlide;
+use App\Models\FrontendSetting;
 use App\Models\ChMessage;
+use App\Models\GalleryCategory;
+use App\Models\PillarCard;
+use App\Models\ThemePalette;
 use App\Models\User;
+use App\Models\TeamMember;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+Route::get('/', function () {
+    $settings = FrontendSetting::query()->first();
+
+    if (! $settings || $settings->site_enabled) {
+        return view('frontend.index', [
+            'settings' => $settings,
+            'slides' => HeroSlide::query()->where('is_active', true)->orderBy('position')->get(),
+            'pillars' => PillarCard::query()->where('active', true)->orderBy('position')->limit(4)->get(),
+            'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
+            'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
+            'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
+            'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
+        ]);
+    }
+
+    return view('welcome');
+})->name('home');
+
+Route::get('/galeria', function () {
+    $settings = FrontendSetting::query()->first();
+    $categories = GalleryCategory::query()
+        ->where('active', true)
+        ->with(['items' => fn ($query) => $query->where('active', true)->orderBy('position')->orderBy('id')])
+        ->orderBy('position')
+        ->orderBy('id')
+        ->get();
+
+    return view('frontend.gallery', [
+        'settings' => $settings,
+        'categories' => $categories,
+    ]);
+})->name('gallery.index');
+
+Route::view('/welcome', 'welcome')->name('welcome');
 Route::get('/home', fn () => redirect('/'));
 
 Route::middleware('auth')->get('/browser-alerts/status', function (Request $request) {

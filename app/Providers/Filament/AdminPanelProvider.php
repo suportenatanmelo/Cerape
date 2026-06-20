@@ -6,6 +6,7 @@ use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
+use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
 use App\Filament\Widgets\AcolhidosCriadosLineChart;
 use App\Filament\Widgets\AvaliacaoPessoalLineChart;
@@ -131,6 +132,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->resources([
                 RoleResource::class,
+                ThemePaletteResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

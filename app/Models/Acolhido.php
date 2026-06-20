@@ -115,7 +115,13 @@ class Acolhido extends Model
             ImageStorageNaming::syncStoredImage(
                 $acolhido,
                 'avatar',
-                'backend/acolhidos/avatars',
+                'avatar',
+                $acolhido->nome_completo_paciente,
+            );
+            ImageStorageNaming::syncStoredFile(
+                $acolhido,
+                'receituario',
+                'receituario',
                 $acolhido->nome_completo_paciente,
             );
         });
