@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('telefone');
+            $table->string('email')->nullable();
             $table->text('mensagem');
             $table->boolean('respondido')->default(false);
             $table->timestamps();

@@ -7,7 +7,7 @@
     @yield('styles')
 </head>
 <body>
-    <div class="page">
+    <div class="page print-document">
         @include('pdf.partials.cerape-brand-header')
 
         <div class="document-body">

@@ -34,6 +34,7 @@ class ContactLeadResource extends Resource
             ->columns([
                 \Filament\Tables\Columns\TextColumn::make('nome')->label('Nome')->searchable(),
                 \Filament\Tables\Columns\TextColumn::make('telefone')->label('Telefone'),
+                \Filament\Tables\Columns\TextColumn::make('email')->label('E-mail')->toggleable(isToggledHiddenByDefault: true),
                 \Filament\Tables\Columns\TextColumn::make('mensagem')->label('Mensagem')->limit(60),
                 \Filament\Tables\Columns\IconColumn::make('respondido')->boolean()->label('Respondido'),
                 \Filament\Tables\Columns\TextColumn::make('created_at')->label('Data')->dateTime(),

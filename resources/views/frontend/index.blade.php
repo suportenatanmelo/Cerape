@@ -163,15 +163,98 @@
     </section>
 
     <section class="section" id="contato">
-        <div class="section-head">
-            <span class="eyebrow">Contato</span>
-            <h2>Contato</h2>
-            <p>WhatsApp principal: {{ $settings?->whatsapp_number ?? 'defina no painel /frontend' }}</p>
-        </div>
-        <div class="card">
-            <div class="toggle">
-                <strong>Site ativo:</strong> {{ ($settings?->site_enabled ?? true) ? 'Sim' : 'Não' }}
-                <strong>Home ativa:</strong> {{ ($settings?->home_enabled ?? true) ? 'Sim' : 'Não' }}
+        @php
+            $contactSuccess = session('contact_sent');
+        @endphp
+        @php
+            $whatsappDigits = preg_replace('/\D+/', '', (string) ($settings?->whatsapp_number ?? ''));
+            $whatsappDigits = $whatsappDigits ? (str_starts_with($whatsappDigits, '55') ? $whatsappDigits : '55'.$whatsappDigits) : '';
+            $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
+            $whatsappWelcome = trim((string) ($settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
+            $whatsappUrl = $whatsappDigits ? 'https://wa.me/'.$whatsappDigits.'?text='.urlencode($whatsappMessage) : null;
+            $whatsappGreeting = trim((string) ($settings?->contact_whatsapp_greeting ?? 'Olá! 👋 Como podemos ajudar?'));
+            $whatsappSupportLine = trim((string) ($settings?->contact_whatsapp_support_line ?? 'Fale com a nossa equipe agora pelo WhatsApp.'));
+            $whatsappFooterLine = trim((string) ($settings?->contact_whatsapp_footer_line ?? 'Atendimento 24h'));
+        @endphp
+        <div class="contact-wrap">
+            <div class="contact-hero">
+                <span class="contact-kicker">{{ $settings?->contact_eyebrow ?? 'Atendimento confidencial' }}</span>
+                <h2>{{ $settings?->contact_title ?? 'Vamos conversar' }}</h2>
+                <p>{{ $settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.' }}</p>
+            </div>
+
+            <div class="contact-grid-v2">
+                <div class="contact-form-card">
+                    <div class="contact-form-header">
+                        <h3>{{ $settings?->contact_title ?? 'Vamos conversar' }}</h3>
+                        <p>Preencha o formulário e fale diretamente com a equipe da CERAPE.</p>
+                    </div>
+
+                    @if ($contactSuccess)
+                        <div class="contact-success">
+                            Mensagem enviada com sucesso. Em breve retornaremos o contato.
+                        </div>
+                    @endif
+
+                    <form class="contact-form" method="POST" action="{{ route('contact.submit') }}">
+                        @csrf
+                        <div class="contact-grid">
+                            <label class="contact-field">
+                                <span>Nome</span>
+                                <input type="text" name="nome" placeholder="{{ $settings?->contact_form_name_placeholder ?? 'Seu nome' }}" value="{{ old('nome') }}" required>
+                                @error('nome')<small>{{ $message }}</small>@enderror
+                            </label>
+                            <label class="contact-field">
+                                <span>Telefone / WhatsApp</span>
+                                <input type="text" name="telefone" placeholder="{{ $settings?->contact_form_phone_placeholder ?? '(00) 00000-0000' }}" value="{{ old('telefone') }}" required>
+                                @error('telefone')<small>{{ $message }}</small>@enderror
+                            </label>
+                        </div>
+                        <label class="contact-field">
+                            <span>E-mail</span>
+                            <input type="email" name="email" placeholder="{{ $settings?->contact_form_email_placeholder ?? 'seu@email.com' }}" value="{{ old('email') }}">
+                        </label>
+                        <label class="contact-field">
+                            <span>Mensagem</span>
+                            <textarea name="mensagem" rows="6" placeholder="{{ $settings?->contact_form_message_placeholder ?? 'Como podemos ajudar?' }}" required>{{ old('mensagem') }}</textarea>
+                            @error('mensagem')<small>{{ $message }}</small>@enderror
+                        </label>
+                        <div class="contact-actions">
+                            <button type="submit" class="btn btn-primary">Enviar mensagem</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="contact-info-card">
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_title ?? 'Informações' }}</span>
+                        <strong>{{ $settings?->clinic_contact_name ?? 'Clínica CERAPE' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_address_label ?? 'Endereço' }}</span>
+                        <strong>{{ $settings?->clinic_contact_address_line ?? 'Rua das Acácias, 120 — Bairro Jardim, São Paulo/SP' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_city_label ?? 'Cidade' }}</span>
+                        <strong>{{ $settings?->clinic_contact_city_line ?? 'São Paulo' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_state_label ?? 'Estado' }}</span>
+                        <strong>{{ $settings?->clinic_contact_state_line ?? 'SP' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_zip_label ?? 'CEP' }}</span>
+                        <strong>{{ $settings?->clinic_contact_zip_line ?? '00000-000' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_phone_label ?? 'Telefone' }}</span>
+                        <strong>{{ $settings?->clinic_contact_phone_line ?? '(11) 0000-0000' }}</strong>
+                    </div>
+                    <div class="contact-info-box">
+                        <span class="contact-info-title">{{ $settings?->clinic_contact_email_label ?? 'E-mail' }}</span>
+                        <strong>{{ $settings?->clinic_contact_email_line ?? 'contato@cerape.com' }}</strong>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

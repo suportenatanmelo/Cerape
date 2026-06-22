@@ -7,6 +7,11 @@
     $fontColor = $settings?->font_color ?? '#e5e7eb';
     $accent = $settings?->accent_color ?? '#38bdf8';
     $paletteName = $paletteName ?? null;
+    $whatsappDigits = preg_replace('/\D+/', '', (string) ($settings?->whatsapp_number ?? ''));
+    $whatsappDigits = $whatsappDigits ? (str_starts_with($whatsappDigits, '55') ? $whatsappDigits : '55'.$whatsappDigits) : '';
+    $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
+    $whatsappWelcome = trim((string) ($settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
+    $whatsappUrl = $whatsappDigits ? 'https://wa.me/'.$whatsappDigits.'?text='.urlencode($whatsappMessage) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -393,12 +398,173 @@
             display:grid;
             gap: 10px;
         }
+        .contact-wrap {
+            display: grid;
+            gap: 26px;
+        }
+        .contact-hero {
+            max-width: 560px;
+        }
+        .contact-kicker {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(224, 142, 79, 0.22);
+            background: rgba(255,255,255,.7);
+            color: var(--amber);
+            font-size: .8rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .contact-hero h2 {
+            margin: 16px 0 12px;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+        }
+        .contact-grid-v2 {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 22px;
+            align-items: stretch;
+        }
+        .contact-form-card,
+        .contact-info-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--line);
+            border-radius: 28px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(8px);
+        }
+        .contact-form-card {
+            padding: 28px;
+        }
+        .contact-form-header h3 {
+            margin: 0 0 8px;
+            font-size: clamp(1.4rem, 2.5vw, 2rem);
+        }
+        .contact-form-header p {
+            margin: 0;
+            color: var(--ink-soft);
+        }
+        .contact-success {
+            margin: 16px 0 0;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(37, 211, 102, 0.12);
+            border: 1px solid rgba(37, 211, 102, 0.22);
+            color: #166534;
+            font-weight: 600;
+        }
+        .contact-form {
+            display: grid;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .contact-field {
+            display: grid;
+            gap: 8px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--pine);
+        }
+        .contact-field input,
+        .contact-field textarea {
+            width: 100%;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(255,255,255,.85);
+            padding: 14px 16px;
+            color: var(--ink);
+            outline: none;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        .contact-field input:focus,
+        .contact-field textarea:focus {
+            border-color: rgba(224, 142, 79, .55);
+            box-shadow: 0 0 0 4px rgba(224, 142, 79, .12);
+        }
+        .contact-field small {
+            color: #b91c1c;
+            font-weight: 500;
+        }
+        .contact-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .contact-info-card {
+            padding: 22px;
+            display: grid;
+            gap: 14px;
+            align-content: start;
+        }
+        .contact-info-box {
+            padding: 18px;
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(255,255,255,.92), rgba(250,247,242,.88));
+            border: 1px solid var(--line);
+        }
+        .contact-info-title {
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid rgba(107, 142, 120, 0.18);
+            background: rgba(255,255,255,.7);
+            color: var(--sage);
+            font-size: .8rem;
+            font-weight: 800;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .contact-info-box strong {
+            display: block;
+            color: var(--pine);
+            line-height: 1.6;
+            font-size: 0.98rem;
+        }
+        .contact-info-button {
+            width: 100%;
+            justify-content: center;
+            margin-top: 4px;
+        }
         .palette-card {
             min-width: 240px;
             background: var(--surface);
             border: 1px solid var(--line);
             border-radius: 18px;
             padding: 14px;
+        }
+        .whatsapp-float {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 60;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, #25d366, #128c7e);
+            color: #fff;
+            font-weight: 800;
+            box-shadow: 0 18px 36px rgba(18, 140, 126, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .whatsapp-float svg {
+            width: 22px;
+            height: 22px;
+            flex: 0 0 auto;
         }
         .palette-samples {
             display:grid;
@@ -415,9 +581,15 @@
             .hero-content { min-height: 72vh; padding: 72px 20px 44px; }
             .sobre-grid, .steps, .team-grid, .gallery-grid, .blog-grid { grid-template-columns: 1fr; }
             .clinic-grid { grid-template-columns: 1fr; }
+            .contact-grid-v2, .contact-grid { grid-template-columns: 1fr; }
             .clinic-map, .clinic-map iframe, .clinic-map-empty { min-height: 300px; }
             .sobre-img img { height: 300px; }
             .foot-bottom { flex-direction: column; }
+            .whatsapp-float {
+                right: 14px;
+                bottom: 14px;
+                padding: 13px 14px;
+            }
             .arrow { display:none; }
         }
     </style>
@@ -445,6 +617,15 @@
         @yield('content')
     </main>
 
+    @if ($whatsappUrl)
+        <a class="whatsapp-float" href="{{ $whatsappUrl }}" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+            <svg viewBox="0 0 32 32" aria-hidden="true">
+                <path d="M19.11 17.29c-.29-.15-1.72-.85-1.99-.94-.27-.1-.47-.15-.67.15-.2.29-.77.94-.94 1.13-.17.2-.35.22-.64.07-.29-.15-1.23-.45-2.35-1.43-.87-.78-1.46-1.74-1.63-2.03-.17-.29-.02-.45.13-.59.13-.13.29-.35.44-.52.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.52-.07-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51l-.57-.01c-.2 0-.52.07-.79.37-.27.29-1.04 1.02-1.04 2.48 0 1.46 1.07 2.87 1.22 3.07.15.2 2.1 3.2 5.09 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.72-.7 1.96-1.37.24-.67.24-1.24.17-1.37-.07-.13-.27-.2-.56-.35Zm-3.11 8.38h-.01a10.97 10.97 0 0 1-5.61-1.54l-.4-.24-4.18 1.1 1.12-4.07-.26-.42a10.88 10.88 0 0 1-1.67-5.79c0-6.02 4.9-10.92 10.93-10.92 2.92 0 5.66 1.14 7.71 3.2a10.84 10.84 0 0 1 3.2 7.72c0 6.02-4.9 10.96-10.83 10.96Zm9.28-20.23A13.04 13.04 0 0 0 16 0C7.18 0 .02 7.16.02 16c0 2.82.74 5.57 2.14 7.99L0 32l8.18-2.14A15.96 15.96 0 0 0 16 31.98h.01c8.82 0 15.97-7.16 15.97-15.98a15.92 15.92 0 0 0-4.7-11.56Z" fill="currentColor"/>
+            </svg>
+            <span>WhatsApp</span>
+        </a>
+    @endif
+
     <script>
         (() => {
             const slides = [...document.querySelectorAll('.hero-carousel .slide')];
@@ -462,6 +643,7 @@
                 setInterval(() => go(index + 1), 7000);
             }
         })();
+
     </script>
 
     <footer>
@@ -484,7 +666,13 @@
                 <div>
                     <h4>Contato</h4>
                     <ul>
-                        <li>{{ $settings?->whatsapp_number ?? 'configurar no /frontend' }}</li>
+                        <li>
+                            @if ($whatsappUrl)
+                                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener">WhatsApp: {{ $settings?->whatsapp_number }}</a>
+                            @else
+                                configurar no /frontend
+                            @endif
+                        </li>
                         <li>{{ $settings?->contact_email ?? 'contato@cerape.com.br' }}</li>
                     </ul>
                 </div>

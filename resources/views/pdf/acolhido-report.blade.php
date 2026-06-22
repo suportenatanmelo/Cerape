@@ -1,12 +1,9 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Relatorio geral do acolhido</title>
+@extends('pdf.layout')
+
+@section('title', 'Relatorio geral do acolhido')
+
+@section('content')
     <style>
-        * { box-sizing: border-box; }
-        body { background: #f8fafc; color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; margin: 0; }
-        .page { padding: 22px; }
         .hero { background: linear-gradient(135deg, #92400e, #b45309); border-radius: 14px; color: #fff; margin-bottom: 14px; padding: 16px; }
         .hero-table { width: 100%; }
         .avatar-wrap { vertical-align: top; width: 92px; }
@@ -32,99 +29,90 @@
         .inner-table th, .inner-table td { border-left: none; border-right: none; }
         .inner-table tr:first-child th, .inner-table tr:first-child td { border-top: none; }
         .inner-table tr:last-child th, .inner-table tr:last-child td { border-bottom: none; }
-        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 20px; padding-top: 8px; text-align: center; }
     </style>
-</head>
-<body>
-    <div class="page">
-        <div class="hero">
-            <table class="hero-table">
-                <tr>
-                    <td>
-                        <div class="eyebrow">Perfil do acolhido</div>
-                        <h1>Relatorio personalizado do acolhido em PDF</h1>
-                        <div class="hero-text"><strong>{{ $acolhido->nome_completo_paciente }}</strong></div>
-                        <div class="hero-text">Responsavel pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
-                        <div class="hero-text">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
-                        <span class="status {{ $acolhido->ativo ? 'status-active' : 'status-inactive' }}">
-                            {{ $acolhido->ativo ? 'Ativo' : 'Desativado' }}
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </div>
 
-        <table class="summary">
+    <div class="hero">
+        <table class="hero-table">
             <tr>
                 <td>
-                    <div class="summary-card">
-                        <span class="summary-label">Secoes selecionadas</span>
-                        <span class="summary-value">{{ $selectedSectionsCount }} de {{ $availableSectionsCount }}</span>
-                        <span class="summary-note">Quantidade de blocos incluidos neste PDF.</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="summary-card">
-                        <span class="summary-label">Tipo de relatorio</span>
-                        <span class="summary-value">{{ $selectedSectionsCount === $availableSectionsCount ? 'Geral' : 'Personalizado' }}</span>
-                        <span class="summary-note">{{ $selectedSectionsCount === $availableSectionsCount ? 'Todas as secoes foram marcadas.' : 'Somente as secoes escolhidas foram exportadas.' }}</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="summary-card">
-                        <span class="summary-label">Secoes incluidas</span>
-                        <span class="summary-value">{{ $selectedSectionsLabel }}</span>
-                        <span class="summary-note">Resumo das partes exibidas no documento.</span>
-                    </div>
+                    <div class="eyebrow">Perfil do acolhido</div>
+                    <h1>Relatorio personalizado do acolhido em PDF</h1>
+                    <div class="hero-text"><strong>{{ $acolhido->nome_completo_paciente }}</strong></div>
+                    <div class="hero-text">Responsavel pelo cadastro: {{ $acolhido->user?->name ?? '-' }}</div>
+                    <div class="hero-text">Emitido em: {{ now()->format('d/m/Y H:i') }}</div>
+                    <span class="status {{ $acolhido->ativo ? 'status-active' : 'status-inactive' }}">
+                        {{ $acolhido->ativo ? 'Ativo' : 'Desativado' }}
+                    </span>
                 </td>
             </tr>
         </table>
-
-        @foreach ($sections as $title => $fields)
-            <div class="section">
-                <h2 class="section-title">{{ $title }}</h2>
-                <table class="inner-table">
-                    <tbody>
-                        @foreach ($fields as $label => $value)
-                            <tr>
-                                <th>{{ $label }}</th>
-                                <td>{{ $formatValue($value) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endforeach
-
-        @if ($acolhido->avaliacoesPessoais->isNotEmpty())
-            <div class="section">
-                <h2 class="section-title">Avaliacoes pessoais registradas</h2>
-                <table class="inner-table">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Usuario</th>
-                            <th>Tempo de casa</th>
-                            <th>Media</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($acolhido->avaliacoesPessoais->sortByDesc('created_at') as $avaliacao)
-                            <tr>
-                                <td>{{ $avaliacao->created_at?->format('d/m/Y H:i') }}</td>
-                                <td>{{ $avaliacao->user?->name ?? '-' }}</td>
-                                <td>{{ $avaliacao->dias_na_casa ?? '-' }}</td>
-                                <td>{{ number_format((float) $avaliacao->Total, 2, ',', '.') }} / 3</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endif
-
-        <div class="footer">
-            Relatorio gerado automaticamente pelo sistema Cerape.
-        </div>
     </div>
-</body>
-</html>
+
+    <table class="summary">
+        <tr>
+            <td>
+                <div class="summary-card">
+                    <span class="summary-label">Secoes selecionadas</span>
+                    <span class="summary-value">{{ $selectedSectionsCount }} de {{ $availableSectionsCount }}</span>
+                    <span class="summary-note">Quantidade de blocos incluidos neste PDF.</span>
+                </div>
+            </td>
+            <td>
+                <div class="summary-card">
+                    <span class="summary-label">Tipo de relatorio</span>
+                    <span class="summary-value">{{ $selectedSectionsCount === $availableSectionsCount ? 'Geral' : 'Personalizado' }}</span>
+                    <span class="summary-note">{{ $selectedSectionsCount === $availableSectionsCount ? 'Todas as secoes foram marcadas.' : 'Somente as secoes escolhidas foram exportadas.' }}</span>
+                </div>
+            </td>
+            <td>
+                <div class="summary-card">
+                    <span class="summary-label">Secoes incluidas</span>
+                    <span class="summary-value">{{ $selectedSectionsLabel }}</span>
+                    <span class="summary-note">Resumo das partes exibidas no documento.</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    @foreach ($sections as $title => $fields)
+        <div class="section">
+            <h2 class="section-title">{{ $title }}</h2>
+            <table class="inner-table">
+                <tbody>
+                    @foreach ($fields as $label => $value)
+                        <tr>
+                            <th>{{ $label }}</th>
+                            <td>{{ $formatValue($value) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endforeach
+
+    @if ($acolhido->avaliacoesPessoais->isNotEmpty())
+        <div class="section">
+            <h2 class="section-title">Avaliacoes pessoais registradas</h2>
+            <table class="inner-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Usuario</th>
+                        <th>Tempo de casa</th>
+                        <th>Media</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($acolhido->avaliacoesPessoais->sortByDesc('created_at') as $avaliacao)
+                        <tr>
+                            <td>{{ $avaliacao->created_at?->format('d/m/Y H:i') }}</td>
+                            <td>{{ $avaliacao->user?->name ?? '-' }}</td>
+                            <td>{{ $avaliacao->dias_na_casa ?? '-' }}</td>
+                            <td>{{ number_format((float) $avaliacao->Total, 2, ',', '.') }} / 3</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endif
+@endsection

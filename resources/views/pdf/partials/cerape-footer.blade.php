@@ -1,6 +1,7 @@
 <div class="cerape-footer-wrapper">
     <div class="cerape-footer-container">
-        <img class="cerape-footer-logo" src="{{ public_path('images/logo.png') }}" alt="CERAPE">
+        @php($footerLogo = \App\Support\PdfImage::publicDataUri('images/logo.png') ?? asset('images/logo-pdf.svg'))
+        <img class="cerape-footer-logo" src="{{ $footerLogo }}" alt="CERAPE">
         <div class="cerape-footer-text">CERAPE</div>
         <div class="cerape-footer-motto">Reinserção por quem faz</div>
     </div>

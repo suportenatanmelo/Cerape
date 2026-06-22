@@ -1,14 +1,10 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>Quadro semanal de atividades</title>
+@extends('pdf.layout')
+
+@section('title', 'Quadro semanal de atividades')
+
+@section('content')
     <style>
-        * { box-sizing: border-box; }
-        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 10px; line-height: 1.35; margin: 0; }
-        .page { padding: 20px; }
         .title { border: 1px solid #9ca3af; border-bottom: 0; font-size: 20px; font-weight: bold; padding: 10px 14px; text-align: center; text-transform: uppercase; }
-        .title span { color: #111827; }
         .meta { border: 1px solid #9ca3af; border-bottom: 0; padding: 8px 12px; }
         .meta-line { margin-bottom: 3px; }
         .meta-line:last-child { margin-bottom: 0; }
@@ -26,64 +22,51 @@
         .names-list li { margin-bottom: 2px; }
         .observacoes { border: 1px solid #9ca3af; border-top: 0; padding: 10px 12px; }
         .observacoes h2 { font-size: 11px; margin: 0 0 6px; text-transform: uppercase; }
-        .footer { color: #6b7280; font-size: 9px; margin-top: 10px; text-align: right; }
     </style>
-</head>
-<body>
-    <div class="page">
-        @include('pdf.partials.cerape-brand-header')
 
-        <div class="title">
-            {{ $record->titulo }} <span>- {{ $periodoLabel }}</span>
-        </div>
-        <div class="meta">
-            <div class="meta-line"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
-            <div class="meta-line"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th class="col-order">Ordem</th>
-                    <th class="col-activity">Atividades praticas</th>
-                    <th class="col-demand">Demanda</th>
-                    <th class="col-names">Nome</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($atividadesPlanejadas as $atividade)
-                    <tr>
-                        <td class="col-order">{{ $atividade['ordem'] }}</td>
-                        <td class="col-activity">{{ $atividade['atividade_pratica'] ?: '-' }}</td>
-                        <td class="col-demand demand">{!! $atividade['demanda_html'] ?: '-' !!}</td>
-                        <td class="col-names">
-                            @if ($atividade['acolhidos_nomes'] === [])
-                                -
-                            @else
-                                <ul class="names-list">
-                                    @foreach ($atividade['acolhidos_nomes'] as $nome)
-                                        <li>{{ $nome }}</li>
-                                    @endforeach
-                                </ul>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4">Nenhuma atividade cadastrada para este periodo.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-
-        <div class="observacoes">
-            <h2>Observacoes complementares</h2>
-            {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observacoes adicionais.' !!}
-        </div>
-
-        <div class="footer">
-            Relatorio gerado automaticamente pelo sistema Cerape.
-        </div>
+    <div class="title">{{ $record->titulo }} <span>- {{ $periodoLabel }}</span></div>
+    <div class="meta">
+        <div class="meta-line"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
+        <div class="meta-line"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
     </div>
-</body>
-</html>
+
+    <table>
+        <thead>
+            <tr>
+                <th class="col-order">Ordem</th>
+                <th class="col-activity">Atividades praticas</th>
+                <th class="col-demand">Demanda</th>
+                <th class="col-names">Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($atividadesPlanejadas as $atividade)
+                <tr>
+                    <td class="col-order">{{ $atividade['ordem'] }}</td>
+                    <td class="col-activity">{{ $atividade['atividade_pratica'] ?: '-' }}</td>
+                    <td class="col-demand demand">{!! $atividade['demanda_html'] ?: '-' !!}</td>
+                    <td class="col-names">
+                        @if ($atividade['acolhidos_nomes'] === [])
+                            -
+                        @else
+                            <ul class="names-list">
+                                @foreach ($atividade['acolhidos_nomes'] as $nome)
+                                    <li>{{ $nome }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4">Nenhuma atividade cadastrada para este periodo.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div class="observacoes">
+        <h2>Observacoes complementares</h2>
+        {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observacoes adicionais.' !!}
+    </div>
+@endsection

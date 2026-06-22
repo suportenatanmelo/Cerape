@@ -125,7 +125,7 @@
     @case('contrato_prevencao_recaida')
         <h1 class="doc-title">{{ $payload['title'] }}</h1>
         <p class="doc-paragraph">CENTRO DE REABILITAÇÃO DO CERAPE - CRC</p>
-        <p class="doc-paragraph">CONTRATO TERAPEUTICO - PROGRAMA DE PREVENÇÃO A RECAIDA E REABILITAÇÃO</p>
+        <p class="doc-paragraph">CONTRATO TERAPEUTICO</p>
         <p class="doc-paragraph"><strong>CONTRATANTE</strong></p>
         <p class="doc-paragraph">
             <strong>INTERVENTOR DO ACOLHIMENTO:</strong><br>

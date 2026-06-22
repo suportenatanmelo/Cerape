@@ -65,12 +65,6 @@ class FrontendSettingResource extends Resource
                     \Filament\Forms\Components\ColorPicker::make('font_color')->label('Cor da fonte')->default('#e5e7eb'),
                     \Filament\Forms\Components\ColorPicker::make('accent_color')->label('Cor de destaque')->default('#38bdf8'),
                 ])->columns(2),
-            \Filament\Schemas\Components\Section::make('WhatsApp')
-                ->schema([
-                    \Filament\Forms\Components\TextInput::make('whatsapp_number')->label('Número')->default(''),
-                    \Filament\Forms\Components\TextInput::make('whatsapp_message')->label('Mensagem padrão')->default('Olá, gostaria de mais informações.'),
-                    \Filament\Forms\Components\TextInput::make('site_email')->label('E-mail')->default(''),
-                ])->columns(1),
             \Filament\Schemas\Components\Section::make('Clínica e mapa')
                 ->schema([
                     \Filament\Forms\Components\TextInput::make('clinic_name')->label('Nome da clínica')->default('Clínica CERAPE'),

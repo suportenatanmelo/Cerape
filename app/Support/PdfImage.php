@@ -255,6 +255,7 @@ class PdfImage
         }
 
         $fallbackRelativePaths = [
+            'images/logo-pdf.svg',
             'grayscale/assets/' . $fileName . '-pdf.svg',
             ltrim(($directory !== '.' ? $directory . '/' : '') . $fileName . '-pdf.svg', '/'),
         ];

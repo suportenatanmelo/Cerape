@@ -56,7 +56,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
                     ->required()
                     ->live(),
                 Select::make('acolhido_id')
-                    ->label('Acolhido')
+                    ->label('Nome do acolhido')
                     ->options(fn (): array => Acolhido::query()
                         ->orderBy('nome_completo_paciente')
                         ->pluck('nome_completo_paciente', 'id')
@@ -143,7 +143,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'Declaracao para uso de imagem',
             'desistencia_ptc' => 'Declaracao de desistencia do PTC',
             'acolhimento_voluntario' => 'Declaracao de acolhimento voluntario',
-            'contrato_prevencao_recaida' => 'Contrato terapeutico - prevencao a recaida',
+            'contrato_prevencao_recaida' => 'Contrato terapeutico',
         ];
     }
 
@@ -211,7 +211,7 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'DECLARACAO PARA USO DE IMAGEM',
             'desistencia_ptc' => 'DECLARACAO DE DESISTENCIA DO PTC',
             'acolhimento_voluntario' => 'DECLARACAO DE ACOLHIMENTO VOLUNTARIO',
-            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO - PREVENCAO A RECAIDA',
+            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO',
             default => 'DECLARACAO',
         };
     }

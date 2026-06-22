@@ -1,23 +1,30 @@
 <style>
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; background: #ffffff; color: #111111; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; }
-    @page { margin: 0; }
+    @page { margin: 18mm 14mm 33mm 14mm; }
     body { text-align: center; }
     .page {
+        position: relative;
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding: 26px 28px 18px;
         background: #ffffff;
     }
-    .document-body { width: 100%; margin: 0 auto; text-align: left; flex: 1; padding: 18px 0 16px; }
+    .document-body {
+        width: 100%;
+        margin: 0 auto;
+        text-align: left;
+        padding-top: 4mm;
+        padding-bottom: 4mm;
+    }
     .brand-header {
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 28px;
-        margin-top: 4px;
+        left: 14mm;
+        position: fixed;
+        right: 14mm;
+        top: 10mm;
+        margin-top: 0;
         width: 100%;
     }
     .brand-logo-box { display: flex; align-items: center; justify-content: center; width: 128px; min-height: 128px; padding: 0; border: none; background: transparent; flex: 0 0 auto; }
@@ -27,7 +34,20 @@
     .brand-header-subtitle { color: #111111; font-size: 12px; line-height: 1.45; margin-top: 0; }
     .section { background: #ffffff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 14px; overflow: hidden; page-break-inside: avoid; }
     .section-title { color: #1d4ed8; font-size: 14px; margin: 0 0 10px; padding: 10px 0; }
-    .cerape-footer-wrapper { background: #ffffff; color: #111111; font-family: DejaVu Sans, sans-serif; margin-top: 0; padding: 0; page-break-inside: avoid; text-align: center; }
+    .cerape-footer-wrapper {
+        background: #ffffff;
+        color: #111111;
+        font-family: DejaVu Sans, sans-serif;
+        margin-top: 0;
+        padding: 0;
+        page-break-inside: avoid;
+        position: fixed;
+        left: 14mm;
+        right: 14mm;
+        bottom: 8mm;
+        text-align: center;
+        width: auto;
+    }
     .cerape-footer-container { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; }
     .cerape-footer-logo { width: 100%; max-width: 102px; height: 102px; margin: 0 auto 0; }
     .cerape-footer-text { color: #111111; font-size: 14px; font-weight: 400; letter-spacing: 0; margin-bottom: 0; text-transform: none; }
@@ -44,6 +64,10 @@
     .cerape-footer-cnpj { display: flex; justify-content: center; gap: 24px; margin-top: 6px; font-size: 8px; }
     .cerape-footer-divider { border-bottom: 3px solid #1e3a8a; margin: 10px 0 8px; }
     .cerape-footer-mission { color: #111111; font-size: 9px; font-weight: 400; letter-spacing: 0; line-height: 1.35; text-align: center; text-transform: uppercase; }
+    .print-document {
+        padding-top: 36mm;
+        padding-bottom: 38mm;
+    }
     table { border-collapse: collapse; width: 100%; page-break-inside: auto; }
     tr { page-break-inside: avoid; page-break-after: auto; }
     th, td { vertical-align: top; }

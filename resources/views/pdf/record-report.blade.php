@@ -1,12 +1,9 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <title>{{ $title }}</title>
+@extends('pdf.layout')
+
+@section('title', $title ?? 'Relatorio')
+
+@section('content')
     <style>
-        * { box-sizing: border-box; }
-        body { color: #111827; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; margin: 0; }
-        .page { padding: 26px; }
         .hero { border-bottom: 2px solid #d97706; display: table; padding-bottom: 18px; width: 100%; }
         .hero-photo, .hero-content { display: table-cell; vertical-align: top; }
         .hero-photo { width: 128px; }
@@ -20,49 +17,40 @@
         th { background: #f9fafb; color: #4b5563; font-size: 10px; text-align: left; text-transform: uppercase; width: 34%; }
         th, td { border: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
         .section { page-break-inside: avoid; }
-        .footer { border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 9px; margin-top: 26px; padding-top: 10px; }
     </style>
-</head>
-<body>
-    <div class="page">
-        <div class="hero">
-            @if (! empty($photoLabel))
-                <div class="hero-photo">
-                    <div class="photo-empty">{{ $photoLabel }}</div>
-                </div>
+
+    <div class="hero">
+        @if (! empty($photoLabel))
+            <div class="hero-photo">
+                <div class="photo-empty">{{ $photoLabel }}</div>
+            </div>
+        @endif
+
+        <div class="hero-content">
+            <h1>{{ $title }}</h1>
+            <div class="muted"><strong>{{ $subtitle }}</strong></div>
+            @foreach ($metaLines as $line)
+                <div class="muted">{{ $line }}</div>
+            @endforeach
+            @if (! empty($highlight))
+                <div class="highlight">{{ $highlight }}</div>
             @endif
-
-            <div class="hero-content">
-                <h1>{{ $title }}</h1>
-                <div class="muted"><strong>{{ $subtitle }}</strong></div>
-                @foreach ($metaLines as $line)
-                    <div class="muted">{{ $line }}</div>
-                @endforeach
-                @if (! empty($highlight))
-                    <div class="highlight">{{ $highlight }}</div>
-                @endif
-            </div>
-        </div>
-
-        @foreach ($sections as $sectionTitle => $fields)
-            <div class="section">
-                <h2>{{ $sectionTitle }}</h2>
-                <table>
-                    <tbody>
-                        @foreach ($fields as $label => $value)
-                            <tr>
-                                <th>{{ $label }}</th>
-                                <td>{{ $formatValue($value) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @endforeach
-
-        <div class="footer">
-            Relatorio gerado automaticamente pelo sistema Cerape.
         </div>
     </div>
-</body>
-</html>
+
+    @foreach ($sections as $sectionTitle => $fields)
+        <div class="section">
+            <h2>{{ $sectionTitle }}</h2>
+            <table>
+                <tbody>
+                    @foreach ($fields as $label => $value)
+                        <tr>
+                            <th>{{ $label }}</th>
+                            <td>{{ $formatValue($value) }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    @endforeach
+@endsection

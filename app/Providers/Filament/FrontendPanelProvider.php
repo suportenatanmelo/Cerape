@@ -11,8 +11,12 @@ use App\Filament\Frontend\Resources\PillarCardResource;
 use App\Filament\Frontend\Resources\TeamMemberResource;
 use App\Filament\Frontend\Pages\MediaManager;
 use App\Filament\Frontend\Pages\QuemSomos;
+use App\Filament\Frontend\Pages\ClinicSettings;
+use App\Filament\Frontend\Pages\ContactSettings;
+use App\Filament\Frontend\Pages\WhatsAppSettings;
 use App\Filament\Frontend\Pages\SitePreview;
 use App\Http\Middleware\EnsureFrontendOwnerAccess;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -50,7 +54,35 @@ class FrontendPanelProvider extends PanelProvider
             ->pages([
                 SitePreview::class,
                 QuemSomos::class,
+                ClinicSettings::class,
+                ContactSettings::class,
+                WhatsAppSettings::class,
                 MediaManager::class,
+            ])
+            ->plugins([
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Administracao e Acesso')
+                    ->navigationSort(100)
+                    ->navigationIcon('heroicon-o-shield-check')
+                    ->activeNavigationIcon('heroicon-s-shield-check')
+                    ->modelLabel('Perfil de acesso')
+                    ->pluralModelLabel('Perfis de acesso')
+                    ->localizePermissionLabels()
+                    ->gridColumns([
+                        'default' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->sectionColumnSpan(1)
+                    ->checkboxListColumns([
+                        'default' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->resourceCheckboxListColumns([
+                        'default' => 1,
+                        'md' => 2,
+                    ]),
             ])
             ->middleware([
                 EncryptCookies::class,

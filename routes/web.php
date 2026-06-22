@@ -5,6 +5,7 @@ use App\Models\BlogPost;
 use App\Models\ArquivosDiario;
 use App\Models\HeroSlide;
 use App\Models\FrontendSetting;
+use App\Models\ContactLead;
 use App\Models\ChMessage;
 use App\Models\GalleryCategory;
 use App\Models\PillarCard;
@@ -14,7 +15,9 @@ use App\Models\TeamMember;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Validation\ValidationException;
 
 Route::get('/', function () {
     $settings = FrontendSetting::query()->first();
@@ -31,7 +34,7 @@ Route::get('/', function () {
         ]);
     }
 
-    return view('welcome');
+    return redirect()->route('welcome');
 })->name('home');
 
 Route::get('/galeria', function () {
@@ -51,6 +54,61 @@ Route::get('/galeria', function () {
 
 Route::view('/welcome', 'welcome')->name('welcome');
 Route::get('/home', fn () => redirect('/'));
+
+Route::post('/contato', function (Request $request) {
+    $data = $request->validate([
+        'nome' => ['required', 'string', 'max:255'],
+        'telefone' => ['required', 'string', 'max:30'],
+        'email' => ['nullable', 'email', 'max:255'],
+        'mensagem' => ['required', 'string', 'max:5000'],
+    ]);
+
+    ContactLead::query()->create([
+        'nome' => $data['nome'],
+        'telefone' => preg_replace('/\D+/', '', $data['telefone']) ?: $data['telefone'],
+        'email' => $data['email'] ?? null,
+        'mensagem' => $data['mensagem'],
+        'respondido' => false,
+    ]);
+
+    return back()->with('contact_sent', true);
+})->name('contact.submit');
+
+Route::middleware('auth')->post('/frontend/site-status', function (Request $request) {
+    $user = $request->user();
+
+    abort_unless($user instanceof User, 401);
+    abort_unless($user->email === 'suportenatanmelo@gmail.com', 403);
+
+    $data = $request->validate([
+        'site_enabled' => ['required', 'boolean'],
+        'password' => ['required', 'string'],
+    ]);
+
+    $owner = User::query()->where('email', 'suportenatanmelo@gmail.com')->first();
+
+    abort_unless($owner instanceof User, 404);
+    if (! Hash::check($data['password'], (string) $owner->password)) {
+        throw ValidationException::withMessages([
+            'password' => 'Senha incorreta.',
+        ]);
+    }
+
+    $settings = FrontendSetting::query()->firstOrNew([]);
+
+    $settings->site_enabled = (bool) $data['site_enabled'];
+    $settings->save();
+
+    if ($request->expectsJson()) {
+        return response()->json([
+            'ok' => true,
+            'message' => 'Senha aprovada. Status atualizado com sucesso.',
+            'site_enabled' => (bool) $settings->site_enabled,
+        ]);
+    }
+
+    return back()->with('frontend_status_updated', true);
+})->name('frontend.site-status');
 
 Route::middleware('auth')->get('/browser-alerts/status', function (Request $request) {
     $user = $request->user();

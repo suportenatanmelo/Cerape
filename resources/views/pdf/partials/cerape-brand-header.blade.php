@@ -1,6 +1,7 @@
 <div class="brand-header">
     <div class="brand-logo-box">
-        <img class="brand-logo" src="{{ public_path('images/logo.png') }}" alt="CERAPE">
+        @php($brandLogo = \App\Support\PdfImage::publicDataUri('images/logo.png') ?? asset('images/logo-pdf.svg'))
+        <img class="brand-logo" src="{{ $brandLogo }}" alt="CERAPE">
     </div>
 
     <div class="brand-header-text">

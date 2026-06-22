@@ -9,6 +9,7 @@ class ContactLead extends Model
     protected $fillable = [
         'nome',
         'telefone',
+        'email',
         'mensagem',
         'respondido',
     ];

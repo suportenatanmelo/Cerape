@@ -2,6 +2,7 @@
     <div class="fi-portal-footer__inner">
         <span>@natanmelo</span>
         <span>E-mail: suportenatanmelo@gmail.com</span>
+        <span>Footer administrativo do painel</span>
     </div>
 </footer>
 
@@ -10,6 +11,7 @@
         border-top: 1px solid rgba(148, 163, 184, 0.22);
         margin-top: 1.5rem;
         padding: 0 1.5rem 1.25rem;
+        position: relative;
     }
 
     .fi-portal-footer__inner {
@@ -23,6 +25,7 @@
         margin: 0 auto;
         max-width: 72rem;
         padding-top: 0.9rem;
+        flex-wrap: wrap;
     }
 
     .dark .fi-portal-footer {
