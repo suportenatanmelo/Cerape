@@ -5,21 +5,19 @@
 @section('content')
     <style>
         .header { border-bottom: 2px solid #0f766e; padding-bottom: 12px; }
-        h1 { font-size: 18px; margin: 0 0 4px; }
-        .muted { color: #6b7280; }
-        .highlight { background: #ccfbf1; border-radius: 999px; color: #115e59; display: inline-block; font-size: 9px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
         table { border-collapse: collapse; margin-top: 16px; width: 100%; }
         th { background: #f9fafb; color: #4b5563; font-size: 8px; text-align: left; text-transform: uppercase; }
         th, td { border: 1px solid #d1d5db; padding: 8px 6px; vertical-align: middle; }
         .blank-cell { height: 28px; }
     </style>
 
-    <div class="header">
-        <h1>Auto Avaliacao dos acolhidos</h1>
-        <div class="muted">Relatorio em formato de apoio para preenchimento manual da equipe.</div>
-        <div class="muted">Gerado em: {{ $geradoEm->format('d/m/Y H:i') }}</div>
-        <div class="muted">Total de acolhidos listados: {{ $acolhidos->count() }}</div>
-        <div class="highlight">Categorias em branco para preenchimento manual</div>
+    <div class="report-header">
+        <div class="report-eyebrow">Acompanhamento</div>
+        <h1 class="report-title report-title--compact">Auto Avaliacao dos acolhidos</h1>
+        <div class="report-subtitle">Relatorio em formato de apoio para preenchimento manual da equipe.</div>
+        <div class="report-subtitle">Gerado em: {{ $geradoEm->format('d/m/Y H:i') }}</div>
+        <div class="report-subtitle">Total de acolhidos listados: {{ $acolhidos->count() }}</div>
+        <span class="report-badge report-badge--teal">Categorias em branco para preenchimento manual</span>
     </div>
 
     <table>

@@ -18,23 +18,6 @@ Relatório de Acolhidos
     .page { 
         padding: 20px 25px; 
     }
-    .header {
-        margin-bottom: 25px;
-        border-bottom: 2px solid #1f2937;
-        padding-bottom: 15px;
-    }
-    .header-title {
-        font-size: 16px;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 0 0 5px 0;
-        text-transform: uppercase;
-    }
-    .header-date {
-        font-size: 9px;
-        color: #6b7280;
-        margin: 0;
-    }
     .table-wrapper {
         width: 100%;
         border-collapse: collapse;
@@ -107,9 +90,10 @@ Relatório de Acolhidos
         $columnLabels = $columnLabels ?? [];
     @endphp
 
-    <div class="header">
-        <h1 class="header-title">Relatório de Acolhidos</h1>
-        <p class="header-date">Gerado em {{ now()->format('d/m/Y \à\s H:i') }} - Total: {{ $acolhidos->count() }} registro(s)</p>
+    <div class="report-header">
+        <div class="report-eyebrow">Listagem</div>
+        <h1 class="report-title report-title--compact">Relatório de Acolhidos</h1>
+        <p class="report-subtitle">Gerado em {{ now()->format('d/m/Y \à\s H:i') }} - Total: {{ $acolhidos->count() }} registro(s)</p>
     </div>
 
     @forelse($acolhidos as $batchIndex => $batchGroup)
@@ -164,7 +148,5 @@ Relatório de Acolhidos
         </div>
     @endforelse
 
-    <div class="footer">
-        <p>Cerape - Sistema de Gestão de Acolhidos</p>
-    </div>
+    @include('pdf.partials.cerape-footer')
 @endsection

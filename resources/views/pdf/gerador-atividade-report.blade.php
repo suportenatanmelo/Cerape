@@ -24,7 +24,11 @@
         .observacoes h2 { font-size: 11px; margin: 0 0 6px; text-transform: uppercase; }
     </style>
 
-    <div class="title">{{ $record->titulo }} <span>- {{ $periodoLabel }}</span></div>
+    <div class="report-header">
+        <div class="report-eyebrow">Atividades</div>
+        <div class="report-title report-title--compact">{{ $record->titulo }} <span>- {{ $periodoLabel }}</span></div>
+        <div class="report-subtitle">Documento de programação semanal e demanda operacional</div>
+    </div>
     <div class="meta">
         <div class="meta-line"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
         <div class="meta-line"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
@@ -66,7 +70,7 @@
     </table>
 
     <div class="observacoes">
-        <h2>Observacoes complementares</h2>
+        <h2 class="report-section-title">Observacoes complementares</h2>
         {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observacoes adicionais.' !!}
     </div>
 @endsection

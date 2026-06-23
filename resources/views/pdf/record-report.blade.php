@@ -4,15 +4,11 @@
 
 @section('content')
     <style>
-        .hero { border-bottom: 2px solid #d97706; display: table; padding-bottom: 18px; width: 100%; }
+        .hero { display: table; padding-bottom: 18px; width: 100%; }
         .hero-photo, .hero-content { display: table-cell; vertical-align: top; }
         .hero-photo { width: 128px; }
         .photo { border: 2px solid #e5e7eb; border-radius: 14px; height: 116px; object-fit: cover; width: 116px; }
         .photo-empty { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 14px; color: #6b7280; height: 116px; line-height: 116px; text-align: center; width: 116px; }
-        h1 { font-size: 21px; margin: 0 0 6px; }
-        h2 { color: #92400e; font-size: 14px; margin: 22px 0 10px; }
-        .muted { color: #6b7280; margin-bottom: 3px; }
-        .highlight { background: #fef3c7; border-radius: 999px; color: #92400e; display: inline-block; font-size: 10px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
         table { border-collapse: collapse; width: 100%; }
         th { background: #f9fafb; color: #4b5563; font-size: 10px; text-align: left; text-transform: uppercase; width: 34%; }
         th, td { border: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
@@ -27,20 +23,21 @@
         @endif
 
         <div class="hero-content">
-            <h1>{{ $title }}</h1>
-            <div class="muted"><strong>{{ $subtitle }}</strong></div>
+            <div class="report-eyebrow">Relatório</div>
+            <h1 class="report-title report-title--compact">{{ $title }}</h1>
+            <div class="report-subtitle"><strong>{{ $subtitle }}</strong></div>
             @foreach ($metaLines as $line)
-                <div class="muted">{{ $line }}</div>
+                <div class="report-subtitle">{{ $line }}</div>
             @endforeach
             @if (! empty($highlight))
-                <div class="highlight">{{ $highlight }}</div>
+                <span class="report-badge report-badge--amber">{{ $highlight }}</span>
             @endif
         </div>
     </div>
 
     @foreach ($sections as $sectionTitle => $fields)
         <div class="section">
-            <h2>{{ $sectionTitle }}</h2>
+            <h2 class="report-section-title">{{ $sectionTitle }}</h2>
             <table>
                 <tbody>
                     @foreach ($fields as $label => $value)

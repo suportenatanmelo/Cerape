@@ -12,10 +12,6 @@
         .avatar-empty { background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 14px; color: #6b7280; font-size: 24px; font-weight: bold; height: 148px; line-height: 148px; margin: 0 auto; text-align: center; width: 112px; }
         .profile-name { font-size: 13px; font-weight: bold; margin-top: 8px; }
         .profile-meta { color: #6b7280; font-size: 9px; margin-top: 3px; }
-        .title-panel { border-bottom: 2px solid #d97706; padding-bottom: 12px; }
-        h1 { font-size: 19px; margin: 0 0 4px; }
-        h2 { color: #92400e; font-size: 12px; margin: 16px 0 8px; }
-        .muted { color: #6b7280; }
         .cards { display: table; margin-top: 14px; width: 100%; }
         .card { border: 1px solid #e5e7eb; display: table-cell; padding: 10px; width: 25%; }
         .card + .card { border-left: 0; }
@@ -64,12 +60,13 @@
         </div>
 
         <div class="hero-right">
-            <div class="title-panel">
-                <h1>Relatorio detalhado de avaliacao pessoal</h1>
-                <div class="muted">Acolhido: <strong>{{ $acolhido?->nome_completo_paciente ?? '-' }}</strong></div>
-                <div class="muted">Tempo de casa: {{ $record->dias_na_casa ?? '-' }}</div>
-                <div class="muted">Emitido em: {{ now()->format('d/m/Y') }}</div>
-                <div class="muted">Ultima avaliacao registrada: {{ $ultimaAvaliacao?->created_at?->format('d/m/Y') ?? '-' }}</div>
+            <div class="report-header">
+                <div class="report-eyebrow">Acompanhamento técnico</div>
+                <h1 class="report-title report-title--compact">Relatorio detalhado de avaliacao pessoal</h1>
+                <div class="report-subtitle">Acolhido: <strong>{{ $acolhido?->nome_completo_paciente ?? '-' }}</strong></div>
+                <div class="report-subtitle">Tempo de casa: {{ $record->dias_na_casa ?? '-' }}</div>
+                <div class="report-subtitle">Emitido em: {{ now()->format('d/m/Y') }}</div>
+                <div class="report-subtitle">Ultima avaliacao registrada: {{ $ultimaAvaliacao?->created_at?->format('d/m/Y') ?? '-' }}</div>
             </div>
         </div>
     </div>
@@ -83,19 +80,19 @@
 
     <div class="two-col">
         <div class="two-col-left">
-            <h2>Dados pessoais do acolhido</h2>
+            <h2 class="report-section-title--soft">Dados pessoais do acolhido</h2>
             <table class="info-table"><tbody>@foreach (collect($personalData)->slice(0, (int) ceil(count($personalData) / 2)) as $item)<tr><td class="info-label">{{ $item['label'] }}</td><td>{{ $item['value'] }}</td></tr>@endforeach</tbody></table>
         </div>
         <div class="two-col-right">
-            <h2>&nbsp;</h2>
+            <h2 class="report-section-title--soft">&nbsp;</h2>
             <table class="info-table"><tbody>@foreach (collect($personalData)->slice((int) ceil(count($personalData) / 2)) as $item)<tr><td class="info-label">{{ $item['label'] }}</td><td>{{ $item['value'] }}</td></tr>@endforeach</tbody></table>
         </div>
     </div>
 
-    <h2>Media geral por criterio</h2>
+    <h2 class="report-section-title">Media geral por criterio</h2>
     <div class="criteria-grid">@foreach ($criteriaAverages as $label => $value)<div class="criteria-item"><div class="criteria-label">{{ $label }}</div><div class="criteria-value">{{ $formatScore((float) $value) }}</div></div>@endforeach</div>
 
-    <h2>Comparativos de periodo</h2>
+    <h2 class="report-section-title">Comparativos de periodo</h2>
     @foreach (['semanal', 'mensal', 'semestral'] as $comparisonKey)
         @php($comparison = $periodComparisons[$comparisonKey])
         <div class="comparison-box">
@@ -111,7 +108,7 @@
         </div>
     @endforeach
 
-    <h2>Resumo por usuario avaliador</h2>
+    <h2 class="report-section-title">Resumo por usuario avaliador</h2>
     @forelse ($usuarios as $item)
         <div class="evaluator-card">
             <div class="evaluator-head">
@@ -132,7 +129,7 @@
         <table><tbody><tr><td>Nenhuma avaliacao registrada.</td></tr></tbody></table>
     @endforelse
 
-    <h2>Avaliacoes detalhadas</h2>
+    <h2 class="report-section-title">Avaliacoes detalhadas</h2>
     <table>
         <thead><tr><th>Data</th><th>Usuario</th><th>Controle</th><th>Autonomia</th><th>Transparencia</th><th>Superacao</th><th>Autocuidado</th><th>Media final</th></tr></thead>
         <tbody>
@@ -153,7 +150,7 @@
         </tbody>
     </table>
 
-    <h2>Logica de calculo das medias</h2>
+    <h2 class="report-section-title">Logica de calculo das medias</h2>
     <table>
         <thead><tr><th>Item</th><th>Descricao</th></tr></thead>
         <tbody>

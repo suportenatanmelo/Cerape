@@ -100,10 +100,6 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::BODY_START,
                 fn (): View => view('filament.portal.family-dashboard-url')
             )
-            ->renderHook(
-                PanelsRenderHook::FOOTER,
-                fn (): View => view('filament.portal.footer')
-            )
             ->plugins([
                 ImageGalleryPlugin::make(),
                 FilamentShieldPlugin::make()

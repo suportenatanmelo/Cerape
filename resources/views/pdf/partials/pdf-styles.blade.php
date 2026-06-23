@@ -1,80 +1,126 @@
 <style>
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; width: 100%; min-height: 100%; background: #ffffff; color: #111111; font-family: DejaVu Sans, sans-serif; font-size: 11px; line-height: 1.45; }
-    @page { margin: 18mm 14mm 33mm 14mm; }
-    body { text-align: center; }
-    .page {
-        position: relative;
-        min-height: 100vh;
-        background: #ffffff;
-    }
-    .document-body {
+    html, body {
+        margin: 0;
+        padding: 0;
         width: 100%;
-        margin: 0 auto;
-        text-align: left;
-        padding-top: 4mm;
-        padding-bottom: 4mm;
-    }
-    .brand-header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 28px;
-        left: 14mm;
-        position: fixed;
-        right: 14mm;
-        top: 10mm;
-        margin-top: 0;
-        width: 100%;
-    }
-    .brand-logo-box { display: flex; align-items: center; justify-content: center; width: 128px; min-height: 128px; padding: 0; border: none; background: transparent; flex: 0 0 auto; }
-    .brand-logo { display: block; max-width: 100%; max-height: 128px; width: auto; height: auto; }
-    .brand-header-text { flex: 1; text-align: center; }
-    .brand-header-title { font-size: 15px; font-weight: 400; line-height: 1.35; margin-bottom: 6px; color: #111111; text-transform: uppercase; }
-    .brand-header-subtitle { color: #111111; font-size: 12px; line-height: 1.45; margin-top: 0; }
-    .section { background: #ffffff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 14px; overflow: hidden; page-break-inside: avoid; }
-    .section-title { color: #1d4ed8; font-size: 14px; margin: 0 0 10px; padding: 10px 0; }
-    .cerape-footer-wrapper {
+        min-height: 100%;
         background: #ffffff;
         color: #111111;
-        font-family: DejaVu Sans, sans-serif;
-        margin-top: 0;
-        padding: 0;
-        page-break-inside: avoid;
+        font-family: DejaVu Serif, serif;
+        font-size: 12pt;
+        line-height: 1.5;
+        text-align: justify;
+    }
+    @page { margin: 30mm 20mm 20mm 30mm; }
+    .page { position: relative; min-height: 100vh; background: #ffffff; }
+    .document-body { width: 100%; margin: 0 auto; padding-top: 58px; padding-bottom: 54px; }
+    .brand-header {
         position: fixed;
-        left: 14mm;
-        right: 14mm;
-        bottom: 8mm;
+        top: 16mm;
+        left: 30mm;
+        right: 20mm;
+        width: auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
         text-align: center;
+        padding-bottom: 3.5mm;
+        border-bottom: 1px solid #111111;
+    }
+    .brand-logo-box,
+    .brand-spacer { flex: 0 0 92px; width: 92px; }
+    .brand-logo { display: block; width: 92px; height: 92px; object-fit: contain; }
+    .brand-text { flex: 1; text-align: center; }
+    .brand-header-title { font-size: 12pt; font-weight: 700; letter-spacing: 0.02em; line-height: 1.2; margin: 0; text-transform: uppercase; }
+    .brand-header-subtitle {
+        font-size: 9pt;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        line-height: 1.25;
+        margin: 1.5mm 0 0;
+        text-transform: none;
+    }
+    .report-header {
+        border-bottom: 1px solid #111111;
+        margin-bottom: 16px;
+        padding-bottom: 10px;
+    }
+    .report-eyebrow {
+        color: #111111;
+        font-size: 9pt;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+    }
+    .report-title {
+        color: #111827;
+        font-size: 14pt;
+        line-height: 1.2;
+        margin: 0 0 6px;
+        text-align: center;
+    }
+    .report-title--compact { font-size: 13pt; }
+    .report-subtitle {
+        color: #333333;
+        font-size: 10pt;
+        line-height: 1.4;
+        margin: 0 0 3px;
+    }
+    .report-section-title {
+        color: #111111;
+        font-size: 11pt;
+        font-weight: 700;
+        margin: 14px 0 8px;
+        text-transform: uppercase;
+    }
+    .report-section-title--soft {
+        background: transparent;
+        border-left: 0;
+        color: #111827;
+        font-size: 11pt;
+        margin: 0;
+        padding: 0 0 6px;
+        text-transform: uppercase;
+    }
+    .report-muted { color: #6b7280; }
+    .report-badge {
+        border-radius: 0;
+        display: inline-block;
+        font-size: 9pt;
+        font-weight: 700;
+        margin-top: 6px;
+        padding: 2px 8px;
+        text-transform: uppercase;
+    }
+    .report-badge--teal { background: transparent; color: #111111; }
+    .report-badge--amber { background: transparent; color: #111111; }
+    .cerape-footer-wrapper {
+        position: fixed;
+        left: 30mm;
+        right: 20mm;
+        bottom: 12mm;
         width: auto;
     }
-    .cerape-footer-container { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 10px; }
-    .cerape-footer-logo { width: 100%; max-width: 102px; height: 102px; margin: 0 auto 0; }
-    .cerape-footer-text { color: #111111; font-size: 14px; font-weight: 400; letter-spacing: 0; margin-bottom: 0; text-transform: none; }
-    .cerape-footer-motto { color: #111111; font-size: 10px; font-weight: 400; letter-spacing: 0; }
-    .cerape-footer-info { border-top: 0; border-bottom: 0; font-size: 8px; line-height: 1.25; margin-bottom: 0; padding: 0; text-align: left; }
-    .cerape-footer-addresses {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 14px;
-        margin-bottom: 12px;
+    .cerape-footer-frame { border-top: 1px solid #111111; padding-top: 3mm; }
+    .cerape-footer-columns { display: block; }
+    .cerape-footer-column { display: none; }
+    .footer-address-label { display: none; }
+    .cerape-footer-cnpj { display: none; }
+    .cerape-footer-divider { display: none; }
+    .cerape-footer-mission {
+        font-size: 8.5pt;
+        font-weight: 400;
+        letter-spacing: 0.01em;
+        line-height: 1.3;
+        padding: 0;
+        text-align: center;
+        text-transform: none;
     }
-    .footer-address-item { display: block; margin-bottom: 0; }
-    .footer-address-label { font-weight: bold; display: block; }
-    .cerape-footer-cnpj { display: flex; justify-content: center; gap: 24px; margin-top: 6px; font-size: 8px; }
-    .cerape-footer-divider { border-bottom: 3px solid #1e3a8a; margin: 10px 0 8px; }
-    .cerape-footer-mission { color: #111111; font-size: 9px; font-weight: 400; letter-spacing: 0; line-height: 1.35; text-align: center; text-transform: uppercase; }
-    .print-document {
-        padding-top: 36mm;
-        padding-bottom: 38mm;
-    }
-    table { border-collapse: collapse; width: 100%; page-break-inside: auto; }
-    tr { page-break-inside: avoid; page-break-after: auto; }
-    th, td { vertical-align: top; }
+    .page-break { page-break-after: always; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td, p, li, div { overflow-wrap: break-word; word-break: break-word; }
     img { max-width: 100%; height: auto; }
-    .text-center { text-align: center; }
-    .muted { color: #475569; }
-    .badge { display: inline-block; border-radius: 999px; padding: 4px 10px; font-size: 10px; font-weight: bold; }
-    .status-active { background: #dcfce7; color: #166534; }
-    .status-inactive { background: #fee2e2; color: #991b1b; }
+    p { margin: 0 0 8px; }
 </style>

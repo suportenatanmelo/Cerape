@@ -14,10 +14,6 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
         .avatar-wrap { vertical-align: top; width: 92px; }
         .avatar { background: #fff; border: 3px solid #cbd5e1; border-radius: 18px; height: 78px; object-fit: cover; width: 78px; }
         .avatar-empty { background: #e2e8f0; border: 2px dashed #94a3b8; border-radius: 18px; color: #334155; height: 78px; padding-top: 28px; text-align: center; width: 78px; }
-        .eyebrow { font-size: 8px; font-weight: bold; letter-spacing: 0.14em; text-transform: uppercase; }
-        h1 { font-size: 19px; margin: 4px 0 6px; text-transform: uppercase; }
-        .hero-text { color: #334155; font-size: 9px; margin: 2px 0; }
-        .status { border-radius: 999px; display: inline-block; font-size: 9px; font-weight: bold; margin-top: 8px; padding: 4px 10px; }
         .status-active { background: #dcfce7; color: #166534; }
         .status-inactive { background: #fee2e2; color: #991b1b; }
         .summary { margin: 0 0 14px; width: 100%; }
@@ -46,13 +42,13 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
                         <div class="avatar-empty">{{ $photoLabel ?? 'PIA' }}</div>
                     </td>
                     <td>
-                        <div class="eyebrow" style="color: #0f766e;">Plano individual</div>
-                        <h1>{{ $title }}</h1>
-                        <div class="hero-text"><strong>{{ $subtitle }}</strong></div>
+                        <div class="report-eyebrow">Plano individual</div>
+                        <h1 class="report-title report-title--compact">{{ $title }}</h1>
+                        <div class="report-subtitle"><strong>{{ $subtitle }}</strong></div>
                         @foreach ($metaLines as $line)
-                            <div class="hero-text">{{ $line }}</div>
+                            <div class="report-subtitle">{{ $line }}</div>
                         @endforeach
-                        <span class="status {{ $highlight === 'PLANO COMPLETO' ? 'status-active' : 'status-inactive' }}">
+                        <span class="report-badge {{ $highlight === 'PLANO COMPLETO' ? 'report-badge--teal' : 'report-badge--amber' }}">
                             {{ $highlight }}
                         </span>
                     </td>
@@ -88,7 +84,7 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
 
         @foreach ($sections as $moduleTitle => $fields)
             <div class="section">
-                <h2 class="section-title">{{ $moduleTitle }}</h2>
+                <h2 class="report-section-title--soft">{{ $moduleTitle }}</h2>
                 <table class="inner-table">
                     <tbody>
                         @foreach ($fields as $label => $value)
@@ -101,5 +97,7 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
                 </table>
             </div>
         @endforeach
+
+        @include('pdf.partials.cerape-footer')
 
 @endsection

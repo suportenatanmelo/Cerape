@@ -5,16 +5,12 @@
 @section('content')
     <style>
         .hero { background: linear-gradient(135deg, #0f766e, #134e4a); border-radius: 14px; color: #fff; margin-bottom: 12px; padding: 16px; }
-        .eyebrow { font-size: 8px; font-weight: bold; letter-spacing: 0.14em; text-transform: uppercase; }
-        .title { font-size: 17px; font-weight: bold; margin: 6px 0 4px; }
-        .subtitle { color: rgba(255, 255, 255, 0.88); font-size: 9px; margin: 2px 0; }
         .cards { margin: 0 0 12px; width: 100%; }
         .cards td { padding: 0 5px; vertical-align: top; width: 25%; }
         .card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; min-height: 74px; padding: 10px; }
         .card-label { color: #64748b; display: block; font-size: 8px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; }
         .card-value { color: #0f172a; display: block; font-size: 14px; font-weight: bold; margin-top: 5px; }
         .card-note { color: #475569; display: block; font-size: 8px; margin-top: 4px; }
-        .section-title { color: #0f172a; font-size: 10px; font-weight: bold; margin: 12px 0 6px; text-transform: uppercase; }
         .panel { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; overflow: hidden; }
         table { border-collapse: separate; border-spacing: 0; width: 100%; }
         th { background: #ecfeff; color: #0f172a; font-size: 8px; font-weight: bold; letter-spacing: 0.08em; padding: 7px; text-align: left; text-transform: uppercase; }
@@ -32,15 +28,15 @@
     </style>
 
     <div class="hero">
-        <div class="eyebrow">Avaliacao pessoal consolidada</div>
-        <div class="title">Relatorio geral de acolhidos avaliados</div>
-        <div class="subtitle">Gerado em: {{ $generatedAt->format('d/m/Y H:i') }}</div>
+        <div class="report-eyebrow" style="color: #d1fae5;">Avaliacao pessoal consolidada</div>
+        <div class="report-title report-title--compact" style="color: #fff;">Relatorio geral de acolhidos avaliados</div>
+        <div class="report-subtitle" style="color: rgba(255,255,255,0.92);">Gerado em: {{ $generatedAt->format('d/m/Y H:i') }}</div>
         @if ($selectedDate)
-            <div class="subtitle">Filtro aplicado: {{ $selectedDate->format('d/m/Y') }}</div>
+            <div class="report-subtitle" style="color: rgba(255,255,255,0.92);">Filtro aplicado: {{ $selectedDate->format('d/m/Y') }}</div>
         @else
-            <div class="subtitle">Periodo analisado: historico completo das avaliacoes registradas.</div>
+            <div class="report-subtitle" style="color: rgba(255,255,255,0.92);">Periodo analisado: historico completo das avaliacoes registradas.</div>
         @endif
-        <div class="subtitle">O documento mostra todos os acolhidos que receberam votos, a quantidade total de votos e a media consolidada dos usuarios que avaliaram.</div>
+        <div class="report-subtitle" style="color: rgba(255,255,255,0.92);">O documento mostra todos os acolhidos que receberam votos, a quantidade total de votos e a media consolidada dos usuarios que avaliaram.</div>
     </div>
 
     <table class="cards">
@@ -52,7 +48,7 @@
         </tr>
     </table>
 
-    <div class="section-title">Consolidado por acolhido</div>
+    <div class="report-section-title">Consolidado por acolhido</div>
     <div class="panel">
         <table>
             <thead>

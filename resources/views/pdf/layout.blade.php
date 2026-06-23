@@ -8,13 +8,13 @@
 </head>
 <body>
     <div class="page print-document">
-        @include('pdf.partials.cerape-brand-header')
+        @include('pdf.cabecalho')
 
         <div class="document-body">
             @yield('content')
         </div>
 
-        @include('pdf.partials.cerape-footer')
+        @include('pdf.rodape')
     </div>
 </body>
 </html>

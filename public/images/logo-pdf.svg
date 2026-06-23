@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="420" height="120" viewBox="0 0 420 120" role="img" aria-label="CERAPE">
-  <rect width="420" height="120" rx="18" fill="#0f766e"/>
-  <circle cx="70" cy="60" r="34" fill="#ffffff" opacity="0.12"/>
-  <path d="M46 60c0-13.255 10.745-24 24-24 7.4 0 14.02 3.365 18.39 8.65l-9.09 7.5A12 12 0 1 0 70 72h22c0 9.941-8.059 18-18 18H70c-13.255 0-24-10.745-24-24Z" fill="#fff"/>
-  <text x="124" y="55" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" fill="#ffffff">CERAPE</text>
-  <text x="124" y="84" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#d1fae5">Centro de Reabilitação do Preso e Egresso</text>
-</svg>
