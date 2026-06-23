@@ -44,6 +44,12 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->where('email', '!=', 'suportenatanmelo@gmail.com');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return $schema
@@ -229,7 +235,6 @@ class UserResource extends Resource
     {
         return $table
             ->recordTitleAttribute('name')
-            ->modifyQueryUsing(fn (Builder $query): Builder => $query->where('email', '!=', 'suportenatanmelo@gmail.com'))
             ->columns([
                 ImageColumn::make('avatar')
                     ->label('Imagem')

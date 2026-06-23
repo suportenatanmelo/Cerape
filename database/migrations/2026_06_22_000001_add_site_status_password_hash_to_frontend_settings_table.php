@@ -9,21 +9,35 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasTable('frontend_settings')) {
+            return;
+        }
+
         Schema::table('frontend_settings', function (Blueprint $table): void {
-            $table->string('site_status_password_hash')->nullable()->after('site_enabled');
+            if (! Schema::hasColumn('frontend_settings', 'site_status_password_hash')) {
+                $table->string('site_status_password_hash')->nullable();
+            }
         });
 
         $defaultHash = hash('sha256', 'suportenatanmelo@gmail.com');
 
-        DB::table('frontend_settings')
-            ->whereNull('site_status_password_hash')
-            ->update(['site_status_password_hash' => $defaultHash]);
+        if (Schema::hasColumn('frontend_settings', 'site_status_password_hash')) {
+            DB::table('frontend_settings')
+                ->whereNull('site_status_password_hash')
+                ->update(['site_status_password_hash' => $defaultHash]);
+        }
     }
 
     public function down(): void
     {
+        if (! Schema::hasTable('frontend_settings')) {
+            return;
+        }
+
         Schema::table('frontend_settings', function (Blueprint $table): void {
-            $table->dropColumn('site_status_password_hash');
+            if (Schema::hasColumn('frontend_settings', 'site_status_password_hash')) {
+                $table->dropColumn('site_status_password_hash');
+            }
         });
     }
 };
