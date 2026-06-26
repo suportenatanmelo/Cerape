@@ -3,10 +3,12 @@
 namespace App\Providers;
 
 use App\Models\Acolhido;
+use App\Models\Agenda;
 use App\Models\DemandaAcolhido;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\User;
 use App\Observers\AcolhidoObserver;
+use App\Observers\AgendaObserver;
 use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use App\Observers\UserObserver;
@@ -67,6 +69,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Acolhido::observe(AcolhidoObserver::class);
+        Agenda::observe(AgendaObserver::class);
         User::observe(UserObserver::class);
         SubstanciaPsicoativas::observe(SubstanciaPsicoativasObserver::class);
         DemandaAcolhido::observe(DemandaAcolhidoObserver::class);

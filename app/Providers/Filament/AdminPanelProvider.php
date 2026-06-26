@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
+use App\Filament\Resources\Agendas\Pages\CalendarAgenda;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
@@ -134,6 +135,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
+                CalendarAgenda::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
