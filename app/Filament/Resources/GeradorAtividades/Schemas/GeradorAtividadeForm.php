@@ -42,7 +42,6 @@ class GeradorAtividadeForm
                                 ->maxLength(255),
                             DatePicker::make('data_programacao')
                                 ->label('Inicio do ciclo')
-                                ->native(false)
                                 ->live()
                                 ->default(now())
                                 ->helperText('O sistema fecha automaticamente o periodo em 7 dias.'),
@@ -121,7 +120,6 @@ class GeradorAtividadeForm
                                         ->options(fn (Get $get, mixed $state): array => self::availableActivityOptions($get, $state))
                                         ->searchable()
                                         ->preload()
-                                        ->native(false)
                                         ->live()
                                         ->distinct()
                                         ->placeholder('Selecione uma atividade da lista')
@@ -147,7 +145,6 @@ class GeradorAtividadeForm
                                         ->searchable()
                                         ->preload()
                                         ->reorderable()
-                                        ->native(false)
                                         ->helperText('Selecione um ou mais acolhidos. Os nomes ficam carregados em tags.')
                                         ->columnSpan(3),
                                 ])

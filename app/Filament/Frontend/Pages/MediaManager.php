@@ -14,9 +14,9 @@ class MediaManager extends Page
 
     protected static ?string $slug = 'midia';
 
-    protected static ?string $title = 'Mídia do frontend';
+    protected static ?string $title = 'Mídia do site';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Mídia';
 
     protected static bool $shouldRegisterNavigation = true;
 
@@ -29,7 +29,7 @@ class MediaManager extends Page
             'Blog' => $this->collectFiles('imagens/blog'),
             'Equipe' => $this->collectFiles('imagens/equipe_tecnica'),
             'Avatar' => $this->collectFiles('imagens/avatar'),
-            'Receituario' => $this->collectFiles('imagens/receituario'),
+            'Receituário' => $this->collectFiles('imagens/receituario'),
         ];
     }
 

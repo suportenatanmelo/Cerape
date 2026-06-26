@@ -75,13 +75,13 @@ class ArquivosDiariosTable
                 Action::make('visualizar')
                     ->label('Visualizar')
                     ->icon('heroicon-o-eye')
-                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-diarios.preview', $record) : null, shouldOpenInNewTab: true)
+                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-upload.preview', $record) : null, shouldOpenInNewTab: true)
                     ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 Action::make('download')
                     ->label('Baixar')
                     ->icon('heroicon-o-arrow-down-tray')
                     ->color('success')
-                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-diarios.download', $record) : null, shouldOpenInNewTab: true)
+                    ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-upload.download', $record) : null, shouldOpenInNewTab: true)
                     ->visible(fn ($record): bool => filled($record->upload_arquivo)),
                 EditAction::make(),
                 DeleteAction::make(),

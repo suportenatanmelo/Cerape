@@ -26,17 +26,6 @@ class EditProntuarioEvolucao extends EditRecord
         return 'Editar prontuario de evolucao';
     }
 
-    /**
-     * @param  array<string, mixed>  $data
-     * @return array<string, mixed>
-     */
-    protected function mutateFormDataBeforeSave(array $data): array
-    {
-        $data['user_id'] ??= $this->getRecord()->user_id ?? auth()->id();
-
-        return $data;
-    }
-
     protected function afterSave(): void
     {
         ProntuarioEvolucaoResource::notifyUsers($this->getRecord(), 'updated');

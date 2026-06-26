@@ -17,7 +17,7 @@ use UnitEnum;
 class PillarCardResource extends Resource
 {
     protected static ?string $model = PillarCard::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-bolt';
     protected static ?string $navigationLabel = 'Pilares';
     protected static ?string $modelLabel = 'pilar';
@@ -26,7 +26,7 @@ class PillarCardResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            \Filament\Schemas\Components\Section::make('Card do pilar')->schema([
+            \Filament\Schemas\Components\Section::make('Pilar')->schema([
                 \Filament\Forms\Components\TextInput::make('title')->label('Título')->required(),
                 \Filament\Forms\Components\Textarea::make('summary')->label('Texto sucinto')->required()->rows(3),
                 \Filament\Forms\Components\TextInput::make('position')->label('Ordem')->numeric()->default(1),

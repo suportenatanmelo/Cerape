@@ -11,38 +11,71 @@
                 <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1600&auto=format&fit=crop')"></div>
             @endforelse
         </div>
+        <div class="hero-veil"></div>
 
         <div class="hero-content">
             @php
                 $heroSlide = $slides->first();
             @endphp
-            <span class="eyebrow">{{ $heroSlide?->subtitle ?? 'Casa de Recuperação · Acolhimento 24h' }}</span>
-            <h1>{{ $heroSlide?->title ?? $settings?->hero_title ?? 'Um novo amanhecer começa com um passo de coragem.' }}</h1>
-            <p>{{ $heroSlide?->description ?? $settings?->hero_subtitle ?? 'Ambiente seguro, equipe multiprofissional e um plano de tratamento pensado para cada etapa da recuperação — do acolhimento à reinserção.' }}</p>
+            <span class="eyebrow hero-anim" style="--d:.1s">{{ $heroSlide?->subtitle ?? $settings?->hero_subtitle ?? 'Casa de Recuperação · Acolhimento 24h' }}</span>
+            <h1 class="hero-title">
+                <span class="line-mask"><span class="line-inner" style="--d:.35s">{{ \Illuminate\Support\Str::before($heroSlide?->title ?? $settings?->hero_title ?? 'Um novo amanhecer começa com um passo de coragem.', ' ') }}</span></span>
+                <span class="line-mask"><span class="line-inner" style="--d:.5s">{{ \Illuminate\Support\Str::after($heroSlide?->title ?? $settings?->hero_title ?? 'Um novo amanhecer começa com um passo de coragem.', ' ') ?: 'começa com um passo de coragem.' }}</span></span>
+            </h1>
+            <p class="hero-anim" style="--d:.8s">{{ $heroSlide?->description ?? $settings?->hero_subtitle ?? 'Ambiente seguro, equipe multiprofissional e um plano de tratamento pensado para cada etapa da recuperação — do acolhimento à reinserção.' }}</p>
             @if (($heroSlide?->show_buttons ?? true) || ! blank($heroSlide?->cta_label) || ! blank($heroSlide?->cta_url))
-                <div class="hero-actions">
+                <div class="hero-actions hero-anim" style="--d:1s">
                     @if ($heroSlide?->show_buttons ?? true)
-                        <a href="{{ $heroSlide?->cta_url ?: '#contato' }}" class="btn btn-primary">{{ $heroSlide?->cta_label ?? 'Agendar uma conversa' }}</a>
-                        <a href="#jornada" class="btn btn-ghost">Conhecer a jornada</a>
+                        <a href="{{ $heroSlide?->cta_url ?: '#contato' }}" class="btn btn-primary">{{ $heroSlide?->cta_label ?? $settings?->hero_cta_label ?? 'Agendar uma conversa' }}</a>
+                        <a href="#jornada" class="btn btn-ghost">{{ $settings?->hero_secondary_cta_label ?? 'Conhecer a jornada' }}</a>
                     @endif
                 </div>
             @endif
         </div>
 
+        <a href="#sobre" class="scroll-cue hero-anim" style="--d:1.3s" aria-label="Rolar para conhecer a CERAPE">
+            <span class="scroll-cue-mouse"><span></span></span>
+            <span class="scroll-cue-label">Role para conhecer</span>
+        </a>
+
         <button class="arrow prev" type="button" onclick="moveSlide(-1)" aria-label="Slide anterior">‹</button>
         <button class="arrow next" type="button" onclick="moveSlide(1)" aria-label="Próximo slide">›</button>
     </section>
+    <div class="horizon"></div>
 
     <section id="sobre" class="section">
         <div class="sobre-grid">
-            <div class="sobre-img card">
+            <div class="sobre-img card reveal">
                 <img src="{{ $settings?->about_image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->about_image_path) : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop' }}" alt="Casa CERAPE">
             </div>
-            <div class="sobre-text">
-                <span class="eyebrow">Quem somos</span>
+            <div class="sobre-text reveal" style="--reveal-delay:.15s">
+                <span class="eyebrow">{{ $settings?->menu_label_about ?? 'Quem somos' }}</span>
                 <h2>{{ $settings?->about_title ?? 'Sobre a CERAPE' }}</h2>
-                <p>{{ $settings?->about_paragraph_one ?? 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.' }}</p>
-                <p>{{ $settings?->about_paragraph_two ?? 'Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.' }}</p>
+                <p>{!! $settings?->about_paragraph_one ?? 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.' !!}</p>
+                <p>{!! $settings?->about_paragraph_two ?? 'Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.' !!}</p>
+                @php
+                    $aboutVideoUrl = trim((string) ($settings?->about_video_url ?? ''));
+                    $aboutVideoWidth = (int) ($settings?->about_video_width ?? 560);
+                    $aboutVideoHeight = (int) ($settings?->about_video_height ?? 315);
+                    $aboutVideoEmbedUrl = null;
+
+                    if ($aboutVideoUrl !== '' && preg_match('~(?:youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $aboutVideoUrl, $matches)) {
+                        $aboutVideoEmbedUrl = 'https://www.youtube.com/embed/' . $matches[1];
+                    }
+                @endphp
+
+                @if (!empty($aboutVideoEmbedUrl))
+                    <div class="video-card" style="--video-width: {{ $aboutVideoWidth }}px; --video-height: {{ $aboutVideoHeight }}px;">
+                        <iframe
+                            src="{{ $aboutVideoEmbedUrl }}"
+                            title="Vídeo Quem somos"
+                            loading="lazy"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen
+                        ></iframe>
+                    </div>
+                @endif
                 <div class="stats-row">
                     <div class="stat"><strong>12+</strong><span>anos de atuação</span></div>
                     <div class="stat"><strong>500+</strong><span>vidas acolhidas</span></div>
@@ -53,36 +86,36 @@
     </section>
 
     <section id="jornada" class="section">
-        <div class="section-head">
-            <span class="eyebrow">Como funciona</span>
-            <h2>Uma jornada em quatro etapas</h2>
-            <p>Cada fase tem objetivos claros, sempre com acompanhamento próximo da família e da equipe técnica.</p>
+        <div class="section-head reveal">
+            <span class="eyebrow">{{ $settings?->journey_eyebrow ?? 'Como funciona' }}</span>
+            <h2>{{ $settings?->journey_title ?? 'Uma jornada em quatro etapas' }}</h2>
+            <p>{{ $settings?->journey_description ?? 'Cada fase tem objetivos claros, sempre com acompanhamento próximo da família e da equipe técnica.' }}</p>
         </div>
         <div class="steps">
             @forelse ($pillars->take(4) as $index => $pillar)
-                <article class="step">
+                <article class="step reveal" style="--reveal-delay:{{ $index * 0.12 }}s">
                     <span class="num">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
                     <h3>{{ $pillar->title }}</h3>
                     <p>{{ $pillar->summary }}</p>
                 </article>
             @empty
-                <article class="step"><span class="num">01</span><h3>Acolhimento</h3><p>Cadastre os pilares no painel /frontend.</p></article>
-                <article class="step"><span class="num">02</span><h3>Estabilização</h3><p>Cadastre os pilares no painel /frontend.</p></article>
-                <article class="step"><span class="num">03</span><h3>Fortalecimento</h3><p>Cadastre os pilares no painel /frontend.</p></article>
-                <article class="step"><span class="num">04</span><h3>Reinserção</h3><p>Cadastre os pilares no painel /frontend.</p></article>
+                <article class="step"><span class="num">01</span><h3>{{ $settings?->journey_empty_title_one ?? 'Acolhimento' }}</h3><p>{{ $settings?->journey_empty_description ?? 'Cadastre os pilares no painel /frontend.' }}</p></article>
+                <article class="step"><span class="num">02</span><h3>{{ $settings?->journey_empty_title_two ?? 'Estabilização' }}</h3><p>{{ $settings?->journey_empty_description ?? 'Cadastre os pilares no painel /frontend.' }}</p></article>
+                <article class="step"><span class="num">03</span><h3>{{ $settings?->journey_empty_title_three ?? 'Fortalecimento' }}</h3><p>{{ $settings?->journey_empty_description ?? 'Cadastre os pilares no painel /frontend.' }}</p></article>
+                <article class="step"><span class="num">04</span><h3>{{ $settings?->journey_empty_title_four ?? 'Reinserção' }}</h3><p>{{ $settings?->journey_empty_description ?? 'Cadastre os pilares no painel /frontend.' }}</p></article>
             @endforelse
         </div>
     </section>
 
     <section class="section" id="equipe">
-        <div class="section-head">
-            <span class="eyebrow">Como funciona</span>
-            <h2>Quem cuida de você</h2>
-            <p>Uma equipe multiprofissional acompanha cada etapa do tratamento, em conjunto e com plano individual para cada residente.</p>
+        <div class="section-head reveal">
+            <span class="eyebrow">{{ $settings?->team_eyebrow ?? 'Equipe' }}</span>
+            <h2>{{ $settings?->team_title ?? 'Quem cuida de você' }}</h2>
+            <p>{{ $settings?->team_description ?? 'Uma equipe multiprofissional acompanha cada etapa do tratamento, em conjunto e com plano individual para cada residente.' }}</p>
         </div>
         <div class="team-grid">
             @forelse ($team as $member)
-                <article class="team-card">
+                <article class="team-card reveal">
                     <div class="team-photo">
                         @if ($member->photoUrl())
                             <img src="{{ $member->photoUrl() }}" alt="{{ $member->name }}">
@@ -95,19 +128,19 @@
                     </div>
                 </article>
             @empty
-                <article class="team-card"><div class="team-info"><p>Cadastre a equipe no painel /frontend.</p></div></article>
+                <article class="team-card"><div class="team-info"><p>{{ $settings?->team_empty_message ?? 'Cadastre a equipe no painel /frontend.' }}</p></div></article>
             @endforelse
         </div>
     </section>
 
     <section class="section" id="galeria">
-        <div class="section-head">
-            <span class="eyebrow">Nosso espaço</span>
-            <h2>Galeria</h2>
-            <p>Um ambiente pensado para acolher: áreas comuns, quartos, jardim e espaços terapêuticos.</p>
+        <div class="section-head reveal">
+            <span class="eyebrow">{{ $settings?->gallery_eyebrow ?? 'Nosso espaço' }}</span>
+            <h2>{{ $settings?->gallery_title ?? 'Galeria' }}</h2>
+            <p>{{ $settings?->gallery_description ?? 'Um ambiente pensado para acolher: áreas comuns, quartos, jardim e espaços terapêuticos.' }}</p>
         </div>
-        <div class="gallery-filters">
-            <button type="button" class="filter-btn active">Todos</button>
+        <div class="gallery-filters reveal">
+            <button type="button" class="filter-btn active">{{ $settings?->gallery_all_label ?? 'Todos' }}</button>
             @forelse ($categories as $category)
                 <button type="button" class="filter-btn">{{ $category->name }}</button>
             @empty
@@ -119,7 +152,7 @@
         </div>
         <div class="gallery-grid">
             @forelse ($categories->sortBy('position') as $category)
-                <article class="g-item">
+                <article class="g-item reveal">
                     @if ($category->imageUrl())
                         <div class="team-photo" style="height: 220px;">
                             <img src="{{ $category->imageUrl() }}" alt="{{ $category->name }}">
@@ -132,20 +165,20 @@
                     </div>
                 </article>
             @empty
-                <article class="g-item"><div class="team-info"><p>Cadastre as categorias da galeria no painel /frontend.</p></div></article>
+                <article class="g-item"><div class="team-info"><p>{{ $settings?->gallery_empty_message ?? 'Cadastre as categorias da galeria no painel /frontend.' }}</p></div></article>
             @endforelse
         </div>
     </section>
 
     <section class="section" id="blog">
-        <div class="section-head">
-            <span class="eyebrow">Conteúdo</span>
-            <h2>Blog</h2>
-            <p>Artigos para famílias e pacientes sobre recuperação, saúde mental e reconstrução de vínculos.</p>
+        <div class="section-head reveal">
+            <span class="eyebrow">{{ $settings?->blog_eyebrow ?? 'Conteúdo' }}</span>
+            <h2>{{ $settings?->blog_title ?? 'Blog' }}</h2>
+            <p>{{ $settings?->blog_description ?? 'Artigos para famílias e pacientes sobre recuperação, saúde mental e reconstrução de vínculos.' }}</p>
         </div>
         <div class="blog-grid">
             @forelse ($posts as $post)
-                <article class="post-card">
+                <article class="post-card reveal">
                     @if ($post->imageUrl())
                         <div class="post-img"><img src="{{ $post->imageUrl() }}" alt="{{ $post->title }}"></div>
                     @endif
@@ -157,7 +190,7 @@
                     </div>
                 </article>
             @empty
-                <article class="post-card"><div class="post-body"><p>Cadastre até 5 cards do blog no painel /frontend.</p></div></article>
+                <article class="post-card"><div class="post-body"><p>{{ $settings?->blog_empty_message ?? 'Cadastre até 5 cards do blog no painel /frontend.' }}</p></div></article>
             @endforelse
         </div>
     </section>
@@ -170,23 +203,23 @@
             $whatsappDigits = preg_replace('/\D+/', '', (string) ($settings?->whatsapp_number ?? ''));
             $whatsappDigits = $whatsappDigits ? (str_starts_with($whatsappDigits, '55') ? $whatsappDigits : '55'.$whatsappDigits) : '';
             $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
-            $whatsappWelcome = trim((string) ($settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
+            $whatsappWelcome = trim((string) ($settings?->contact_section_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
             $whatsappUrl = $whatsappDigits ? 'https://wa.me/'.$whatsappDigits.'?text='.urlencode($whatsappMessage) : null;
-            $whatsappGreeting = trim((string) ($settings?->contact_whatsapp_greeting ?? 'Olá! 👋 Como podemos ajudar?'));
-            $whatsappSupportLine = trim((string) ($settings?->contact_whatsapp_support_line ?? 'Fale com a nossa equipe agora pelo WhatsApp.'));
-            $whatsappFooterLine = trim((string) ($settings?->contact_whatsapp_footer_line ?? 'Atendimento 24h'));
+            $whatsappGreeting = trim((string) ($settings?->contact_section_title ?? 'Olá! 👋 Como podemos ajudar?'));
+            $whatsappSupportLine = trim((string) ($settings?->contact_whatsapp_title ?? 'Fale com a nossa equipe agora pelo WhatsApp.'));
+            $whatsappFooterLine = trim((string) ($settings?->contact_whatsapp_footer ?? 'Atendimento 24h'));
         @endphp
         <div class="contact-wrap">
-            <div class="contact-hero">
-                <span class="contact-kicker">{{ $settings?->contact_eyebrow ?? 'Atendimento confidencial' }}</span>
-                <h2>{{ $settings?->contact_title ?? 'Vamos conversar' }}</h2>
-                <p>{{ $settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.' }}</p>
+            <div class="contact-hero reveal">
+                <span class="contact-kicker">{{ $settings?->contact_section_eyebrow ?? 'Atendimento confidencial' }}</span>
+                <h2>{{ $settings?->contact_section_title ?? 'Vamos conversar' }}</h2>
+                <p>{{ $settings?->contact_section_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.' }}</p>
             </div>
 
             <div class="contact-grid-v2">
-                <div class="contact-form-card">
+                <div class="contact-form-card reveal">
                     <div class="contact-form-header">
-                        <h3>{{ $settings?->contact_title ?? 'Vamos conversar' }}</h3>
+                        <h3>{{ $settings?->contact_section_title ?? 'Vamos conversar' }}</h3>
                         <p>Preencha o formulário e fale diretamente com a equipe da CERAPE.</p>
                     </div>
 
@@ -220,14 +253,14 @@
                             @error('mensagem')<small>{{ $message }}</small>@enderror
                         </label>
                         <div class="contact-actions">
-                            <button type="submit" class="btn btn-primary">Enviar mensagem</button>
+                            <button type="submit" class="btn btn-primary">{{ $settings?->contact_whatsapp_cta_label ?? 'Enviar mensagem' }}</button>
                         </div>
                     </form>
                 </div>
 
-                <div class="contact-info-card">
+                <div class="contact-info-card reveal" style="--reveal-delay:.12s">
                     <div class="contact-info-box">
-                        <span class="contact-info-title">{{ $settings?->clinic_contact_title ?? 'Informações' }}</span>
+                <span class="contact-info-title">{{ $settings?->clinic_contact_title ?? 'Informações' }}</span>
                         <strong>{{ $settings?->clinic_contact_name ?? 'Clínica CERAPE' }}</strong>
                     </div>
                     <div class="contact-info-box">
@@ -288,13 +321,13 @@
                     @else
                         <div class="clinic-map-empty">
                             <strong>Mapa ainda não configurado</strong>
-                            <p>Preencha o campo de incorporação do Google Maps no painel /frontend.</p>
+                            <p>{{ $settings?->clinic_description ?? 'Preencha o campo de incorporação do Google Maps no painel /frontend.' }}</p>
                         </div>
                     @endif
                 </div>
             </article>
             <article class="clinic-card clinic-details">
-                <span class="pill">Informações</span>
+                <span class="pill">{{ $settings?->clinic_contact_title ?? 'Informações' }}</span>
                 <h3>{{ $settings?->clinic_name ?? 'Clínica CERAPE' }}</h3>
                 <ul class="clinic-list">
                     <li><strong>Endereço:</strong> {{ $settings?->clinic_address ?? '-' }}</li>
@@ -303,7 +336,7 @@
                     <li><strong>CEP:</strong> {{ $settings?->clinic_zip_code ?? '-' }}</li>
                 </ul>
                 @if ($settings?->clinic_maps_link)
-                    <a href="{{ $settings->clinic_maps_link }}" target="_blank" rel="noopener" class="btn btn-line">Abrir no Google Maps</a>
+                    <a href="{{ $settings->clinic_maps_link }}" target="_blank" rel="noopener" class="btn btn-line">{{ $settings?->clinic_contact_title ?? 'Abrir no Google Maps' }}</a>
                 @endif
             </article>
         </div>

@@ -18,7 +18,7 @@ use UnitEnum;
 class HeroSlideResource extends Resource
 {
     protected static ?string $model = HeroSlide::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-play-circle';
     protected static ?string $navigationLabel = 'Carrossel';
     protected static ?string $modelLabel = 'slide';
@@ -27,7 +27,7 @@ class HeroSlideResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            \Filament\Schemas\Components\Section::make('Slide do topo')
+            \Filament\Schemas\Components\Section::make('Slide principal')
                 ->schema([
                     \Filament\Forms\Components\TextInput::make('title')->label('Título')->required(),
                     \Filament\Forms\Components\TextInput::make('subtitle')->label('Subtítulo'),
@@ -37,8 +37,8 @@ class HeroSlideResource extends Resource
                     \Filament\Forms\Components\TextInput::make('cta_url')
                         ->label('Link do botão')
                         ->default('/blog')
-                        ->placeholder('Ex.: /blog/artigo-exemplo - abre o blog usando a imagem do carrossel')
-                        ->helperText('Comece com /blog para levar o visitante ao blog. A imagem do slide pode ser reaproveitada ou trocada depois no módulo Blog.'),
+                        ->placeholder('Ex.: /blog/artigo-exemplo')
+                        ->helperText('Use /blog para levar o visitante ao blog. A imagem do slide pode ser reaproveitada ou trocada depois no módulo Blog.'),
                     \Filament\Forms\Components\Toggle::make('show_buttons')
                         ->label('Exibir botões no carrossel')
                         ->default(true),

@@ -27,7 +27,7 @@ class ContactSettings extends Page implements HasForms
 
     protected static ?string $title = 'Configuração do contato';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
 
     protected static bool $shouldRegisterNavigation = true;
 

@@ -7,6 +7,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use App\Filament\Resources\ProntuariosEvolucao\ProntuarioEvolucaoResource;
 
 class ProntuarioEvolucaoInfolist
 {
@@ -28,8 +29,15 @@ class ProntuarioEvolucaoInfolist
                                 ->color('primary'),
                             ImageEntry::make('acolhido.avatar')
                                 ->label('Foto do acolhido')
+                                ->disk('public')
                                 ->circular()
-                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar)),
+                                ->height(120)
+                                ->width(120)
+                                ->hidden(fn ($record) => blank($record?->acolhido?->avatar))
+                                ->getStateUsing(fn ($record): ?string => ProntuarioEvolucaoResource::resolveAvatarPath($record?->acolhido?->avatar))
+                                ->extraImgAttributes([
+                                    'style' => 'object-fit: cover;',
+                                ]),
                             TextEntry::make('user.name')
                                 ->label('Registrado por')
                                 ->badge()
@@ -66,7 +74,7 @@ class ProntuarioEvolucaoInfolist
                     ->schema([
                         TextEntry::make('conteudo')
                             ->label('Conteudo')
-                            ->formatStateUsing(fn (?string $state): string => str($state ?? '')->sanitizeHtml())
+                            ->formatStateUsing(fn (?string $state): string => ProntuarioEvolucaoResource::normalizeReportContent($state ?? ''))
                             ->html()
                             ->columnSpanFull(),
                     ]),

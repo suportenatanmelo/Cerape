@@ -42,16 +42,16 @@ class ProntuarioEvolucaoForm
                                 ->live()
                                 ->required()
                                 ->helperText('Selecione o acolhido antes de iniciar o texto para que os anexos sejam nomeados corretamente.'),
-                            Select::make('usuario_responsavel')
+                            Select::make('user_id')
                                 ->label('Usuario responsavel')
-                                ->options(fn () => User::pluck('name', 'id'))
-
-                                ->helperText('O usuario logado sera registrado automaticamente neste prontuario.'),
+                                ->relationship('user', 'name')
+                                ->searchable()
+                                ->preload()
+                                ->required()
+                                ->helperText('Selecione o usuario responsavel por este prontuario.'),
                             DateTimePicker::make('data_prontuario')
                                 ->label('Data e hora do prontuario')
                                 ->seconds(false)
-                                ->native(false)
-                                ->displayFormat('d/m/Y H:i')
                                 ->default(now())
                                 ->minDate(self::minimumProntuarioDate())
                                 ->maxDate(self::maximumProntuarioDate())
@@ -62,8 +62,6 @@ class ProntuarioEvolucaoForm
                             DateTimePicker::make('proxima_data_prontuario')
                                 ->label('Proxima data do prontuario')
                                 ->seconds(false)
-                                ->native(false)
-                                ->displayFormat('d/m/Y H:i')
                                 ->default(now()->addDays(7))
                                 ->required()
                                 ->helperText('Vem preenchida com 7 dias a mais, mas pode ser editada conforme a necessidade da equipe.'),

@@ -15,7 +15,7 @@ class SitePreview extends Page
 
     protected static ?string $title = 'Prévia da página principal';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
 
     protected static bool $shouldRegisterNavigation = true;
 

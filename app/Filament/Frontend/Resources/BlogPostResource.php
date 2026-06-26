@@ -17,7 +17,7 @@ use UnitEnum;
 class BlogPostResource extends Resource
 {
     protected static ?string $model = BlogPost::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Conteúdo';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Blog';
     protected static ?string $modelLabel = 'artigo';
@@ -26,7 +26,7 @@ class BlogPostResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            \Filament\Schemas\Components\Section::make('Artigo')->schema([
+            \Filament\Schemas\Components\Section::make('Artigo do blog')->schema([
                 \Filament\Forms\Components\TextInput::make('title')->label('Título')->required(),
                 \Filament\Forms\Components\TextInput::make('slug')->label('Slug')->required(),
                 \Filament\Forms\Components\Textarea::make('excerpt')->label('Resumo')->required()->rows(3),

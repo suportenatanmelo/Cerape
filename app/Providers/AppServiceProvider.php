@@ -47,14 +47,7 @@ class AppServiceProvider extends ServiceProvider
             $component
                 ->locale('pt_BR')
                 ->timezone(config('app.timezone'))
-                ->firstDayOfWeek(1)
-                ->native(false)
-                ->placeholder($component->hasTime() ? '__/__/____ __:__' : '__/__/____')
-                ->defaultDateDisplayFormat('d/m/Y')
-                ->defaultDateTimeDisplayFormat('d/m/Y H:i')
-                ->defaultDateTimeWithSecondsDisplayFormat('d/m/Y H:i:s')
-                ->defaultTimeDisplayFormat('H:i')
-                ->defaultTimeWithSecondsDisplayFormat('H:i:s');
+                ->firstDayOfWeek(1);
         });
 
         Schema::configureUsing(function (Schema $schema): void {

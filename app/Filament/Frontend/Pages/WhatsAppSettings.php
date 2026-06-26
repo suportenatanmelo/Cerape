@@ -27,7 +27,7 @@ class WhatsAppSettings extends Page implements HasForms
 
     protected static ?string $title = 'Configuração do WhatsApp';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
 
     protected static bool $shouldRegisterNavigation = true;
 

@@ -33,13 +33,13 @@ class ArquivosDiarioForm
                             FileUpload::make('upload_arquivo')
                                 ->label('Arquivo')
                                 ->disk('public')
-                                ->directory(ImageStorageNaming::directory('receituario'))
+                                ->directory(ImageStorageNaming::directory('upload-arquivo'))
                                 ->downloadable()
                                 ->openable()
                                 ->acceptedFileTypes([
                                     'application/pdf',
                                 ])
-                                ->helperText('O arquivo será salvo em imagens/receituario e receberá o nome padronizado do sistema.')
+                                ->helperText('O arquivo será salvo em documentos/upload-arquivo e receberá o nome padronizado do sistema.')
                                 ->required(),
                             DateTimePicker::make('updated_at')
                                 ->label('Data do arquivo')

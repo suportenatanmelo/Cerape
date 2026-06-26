@@ -20,7 +20,7 @@ use UnitEnum;
 class GalleryCategoryResource extends Resource
 {
     protected static ?string $model = GalleryCategory::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-photo';
     protected static ?string $navigationLabel = 'Galeria';
     protected static ?string $modelLabel = 'categoria';
@@ -29,7 +29,7 @@ class GalleryCategoryResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            \Filament\Schemas\Components\Section::make('Categoria')->schema([
+            \Filament\Schemas\Components\Section::make('Categoria da galeria')->schema([
                 TextInput::make('name')->label('Nome')->required(),
                 TextInput::make('slug')->label('Slug')->required(),
                 FileUpload::make('image_path')
@@ -37,7 +37,7 @@ class GalleryCategoryResource extends Resource
                     ->disk('public')
                     ->image()
                     ->directory('imagens/galeria')
-                    ->helperText('Essa imagem aparece como capa da categoria na pagina principal.'),
+                    ->helperText('Essa imagem aparece como capa da categoria na página principal.'),
                 TextInput::make('position')->label('Ordem')->numeric()->default(1),
                 Toggle::make('show_on_home')->label('Mostrar no site principal')->default(true),
                 Toggle::make('show_in_menu')->label('Mostrar no menu Galeria')->default(true),

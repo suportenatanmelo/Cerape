@@ -17,7 +17,7 @@ use UnitEnum;
 class ContactLeadResource extends Resource
 {
     protected static ?string $model = ContactLead::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-chat-bubble-left-right';
     protected static ?string $navigationLabel = 'Contatos';
     protected static ?string $modelLabel = 'contato';

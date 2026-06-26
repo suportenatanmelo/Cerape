@@ -13,6 +13,7 @@ return new class extends Migration
             $table->boolean('site_enabled')->default(true);
             $table->boolean('home_enabled')->default(true);
             $table->string('brand_name')->default('CERAPE');
+            $table->string('logo_path')->nullable();
             $table->string('hero_title')->default('Como funciona');
             $table->string('hero_subtitle')->nullable();
             $table->string('about_title')->nullable();

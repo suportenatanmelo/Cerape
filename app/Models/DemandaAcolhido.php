@@ -12,6 +12,7 @@ class DemandaAcolhido extends Model
     protected $fillable = [
         'acolhido_id',
         'demanda',
+        'arquivo_path',
         'observacoes',
         'saida_prevista_em',
         'retorno_previsto_em',

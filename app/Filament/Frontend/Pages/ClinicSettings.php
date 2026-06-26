@@ -22,7 +22,7 @@ class ClinicSettings extends Page implements HasForms
     protected static ?int $navigationSort = 22;
     protected static ?string $slug = 'clinica';
     protected static ?string $title = 'Informações da clínica';
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static bool $shouldRegisterNavigation = true;
     protected string $view = 'filament.frontend.pages.clinic-settings';
     public ?array $data = [];

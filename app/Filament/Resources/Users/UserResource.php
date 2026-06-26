@@ -66,10 +66,10 @@ class UserResource extends Resource
                                 ->imageEditor()
                                 ->avatar()
                                 ->disk('public')
-                                ->directory(ImageStorageNaming::directory('avatar'))
+                                ->directory(ImageStorageNaming::directory('user-avatar'))
                                 ->visibility('public')
                                 ->maxFiles(1)
-                                ->helperText('A imagem será salva em imagens/avatar e receberá o nome padronizado do sistema.'),
+                                ->helperText('A imagem será salva em documentos/user-avatar e receberá o nome padronizado do sistema.'),
                             TextInput::make('name')
                                 ->label('Nome completo')
                                 ->required()
@@ -93,7 +93,6 @@ class UserResource extends Resource
                                 ->unique(ignoreRecord: true),
                             DatePicker::make('data_nascimento')
                                 ->label('Data de nascimento')
-                                ->native(false)
                                 ->maxDate(now()),
                             Select::make('uf')
                                 ->label('UF')

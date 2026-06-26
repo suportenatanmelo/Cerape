@@ -17,7 +17,7 @@ use UnitEnum;
 class TeamMemberResource extends Resource
 {
     protected static ?string $model = TeamMember::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-users';
     protected static ?string $navigationLabel = 'Equipe';
     protected static ?string $modelLabel = 'profissional';

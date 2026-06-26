@@ -27,6 +27,16 @@
                 $aboutImagePath = is_array($data['about_image_path'] ?? null)
                     ? collect($data['about_image_path'])->filter()->first()
                     : ($data['about_image_path'] ?? null);
+                $aboutVideoUrl = trim((string) ($data['about_video_url'] ?? ''));
+                $aboutVideoWidth = (int) ($data['about_video_width'] ?? 560);
+                $aboutVideoHeight = (int) ($data['about_video_height'] ?? 315);
+                $aboutVideoEmbedUrl = null;
+
+                if ($aboutVideoUrl !== '') {
+                    if (preg_match('~(?:youtube\.com/(?:watch\?v=|embed/|shorts/)|youtu\.be/)([A-Za-z0-9_-]{11})~', $aboutVideoUrl, $matches)) {
+                        $aboutVideoEmbedUrl = 'https://www.youtube.com/embed/' . $matches[1];
+                    }
+                }
             @endphp
 
             @if (!empty($aboutImagePath))
@@ -37,9 +47,25 @@
                 </div>
             @endif
 
+            @if (!empty($aboutVideoEmbedUrl))
+                <div class="mb-4 overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
+                    <iframe
+                        width="{{ $aboutVideoWidth }}"
+                        height="{{ $aboutVideoHeight }}"
+                        src="{{ $aboutVideoEmbedUrl }}"
+                        title="Vídeo Quem somos"
+                        class="block w-full"
+                        loading="lazy"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            @endif
+
             <div class="space-y-4 text-sm leading-7 text-gray-700">
-                <p>{{ $data['about_paragraph_one'] ?? 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.' }}</p>
-                <p>{{ $data['about_paragraph_two'] ?? 'Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.' }}</p>
+                <p>{!! $data['about_paragraph_one'] ?? 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.' !!}</p>
+                <p>{!! $data['about_paragraph_two'] ?? 'Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.' !!}</p>
             </div>
         </div>
     </div>

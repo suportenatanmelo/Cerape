@@ -50,7 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 PortalContext::documentsNavigationGroup(),
                 PortalContext::mediaNavigationGroup(),
                 PortalContext::communicationNavigationGroup(),
-                'Administracao e Acesso',
+                'Administração e acesso',
             ];
 
         return $panel
@@ -77,7 +77,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogo(asset('storage/images/logo.png'))
             ->brandLogoHeight(fn (): string => PortalContext::isFamilyUser() ? '52px' : '60px')
             ->homeUrl(fn (): ?string => PortalContext::familyDashboardUrl())
-            // ->topNavigation((bool) env('FILAMENT_TOPBAR', true))
+            //->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
             ->colors(fn (): array => [
@@ -103,7 +103,7 @@ class AdminPanelProvider extends PanelProvider
             ->plugins([
                 ImageGalleryPlugin::make(),
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Administracao e Acesso')
+                    ->navigationGroup('Administração e acesso')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')

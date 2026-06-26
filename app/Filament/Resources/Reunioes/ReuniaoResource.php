@@ -83,7 +83,6 @@ class ReuniaoResource extends Resource
                                     DateTimePicker::make('data_reuniao')
                                         ->label('Data e hora da reuniao')
                                         ->seconds(false)
-                                        ->native(false)
                                         ->default(now())
                                         ->required(),
                                     Select::make('participantes_user_ids')

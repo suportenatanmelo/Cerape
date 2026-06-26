@@ -10,8 +10,11 @@
     $whatsappDigits = preg_replace('/\D+/', '', (string) ($settings?->whatsapp_number ?? ''));
     $whatsappDigits = $whatsappDigits ? (str_starts_with($whatsappDigits, '55') ? $whatsappDigits : '55'.$whatsappDigits) : '';
     $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
-    $whatsappWelcome = trim((string) ($settings?->contact_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
+    $whatsappWelcome = trim((string) ($settings?->contact_section_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
     $whatsappUrl = $whatsappDigits ? 'https://wa.me/'.$whatsappDigits.'?text='.urlencode($whatsappMessage) : null;
+    $siteLogoUrl = $settings?->logo_path
+        ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->logo_path)
+        : asset('logo.png');
 @endphp
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -62,6 +65,23 @@
         a { color: inherit; text-decoration: none; }
         img { display: block; max-width: 100%; }
         .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .8s cubic-bezier(.16,.84,.32,1), transform .8s cubic-bezier(.16,.84,.32,1);
+            transition-delay: var(--reveal-delay, 0s);
+        }
+        .reveal.in-view {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal {
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
+            }
+        }
         .topbar {
             position: sticky;
             top: 0;
@@ -87,11 +107,15 @@
             color: var(--pine);
         }
         .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            object-fit: cover;
+            width: auto;
+            height: 82px;
+            max-width: 240px;
+            object-fit: contain;
             box-shadow: 0 8px 18px rgba(30, 61, 54, 0.18);
+            transition: transform .5s cubic-bezier(.34,1.56,.64,1);
+        }
+        .brand:hover .brand-logo {
+            transform: rotate(8deg) scale(1.06);
         }
         .brand span { color: var(--amber); }
         nav { display:flex; gap:10px; flex-wrap:wrap; }
@@ -166,9 +190,49 @@
             padding: 92px 32px 60px;
             color:#fff;
         }
+        .hero-title {
+            color:#fff;
+            font-size:clamp(2.4rem, 6vw, 4.8rem);
+            margin: 16px 0 12px;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+        }
+        .line-mask { display:block; overflow:hidden; padding-bottom:.08em; }
+        .line-inner {
+            display:block;
+            transform:translateY(115%);
+            animation:lineUp 1s cubic-bezier(.16,.84,.32,1) forwards;
+            animation-delay:var(--d,0s);
+        }
+        @keyframes lineUp { to { transform:translateY(0); } }
+        .hero-content .eyebrow,
+        .hero-content h1,
+        .hero-content p,
+        .hero-content .hero-actions {
+            opacity: 0;
+            animation: heroFadeUp .9s cubic-bezier(.16,.84,.32,1) forwards;
+            animation-delay: var(--d, 0s);
+        }
+        @keyframes heroFadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
         .hero-content h1 { color:#fff; }
         .hero-content p { color:#efe9dd; max-width: 560px; }
         .hero-actions { display:flex; gap:14px; flex-wrap:wrap; margin-top: 10px; }
+        .scroll-cue{
+            position:absolute;left:36px;bottom:32px;z-index:3;
+            display:flex;flex-direction:column;align-items:center;gap:9px;
+            text-decoration:none;color:rgba(255,255,255,.8);
+        }
+        .scroll-cue-mouse{
+            width:24px;height:38px;border:2px solid rgba(255,255,255,.5);border-radius:13px;
+            display:flex;justify-content:center;padding-top:6px;
+        }
+        .scroll-cue-mouse span{width:4px;height:8px;border-radius:2px;background:var(--amber);animation:scrollDot 1.8s ease-in-out infinite;}
+        @keyframes scrollDot{0%{opacity:1;transform:translateY(0);}70%{opacity:0;transform:translateY(13px);}100%{opacity:0;transform:translateY(0);}}
+        .scroll-cue-label{font-size:.68rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;writing-mode:vertical-rl;}
+        .scroll-cue:hover{color:#fff;}
         .btn {
             display:inline-flex;
             align-items:center;
@@ -218,6 +282,36 @@
         .sobre-grid { display:grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items:center; }
         .sobre-img { overflow:hidden; }
         .sobre-img img { width:100%; height: 420px; object-fit:cover; border-radius: 18px; }
+        .video-card {
+            width: min(100%, var(--video-width, 560px));
+            aspect-ratio: var(--video-width, 560) / var(--video-height, 315);
+            margin-top: 18px;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            background: #000;
+        }
+        .video-card iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+            display: block;
+        }
+        .horizon {
+            height:3px;
+            width:100%;
+            background:linear-gradient(90deg,var(--pine) 0%,var(--sage) 35%,var(--amber) 100%);
+            border-radius:0;
+            margin-top: 22px;
+        }
+        .horizon {
+            height: 3px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--pine) 0%, var(--sage) 35%, var(--amber) 100%);
+            border-radius: 0;
+            margin-top: 22px;
+        }
         .stats-row { display:flex; gap:32px; margin-top:28px; flex-wrap:wrap; }
         .stat strong { display:block; font-family:'Fraunces', serif; font-size:1.9rem; color:var(--pine); }
         .stat span { font-size:.82rem; color:var(--ink-soft); }
@@ -577,6 +671,10 @@
             .slide { grid-template-columns: 1fr; min-height: auto; }
             .slide-media { order: -1; min-height: 220px; }
             .slide-copy, .slide-media { padding: 20px; }
+            .brand-logo {
+                height: 62px;
+                max-width: 170px;
+            }
             .hero-cover { min-height: 72vh; }
             .hero-content { min-height: 72vh; padding: 72px 20px 44px; }
             .sobre-grid, .steps, .team-grid, .gallery-grid, .blog-grid { grid-template-columns: 1fr; }
@@ -584,6 +682,7 @@
             .contact-grid-v2, .contact-grid { grid-template-columns: 1fr; }
             .clinic-map, .clinic-map iframe, .clinic-map-empty { min-height: 300px; }
             .sobre-img img { height: 300px; }
+            .video-card { width: 100%; }
             .foot-bottom { flex-direction: column; }
             .whatsapp-float {
                 right: 14px;
@@ -591,6 +690,7 @@
                 padding: 13px 14px;
             }
             .arrow { display:none; }
+            .scroll-cue { display:none; }
         }
     </style>
 </head>
@@ -598,7 +698,7 @@
     <header class="topbar">
         <div class="wrap">
             <a class="brand" href="{{ url('/') }}">
-                <img class="brand-logo" src="{{ asset('images/cerape-logo.png') }}" alt="Logo CERAPE">
+                <img class="brand-logo" src="{{ $siteLogoUrl }}" alt="Logo CERAPE">
                 <span>{{ $settings?->brand_name ?? 'CERAPE' }}</span>
             </a>
             <nav>
@@ -629,6 +729,22 @@
     <script>
         (() => {
             const slides = [...document.querySelectorAll('.hero-carousel .slide')];
+            const revealItems = [...document.querySelectorAll('.reveal')];
+            if ('IntersectionObserver' in window) {
+                const revealObserver = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in-view');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+                revealItems.forEach((item) => revealObserver.observe(item));
+            } else {
+                revealItems.forEach((item) => item.classList.add('in-view'));
+            }
+
             if (!slides.length) return;
             let index = Math.max(0, slides.findIndex((slide) => slide.classList.contains('active')));
             if (index < 0) index = 0;
@@ -651,35 +767,35 @@
             <div class="foot-grid">
                 <div>
                     <a href="{{ url('/') }}" class="footer-brand">{{ $settings?->brand_name ?? 'CER' }}<span>APE</span></a>
-                    <p style="max-width:280px;font-size:.88rem;margin-top:10px;">Acolhimento e tratamento para uma nova etapa de vida.</p>
+                    <p style="max-width:280px;font-size:.88rem;margin-top:10px;">{{ $settings?->contact_section_description ?? 'Acolhimento e tratamento para uma nova etapa de vida.' }}</p>
                 </div>
                 <div>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="#sobre">Sobre Nós</a></li>
-                        <li><a href="#jornada">A Jornada</a></li>
-                        <li><a href="{{ route('gallery.index') }}">Galeria</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#contato">Contato</a></li>
+                        <li><a href="#sobre">{{ $settings?->menu_label_about ?? 'Sobre Nós' }}</a></li>
+                        <li><a href="#jornada">{{ $settings?->menu_label_pillars ?? 'A Jornada' }}</a></li>
+                        <li><a href="{{ route('gallery.index') }}">{{ $settings?->menu_label_gallery ?? 'Galeria' }}</a></li>
+                        <li><a href="#blog">{{ $settings?->menu_label_blog ?? 'Blog' }}</a></li>
+                        <li><a href="#contato">{{ $settings?->menu_label_contact ?? 'Contato' }}</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4>Contato</h4>
+                    <h4>{{ $settings?->contact_section_title ?? 'Contato' }}</h4>
                     <ul>
                         <li>
                             @if ($whatsappUrl)
-                                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener">WhatsApp: {{ $settings?->whatsapp_number }}</a>
+                                <a href="{{ $whatsappUrl }}" target="_blank" rel="noopener">{{ $settings?->contact_whatsapp_cta_label ?? 'WhatsApp' }}: {{ $settings?->whatsapp_number }}</a>
                             @else
-                                configurar no /frontend
+                                {{ $settings?->contact_section_description ?? 'Configurar no /frontend' }}
                             @endif
                         </li>
-                        <li>{{ $settings?->contact_email ?? 'contato@cerape.com.br' }}</li>
+                        <li>{{ $settings?->contact_email_line ?? $settings?->contact_email ?? 'contato@cerape.com.br' }}</li>
                     </ul>
                 </div>
             </div>
             <div class="foot-bottom">
-                <span>© 2026 CERAPE. Todos os direitos reservados.</span>
-                <span>Atendimento confidencial e humanizado.</span>
+                <span>© 2026 {{ $settings?->brand_name ?? 'CERAPE' }}. Todos os direitos reservados.</span>
+                <span>{{ $settings?->contact_whatsapp_footer ?? 'Atendimento confidencial e humanizado.' }}</span>
             </div>
         </div>
     </footer>

@@ -115,15 +115,20 @@ class Acolhido extends Model
             ImageStorageNaming::syncStoredImage(
                 $acolhido,
                 'avatar',
-                'avatar',
+                'acolhido-avatar',
                 $acolhido->nome_completo_paciente,
             );
             ImageStorageNaming::syncStoredFile(
                 $acolhido,
                 'receituario',
-                'receituario',
+                'acolhido-receituario',
                 $acolhido->nome_completo_paciente,
             );
+        });
+
+        static::deleted(function (self $acolhido): void {
+            ImageStorageNaming::removeStoredPath($acolhido->avatar);
+            ImageStorageNaming::removeStoredPaths($acolhido->receituario ?? []);
         });
     }
 

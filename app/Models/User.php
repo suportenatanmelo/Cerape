@@ -69,7 +69,11 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     protected static function booted(): void
     {
         static::saved(function (self $user): void {
-            ImageStorageNaming::syncStoredImage($user, 'avatar', 'avatar', $user->name);
+            ImageStorageNaming::syncStoredImage($user, 'avatar', 'profile-avatar', $user->name);
+        });
+
+        static::deleted(function (self $user): void {
+            ImageStorageNaming::removeStoredPath($user->avatar);
         });
     }
 
@@ -175,13 +179,38 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        $avatar = $this->normalizePublicPath($this->avatar);
+        $avatar = $this->resolveAvatarUrl($this->avatar);
 
-        if (! filled($avatar)) {
+        return filled($avatar) ? $avatar : null;
+    }
+
+    private function resolveAvatarUrl(?string $path): ?string
+    {
+        $path = $this->normalizePublicPath($path);
+
+        if ($path === null) {
             return null;
         }
 
-        return $avatar;
+        $disk = Storage::disk('public');
+        $normalizedPath = ltrim(Str::replaceFirst('/storage/', '', parse_url($path, PHP_URL_PATH) ?: $path), '/');
+
+        $candidatePaths = array_values(array_unique(array_filter([
+            $normalizedPath,
+            'documentos/profile-avatar/' . basename($normalizedPath),
+            'documentos/user-avatar/' . basename($normalizedPath),
+            trim((string) config('chatify.user_avatar.folder'), '/') . '/' . basename($normalizedPath),
+        ])));
+
+        foreach ($candidatePaths as $candidatePath) {
+            if ($disk->exists($candidatePath)) {
+                return route('media.serve', ['path' => $candidatePath]);
+            }
+        }
+
+        return Str::startsWith($path, ['http://', 'https://', '//', 'data:'])
+            ? $path
+            : null;
     }
 
     private function normalizePublicPath(?string $path): ?string

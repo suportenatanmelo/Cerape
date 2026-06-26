@@ -16,6 +16,7 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Filament\Panel;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 use UnitEnum;
@@ -69,6 +70,11 @@ class ArquivosDiarioResource extends Resource
             'view' => ViewArquivosDiario::route('/{record}'),
             'edit' => EditArquivosDiario::route('/{record}/edit'),
         ];
+    }
+
+    public static function getSlug(?Panel $panel = null): string
+    {
+        return 'arquivos-upload';
     }
 
     public static function getNavigationGroup(): string | UnitEnum | null

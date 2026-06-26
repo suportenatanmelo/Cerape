@@ -21,14 +21,14 @@ class ViewArquivosDiario extends ViewRecord
                 ->color('primary')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->visible(fn (): bool => filled($this->getRecord()->upload_arquivo))
-                ->url(fn () => route('arquivos-diarios.preview', $this->getRecord()), shouldOpenInNewTab: true),
+                ->url(fn () => route('arquivos-upload.preview', $this->getRecord()), shouldOpenInNewTab: true),
             Action::make('baixarArquivo')
                 ->label('Baixar arquivo')
                 ->icon('heroicon-o-arrow-down-tray')
                 ->color('success')
                 ->hidden(fn (): bool => PortalContext::isFamilyUser())
                 ->visible(fn (): bool => filled($this->getRecord()->upload_arquivo))
-                ->url(fn () => route('arquivos-diarios.download', $this->getRecord()), shouldOpenInNewTab: true),
+                ->url(fn () => route('arquivos-upload.download', $this->getRecord()), shouldOpenInNewTab: true),
             Action::make('downloadArquivo')
                 ->label('Baixar arquivo')
                 ->icon('heroicon-o-arrow-down-tray')

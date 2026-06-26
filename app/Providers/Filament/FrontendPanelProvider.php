@@ -15,6 +15,7 @@ use App\Filament\Frontend\Pages\ClinicSettings;
 use App\Filament\Frontend\Pages\ContactSettings;
 use App\Filament\Frontend\Pages\WhatsAppSettings;
 use App\Filament\Frontend\Pages\SitePreview;
+use App\Filament\Frontend\Pages\EditFrontendSettings;
 use App\Http\Middleware\EnsureFrontendOwnerAccess;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -53,6 +54,7 @@ class FrontendPanelProvider extends PanelProvider
             ])
             ->pages([
                 SitePreview::class,
+                EditFrontendSettings::class,
                 QuemSomos::class,
                 ClinicSettings::class,
                 ContactSettings::class,
@@ -61,7 +63,7 @@ class FrontendPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Administracao e Acesso')
+                    ->navigationGroup('Administração e acesso')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')
@@ -98,6 +100,12 @@ class FrontendPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 EnsureFrontendOwnerAccess::class,
+            ])
+            ->navigationGroups([
+                'Site público',
+                'Conteúdo',
+                'Mídia',
+                'Administração e acesso',
             ]);
     }
 }

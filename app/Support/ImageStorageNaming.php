@@ -9,9 +9,11 @@ use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 final class ImageStorageNaming
 {
+    public const ROOT_DIRECTORY = 'documentos';
+
     public static function directory(string $category): string
     {
-        return 'imagens/' . trim($category, '/');
+        return self::ROOT_DIRECTORY . '/' . self::slug(trim($category, '/'));
     }
 
     public static function filename(
@@ -25,11 +27,10 @@ final class ImageStorageNaming
         $segments = array_filter([
             self::slug($identifier ?: 'sem-id'),
             self::slug($category),
-            $label,
             now()->format('Y-m-d-H-i-s'),
         ]);
 
-        return implode('-', $segments) . '.' . $file->getClientOriginalExtension();
+        return implode('-', $segments) . '.' . self::sanitizeExtension($file->getClientOriginalExtension());
     }
 
     public static function canonicalFilename(
@@ -43,7 +44,6 @@ final class ImageStorageNaming
         $segments = array_filter([
             self::slug((string) $identifier),
             self::slug($category),
-            $label,
             now()->format('Y-m-d-H-i-s'),
         ]);
 
@@ -86,7 +86,7 @@ final class ImageStorageNaming
         }
 
         $extension = pathinfo($currentPath, PATHINFO_EXTENSION) ?: 'jpg';
-        $finalPath = self::canonicalPath($category, (string) $model->getKey(), $label, $extension);
+        $finalPath = self::canonicalPath($category, (string) $model->getKey(), self::modelName($model, $label), $extension);
 
         if ($currentPath === $finalPath) {
             return;
@@ -120,6 +120,31 @@ final class ImageStorageNaming
         }
 
         self::syncStoredImage($model, $attribute, $category, $label);
+    }
+
+    public static function removeStoredPath(?string $path): void
+    {
+        $currentPath = self::normalizePath($path);
+
+        if ($currentPath === null || Str::startsWith($currentPath, ['http://', 'https://', '//', 'data:'])) {
+            return;
+        }
+
+        $disk = Storage::disk('public');
+
+        if ($disk->exists($currentPath)) {
+            $disk->delete($currentPath);
+        }
+    }
+
+    /**
+     * @param array<int, mixed> $paths
+     */
+    public static function removeStoredPaths(array $paths): void
+    {
+        foreach ($paths as $path) {
+            self::removeStoredPath(is_string($path) ? $path : null);
+        }
     }
 
     /**
@@ -193,6 +218,11 @@ final class ImageStorageNaming
         $value = self::slug($value);
 
         return Str::limit($value, $max, '');
+    }
+
+    private static function modelName(Model $model, ?string $label = null): string
+    {
+        return self::shortLabel($label ?: class_basename($model));
     }
 
     private static function normalizePath(mixed $path): ?string

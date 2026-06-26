@@ -240,7 +240,7 @@ class ProntuarioEvolucaoResource extends Resource
         return array_values(array_filter($items, fn(array $item): bool => filled($item['value'])));
     }
 
-    private static function resolveAvatarPath(?string $path): ?string
+    public static function resolveAvatarPath(?string $path): ?string
     {
         if (blank($path)) {
             return null;
@@ -290,26 +290,85 @@ class ProntuarioEvolucaoResource extends Resource
         return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
     }
 
-    private static function normalizeReportContent(string $content): string
+    public static function normalizeReportContent(string $content): string
     {
-        $content = preg_replace_callback('/<img[^>]+src=["\']([^"\']+)["\']/i', function (array $matches): string {
-            $src = $matches[1];
+        $content = preg_replace_callback('/<img\b[^>]*>/i', function (array $matches): string {
+            $tag = $matches[0];
+            $src = self::extractHtmlAttribute($tag, 'src');
 
-            if (str_contains($src, '/storage/')) {
-                $storageRelativePath = ltrim((string) Str::after($src, '/storage/'), '/');
-                $absolutePath = public_path('storage/' . $storageRelativePath);
-
-                if (is_file($absolutePath)) {
-                    $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
-                    $dataUri = 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
-
-                    return str_replace($src, $dataUri, $matches[0]);
-                }
+            if (blank($src)) {
+                $src = self::extractHtmlAttribute($tag, 'data-path')
+                    ?? self::extractHtmlAttribute($tag, 'data-src')
+                    ?? self::extractHtmlAttribute($tag, 'path')
+                    ?? self::extractHtmlAttribute($tag, 'data-filename');
             }
 
-            return $matches[0];
+            if (blank($src)) {
+                return $tag;
+            }
+
+            $normalizedSrc = self::normalizeImageSource((string) $src);
+
+            if ($normalizedSrc === null) {
+                return $tag;
+            }
+
+            if ($normalizedSrc !== $src) {
+                return preg_replace('/\bsrc=(["\']).*?\1/i', 'src="' . e($normalizedSrc) . '"', $tag, 1) ?? $tag;
+            }
+
+            return $tag;
         }, $content) ?? $content;
 
         return (string) str($content)->sanitizeHtml();
+    }
+
+    private static function normalizeImageSource(string $src): ?string
+    {
+        $src = trim($src);
+
+        if ($src === '') {
+            return null;
+        }
+
+        if (str_starts_with($src, 'data:')) {
+            return $src;
+        }
+
+        if (Str::startsWith($src, ['http://', 'https://', '//'])) {
+            return $src;
+        }
+
+        if (str_contains($src, '/storage/')) {
+            $storageRelativePath = ltrim((string) Str::after($src, '/storage/'), '/');
+            $absolutePath = public_path('storage/' . $storageRelativePath);
+
+            if (is_file($absolutePath)) {
+                $mimeType = mime_content_type($absolutePath) ?: 'image/jpeg';
+
+                return 'data:' . $mimeType . ';base64,' . base64_encode((string) file_get_contents($absolutePath));
+            }
+
+            return '/storage/' . $storageRelativePath;
+        }
+
+        $candidate = ltrim(Str::replaceFirst('storage/', '', $src), '/');
+
+        if ($candidate !== '' && is_file(public_path('storage/' . $candidate))) {
+            return '/storage/' . $candidate;
+        }
+
+        return $src;
+    }
+
+    private static function extractHtmlAttribute(string $tag, string $attribute): ?string
+    {
+        if (preg_match('/\b' . preg_quote($attribute, '/') . '\s*=\s*(["\'])(.*?)\1/i', $tag, $matches)) {
+            $value = trim(html_entity_decode($matches[2], ENT_QUOTES | ENT_HTML5));
+
+            return $value === '' ? null : $value;
+        }
+
+        return null;
     }
 }

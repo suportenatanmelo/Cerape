@@ -16,6 +16,7 @@ use App\Support\PortalContext;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 
@@ -129,13 +130,33 @@ Route::middleware('auth')->get('/browser-alerts/status', function (Request $requ
     ]);
 })->name('browser-alerts.status');
 
-Route::middleware('auth')->get('/arquivos-diarios/{record}/visualizar', function (ArquivosDiario $record) {
+Route::middleware('auth')->get('/media/{path}', function (Request $request, string $path) {
+    $user = $request->user();
+
+    abort_unless($user instanceof User, 401);
+
+    $path = ltrim($path, '/');
+
+    abort_unless(Storage::disk('public')->exists($path), 404);
+
+    return Storage::disk('public')->response($path);
+})->where('path', '.*')->name('media.serve');
+
+Route::middleware('auth')->get('/arquivos-upload/{record}/visualizar', function (ArquivosDiario $record) {
     return ArquivosDiarioResource::previewResponse($record);
-})->name('arquivos-diarios.preview');
+})->name('arquivos-upload.preview');
+
+Route::middleware('auth')->get('/arquivos-upload/{record}/baixar', function (ArquivosDiario $record) {
+    return ArquivosDiarioResource::downloadReportResponse($record);
+})->name('arquivos-upload.download');
+
+Route::middleware('auth')->get('/arquivos-diarios/{record}/visualizar', function (ArquivosDiario $record) {
+    return redirect()->route('arquivos-upload.preview', $record);
+});
 
 Route::middleware('auth')->get('/arquivos-diarios/{record}/baixar', function (ArquivosDiario $record) {
-    return ArquivosDiarioResource::downloadReportResponse($record);
-})->name('arquivos-diarios.download');
+    return redirect()->route('arquivos-upload.download', $record);
+});
 
 Route::middleware('auth')->get('/user/{slug}', function (Request $request, string $slug) {
     $user = $request->user();

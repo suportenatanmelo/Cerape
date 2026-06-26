@@ -17,7 +17,7 @@ use UnitEnum;
 class ThemePaletteResource extends Resource
 {
     protected static ?string $model = ThemePalette::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Administracao e Acesso';
+    protected static string|UnitEnum|null $navigationGroup = 'Administração e acesso';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-swatch';
     protected static ?string $navigationLabel = 'Paletas do sistema';
     protected static ?string $modelLabel = 'paleta';

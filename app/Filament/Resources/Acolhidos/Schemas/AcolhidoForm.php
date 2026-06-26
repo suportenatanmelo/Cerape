@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Acolhidos\Schemas;
 
 
 use App\Filament\Resources\Acolhidos\AcolhidoResource;
+use App\Models\DemandaAcolhido;
 use App\Models\Acolhido;
 use App\Models\User;
 use App\Support\AcolhidoAccess;
@@ -119,10 +120,10 @@ class AcolhidoForm
                                             ->imageEditor()
                                             ->avatar()
                                             ->disk('public')
-                                            ->directory(ImageStorageNaming::directory('avatar'))
+                                            ->directory(ImageStorageNaming::directory('acolhido-avatar'))
                                             ->visibility('public')
                                             ->maxFiles(1)
-                                            ->helperText('A imagem será salva em imagens/avatar e receberá o nome padronizado do sistema.'),
+                                            ->helperText('A imagem será salva em documentos/acolhido-avatar e receberá o nome padronizado do sistema.'),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
                                             ->required(),
@@ -555,7 +556,7 @@ class AcolhidoForm
                                         FileUpload::make('receituario')
                                             ->label('Receituario')
                                             ->disk('public')
-                                            ->directory(ImageStorageNaming::directory('receituario'))
+                                            ->directory(ImageStorageNaming::directory('acolhido-receituario'))
                                             ->visibility('public')
                                             ->multiple()
                                             ->acceptedFileTypes([
@@ -567,7 +568,7 @@ class AcolhidoForm
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
-                                            ->helperText('Os arquivos serão salvos em imagens/receituario e receberão o nome padronizado do sistema.')
+                                            ->helperText('Os arquivos serão salvos em documentos/acolhido-receituario e receberão o nome padronizado do sistema.')
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),
@@ -693,6 +694,52 @@ class AcolhidoForm
                                         TextInput::make('interventor_telefone_contato')
                                             ->label('Telefone para contato')
                                             ->mask('(99) 99999-9999'),
+                                    ]),
+                                ]),
+                        ]),
+                    Step::make('Demanda')
+                        ->schema([
+                            Section::make('Demanda do acolhido')
+                                ->description('Registre no final do cadastro a demanda inicial, como atestado medico, atestado de comparecimento ou outros documentos.')
+                                ->icon('heroicon-o-document-duplicate')
+                                ->schema([
+                                    Grid::make([
+                                        'default' => 1,
+                                        'md' => 2,
+                                    ])->schema([
+                                        TextInput::make('demanda_titulo')
+                                            ->label('Titulo da demanda')
+                                            ->placeholder('Ex.: Atestado medico, atestado de comparecimento')
+                                            ->required(),
+                                        FileUpload::make('demanda_arquivo_path')
+                                            ->label('Arquivo da demanda')
+                                            ->disk('public')
+                                            ->directory('demandas_acolhidos')
+                                            ->visibility('public')
+                                            ->acceptedFileTypes([
+                                                'application/pdf',
+                                                'image/png',
+                                                'image/jpeg',
+                                                'image/jpg',
+                                                'image/webp',
+                                                'application/msword',
+                                                'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                                            ])
+                                            ->helperText('Anexe o documento que comprova ou justifica a demanda.')
+                                            ->required(),
+                                        DateTimePicker::make('demanda_saida_prevista_em')
+                                            ->label('Saida prevista')
+                                            ->seconds(false)
+                                            ->required(),
+                                        DateTimePicker::make('demanda_retorno_previsto_em')
+                                            ->label('Retorno previsto')
+                                            ->seconds(false)
+                                            ->required()
+                                            ->afterOrEqual('demanda_saida_prevista_em'),
+                                        TextInput::make('demanda_observacoes')
+                                            ->label('Observacoes da demanda')
+                                            ->placeholder('Detalhes adicionais do documento ou do atendimento.')
+                                            ->columnSpanFull(),
                                     ]),
                                 ]),
                         ]),
@@ -889,6 +936,10 @@ class AcolhidoForm
             $data['possui_contato_dos_filhos'] = null;
         }
 
+        $data['demanda_titulo'] = self::normalizeNullableString($data['demanda_titulo'] ?? null);
+        $data['demanda_arquivo_path'] = self::normalizeNullableString($data['demanda_arquivo_path'] ?? null);
+        $data['demanda_observacoes'] = self::normalizeNullableString($data['demanda_observacoes'] ?? null);
+
         $data['responsavel_pela_intervencao_do_acolhido'] = self::normalizeNullableString(
             $data['interventor_nome_completo']
                 ?? $data['responsavel_pela_intervencao_do_acolhido']
@@ -896,6 +947,32 @@ class AcolhidoForm
         );
 
         return $data;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public static function persistDemandaFromForm(Acolhido $acolhido, array $data): void
+    {
+        if (blank($data['demanda_titulo'] ?? null) && blank($data['demanda_arquivo_path'] ?? null)) {
+            return;
+        }
+
+        $payload = [
+            'acolhido_id' => $acolhido->getKey(),
+            'demanda' => (string) ($data['demanda_titulo'] ?? 'Demanda do acolhido'),
+            'arquivo_path' => self::normalizeNullableString($data['demanda_arquivo_path'] ?? null),
+            'observacoes' => self::normalizeNullableString($data['demanda_observacoes'] ?? null),
+            'saida_prevista_em' => $data['demanda_saida_prevista_em'] ?? now(),
+            'retorno_previsto_em' => $data['demanda_retorno_previsto_em'] ?? now(),
+        ];
+
+        DemandaAcolhido::query()
+            ->where('acolhido_id', $acolhido->getKey())
+            ->latest('id')
+            ->first()
+            ?->update($payload)
+            ?? DemandaAcolhido::create($payload);
     }
 
     private static function notificationTitle(string $event): string

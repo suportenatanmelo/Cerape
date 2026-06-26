@@ -71,10 +71,10 @@ class Profile extends EditProfile
                                 ->imageEditor()
                                 ->avatar()
                                 ->disk('public')
-                                ->directory(ImageStorageNaming::directory('avatar'))
+                                ->directory(ImageStorageNaming::directory('profile-avatar'))
                                 ->visibility('public')
                                 ->maxFiles(1)
-                                ->helperText('A imagem será salva em imagens/avatar e receberá o nome padronizado do sistema.'),
+                                ->helperText('A imagem será salva em documentos/profile-avatar e receberá o nome padronizado do sistema.'),
                         ]),
                     Section::make('Dados de acesso')
                         ->description('Informacoes principais da conta.')
@@ -109,8 +109,6 @@ class Profile extends EditProfile
                                 ->unique(ignoreRecord: true),
                             DatePicker::make('data_nascimento')
                                 ->label('Data de nascimento')
-                                ->native(false)
-                                ->displayFormat('d/m/Y')
                                 ->maxDate(now()),
                             TextInput::make('endereco')
                                 ->label('Endereco')

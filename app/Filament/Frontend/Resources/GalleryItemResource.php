@@ -20,7 +20,7 @@ use UnitEnum;
 class GalleryItemResource extends Resource
 {
     protected static ?string $model = GalleryItem::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Frontend';
+    protected static string|UnitEnum|null $navigationGroup = 'Site público';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-photo';
     protected static ?string $navigationLabel = 'Imagens da galeria';
     protected static ?string $modelLabel = 'imagem';
@@ -37,8 +37,8 @@ class GalleryItemResource extends Resource
                     ->preload()
                     ->required(),
                 TextInput::make('title')
-                    ->label('Titulo base')
-                    ->placeholder('Opcional. Se vazio, o nome do arquivo sera usado.'),
+                    ->label('Título base')
+                    ->placeholder('Opcional. Se vazio, o nome do arquivo será usado.'),
                 TextInput::make('caption')
                     ->label('Legenda')
                     ->placeholder('Opcional'),
@@ -53,7 +53,7 @@ class GalleryItemResource extends Resource
                     ->downloadable()
                     ->directory(\App\Support\ImageStorageNaming::directory('galeria'))
                     ->required()
-                    ->helperText('Selecione a categoria e envie uma ou varias imagens de uma vez.'),
+                    ->helperText('Selecione a categoria e envie uma ou várias imagens de uma vez.'),
             ])->columns(2),
         ]);
     }

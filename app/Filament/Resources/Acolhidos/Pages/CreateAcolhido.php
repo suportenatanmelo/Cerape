@@ -45,6 +45,7 @@ class CreateAcolhido extends CreateRecord
     protected function afterCreate(): void
     {
         $this->forgetAcolhidoDraft();
+        AcolhidoForm::persistDemandaFromForm($this->getRecord(), $this->data);
         AcolhidoForm::notifyUsers($this->getRecord(), 'created');
     }
 

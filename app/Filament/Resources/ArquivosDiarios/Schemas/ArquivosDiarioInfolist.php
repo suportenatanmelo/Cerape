@@ -38,7 +38,7 @@ class ArquivosDiarioInfolist
                             TextEntry::make('download')
                                 ->label('Link do arquivo')
                                 ->state(fn ($record): string => filled($record->upload_arquivo) ? basename((string) $record->upload_arquivo) : '-')
-                                ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-diarios.preview', $record) : null)
+                                ->url(fn ($record): ?string => filled($record->upload_arquivo) ? route('arquivos-upload.preview', $record) : null)
                                 ->openUrlInNewTab(),
                         ]),
                     ]),

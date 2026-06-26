@@ -52,6 +52,7 @@ class EditAcolhido extends EditRecord
     protected function afterSave(): void
     {
         $this->forgetAcolhidoDraft();
+        AcolhidoForm::persistDemandaFromForm($this->getRecord(), $this->data);
         AcolhidoForm::notifyUsers($this->getRecord(), 'updated');
     }
 
