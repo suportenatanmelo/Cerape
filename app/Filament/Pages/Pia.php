@@ -6,6 +6,7 @@ use App\Models\Acolhido;
 use App\Models\AtividadeDesenvolvida;
 use App\Models\DemandaAcolhido;
 use App\Models\Saude;
+use App\Models\ProntuarioEvolucao;
 use App\Models\SubstanciaPsicoativas;
 use App\Support\PortalContext;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -161,6 +162,7 @@ class Pia extends Page implements HasForms
                 'substancia_psicoativas' => $this->buildSubstanciasSection($acolhido),
                 'saude' => $this->buildSaudeSection($acolhido),
                 'atividades_crc' => $this->buildAtividadesSection($acolhido),
+                'prontuario_evolucao' => $this->buildProntuarioEvolucaoSection($acolhido),
                 'demanda' => $this->buildDemandaSection($acolhido),
                 default => [],
             };
@@ -194,6 +196,7 @@ class Pia extends Page implements HasForms
             'substancia_psicoativas' => 'Substâncias psicoativas',
             'saude' => 'Saúde',
             'atividades_crc' => 'Atividades CRC',
+            'prontuario_evolucao' => 'Prontuário de evolução',
             'demanda' => 'Demanda',
         ];
     }
@@ -304,6 +307,33 @@ class Pia extends Page implements HasForms
             'Atividades esportivas' => $record->atividades_esportivas,
             'Atividades lúdicas, culturais e musicais' => $record->atividades_ludicas_culturais_musicais,
             'Atividades práticas inclusivas' => $record->detalhes_atividades_praticas_inclusivas,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildProntuarioEvolucaoSection(Acolhido $acolhido): array
+    {
+        $record = ProntuarioEvolucao::query()
+            ->where('acolhido_id', $acolhido->id)
+            ->latest('data_prontuario')
+            ->latest('id')
+            ->first();
+
+        if (! $record instanceof ProntuarioEvolucao) {
+            return [
+                'Situação' => 'Nenhum prontuário de evolução encontrado.',
+            ];
+        }
+
+        return [
+            'Data do prontuário' => $record->data_prontuario,
+            'Próxima data do prontuário' => $record->proxima_data_prontuario,
+            'Atividade' => self::formatValue($record->atividade),
+            'Conteúdo' => strip_tags((string) $record->conteudo),
+            'Criado em' => $record->created_at,
+            'Atualizado em' => $record->updated_at,
         ];
     }
 

@@ -287,28 +287,32 @@ class AcolhidoForm
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
+                            Radio::make('tem_documentacao')
+                                ->label('Tem documentacao?')
+                                ->boolean('Sim', 'Nao')
+                                ->inline()
+                                ->columnSpanFull()
+                                ->default(false)
+                                ->live()
+                                ->helperText('Marque Sim para liberar os campos de documentação.')
+                                ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                    if (self::isYes($state)) {
+                                        $set('razao_caso_nao_tenha_documentacao', null);
+                                        return;
+                                    }
+
+                                    $set('documentos_civis', null);
+                                    $set('documentos_outros', null);
+                                    self::clearDocumentNumberFields($set);
+                                }),
                             Section::make('Documentacao')
+                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                ->dehydratedWhenHidden()
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
                                         'md' => 2,
                                     ])->schema([
-                                        Radio::make('tem_documentacao')
-                                            ->label('Tem documentacao?')
-                                            ->boolean('Sim', 'Nao')
-                                            ->inline()
-                                            ->default(false)
-                                            ->live()
-                                            ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (self::isYes($state)) {
-                                                    $set('razao_caso_nao_tenha_documentacao', null);
-                                                    return;
-                                                }
-
-                                                $set('documentos_civis', null);
-                                                $set('documentos_outros', null);
-                                                self::clearDocumentNumberFields($set);
-                                            }),
                                         TextInput::make('razao_caso_nao_tenha_documentacao')
                                             ->label('Caso nao tenha documento')
                                             ->hidden(fn(Get $get): bool => self::isYes($get('tem_documentacao')))
@@ -595,30 +599,34 @@ class AcolhidoForm
                         ]),
                     Step::make('Familia')
                         ->schema([
+                            Radio::make('tem_filhos')
+                                ->label('Tem filhos?')
+                                ->boolean('Sim', 'Nao')
+                                ->inline()
+                                ->columnSpanFull()
+                                ->default(false)
+                                ->live()
+                                ->helperText('Marque Sim para informar dados dos filhos e responsáveis.')
+                                ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                    if (self::isYes($state)) {
+                                        return;
+                                    }
+
+                                    $set('quantidade_filhos', null);
+                                    $set('qual_o_nome_dos_filhos', null);
+                                    $set('numero_telefone_filhos', null);
+                                    $set('quem_responsavel_criancas', null);
+                                    $set('pensao_alimenticia', null);
+                                    $set('possui_contato_dos_filhos', null);
+                                }),
                             Section::make('Filhos e responsaveis')
+                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_filhos')))
+                                ->dehydratedWhenHidden()
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
                                         'md' => 2,
                                     ])->schema([
-                                        Radio::make('tem_filhos')
-                                            ->label('Tem filhos?')
-                                            ->boolean('Sim', 'Nao')
-                                            ->inline()
-                                            ->default(false)
-                                            ->live()
-                                            ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (self::isYes($state)) {
-                                                    return;
-                                                }
-
-                                                $set('quantidade_filhos', null);
-                                                $set('qual_o_nome_dos_filhos', null);
-                                                $set('numero_telefone_filhos', null);
-                                                $set('quem_responsavel_criancas', null);
-                                                $set('pensao_alimenticia', null);
-                                                $set('possui_contato_dos_filhos', null);
-                                            }),
                                         TextInput::make('profissional_referencia_acolhido_instituicao')
                                             ->label('Profissional de referencia na instituicao')
                                             ->columnSpanFull(),
@@ -655,7 +663,36 @@ class AcolhidoForm
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
+                            Radio::make('tem_interventor')
+                                ->label('Existe um interventor?')
+                                ->boolean('Sim', 'Nao')
+                                ->inline()
+                                ->columnSpanFull()
+                                ->default(false)
+                                ->live()
+                                ->helperText('Marque Sim para liberar o cadastro do interventor.')
+                                ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                    if (self::isYes($state)) {
+                                        return;
+                                    }
+
+                                    $set('interventor_nome_completo', null);
+                                    $set('interventor_cpf', null);
+                                    $set('interventor_rg', null);
+                                    $set('interventor_exp', null);
+                                    $set('interventor_rg_uf', null);
+                                    $set('interventor_profissao', null);
+                                    $set('interventor_data_nascimento', null);
+                                    $set('interventor_residente', null);
+                                    $set('interventor_complemento', null);
+                                    $set('interventor_bairro', null);
+                                    $set('interventor_cidade', null);
+                                    $set('interventor_endereco_uf', null);
+                                    $set('interventor_telefone_contato', null);
+                                }),
                             Section::make('interventor do acolhido')
+                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_interventor')))
+                                ->dehydratedWhenHidden()
                                 ->schema([
                                     Grid::make([
                                         'default' => 1,
@@ -709,8 +746,7 @@ class AcolhidoForm
                                     ])->schema([
                                         TextInput::make('demanda_titulo')
                                             ->label('Titulo da demanda')
-                                            ->placeholder('Ex.: Atestado medico, atestado de comparecimento')
-                                            ->required(),
+                                            ->placeholder('Ex.: Atestado medico, atestado de comparecimento'),
                                         FileUpload::make('demanda_arquivo_path')
                                             ->label('Arquivo da demanda')
                                             ->disk('public')
@@ -725,16 +761,13 @@ class AcolhidoForm
                                                 'application/msword',
                                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                             ])
-                                            ->helperText('Anexe o documento que comprova ou justifica a demanda.')
-                                            ->required(),
+                                            ->helperText('Anexe o documento que comprova ou justifica a demanda.'),
                                         DateTimePicker::make('demanda_saida_prevista_em')
                                             ->label('Saida prevista')
-                                            ->seconds(false)
-                                            ->required(),
+                                            ->seconds(false),
                                         DateTimePicker::make('demanda_retorno_previsto_em')
                                             ->label('Retorno previsto')
                                             ->seconds(false)
-                                            ->required()
                                             ->afterOrEqual('demanda_saida_prevista_em'),
                                         TextInput::make('demanda_observacoes')
                                             ->label('Observacoes da demanda')

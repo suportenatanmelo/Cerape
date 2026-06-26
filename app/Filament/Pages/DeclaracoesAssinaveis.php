@@ -143,7 +143,8 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'Declaracao para uso de imagem',
             'desistencia_ptc' => 'Declaracao de desistencia do PTC',
             'acolhimento_voluntario' => 'Declaracao de acolhimento voluntario',
-            'contrato_prevencao_recaida' => 'Contrato terapeutico',
+            'contrato_prevencao_recaida' => 'Contrato terapeutico - prevencao a recaida',
+            'contrato_terapeutico_9_meses' => 'Contrato terapeutico 9 meses',
         ];
     }
 
@@ -211,7 +212,8 @@ class DeclaracoesAssinaveis extends Page implements HasForms
             'uso_imagem' => 'DECLARACAO PARA USO DE IMAGEM',
             'desistencia_ptc' => 'DECLARACAO DE DESISTENCIA DO PTC',
             'acolhimento_voluntario' => 'DECLARACAO DE ACOLHIMENTO VOLUNTARIO',
-            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO',
+            'contrato_prevencao_recaida' => 'CONTRATO TERAPEUTICO - PREVENCAO A RECAIDA E REABILITACAO',
+            'contrato_terapeutico_9_meses' => 'CONTRATO TERAPEUTICO - 9 MESES',
             default => 'DECLARACAO',
         };
     }
