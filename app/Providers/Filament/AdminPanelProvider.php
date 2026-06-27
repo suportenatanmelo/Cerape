@@ -5,15 +5,8 @@ namespace App\Providers\Filament;
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
-use App\Filament\Resources\Agendas\Pages\CalendarAgenda;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
-use App\Filament\Widgets\AcolhidoEvolucaoLineChart;
-use App\Filament\Widgets\AcolhidosCriadosLineChart;
-use App\Filament\Widgets\AvaliacaoPessoalLineChart;
-use App\Filament\Widgets\DemandasAcolhidosLineChart;
-use App\Filament\Widgets\UsuariosCriadosLineChart;
-use App\Filament\Widgets\UsuariosVinculadosAcolhidoLineChart;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
 use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -135,17 +128,8 @@ class AdminPanelProvider extends PanelProvider
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
                 Dashboard::class,
-                CalendarAgenda::class,
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                UsuariosCriadosLineChart::class,
-                UsuariosVinculadosAcolhidoLineChart::class,
-                AcolhidosCriadosLineChart::class,
-                DemandasAcolhidosLineChart::class,
-                AvaliacaoPessoalLineChart::class,
-                AcolhidoEvolucaoLineChart::class,
-            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
