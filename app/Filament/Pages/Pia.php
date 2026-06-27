@@ -27,7 +27,7 @@ class Pia extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationLabel = 'PIA';
+    protected static ?string $navigationLabel = 'Check List PIA';
 
     protected static ?string $title = 'PLANO INDIVIDUAL DE ACOLHIMENTO';
 

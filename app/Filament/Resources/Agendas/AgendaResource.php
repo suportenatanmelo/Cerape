@@ -26,13 +26,17 @@ class AgendaResource extends Resource
 {
     protected static ?string $model = Agenda::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Agenda';
+    protected static string | UnitEnum | null $navigationGroup = 'CADASTROS';
 
-    protected static ?string $navigationLabel = 'Agendamentos';
+    protected static ?string $navigationLabel = 'Agenda';
 
-    protected static ?string $modelLabel = 'agendamento';
 
-    protected static ?string $pluralModelLabel = 'agendamentos';
+
+
+    protected static ?string $modelLabel = 'agenda';
+
+
+    protected static ?string $pluralModelLabel = 'agendas';
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-calendar-days';
 
@@ -109,7 +113,7 @@ class AgendaResource extends Resource
 
     public static function getNavigationGroup(): string | UnitEnum | null
     {
-        return PortalContext::documentsNavigationGroup();
+        return PortalContext::portalNavigationGroup();
     }
 
     private static function notificationTitle(string $event): string

@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Agendas\Pages;
 
 use App\Filament\Resources\Agendas\AgendaResource;
-use App\Filament\Resources\Agendas\Pages\CalendarAgenda;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
@@ -18,7 +17,7 @@ class ListAgendas extends ListRecords
             Action::make('calendar')
                 ->label('Calendário')
                 ->icon('heroicon-o-calendar-days')
-                ->url(CalendarAgenda::getUrl()),
+                ->url(fn (): string => route('filament.admin.pages.agendas.calendario')),
             CreateAction::make()
                 ->label('Novo agendamento'),
         ];

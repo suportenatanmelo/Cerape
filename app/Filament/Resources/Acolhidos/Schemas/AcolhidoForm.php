@@ -393,7 +393,7 @@ class AcolhidoForm
                                     ]),
                                 ]),
                         ]),
-                    Step::make('Saude')
+                    Step::make('Encaminhamento')
                         ->schema([
                             Section::make('Trabalho, contato e saude')
                                 ->schema([
@@ -1212,6 +1212,10 @@ class AcolhidoForm
 
     private static function normalizeNullableString(mixed $value): ?string
     {
+        if (is_array($value)) {
+            return null;
+        }
+
         $value = trim((string) $value);
 
         return $value === '' ? null : $value;

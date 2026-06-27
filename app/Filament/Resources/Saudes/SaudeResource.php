@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Saudes;
 
+use App\Filament\Resources\Saudes\Pages\CreateSaude;
 use App\Filament\Resources\Saudes\Pages\ManageSaudes;
 use App\Filament\Resources\Saudes\Pages\ViewSaude;
 use App\Filament\Resources\Saudes\Schemas\SaudeForm;
@@ -27,6 +28,8 @@ class SaudeResource extends Resource
     protected static string | UnitEnum | null $navigationGroup = 'Cadastros';
 
     protected static ?string $navigationLabel = 'Saúde';
+
+    protected static ?int $navigationSort = 3;
 
     protected static string | BackedEnum | null $navigationIcon = 'heroicon-o-heart';
 
@@ -85,6 +88,7 @@ class SaudeResource extends Resource
     {
         return [
             'index' => ManageSaudes::route('/'),
+            'create' => CreateSaude::route('/create'),
             'view' => ViewSaude::route('/{record}'),
         ];
     }

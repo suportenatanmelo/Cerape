@@ -3,10 +3,17 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\DashboardAtendimentosPorSetorChart;
+use App\Filament\Widgets\DashboardAgendaWidget;
+use App\Filament\Widgets\DashboardAlertsWidget;
+use App\Filament\Widgets\DashboardBirthdaysWidget;
 use App\Filament\Widgets\DashboardEntradasAltasChart;
 use App\Filament\Widgets\DashboardEvolucaoAtendimentosChart;
 use App\Filament\Widgets\DashboardFaixaEtariaChart;
+use App\Filament\Widgets\DashboardFinanceiroWidget;
+use App\Filament\Widgets\DashboardGeneralIndicatorsWidget;
+use App\Filament\Widgets\DashboardLatestActivitiesWidget;
 use App\Filament\Widgets\DashboardOrigemEncaminhamentoChart;
+use App\Filament\Widgets\DashboardQuickActionsWidget;
 use App\Filament\Widgets\DashboardSituacaoAcolhidosChart;
 use App\Filament\Widgets\DashboardStatsOverviewWidget;
 use Illuminate\Support\Facades\Auth;
@@ -39,6 +46,13 @@ class Dashboard extends \Filament\Pages\Dashboard
             DashboardEvolucaoAtendimentosChart::class,
             DashboardFaixaEtariaChart::class,
             DashboardOrigemEncaminhamentoChart::class,
+            DashboardAgendaWidget::class,
+            DashboardAlertsWidget::class,
+            DashboardLatestActivitiesWidget::class,
+            DashboardFinanceiroWidget::class,
+            DashboardBirthdaysWidget::class,
+            DashboardQuickActionsWidget::class,
+            DashboardGeneralIndicatorsWidget::class,
         ];
     }
 

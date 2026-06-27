@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Agendas\Pages;
 use App\Models\Agenda;
 use App\Models\Acolhido;
 use App\Models\User;
+use App\Services\Agenda\AgendaService;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Carbon;
@@ -17,7 +18,7 @@ class CalendarAgenda extends Page
 
     protected static ?string $title = 'Calendário de agendamentos';
 
-    protected static ?string $slug = 'agendas/calendar';
+    protected static ?string $slug = 'agendas/calendario';
 
     protected string $view = 'filament.resources.agendas.pages.calendar-agenda';
 
@@ -38,7 +39,7 @@ class CalendarAgenda extends Page
 
     public function getTitle(): string | Htmlable
     {
-        return 'Calendário de agendamentos';
+        return 'Calendário assistencial';
     }
 
     public function mount(): void
@@ -114,6 +115,27 @@ class CalendarAgenda extends Page
             ->orderBy('nome_completo_paciente')
             ->pluck('nome_completo_paciente', 'id')
             ->all();
+    }
+
+    public function getUpcomingEvents(int $limit = 6)
+    {
+        return $this->filteredAgendasQuery()
+            ->whereDate('data', '>=', today())
+            ->orderBy('data')
+            ->orderBy('hora_inicio')
+            ->limit($limit)
+            ->get()
+            ->all();
+    }
+
+    public function getSummary(): array
+    {
+        return app(AgendaService::class)->getResumo();
+    }
+
+    public function colorFor(Agenda $agenda): string
+    {
+        return app(AgendaService::class)->colorFor($agenda);
     }
 
     public function getReferenceDate(): Carbon

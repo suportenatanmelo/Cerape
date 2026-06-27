@@ -30,6 +30,7 @@ class AcolhidoResource extends Resource
 
     protected static ?int $navigationSort = 1;
 
+
     protected static string | BackedEnum | null $navigationIcon = Heroicon::Users;
 
     protected static ?string $recordTitleAttribute = 'nome_completo_paciente';

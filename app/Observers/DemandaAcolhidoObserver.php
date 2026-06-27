@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Services\Agenda\AgendaService;
 use App\Models\DemandaAcolhido;
 use App\Models\User;
 use Filament\Notifications\Notification;
@@ -13,11 +14,13 @@ class DemandaAcolhidoObserver
      */
     public function created(DemandaAcolhido $demandaAcolhido): void
     {
+        app(AgendaService::class)->syncAgendaFromDemanda($demandaAcolhido);
+
         $user = auth()->user();
 
         Notification::make()
             ->title('Demanda criada com sucesso')
-            ->body("Uma demanda do acolhido {$user->nome_completo} acaba de ser criada")
+            ->body('A demanda do acolhido foi integrada ao calendário da agenda.')
             ->sendToDatabase(User::all());
     }
 
@@ -26,9 +29,11 @@ class DemandaAcolhidoObserver
      */
     public function updated(DemandaAcolhido $demandaAcolhido): void
     {
+        app(AgendaService::class)->syncAgendaFromDemanda($demandaAcolhido);
+
         Notification::make()
             ->title('Demanda atualizada com sucesso')
-            ->body('Uma demanda do acholhido $user->nome_completo acaba de ser criada')
+            ->body('A demanda correspondente foi atualizada também na agenda.')
             ->sendToDatabase(User::all());
     }
 
@@ -37,7 +42,7 @@ class DemandaAcolhidoObserver
      */
     public function deleted(DemandaAcolhido $demandaAcolhido): void
     {
-        //
+        app(AgendaService::class)->removeAgendaFromDemanda($demandaAcolhido);
     }
 
     /**
