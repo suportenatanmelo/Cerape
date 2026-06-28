@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CERAPE — Casa de Recuperação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ HEADER / MENU ============ -->
+<header>
+  <div class="nav wrap">
+    <a href="#topo" class="logo">
+      <img src="logo.png" alt="Logotipo CERAPE — árvore dourada" class="logo-mark" width="42" height="42">
+      CER<span>APE</span>
+    </a>
+    <nav>
+      <ul class="menu" id="menu">
+        <li><a href="#topo">Início</a></li>
+        <li><a href="#sobre">Sobre Nós</a></li>
+        <li><a href="#jornada">A Jornada</a></li>
+        <li><a href="#equipe">Equipe</a></li>
+        <li><a href="galeria.html">Galeria</a></li>
+        <li><a href="#blog">Blog</a></li>
+        <li><a href="#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="#contato" class="btn btn-line">Fale Conosco</a>
+      <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO / CARROSSEL ============ -->
+<section id="topo" class="hero">
+  <div class="slide active" style="background-image:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1521477716071-8623476a3a4e?q=80&w=1600&auto=format&fit=crop')"></div>
+  <div class="slide" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1600&auto=format&fit=crop')"></div>
+  <div class="hero-veil"></div>
+  <div class="hero-leaves" id="hero-leaves" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <span class="eyebrow hero-anim" style="--d:.1s">Casa de Recuperação · Acolhimento 24h</span>
+    <h1 class="hero-title">
+      <span class="line-mask"><span class="line-inner" style="--d:.35s">Um novo amanhecer</span></span>
+      <span class="line-mask"><span class="line-inner" style="--d:.5s">começa com um passo de coragem.</span></span>
+    </h1>
+    <p class="hero-anim" style="--d:.8s">Ambiente seguro, equipe multiprofissional e um plano de tratamento pensado para cada etapa da recuperação — do acolhimento à reinserção.</p>
+    <div class="hero-actions hero-anim" style="--d:1s">
+      <a href="#contato" class="btn btn-primary">Agendar uma conversa</a>
+      <a href="#jornada" class="btn btn-ghost">Conhecer a jornada</a>
+    </div>
+  </div>
+
+  <a href="#sobre" class="scroll-cue hero-anim" style="--d:1.3s" aria-label="Rolar para conhecer a CERAPE">
+    <span class="scroll-cue-mouse"><span></span></span>
+    <span class="scroll-cue-label">Role para conhecer</span>
+  </a>
+
+  <button class="arrow prev" onclick="moveSlide(-1)" aria-label="Slide anterior">‹</button>
+  <button class="arrow next" onclick="moveSlide(1)" aria-label="Próximo slide">›</button>
+  <div class="dots" id="dots"></div>
+</section>
+<div class="horizon"></div>
+
+<!-- ============ SOBRE NÓS ============ -->
+<section id="sobre">
+  <div class="wrap">
+    <div class="sobre-grid">
+      <div class="sobre-img reveal">
+        <img src="https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop" alt="Casa CERAPE">
+      </div>
+      <div class="sobre-text reveal">
+        <span class="eyebrow">Quem somos</span>
+        <h2>Sobre a CERAPE</h2>
+        <p>A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química. Combinamos cuidado clínico, suporte psicológico e uma rotina estruturada para que cada residente reconstrua sua autonomia com dignidade.</p>
+        <p>Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.</p>
+        <div class="stats-row">
+          <div class="stat"><strong>12+</strong><span>anos de atuação</span></div>
+          <div class="stat"><strong>500+</strong><span>vidas acolhidas</span></div>
+          <div class="stat"><strong>24h</strong><span>equipe de plantão</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ A JORNADA (etapas) ============ -->
+<section id="jornada" class="jornada">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Como funciona</span>
+      <h2>Uma jornada em quatro etapas</h2>
+      <p>Cada fase tem objetivos claros, sempre com acompanhamento próximo da família e da equipe técnica.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <span class="num">01</span>
+        <h3>Acolhimento</h3>
+        <p>Avaliação inicial, escuta e adaptação à rotina da casa, com segurança e respeito ao tempo de cada pessoa.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">02</span>
+        <h3>Estabilização</h3>
+        <p>Acompanhamento clínico e psicológico contínuo, com foco em saúde física e emocional.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">03</span>
+        <h3>Fortalecimento</h3>
+        <p>Terapias individuais e em grupo, atividades terapêuticas e construção de novos hábitos.</p>
+      </div>
+      <div class="step reveal">
+        <span class="num">04</span>
+        <h3>Reinserção</h3>
+        <p>Planejamento de alta, retomada de vínculos familiares e preparação para a vida fora da casa.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EQUIPE / COMO FUNCIONA ============ -->
+<section id="equipe" class="equipe">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Como funciona</span>
+      <h2>Quem cuida de você</h2>
+      <p>Uma equipe multiprofissional acompanha cada etapa do tratamento, em conjunto e com plano individual para cada residente.</p>
+    </div>
+    <div class="team-grid">
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=500&auto=format&fit=crop" alt="Psiquiatra"></div>
+        <div class="team-info"><span class="role">Psiquiatria</span><h3>Dr. Carlos Lima</h3><p>Avaliação clínica e acompanhamento medicamentoso.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?q=80&w=500&auto=format&fit=crop" alt="Psicóloga"></div>
+        <div class="team-info"><span class="role">Psicologia</span><h3>Marina Souza</h3><p>Terapias individuais e em grupo durante o tratamento.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=500&auto=format&fit=crop" alt="Enfermeira"></div>
+        <div class="team-info"><span class="role">Enfermagem</span><h3>Patrícia Alves</h3><p>Cuidados de saúde e monitoramento contínuo 24h.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?q=80&w=500&auto=format&fit=crop" alt="Terapeuta ocupacional"></div>
+        <div class="team-info"><span class="role">Terapia Ocupacional</span><h3>Rafael Costa</h3><p>Atividades terapêuticas e construção de novos hábitos.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?q=80&w=500&auto=format&fit=crop" alt="Assistente social"></div>
+        <div class="team-info"><span class="role">Serviço Social</span><h3>Juliana Pires</h3><p>Apoio à família e planejamento da reinserção social.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1607990281513-2c110a25bd8c?q=80&w=500&auto=format&fit=crop" alt="Nutricionista"></div>
+        <div class="team-info"><span class="role">Nutrição</span><h3>André Ferreira</h3><p>Acompanhamento alimentar e reeducação nutricional.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=500&auto=format&fit=crop" alt="Educador físico"></div>
+        <div class="team-info"><span class="role">Educação Física</span><h3>Bruno Tavares</h3><p>Atividade física orientada para corpo e mente.</p></div>
+      </div>
+      <div class="team-card reveal">
+        <div class="team-photo"><img src="https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&w=500&auto=format&fit=crop" alt="Coordenadora clínica"></div>
+        <div class="team-info"><span class="role">Coordenação Clínica</span><h3>Renata Borges</h3><p>Supervisão geral do plano terapêutico de cada residente.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALERIA ============ -->
+<section id="galeria">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Nosso espaço</span>
+      <h2>Galeria</h2>
+      <p>Um ambiente pensado para acolher: áreas comuns, quartos, jardim e espaços terapêuticos.</p>
+    </div>
+
+    <div class="gallery-filters reveal" id="gallery-filters">
+      <button class="filter-btn active" data-cat="todos">Todos</button>
+      <button class="filter-btn" data-cat="areas-comuns">Áreas Comuns</button>
+      <button class="filter-btn" data-cat="quartos">Quartos</button>
+      <button class="filter-btn" data-cat="jardim">Jardim</button>
+      <button class="filter-btn" data-cat="terapeutico">Terapêutico</button>
+    </div>
+
+    <div class="gallery-grid" id="gallery-grid">
+      <div class="g-item reveal tall" data-cat="jardim" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=900&auto=format&fit=crop" alt="Jardim da casa"><span class="cap">Jardim de convivência</span></div>
+      <div class="g-item reveal" data-cat="areas-comuns" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=900&auto=format&fit=crop" alt="Sala de estar"><span class="cap">Sala de estar</span></div>
+      <div class="g-item reveal" data-cat="quartos" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=900&auto=format&fit=crop" alt="Quarto"><span class="cap">Quartos compartilhados</span></div>
+      <div class="g-item reveal tall" data-cat="terapeutico" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=900&auto=format&fit=crop" alt="Sala de terapia"><span class="cap">Espaço terapêutico</span></div>
+      <div class="g-item reveal" data-cat="areas-comuns" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=900&auto=format&fit=crop" alt="Refeitório"><span class="cap">Refeitório</span></div>
+      <div class="g-item reveal" data-cat="jardim" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1521477716071-8623476a3a4e?q=80&w=900&auto=format&fit=crop" alt="Área externa"><span class="cap">Área externa</span></div>
+      <div class="g-item reveal" data-cat="quartos" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1560448075-bb485b067938?q=80&w=900&auto=format&fit=crop" alt="Quarto individual"><span class="cap">Quarto individual</span></div>
+      <div class="g-item reveal tall" data-cat="terapeutico" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=900&auto=format&fit=crop" alt="Sala de grupo"><span class="cap">Sala de terapia em grupo</span></div>
+      <div class="g-item reveal" data-cat="jardim" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=900&auto=format&fit=crop" alt="Horta da casa"><span class="cap">Horta comunitária</span></div>
+      <div class="g-item reveal" data-cat="areas-comuns" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1582037928769-181cf1ea3201?q=80&w=900&auto=format&fit=crop" alt="Biblioteca"><span class="cap">Espaço de leitura</span></div>
+    </div>
+
+    <p class="gallery-empty" id="gallery-empty" style="display:none;">Nenhuma imagem encontrada para esta categoria.</p>
+
+    <div style="text-align:center;margin-top:36px;">
+      <a href="galeria.html" class="btn btn-line">Ver galeria completa →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox com navegação por setas -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fechar">×</button>
+  <button class="lightbox-arrow prev" onclick="moveLightbox(-1)" aria-label="Foto anterior">‹</button>
+  <div class="lightbox-content">
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-info">
+      <span id="lightbox-cap"></span>
+      <span id="lightbox-count" class="lightbox-count"></span>
+    </div>
+  </div>
+  <button class="lightbox-arrow next" onclick="moveLightbox(1)" aria-label="Próxima foto">›</button>
+</div>
+
+
+<!-- ============ BLOG ============ -->
+<section id="blog" style="background:var(--bg-soft);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Conteúdo</span>
+      <h2>Blog</h2>
+      <p>Artigos para famílias e pacientes sobre recuperação, saúde mental e reconstrução de vínculos.</p>
+    </div>
+
+    <a href="artigo-apoio-familiar.html" class="featured-post reveal">
+      <div class="featured-img">
+        <img src="https://images.unsplash.com/photo-1499209974431-9dddcece7f88?q=80&w=1100&auto=format&fit=crop" alt="">
+      </div>
+      <div class="featured-body">
+        <span class="post-tag">Família</span>
+        <h3>Como apoiar um familiar em tratamento sem se esgotar</h3>
+        <p>Quando alguém da família entra em tratamento, é comum se dedicar inteiramente a essa pessoa e esquecer de si mesmo no caminho. Veja como definir limites saudáveis, reconhecer os sinais de esgotamento e onde buscar apoio durante o processo.</p>
+        <div class="post-meta">
+          <span>📅 3 jun. 2026</span>
+          <span>⏱ 5 min de leitura</span>
+        </div>
+        <span class="post-link">Ler artigo completo →</span>
+      </div>
+    </a>
+
+    <div class="blog-grid">
+      <a href="artigo-primeiras-semanas.html" class="post-card reveal">
+        <div class="post-img"><img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=700&auto=format&fit=crop" alt=""></div>
+        <div class="post-body">
+          <span class="post-tag">Tratamento</span>
+          <h3>O que esperar nas primeiras semanas de internação</h3>
+          <p>A adaptação à rotina, a avaliação clínica inicial e o papel da família nos primeiros dias de acolhimento na casa.</p>
+          <div class="post-meta"><span>📅 22 mai. 2026</span><span>⏱ 6 min</span></div>
+          <span class="post-link">Ler artigo →</span>
+        </div>
+      </a>
+      <a href="artigo-planejando-alta.html" class="post-card reveal">
+        <div class="post-img"><img src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=700&auto=format&fit=crop" alt=""></div>
+        <div class="post-body">
+          <span class="post-tag">Reinserção</span>
+          <h3>Voltar para casa: planejando a fase de alta</h3>
+          <p>Por que a transição de volta à rotina precisa ser planejada com antecedência e o que esse plano costuma incluir.</p>
+          <div class="post-meta"><span>📅 9 mai. 2026</span><span>⏱ 5 min</span></div>
+          <span class="post-link">Ler artigo →</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTATO ============ -->
+<section id="contato" class="contato">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Atendimento confidencial</span>
+      <h2>Vamos conversar</h2>
+      <p>Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.</p>
+    </div>
+    <div class="contato-grid">
+      <form id="contact-form" action="/contato" method="POST" class="reveal">
+        <div class="field">
+          <label for="nome">Nome</label>
+          <input id="nome" name="nome" type="text" placeholder="Seu nome" required>
+        </div>
+        <div class="field">
+          <label for="telefone">Telefone / WhatsApp</label>
+          <input id="telefone" name="telefone" type="tel" placeholder="(00) 00000-0000" required>
+        </div>
+        <div class="field">
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" placeholder="seu@email.com">
+        </div>
+        <div class="field">
+          <label for="mensagem">Mensagem</label>
+          <textarea id="mensagem" name="mensagem" rows="4" placeholder="Como podemos ajudar?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar mensagem</button>
+      </form>
+
+      <div class="contato-info reveal">
+        <div class="info-card">
+          <h4>Telefone</h4>
+          <p>(11) 0000-0000 · WhatsApp 24h</p>
+          <a href="https://wa.me/5511000000000?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es" target="_blank" rel="noopener" class="btn btn-line" style="margin-top:14px;border-color:rgba(255,255,255,.35);color:#fff;">Conversar no WhatsApp</a>
+        </div>
+        <div class="info-card">
+          <h4>Endereço</h4>
+          <p>Rua das Acácias, 120 — Bairro Jardim, São Paulo/SP</p>
+        </div>
+        <div class="info-card">
+          <h4>E-mail</h4>
+          <p>contato@cerape.com.br</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col reveal">
+        <a href="#topo" class="logo" style="color:#fff;">
+          <img src="logo.png" alt="Logotipo CERAPE" class="logo-mark">
+          CER<span>APE</span>
+        </a>
+        <p style="max-width:280px;font-size:.88rem;margin-top:10px;">Acolhimento e tratamento para uma nova etapa de vida.</p>
+      </div>
+      <div class="foot-col reveal">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="#sobre">Sobre Nós</a></li>
+          <li><a href="#jornada">A Jornada</a></li>
+          <li><a href="galeria.html">Galeria</a></li>
+          <li><a href="#blog">Blog</a></li>
+          <li><a href="#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div class="foot-col reveal">
+        <h4>Contato</h4>
+        <ul>
+          <li>(11) 0000-0000</li>
+          <li>contato@cerape.com.br</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 CERAPE. Todos os direitos reservados.</span>
+      <span>Atendimento confidencial e humanizado.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ WHATSAPP FLUTUANTE ============ -->
+<div class="wa-box" id="wa-box">
+  <div class="wa-box-header">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.47 14.38c-.29-.15-1.71-.84-1.97-.94-.27-.1-.46-.15-.65.15-.2.29-.75.94-.92 1.13-.17.2-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.45.13-.6.15-.15.34-.39.5-.58.17-.2.22-.34.34-.56.11-.22.06-.4-.03-.56-.1-.15-.86-2.07-1.18-2.83-.31-.74-.63-.64-.86-.65-.22-.01-.48-.01-.73-.01-.25 0-.66.1-.91.37s-.97 1-.97 2.42c0 1.43 1.02 2.81 1.16 3 .15.2 2 3.05 4.91 4.16 2.91 1.1 2.91.74 3.43.69.53-.05 1.71-.7 1.95-1.37.25-.67.25-1.25.17-1.37-.07-.13-.29-.2-.58-.34z"/>
+        <path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.94.55 3.75 1.5 5.29L2 22l4.86-1.45A9.96 9.96 0 0 0 12.02 22C17.52 22 22 17.52 22 12S17.52 2 12.02 2zm0 18.18c-1.74 0-3.36-.5-4.74-1.36l-.34-.21-3.05.91.92-3-.22-.35A8.16 8.16 0 0 1 3.82 12c0-4.53 3.68-8.2 8.2-8.2 4.52 0 8.2 3.67 8.2 8.2 0 4.52-3.68 8.18-8.2 8.18z"/>
+      </svg>
+    </div>
+    <div class="who">
+      <strong>CERAPE</strong>
+      <span><span class="status-dot"></span> Online agora</span>
+    </div>
+    <button class="wa-box-close" onclick="toggleWaBox(false)" aria-label="Fechar chat">×</button>
+  </div>
+  <div class="wa-box-body">
+    <div class="wa-bubble">
+      Olá! 👋 Como podemos ajudar? Fale com a nossa equipe agora pelo WhatsApp.
+      <span class="time">Atendimento 24h</span>
+    </div>
+  </div>
+  <div class="wa-box-footer">
+    <a href="https://wa.me/5511000000000?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es" target="_blank" rel="noopener" class="btn btn-primary">
+      Iniciar conversa
+    </a>
+  </div>
+</div>
+
+<button class="whatsapp-float" id="wa-toggle" aria-label="Conversar no WhatsApp" onclick="toggleWaBox()">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.47 14.38c-.29-.15-1.71-.84-1.97-.94-.27-.1-.46-.15-.65.15-.2.29-.75.94-.92 1.13-.17.2-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.45.13-.6.15-.15.34-.39.5-.58.17-.2.22-.34.34-.56.11-.22.06-.4-.03-.56-.1-.15-.86-2.07-1.18-2.83-.31-.74-.63-.64-.86-.65-.22-.01-.48-.01-.73-.01-.25 0-.66.1-.91.37s-.97 1-.97 2.42c0 1.43 1.02 2.81 1.16 3 .15.2 2 3.05 4.91 4.16 2.91 1.1 2.91.74 3.43.69.53-.05 1.71-.7 1.95-1.37.25-.67.25-1.25.17-1.37-.07-.13-.29-.2-.58-.34z"/>
+    <path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.94.55 3.75 1.5 5.29L2 22l4.86-1.45A9.96 9.96 0 0 0 12.02 22C17.52 22 22 17.52 22 12S17.52 2 12.02 2zm0 18.18c-1.74 0-3.36-.5-4.74-1.36l-.34-.21-3.05.91.92-3-.22-.35A8.16 8.16 0 0 1 3.82 12c0-4.53 3.68-8.2 8.2-8.2 4.52 0 8.2 3.67 8.2 8.2 0 4.52-3.68 8.18-8.2 8.18z"/>
+  </svg>
+</button>
+
+<script>
+  // ---- Caixa de chat do WhatsApp ----
+  function toggleWaBox(force){
+    const box = document.getElementById('wa-box');
+    const toggle = document.getElementById('wa-toggle');
+    const open = typeof force === 'boolean' ? force : !box.classList.contains('open');
+    box.classList.toggle('open', open);
+    toggle.classList.toggle('has-box', open);
+  }
+  document.addEventListener('click', function(e){
+    const box = document.getElementById('wa-box');
+    const toggle = document.getElementById('wa-toggle');
+    if (box.classList.contains('open') && !box.contains(e.target) && !toggle.contains(e.target)){
+      toggleWaBox(false);
+    }
+  });
+
+  // ---- Carrossel ----
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('dots');
+  let current = 0, timer;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Ir para slide ' + (i+1));
+    d.onclick = () => goToSlide(i);
+    dotsWrap.appendChild(d);
+  });
+  const dots = document.querySelectorAll('.dot');
+
+  function goToSlide(i){
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    resetTimer();
+  }
+  function moveSlide(dir){ goToSlide(current + dir); }
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(() => moveSlide(1), 6000);
+  }
+  resetTimer();
+
+  // ---- Galeria: filtro por categoria ----
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const galleryItems = document.querySelectorAll('.g-item');
+  const galleryEmpty = document.getElementById('gallery-empty');
+
+  function applyFilter(cat){
+    let visibleCount = 0;
+    galleryItems.forEach(item => {
+      const match = cat === 'todos' || item.dataset.cat === cat;
+      item.classList.toggle('hide', !match);
+      if (match) visibleCount++;
+    });
+    galleryEmpty.style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyFilter(btn.dataset.cat);
+    });
+  });
+
+  // ---- Lightbox com navegação por setas ----
+  let lbIndex = 0;
+  let lbItems = [];
+
+  function visibleGalleryItems(){
+    return Array.from(galleryItems).filter(item => !item.classList.contains('hide'));
+  }
+
+  function openLightbox(el){
+    lbItems = visibleGalleryItems();
+    lbIndex = lbItems.indexOf(el);
+    renderLightbox();
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function renderLightbox(){
+    const item = lbItems[lbIndex];
+    const img = item.querySelector('img');
+    const cap = item.querySelector('.cap');
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox-img').alt = img.alt;
+    document.getElementById('lightbox-cap').textContent = cap ? cap.textContent : '';
+    document.getElementById('lightbox-count').textContent = (lbIndex + 1) + ' / ' + lbItems.length;
+  }
+  function moveLightbox(dir){
+    if (!lbItems.length) return;
+    lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
+    renderLightbox();
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'ArrowRight') moveLightbox(1);
+    if (e.key === 'ArrowLeft') moveLightbox(-1);
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // ---- Menu mobile ----
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('menu');
+  burger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+  });
+
+  // ---- Formulário (placeholder até integrar com Laravel) ----
+  document.getElementById('contact-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    alert('Formulário pronto para ser conectado à rota /contato do Laravel.');
+  });
+  // ---- Folhas douradas flutuantes no hero ----
+  (function(){
+    const wrap = document.getElementById('hero-leaves');
+    if (!wrap || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const colors = ['var(--amber)','var(--amber-soft)','#C9A23B','var(--sage)'];
+    const total = 12;
+    for (let i = 0; i < total; i++){
+      const leaf = document.createElement('div');
+      leaf.className = 'leaf';
+      const size = 14 + Math.random()*14;
+      const left = Math.random()*100;
+      const duration = 10 + Math.random()*10;
+      const delay = Math.random()*14;
+      const drift = (Math.random()*120 - 60).toFixed(0) + 'px';
+      const spin = (160 + Math.random()*200).toFixed(0) + 'deg';
+      const color = colors[i % colors.length];
+      leaf.style.left = left + '%';
+      leaf.style.width = size + 'px';
+      leaf.style.height = size + 'px';
+      leaf.style.animationDuration = duration + 's';
+      leaf.style.animationDelay = delay + 's';
+      leaf.style.setProperty('--drift', drift);
+      leaf.style.setProperty('--spin', spin);
+      leaf.innerHTML = '<svg viewBox="0 0 24 24" width="100%" height="100%"><path d="M12 1C6 6 1 11 1 16a11 11 0 0022 0C23 11 18 6 12 1z" fill="' + color + '"/><path d="M12 3v18" stroke="rgba(20,20,10,.22)" stroke-width="1"/></svg>';
+      wrap.appendChild(leaf);
+    }
+  })();
+
+  // ---- Fade-in ao rolar (scroll reveal) ----
+  (function(){
+    const items = document.querySelectorAll('.reveal');
+    if (!items.length) return;
+    if (!('IntersectionObserver' in window)){
+      items.forEach(el => el.classList.add('in-view'));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+    items.forEach(el => io.observe(el));
+  })();
+</script>
+</body>
+</html>

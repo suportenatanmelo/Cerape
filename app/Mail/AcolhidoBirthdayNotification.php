@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Mail;
+
+use App\Filament\Resources\Acolhidos\AcolhidoResource;
+use App\Models\Acolhido;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class AcolhidoBirthdayNotification extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public function __construct(public Acolhido $acolhido)
+    {
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: '🎂 Aniversariante do Dia - ' . ($this->acolhido->nome_completo_paciente ?? 'Cerape'),
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.acolhido-birthday',
+            with: [
+                'acolhido' => $this->acolhido,
+                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'profileUrl' => AcolhidoResource::getUrl('view', ['record' => $this->acolhido], panel: 'admin'),
+            ],
+        );
+    }
+}

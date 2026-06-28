@@ -1,0 +1,108 @@
+@utility wrap-anywhere {
+    overflow-wrap: anywhere;
+}
+
+@utility wrap-break-word {
+    word-break: break-word;
+}
+
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*.php';
+@source '../../../../resources/views/filament/**/*.blade.php';
+
+@layer components {
+    :root.dark select.fi-select-input,
+    :root.dark select.fi-select-input option,
+    :root.dark select.fi-select-input optgroup,
+    :root.dark .fi-select-input,
+    :root.dark .fi-select-input-btn,
+    :root.dark .fi-select-input-option,
+    :root.dark .fi-select-input-value-label,
+    :root.dark .fi-input,
+    :root.dark .fi-badge,
+    :root.dark .fi-badge-label,
+    :root.dark .fi-badge-label-ctn,
+    :root.dark .fi-fo-tags-input .fi-badge,
+    :root.dark .fi-fo-tags-input .fi-badge-label,
+    :root.dark .fi-fo-tags-input .fi-badge-label-ctn {
+        color: #ffffff;
+        -webkit-text-fill-color: #ffffff;
+    }
+
+    :root.dark select.fi-select-input option,
+    :root.dark select.fi-select-input optgroup {
+        background-color: var(--color-gray-900);
+    }
+
+    :root.dark .fi-select-input-placeholder,
+    :root.dark .fi-input::placeholder {
+        color: var(--color-gray-300);
+        -webkit-text-fill-color: var(--color-gray-300);
+    }
+
+    .fi-input[type='date'],
+    .fi-input[type='datetime-local'],
+    .fi-input[type='time'] {
+        border-radius: 0.95rem;
+        border-color: color-mix(in srgb, var(--color-gray-300) 82%, transparent);
+        background:
+            linear-gradient(180deg, color-mix(in srgb, white 92%, transparent), color-mix(in srgb, var(--color-gray-50) 92%, transparent));
+        box-shadow:
+            0 1px 2px rgba(15, 23, 42, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.65);
+        transition:
+            border-color 140ms ease,
+            box-shadow 140ms ease,
+            background-color 140ms ease,
+            transform 140ms ease;
+    }
+
+    .dark .fi-input[type='date'],
+    .dark .fi-input[type='datetime-local'],
+    .dark .fi-input[type='time'] {
+        border-color: color-mix(in srgb, var(--color-gray-600) 72%, transparent);
+        background:
+            linear-gradient(180deg, rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.72));
+        box-shadow:
+            0 1px 2px rgba(0, 0, 0, 0.28),
+            inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    }
+
+    .fi-input[type='date']:focus,
+    .fi-input[type='datetime-local']:focus,
+    .fi-input[type='time']:focus {
+        border-color: color-mix(in srgb, var(--color-primary-500) 72%, white);
+        box-shadow:
+            0 0 0 4px color-mix(in srgb, var(--color-primary-500) 14%, transparent),
+            0 8px 18px rgba(15, 23, 42, 0.08);
+        transform: translateY(-1px);
+    }
+
+    .fi-input[type='date']::-webkit-calendar-picker-indicator,
+    .fi-input[type='datetime-local']::-webkit-calendar-picker-indicator,
+    .fi-input[type='time']::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 140ms ease, transform 140ms ease;
+    }
+
+    .fi-input[type='date']:hover::-webkit-calendar-picker-indicator,
+    .fi-input[type='datetime-local']:hover::-webkit-calendar-picker-indicator,
+    .fi-input[type='time']:hover::-webkit-calendar-picker-indicator {
+        opacity: 1;
+        transform: scale(1.04);
+    }
+
+    .fi-input[type='date']::-webkit-datetime-edit,
+    .fi-input[type='datetime-local']::-webkit-datetime-edit,
+    .fi-input[type='time']::-webkit-datetime-edit {
+        padding-block: 0.1rem;
+    }
+
+    .fi-input[type='date']::-webkit-datetime-edit-fields-wrapper,
+    .fi-input[type='datetime-local']::-webkit-datetime-edit-fields-wrapper,
+    .fi-input[type='time']::-webkit-datetime-edit-fields-wrapper {
+        padding-inline: 0.15rem;
+    }
+}

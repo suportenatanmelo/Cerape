@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Mail;
+
+use App\Models\Acolhido;
+use Illuminate\Bus\Queueable;
+use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Content;
+use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Queue\SerializesModels;
+
+class AcolhidoDeletedNotification extends Mailable
+{
+    use Queueable, SerializesModels;
+
+    public function __construct(public Acolhido $acolhido)
+    {
+    }
+
+    public function envelope(): Envelope
+    {
+        return new Envelope(
+            subject: 'Acolhido Excluído - ' . ($this->acolhido->nome_completo_paciente ?? 'Cerape'),
+        );
+    }
+
+    public function content(): Content
+    {
+        return new Content(
+            view: 'emails.acolhido-deleted',
+            with: [
+                'acolhido' => $this->acolhido,
+                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+            ],
+        );
+    }
+}

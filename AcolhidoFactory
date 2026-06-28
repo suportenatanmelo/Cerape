@@ -1,0 +1,24 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class AcolhidoFactory extends Factory
+{
+    public function definition(): array
+    {
+        return [
+            'nome' => fake()->name(),
+            'cpf' => fake()->unique()->numerify('###.###.###-##'),
+            'telefone' => fake()->phoneNumber(),
+            'data_nascimento' => fake()->date(),
+            'cidade' => fake()->city(),
+            'estado' => fake()->state(),
+
+            // relacionamento
+            'user_id' => User::inRandomOrder()->first()?->id,
+        ];
+    }
+}
