@@ -27,17 +27,16 @@ class GeradoresAtividadesTable
                     ->label('Periodo')
                     ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::getPeriodLabel($record))
                     ->sortable(),
-                TextColumn::make('atividades_planejadas')
-                    ->label('Atividades praticas')
-                    ->formatStateUsing(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record, 3))
-                    ->tooltip(fn ($record): string => GeradorAtividadeResource::formatPlannedActivities($record))
-                    ->wrap(),
                 TextColumn::make('user.name')
                     ->label('Responsavel')
                     ->placeholder('-')
                     ->toggleable(),
                 TextColumn::make('updated_at')
                     ->label('Atualizado em')
+                    ->dateTime('d/m/Y H:i')
+                    ->sortable(),
+                    TextColumn::make('created_at')
+                    ->label('Criado em')
                     ->dateTime('d/m/Y H:i')
                     ->sortable(),
             ])

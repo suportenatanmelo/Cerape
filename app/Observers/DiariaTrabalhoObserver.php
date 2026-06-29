@@ -14,6 +14,7 @@ class DiariaTrabalhoObserver
         $valorTotal = round(((float) $diaria->valor_diaria) * max(1, (int) $diaria->quantidade_dias), 2);
 
         $diaria->valor_total = $valorTotal;
+        // O rateio continua existindo, mas a interface vai expor isso como "desconto logístico".
         $diaria->valor_cerape = round($valorTotal * 0.15, 2);
         $diaria->valor_acolhido = round($valorTotal * 0.85, 2);
     }
@@ -57,7 +58,7 @@ class DiariaTrabalhoObserver
                     'empresa' => $diaria->empresaParceira?->nome,
                     'frente' => $diaria->frenteTrabalho?->nome,
                     'valor_total' => $diaria->valor_total,
-                    'valor_cerape' => $diaria->valor_cerape,
+                    'valor_desconto_logistico' => $diaria->valor_cerape,
                 ],
             ]);
         });

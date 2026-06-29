@@ -11,7 +11,6 @@ use App\Filament\Resources\GeradorAtividades\Schemas\GeradorAtividadeInfolist;
 use App\Filament\Resources\GeradorAtividades\Tables\GeradoresAtividadesTable;
 use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoForm;
-use App\Models\Acolhido;
 use App\Models\GeradorAtividade;
 use App\Support\PortalContext;
 use App\Support\ShieldPermission;
@@ -209,23 +208,18 @@ class GeradorAtividadeResource extends Resource
                 $item = is_array($item) ? $item : [];
 
                 return [
-                    'atividade_pratica' => self::normalizeActivityValue($item['atividade_pratica'] ?? null),
+                    'atividade_pratica' => self::normalizeStringList($item['atividade_pratica'] ?? null),
                     'demanda' => self::normalizeNullableHtml($item['demanda'] ?? null),
-                    'acolhidos_ids' => array_values(array_unique(array_filter(array_map(
-                        'intval',
-                        $item['acolhidos_ids'] ?? [],
-                    )))),
+                    'acolhidos_ids' => self::normalizeStringList($item['acolhidos_ids'] ?? null),
                 ];
             })
-            ->filter(fn (array $item): bool => filled($item['atividade_pratica']) || filled($item['demanda']) || $item['acolhidos_ids'] !== [])
+            ->filter(fn (array $item): bool => $item['atividade_pratica'] !== [] || filled($item['demanda']) || $item['acolhidos_ids'] !== [])
             ->values();
 
         $data['atividades_planejadas'] = $items->all();
         $data['acolhidos_ids'] = $items
             ->pluck('acolhidos_ids')
-            ->flatten()
-            ->map(fn (mixed $id): int => (int) $id)
-            ->filter()
+            ->flatten(1)
             ->unique()
             ->values()
             ->all();
@@ -252,13 +246,9 @@ class GeradorAtividadeResource extends Resource
             $data['atividades_planejadas'] = array_map(function (mixed $item): array {
                 $item = is_array($item) ? $item : [];
 
-                $atividade = $item['atividade_pratica'] ?? null;
+                $item['atividade_pratica'] = self::normalizeStringList($item['atividade_pratica'] ?? null);
 
-                if (is_array($atividade)) {
-                    $item['atividade_pratica'] = trim((string) ($atividade[0] ?? ''));
-                } elseif (is_string($atividade)) {
-                    $item['atividade_pratica'] = trim($atividade);
-                }
+                $item['acolhidos_ids'] = self::normalizeStringList($item['acolhidos_ids'] ?? null);
 
                 return $item;
             }, $data['atividades_planejadas']);
@@ -266,12 +256,15 @@ class GeradorAtividadeResource extends Resource
             return $data;
         }
 
-        $sharedAcolhidos = array_values(array_filter(array_map('intval', $data['acolhidos_ids'] ?? [])));
+        $sharedAcolhidos = array_values(array_filter(array_map(
+            fn (mixed $name): string => trim((string) $name),
+            self::normalizeStringList($data['acolhidos_ids'] ?? null),
+        )));
         $legacyItems = [];
 
         foreach (self::activityLabels($data['atividades_matutinas'] ?? []) as $label) {
             $legacyItems[] = [
-                'atividade_pratica' => $label,
+                'atividade_pratica' => [$label],
                 'demanda' => '<p>Atividade importada do turno matutino.</p>',
                 'acolhidos_ids' => $sharedAcolhidos,
             ];
@@ -279,7 +272,7 @@ class GeradorAtividadeResource extends Resource
 
         foreach (self::activityLabels($data['atividades_vespertinas'] ?? []) as $label) {
             $legacyItems[] = [
-                'atividade_pratica' => $label,
+                'atividade_pratica' => [$label],
                 'demanda' => '<p>Atividade importada do turno vespertino.</p>',
                 'acolhidos_ids' => $sharedAcolhidos,
             ];
@@ -312,7 +305,7 @@ class GeradorAtividadeResource extends Resource
     public static function formatPlannedActivities(GeradorAtividade $record, ?int $limit = null): string
     {
         $labels = array_values(array_filter(array_map(
-            fn (array $item): ?string => $item['atividade_pratica'] ?? null,
+            fn (array $item): string => implode(', ', self::normalizeStringList($item['atividade_pratica'] ?? null)),
             self::plannedActivities($record),
         )));
 
@@ -348,7 +341,7 @@ class GeradorAtividadeResource extends Resource
     }
 
     /**
-     * @return array<int, array{ordem:string, atividade_pratica:string, demanda_html:?string, demanda_text:string, acolhidos_ids:array<int, int>, acolhidos_nomes:array<int, string>, acolhidos_display:string}>
+     * @return array<int, array{ordem:string, atividade_pratica:array<int, string>, demanda_html:?string, demanda_text:string, acolhidos_ids:array<int, string>, acolhidos_nomes:array<int, string>, acolhidos_display:string}>
      */
     public static function plannedActivities(?GeradorAtividade $record): array
     {
@@ -361,12 +354,15 @@ class GeradorAtividadeResource extends Resource
             ->values();
 
         if ($items->isEmpty()) {
-            $fallbackAcolhidos = array_values(array_filter(array_map('intval', $record->acolhidos_ids ?? [])));
+            $fallbackAcolhidos = array_values(array_filter(array_map(
+                fn (mixed $name): string => trim((string) $name),
+                $record->acolhidos_ids ?? [],
+            )));
             $legacyItems = [];
 
             foreach (self::activityLabels($record->atividades_matutinas) as $label) {
                 $legacyItems[] = [
-                    'atividade_pratica' => $label,
+                    'atividade_pratica' => [$label],
                     'demanda' => '<p>Atividade importada do turno matutino.</p>',
                     'acolhidos_ids' => $fallbackAcolhidos,
                 ];
@@ -374,7 +370,7 @@ class GeradorAtividadeResource extends Resource
 
             foreach (self::activityLabels($record->atividades_vespertinas) as $label) {
                 $legacyItems[] = [
-                    'atividade_pratica' => $label,
+                    'atividade_pratica' => [$label],
                     'demanda' => '<p>Atividade importada do turno vespertino.</p>',
                     'acolhidos_ids' => $fallbackAcolhidos,
                 ];
@@ -385,10 +381,13 @@ class GeradorAtividadeResource extends Resource
 
         return $items
             ->map(function (array $item, int $index): array {
-                $acolhidosIds = array_values(array_filter(array_map('intval', $item['acolhidos_ids'] ?? [])));
+                $acolhidosIds = array_values(array_filter(array_map(
+                    fn (mixed $name): string => trim((string) $name),
+                    $item['acolhidos_ids'] ?? [],
+                )));
                 $acolhidosNomes = self::acolhidoNames($acolhidosIds);
                 $demandaHtml = self::normalizeNullableHtml($item['demanda'] ?? null);
-                $atividadePratica = self::normalizeActivityValue($item['atividade_pratica'] ?? null);
+                $atividadePratica = self::normalizeStringList($item['atividade_pratica'] ?? null);
 
                 return [
                     'ordem' => str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT),
@@ -400,33 +399,24 @@ class GeradorAtividadeResource extends Resource
                     'acolhidos_display' => $acolhidosNomes === [] ? '-' : implode(', ', $acolhidosNomes),
                 ];
             })
-            ->filter(fn (array $item): bool => filled($item['atividade_pratica']) || filled($item['demanda_html']) || $item['acolhidos_ids'] !== [])
+            ->filter(fn (array $item): bool => $item['atividade_pratica'] !== [] || filled($item['demanda_html']) || $item['acolhidos_ids'] !== [])
             ->values()
             ->all();
     }
 
     /**
-     * @param  array<int, int|string>|null  $ids
+     * @param  array<int, string>|null  $ids
      * @return array<int, string>
      */
     public static function acolhidoNames(?array $ids): array
     {
-        $ids = array_values(array_filter(array_map('intval', $ids ?? [])));
+        $ids = self::normalizeStringList($ids);
 
         if ($ids === []) {
             return [];
         }
 
-        /** @var Collection<int, Acolhido> $acolhidos */
-        $acolhidos = Acolhido::query()
-            ->whereIn('id', $ids)
-            ->get(['id', 'nome_completo_paciente'])
-            ->keyBy('id');
-
-        return array_values(array_filter(array_map(
-            fn (int $id): ?string => $acolhidos->get($id)?->nome_completo_paciente,
-            $ids,
-        )));
+        return array_values(array_unique($ids));
     }
 
     /**
@@ -466,12 +456,22 @@ class GeradorAtividadeResource extends Resource
         return $html;
     }
 
-    private static function normalizeActivityValue(mixed $value): string
+    /**
+     * @return array<int, string>
+     */
+    private static function normalizeStringList(mixed $value): array
     {
-        if (is_array($value)) {
-            $value = $value[0] ?? '';
+        if (is_string($value)) {
+            $value = preg_split('/[,\n]+/', $value) ?: [];
         }
 
-        return trim((string) $value);
+        if (! is_array($value)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            static fn (mixed $item): string => trim((string) $item),
+            $value,
+        ))));
     }
 }

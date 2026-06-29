@@ -29,7 +29,7 @@
                     ['Total Sacado', $this->summary['total_sacado'], 'danger'],
                     ['Compras Internas', $this->summary['compras_internas'], 'warning'],
                     ['Transferências Família', $this->summary['transferencias_familia'], 'gray'],
-                    ['Retido pelo CERAPE (15%)', $this->summary['retido_cerape'], 'info'],
+                    ['Desconto logístico', $this->summary['retido_cerape'], 'info'],
                     ['Saldo Disponível', $this->summary['saldo_disponivel'], 'primary'],
                     ['Última Movimentação', $this->summary['ultima_movimentacao'], 'gray'],
                 ] as [$label, $value, $color])

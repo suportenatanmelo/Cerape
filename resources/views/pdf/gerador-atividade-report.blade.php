@@ -4,24 +4,37 @@
 
 @section('content')
     <style>
-        .title { border: 1px solid #9ca3af; border-bottom: 0; font-size: 20px; font-weight: bold; padding: 10px 14px; text-align: center; text-transform: uppercase; }
-        .meta { border: 1px solid #9ca3af; border-bottom: 0; padding: 8px 12px; }
-        .meta-line { margin-bottom: 3px; }
+        @page { size: A4 landscape; margin: 5mm; }
+        html, body { width: 100%; }
+        body { font-size: 9px; line-height: 1.2; }
+        .page { width: 100%; }
+        .report-header { margin-bottom: 8px; }
+        .report-eyebrow { font-size: 9px; }
+        .report-title { font-size: 16px; margin: 2px 0 3px; }
+        .report-subtitle { font-size: 8px; margin-bottom: 0; }
+        .title { border: 1px solid #9ca3af; border-bottom: 0; font-size: 16px; font-weight: bold; padding: 6px 8px; text-align: center; text-transform: uppercase; }
+        .meta { border: 1px solid #9ca3af; border-bottom: 0; padding: 5px 8px; }
+        .meta-line { margin-bottom: 2px; font-size: 8px; }
         .meta-line:last-child { margin-bottom: 0; }
+        .compact-note { margin-top: 4px; font-size: 8px; color: #6b7280; }
         table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #9ca3af; padding: 6px 7px; vertical-align: top; }
-        th { background: #f3f4f6; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-        .col-order { text-align: center; width: 7%; }
-        .col-activity { width: 26%; }
-        .col-demand { width: 47%; }
-        .col-names { width: 20%; }
-        .demand p { margin: 0 0 5px; }
-        .demand ul, .demand ol { margin: 4px 0 0 16px; padding: 0; }
-        .demand li { margin-bottom: 3px; }
-        .names-list { margin: 0; padding-left: 16px; }
-        .names-list li { margin-bottom: 2px; }
-        .observacoes { border: 1px solid #9ca3af; border-top: 0; padding: 10px 12px; }
-        .observacoes h2 { font-size: 11px; margin: 0 0 6px; text-transform: uppercase; }
+        th, td { border: 1px solid #9ca3af; padding: 5px 7px; vertical-align: top; }
+        th { background: #f3f4f6; font-size: 7px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.01em; }
+        td { font-size: 8px; }
+        td, th { overflow-wrap: normal; word-break: normal; }
+        td { line-height: 1.25; }
+        .col-order { text-align: center; width: 4%; }
+        .col-activity { width: 20%; }
+        .col-demand { width: 54%; }
+        .col-names { width: 22%; }
+        .demand p { margin: 0 0 2px; }
+        .demand ul, .demand ol { margin: 1px 0 0 14px; padding: 0; }
+        .demand li { margin-bottom: 2px; }
+        .names-list { margin: 0; padding-left: 14px; }
+        .names-list li { margin-bottom: 0; }
+        .observacoes { border: 1px solid #9ca3af; border-top: 0; padding: 8px 10px; page-break-inside: avoid; }
+        .observacoes h2 { font-size: 8px; margin: 0 0 3px; text-transform: uppercase; }
+        tr { page-break-inside: avoid; }
     </style>
 
     <div class="report-header">
@@ -32,6 +45,7 @@
     <div class="meta">
         <div class="meta-line"><strong>Responsavel:</strong> {{ $record->user?->name ?? '-' }}</div>
         <div class="meta-line"><strong>Emitido em:</strong> {{ now()->format('d/m/Y H:i') }}</div>
+        <div class="compact-note">Versao compacta para reduzir numero de folhas.</div>
     </div>
 
     <table>
@@ -47,7 +61,7 @@
             @forelse ($atividadesPlanejadas as $atividade)
                 <tr>
                     <td class="col-order">{{ $atividade['ordem'] }}</td>
-                    <td class="col-activity">{{ $atividade['atividade_pratica'] ?: '-' }}</td>
+                    <td class="col-activity">{{ filled($atividade['atividade_pratica'] ?? []) ? implode(', ', $atividade['atividade_pratica']) : '-' }}</td>
                     <td class="col-demand demand">{!! $atividade['demanda_html'] ?: '-' !!}</td>
                     <td class="col-names">
                         @if ($atividade['acolhidos_nomes'] === [])

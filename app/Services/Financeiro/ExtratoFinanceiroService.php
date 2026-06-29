@@ -99,7 +99,7 @@ class ExtratoFinanceiroService
                     'Compra Interna' => 'compra_interna',
                     'Transferência Família' => 'transferencia_familia',
                     'Ajuste' => 'ajuste',
-                    'Desconto' => 'desconto',
+                    'Desconto logístico' => 'desconto',
                 ];
 
                 if (isset($map[$tipo])) {
@@ -221,7 +221,7 @@ class ExtratoFinanceiroService
             'compra_interna' => 'Compra Interna',
             'transferencia_familia' => 'Transferência Família',
             'ajuste' => 'Ajuste',
-            'desconto' => 'Desconto',
+            'desconto' => 'Desconto logístico',
             default => 'Movimentação',
         };
     }

@@ -2,13 +2,12 @@
 
 namespace App\Filament\Resources\GeradorAtividades\Schemas;
 
-use App\Models\Acolhido;
 use App\Models\User;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
@@ -58,7 +57,7 @@ class GeradorAtividadeForm
                                     $end = $start->copy()->addDays(6);
 
                                     return new HtmlString(
-                                        '<div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-800">' .
+                                        '<div class="px-4 py-3 text-sm font-semibold border rounded-xl border-amber-200 bg-amber-50 text-amber-800">' .
                                         e($end->format('d/m/Y')) .
                                         '<div class="mt-1 text-xs font-normal text-amber-700">Periodo completo: ' . e($start->format('d/m/Y') . ' a ' . $end->format('d/m/Y')) . '</div>' .
                                         '</div>'
@@ -106,46 +105,35 @@ class GeradorAtividadeForm
                                 ->addActionLabel('Descer e adicionar outra linha')
                                 ->itemLabel(function (array $state, int $index): string {
                                     $atividadeState = $state['atividade_pratica'] ?? null;
-                                    $atividade = is_array($atividadeState)
-                                        ? trim((string) ($atividadeState[0] ?? ''))
-                                        : trim((string) $atividadeState);
+                                    $atividade = self::normalizeTags($atividadeState);
 
-                                    return $atividade !== ''
-                                        ? sprintf('%02d. %s', $index + 1, $atividade)
+                                    return $atividade !== []
+                                        ? sprintf('%02d. %s', $index + 1, implode(', ', $atividade))
                                         : sprintf('%02d. Nova atividade', $index + 1);
                                 })
                                 ->schema([
-                                    Select::make('atividade_pratica')
+                                    TagsInput::make('atividade_pratica')
                                         ->label('Atividade pratica')
-                                        ->options(fn (Get $get, mixed $state): array => self::availableActivityOptions($get, $state))
-                                        ->searchable()
-                                        ->preload()
                                         ->live()
-                                        ->distinct()
-                                        ->placeholder('Selecione uma atividade da lista')
-                                        ->helperText('Atividades ja escolhidas em outra linha saem desta lista.')
+                                        ->separator(',')
+                                        ->splitKeys(['Tab', 'Enter', ','])
+                                        ->placeholder('Digite e pressione Enter')
+                                        ->helperText('As sugestões aparecem ao focar no campo e podem ser digitadas livremente.')
+                                        ->suggestions(fn (): array => self::activitySuggestions())
                                         ->columnSpan(3),
-                                    RichEditor::make('demanda')
+                                    Textarea::make('demanda')
                                         ->label('Demanda')
                                         ->columnSpan(6)
-                                        ->toolbarButtons([
-                                            'bold',
-                                            'italic',
-                                            'underline',
-                                            'bulletList',
-                                            'orderedList',
-                                            'redo',
-                                            'undo',
-                                        ])
-                                        ->placeholder('Descreva com clareza o que esta atividade faz, o objetivo e os cuidados da execucao.'),
-                                    Select::make('acolhidos_ids')
+                                        ->rows(6)
+                                        ->placeholder('Descreva com clareza o que esta atividade faz, o objetivo e os cuidados da execucao.')
+                                        ->helperText('Use texto simples para evitar problemas de carregamento do formulário.'),
+                                    TagsInput::make('acolhidos_ids')
                                         ->label('Acolhidos')
-                                        ->options(self::acolhidoOptions())
-                                        ->multiple()
-                                        ->searchable()
-                                        ->preload()
+                                        ->placeholder('Digite e pressione Enter')
                                         ->reorderable()
-                                        ->helperText('Selecione um ou mais acolhidos. Os nomes ficam carregados em tags.')
+                                        ->splitKeys(['Enter', ','])
+                                        ->separator(',')
+                                        ->helperText('Digite os nomes livremente. Cada nome será salvo como tag.')
                                         ->columnSpan(3),
                                 ])
                                 ->columns(12)
@@ -176,79 +164,45 @@ class GeradorAtividadeForm
     {
         return [
             'Cozinha e auxiliares',
-            'Aumorexarifado',
-            'Limpeza e manutencao das estruturas',
-            'Limpeza externa',
-            'Atendimento individual ou manutencao de rotina',
+            'Almoxarifado',
+            'Limpeza das estruturas (Dormitórios)',
+            'Limpeza externa (Capela)',
+            'Manutenão Geral Standby',
+            'Plantão Liderança',
             'Cuidado com animais',
             'Projeto recicla cerape',
-            'Projeto viveiro',
-            'Projeto compostagem',
-            'Projeto cafe',
-            'Grupo terapeutico',
-            'Projeto avecultura',
-            'Projeto apicultura',
-            'Projeto ovelha',
-            'Projeto cavalo',
-            'Projeto baru cerape',
-            'Projeto artesanato',
-            'Projeto piscicultura',
-            'Construcao ou reforma',
+            'Projeto Viveiro/Compostagem/Cafe',
+            'Projeto Avicultura',
+            'Projeto Apicultura',
+            'Projeto Ovelha/Cavalo',
+            'Projeto Baru Cerape',
+            'Projeto Artesanato',
+            'Projeto Piscicultura',
+            'Construcao ou Reforma',
+            'Suinocultura',
             'Marcenaria',
             'Lan house',
-            'Bananeiras',
             'Patogeno',
-            'Lavanderia',
             'Revitalizacao',
         ];
     }
 
     /**
-     * @return array<string, string>
-     */
-    private static function activityOptions(): array
-    {
-        return array_combine(self::activitySuggestions(), self::activitySuggestions());
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    private static function availableActivityOptions(Get $get, mixed $currentState): array
-    {
-        $currentActivity = self::normalizeActivityState($currentState);
-
-        $selectedActivities = collect($get('../') ?? [])
-            ->filter(fn (mixed $item): bool => is_array($item))
-            ->map(fn (array $item): string => self::normalizeActivityState($item['atividade_pratica'] ?? null))
-            ->filter()
-            ->reject(fn (string $activity): bool => $activity === $currentActivity)
-            ->unique()
-            ->values()
-            ->all();
-
-        return collect(self::activityOptions())
-            ->reject(fn (string $label, string $activity): bool => in_array($activity, $selectedActivities, true))
-            ->all();
-    }
-
-    private static function normalizeActivityState(mixed $state): string
-    {
-        if (is_array($state)) {
-            $state = $state[0] ?? '';
-        }
-
-        return trim((string) $state);
-    }
-
-    /**
      * @return array<int, string>
      */
-    private static function acolhidoOptions(): array
+    private static function normalizeTags(mixed $state): array
     {
-        return Acolhido::query()
-            ->orderBy('nome_completo_paciente')
-            ->pluck('nome_completo_paciente', 'id')
-            ->all();
+        if (is_string($state)) {
+            $state = preg_split('/[,\n]+/', $state) ?: [];
+        }
+
+        if (! is_array($state)) {
+            return [];
+        }
+
+        return array_values(array_unique(array_filter(array_map(
+            static fn (mixed $item): string => trim((string) $item),
+            $state,
+        ))));
     }
 }

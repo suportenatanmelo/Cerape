@@ -27,7 +27,7 @@
         <div class="card"><strong>Saldo atual</strong><br>R$ {{ number_format((float) ($summary['saldo_atual'] ?? 0), 2, ',', '.') }}</div>
         <div class="card"><strong>Total recebido</strong><br>R$ {{ number_format((float) ($summary['total_recebido'] ?? 0), 2, ',', '.') }}</div>
         <div class="card"><strong>Total sacado</strong><br>R$ {{ number_format((float) ($summary['total_sacado'] ?? 0), 2, ',', '.') }}</div>
-        <div class="card"><strong>Saldo disponível</strong><br>R$ {{ number_format((float) ($summary['saldo_disponivel'] ?? 0), 2, ',', '.') }}</div>
+        <div class="card"><strong>Desconto logístico</strong><br>R$ {{ number_format((float) ($summary['retido_cerape'] ?? 0), 2, ',', '.') }}</div>
     </div>
 
     <table>

@@ -28,7 +28,9 @@
                 @forelse ($rows as $row)
                     <tr class="align-top">
                         <td class="whitespace-nowrap px-4 py-4 font-semibold text-gray-700">{{ $row['ordem'] }}</td>
-                        <td class="px-4 py-4 font-medium text-gray-900">{{ $row['atividade_pratica'] ?: '-' }}</td>
+                        <td class="px-4 py-4 font-medium text-gray-900">
+                            {{ filled($row['atividade_pratica'] ?? []) ? implode(', ', $row['atividade_pratica']) : '-' }}
+                        </td>
                         <td class="px-4 py-4 text-gray-700">
                             <div class="prose prose-sm max-w-none prose-p:my-1 prose-li:my-0.5">
                                 {!! $row['demanda_html'] ?: '<span class="text-gray-400">-</span>' !!}

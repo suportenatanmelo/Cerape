@@ -79,7 +79,7 @@ class ExtratoFinanceiro extends Page implements HasForms
                     'Compra Interna' => 'Compra Interna',
                     'Transferência Família' => 'Transferência Família',
                     'Ajuste' => 'Ajuste',
-                    'Desconto' => 'Desconto',
+                    'Desconto logístico' => 'Desconto logístico',
                 ])
                 ->live(),
             Select::make('situacao')
