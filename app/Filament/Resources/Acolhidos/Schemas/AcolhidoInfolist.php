@@ -376,6 +376,36 @@ class AcolhidoInfolist
                             ->hidden(fn($record) => blank($record?->profissional_referencia_acolhido_instituicao)),
                     ]),
 
+                Section::make('Financeiro')
+                    ->description('Resumo financeiro rapido e acesso ao extrato completo.')
+                    ->icon('heroicon-o-receipt-refund')
+                    ->columns([
+                        'default' => 1,
+                        'md' => 2,
+                        'xl' => 3,
+                    ])
+                    ->schema([
+                        TextEntry::make('saldo_atual')
+                            ->label('Saldo atual')
+                            ->getStateUsing(fn($record) => 'R$ ' . number_format((float) ($record->carteiraAcolhido?->saldo_atual ?? 0), 2, ',', '.'))
+                            ->badge()
+                            ->color('primary'),
+                        TextEntry::make('total_recebido')
+                            ->label('Total recebido')
+                            ->getStateUsing(fn($record) => 'R$ ' . number_format((float) ($record->carteiraAcolhido?->total_recebido ?? 0), 2, ',', '.'))
+                            ->badge()
+                            ->color('success'),
+                        TextEntry::make('total_gasto')
+                            ->label('Total gasto')
+                            ->getStateUsing(fn($record) => 'R$ ' . number_format((float) (($record->carteiraAcolhido?->total_sacado ?? 0) + ($record->carteiraAcolhido?->total_retido_instituicao ?? 0)), 2, ',', '.'))
+                            ->badge()
+                            ->color('danger'),
+                        ViewEntry::make('financeiro_atalho')
+                            ->label('Extrato completo')
+                            ->view('filament.infolists.entries.acolhido-financeiro-atalho')
+                            ->columnSpanFull(),
+                    ]),
+
                 Section::make('Controle do cadastro')
                     ->description('Metadados do registro para acompanhamento interno.')
                     ->icon('heroicon-o-clock')

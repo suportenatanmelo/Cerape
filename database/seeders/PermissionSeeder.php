@@ -75,6 +75,11 @@ class PermissionSeeder extends Seeder
         'Approve:Financeiro',
         'Withdraw:Financeiro',
         'Reports:Financeiro',
+        'View:ExtratoFinanceiro',
+        'Export:ExtratoFinanceiro',
+        'Pdf:ExtratoFinanceiro',
+        'Print:ExtratoFinanceiro',
+        'Admin:ExtratoFinanceiro',
     ];
 
     public function run(): void

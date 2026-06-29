@@ -193,7 +193,10 @@ class AcolhidoForm
                                                     return;
                                                 }
 
-                                                $address = app(CorreiosCepService::class)->lookup((string) $state);
+                                                $address = rescue(
+                                                    fn () => app(CorreiosCepService::class)->lookup((string) $state),
+                                                    ['error' => 'service_unavailable']
+                                                );
 
                                                 if (! is_array($address)) {
                                                     return;
@@ -208,8 +211,8 @@ class AcolhidoForm
                                                             ->send(),
                                                         'not_found' => Notification::make()
                                                             ->title('CEP nao encontrado')
-                                                            ->body('O ViaCEP nao encontrou esse CEP. Confira e tente novamente.')
-                                                            ->warning()
+                                                            ->body('O CEP foi aceito, mas o endereço nao foi localizado. Você pode seguir com o cadastro.')
+                                                            ->info()
                                                             ->send(),
                                                         default => Notification::make()
                                                             ->title('Nao foi possivel consultar o CEP')
@@ -229,18 +232,18 @@ class AcolhidoForm
                                             ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
                                             ->label('Endereco do acolhido')
-                                            ->required(),
+                                            ->helperText('Se o CEP geral nao retornar endereco, este campo pode ser preenchido manualmente ou deixado em branco.'),
                                         TextInput::make('bairro_do_paciente')
                                             ->label('Bairro do acolhido')
-                                            ->required(),
+                                            ->helperText('Opcional quando o CEP geral nao localizar o bairro.'),
                                         TextInput::make('municipio_do_paciente')
                                             ->label('Municipio')
-                                            ->required(),
+                                            ->helperText('Opcional quando a busca do CEP nao retornar municipio.'),
                                         Select::make('uf_municipio_do_paciente')
                                             ->label('UF')
                                             ->options(self::getBrazilianStates())
                                             ->searchable()
-                                            ->required(),
+                                            ->helperText('Opcional quando o CEP nao localizar a UF.'),
                                         Radio::make('moradia_propria')
                                             ->label('Moradia propria')
                                             ->boolean('Sim', 'Nao')

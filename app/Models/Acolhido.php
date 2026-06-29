@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Models\CarteiraAcolhido;
+use App\Models\CompraInterna;
+use App\Models\MovimentacaoFinanceira;
+use App\Models\SaqueFinanceiro;
+use App\Models\TransferenciaFamilia;
 
 class Acolhido extends Model
 {
@@ -190,5 +195,30 @@ class Acolhido extends Model
     public function feedbackMessages(): HasMany
     {
         return $this->hasMany(FeedbackFamiliarMessage::class);
+    }
+
+    public function carteiraAcolhido(): HasOne
+    {
+        return $this->hasOne(CarteiraAcolhido::class);
+    }
+
+    public function movimentacoesFinanceiras(): HasMany
+    {
+        return $this->hasMany(MovimentacaoFinanceira::class);
+    }
+
+    public function saquesFinanceiros(): HasMany
+    {
+        return $this->hasMany(SaqueFinanceiro::class);
+    }
+
+    public function comprasInternas(): HasMany
+    {
+        return $this->hasMany(CompraInterna::class);
+    }
+
+    public function transferenciasFamilia(): HasMany
+    {
+        return $this->hasMany(TransferenciaFamilia::class);
     }
 }
