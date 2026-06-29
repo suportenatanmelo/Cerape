@@ -11,6 +11,7 @@ use App\Filament\Resources\GeradorAtividades\Schemas\GeradorAtividadeInfolist;
 use App\Filament\Resources\GeradorAtividades\Tables\GeradoresAtividadesTable;
 use App\Filament\Resources\Concerns\HasNavigationCountBadge;
 use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoForm;
+use App\Actions\GeradorAtividades\SincronizarAtividadesAcolhidosAction;
 use App\Models\GeradorAtividade;
 use App\Support\PortalContext;
 use App\Support\ShieldPermission;
@@ -186,6 +187,11 @@ class GeradorAtividadeResource extends Resource
             $fileName,
             ['Content-Type' => 'application/pdf'],
         );
+    }
+
+    public static function syncAtividadesAcolhidos(GeradorAtividade $record): void
+    {
+        app(SincronizarAtividadesAcolhidosAction::class)->execute($record->refresh());
     }
 
     /**

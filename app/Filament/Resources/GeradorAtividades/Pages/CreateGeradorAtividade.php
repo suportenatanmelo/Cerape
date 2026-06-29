@@ -41,6 +41,7 @@ class CreateGeradorAtividade extends CreateRecord
 
     protected function afterCreate(): void
     {
+        GeradorAtividadeResource::syncAtividadesAcolhidos($this->getRecord());
         $this->forgetGeradorAtividadeDraft();
     }
 

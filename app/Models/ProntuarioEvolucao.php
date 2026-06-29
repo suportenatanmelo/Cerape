@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Casts\CommaSeparatedString;
+use App\Models\AtividadeAcolhido;
 
 class ProntuarioEvolucao extends Model
 {
@@ -13,6 +14,7 @@ class ProntuarioEvolucao extends Model
     protected $fillable = [
         'acolhido_id',
         'user_id',
+        'atividade_gerada_id',
         'atividade',
         'data_prontuario',
         'proxima_data_prontuario',
@@ -28,6 +30,11 @@ class ProntuarioEvolucao extends Model
     public function acolhido(): BelongsTo
     {
         return $this->belongsTo(Acolhido::class);
+    }
+
+    public function atividade(): BelongsTo
+    {
+        return $this->belongsTo(AtividadeAcolhido::class, 'atividade_gerada_id');
     }
 
     public function user(): BelongsTo

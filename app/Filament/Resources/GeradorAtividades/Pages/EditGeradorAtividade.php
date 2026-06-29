@@ -49,6 +49,7 @@ class EditGeradorAtividade extends EditRecord
 
     protected function afterSave(): void
     {
+        GeradorAtividadeResource::syncAtividadesAcolhidos($this->getRecord());
         $this->forgetGeradorAtividadeDraft();
     }
 

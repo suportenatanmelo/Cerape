@@ -7,6 +7,7 @@ use App\Filament\Resources\ProntuariosEvolucao\Pages\EditProntuarioEvolucao;
 use App\Filament\Resources\ProntuariosEvolucao\Pages\ListProntuariosEvolucao;
 use App\Filament\Resources\ProntuariosEvolucao\Pages\ViewProntuarioEvolucao;
 use App\Models\Acolhido;
+use App\Models\AtividadeAcolhido;
 use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoForm;
 use App\Filament\Resources\ProntuariosEvolucao\Schemas\ProntuarioEvolucaoInfolist;
 use App\Filament\Resources\ProntuariosEvolucao\Tables\ProntuariosEvolucaoTable;
@@ -124,7 +125,7 @@ class ProntuarioEvolucaoResource extends Resource
      */
     public static function getReportData(ProntuarioEvolucao $record): array
     {
-        $record->loadMissing(['acolhido.user', 'user']);
+        $record->loadMissing(['acolhido.user', 'user', 'atividade.usuario']);
 
         $acolhido = $record->acolhido;
 
@@ -132,7 +133,9 @@ class ProntuarioEvolucaoResource extends Resource
             'record' => $record,
             'acolhido' => $acolhido,
             'personalData' => self::buildAcolhidoPersonalData($acolhido),
-            'atividadeLabel' => ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade),
+            'atividadeLabel' => $record->atividade?->id
+                ? self::formatGeneratedActivityLabel($record->atividade)
+                : ProntuarioEvolucaoForm::getClinicActivityLabel($record->atividade),
             'proximaDataProntuario' => $record->proxima_data_prontuario?->format('d/m/Y H:i'),
             'conteudoHtml' => self::normalizeReportContent((string) $record->conteudo),
         ];
@@ -212,6 +215,19 @@ class ProntuarioEvolucaoResource extends Resource
     private static function notificationUrl(ProntuarioEvolucao $record): string
     {
         return self::getUrl('view', ['record' => $record]);
+    }
+
+    private static function formatGeneratedActivityLabel(AtividadeAcolhido $atividade): string
+    {
+        $parts = array_filter([
+            $atividade->data_programacao?->format('d/m/Y'),
+            $atividade->atividade,
+            $atividade->usuario?->name,
+        ]);
+
+        return $parts === []
+            ? 'Atividade #' . $atividade->getKey()
+            : implode(' - ', $parts);
     }
 
     /**
