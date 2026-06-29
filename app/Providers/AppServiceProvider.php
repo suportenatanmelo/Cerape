@@ -6,9 +6,11 @@ use App\Models\Acolhido;
 use App\Models\Agenda;
 use App\Models\DemandaAcolhido;
 use App\Models\SubstanciaPsicoativas;
+use App\Models\DiariaTrabalho;
 use App\Models\User;
 use App\Observers\AcolhidoObserver;
 use App\Observers\AgendaObserver;
+use App\Observers\DiariaTrabalhoObserver;
 use App\Observers\DemandaAcolhidoObserver;
 use App\Observers\SubstanciaPsicoativasObserver;
 use App\Observers\UserObserver;
@@ -73,5 +75,6 @@ class AppServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         SubstanciaPsicoativas::observe(SubstanciaPsicoativasObserver::class);
         DemandaAcolhido::observe(DemandaAcolhidoObserver::class);
+        DiariaTrabalho::observe(DiariaTrabalhoObserver::class);
     }
 }

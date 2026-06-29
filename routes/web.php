@@ -21,36 +21,49 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 
 Route::get('/', function () {
-    $settings = FrontendSetting::query()->first();
+    try {
+        $settings = FrontendSetting::query()->first();
 
-    if (! $settings || $settings->site_enabled) {
-        return view('frontend.index', [
-            'settings' => $settings,
-            'slides' => HeroSlide::query()->where('is_active', true)->orderBy('position')->get(),
-            'pillars' => PillarCard::query()->where('active', true)->orderBy('position')->limit(4)->get(),
-            'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
-            'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
-            'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
-            'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
-        ]);
+        if (! $settings || $settings->site_enabled) {
+            return view('frontend.index', [
+                'settings' => $settings,
+                'slides' => HeroSlide::query()->where('is_active', true)->orderBy('position')->get(),
+                'pillars' => PillarCard::query()->where('active', true)->orderBy('position')->limit(4)->get(),
+                'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
+                'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
+                'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
+                'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
+            ]);
+        }
+    } catch (\Throwable $e) {
+        report($e);
     }
 
     return redirect()->route('welcome');
 })->name('home');
 
 Route::get('/galeria', function () {
-    $settings = FrontendSetting::query()->first();
-    $categories = GalleryCategory::query()
-        ->where('active', true)
-        ->with(['items' => fn ($query) => $query->where('active', true)->orderBy('position')->orderBy('id')])
-        ->orderBy('position')
-        ->orderBy('id')
-        ->get();
+    try {
+        $settings = FrontendSetting::query()->first();
+        $categories = GalleryCategory::query()
+            ->where('active', true)
+            ->with(['items' => fn ($query) => $query->where('active', true)->orderBy('position')->orderBy('id')])
+            ->orderBy('position')
+            ->orderBy('id')
+            ->get();
 
-    return view('frontend.gallery', [
-        'settings' => $settings,
-        'categories' => $categories,
-    ]);
+        return view('frontend.gallery', [
+            'settings' => $settings,
+            'categories' => $categories,
+        ]);
+    } catch (\Throwable $e) {
+        report($e);
+
+        return view('frontend.gallery', [
+            'settings' => null,
+            'categories' => collect(),
+        ]);
+    }
 })->name('gallery.index');
 
 Route::view('/welcome', 'welcome')->name('welcome');

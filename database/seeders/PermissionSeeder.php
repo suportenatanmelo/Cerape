@@ -24,9 +24,14 @@ class PermissionSeeder extends Seeder
         'ArquivosDiario',
         'AtividadeDesenvolvida',
         'AvaliacaoPessoal',
+        'CarteiraAcolhido',
+        'DiariaTrabalho',
         'DemandaAcolhido',
+        'EmpresaParceira',
         'GeradorAtividade',
+        'FrenteTrabalho',
         'Home',
+        'MovimentacaoFinanceira',
         'ProntuarioEvolucao',
         'Reuniao',
         'Role',
@@ -63,6 +68,13 @@ class PermissionSeeder extends Seeder
         'View:Chatify',
         'Create:Chatify',
         'View:FeedbackFamiliar',
+        'View:Financeiro',
+        'Create:Financeiro',
+        'Update:Financeiro',
+        'Delete:Financeiro',
+        'Approve:Financeiro',
+        'Withdraw:Financeiro',
+        'Reports:Financeiro',
     ];
 
     public function run(): void
