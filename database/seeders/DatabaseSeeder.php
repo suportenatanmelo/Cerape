@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             ThemePaletteSeeder::class,
             FrontendContentSeeder::class,
+            CmsContentSeeder::class,
         ]);
     }
 }

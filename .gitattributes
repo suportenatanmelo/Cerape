@@ -1,10 +1,26 @@
-* text=auto eol=lf
+# Default: let Git handle text files and normalize by platform
+* text=auto
 
-*.blade.php diff=html
-*.css diff=css
-*.html diff=html
-*.md diff=markdown
-*.php diff=php
+# Keep Windows line endings for scripts
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+*.bat text eol=crlf
+
+# Force LF for source files
+*.php text eol=lf
+*.blade.php text eol=lf diff=html
+*.js text eol=lf
+*.css text eol=lf diff=css
+*.html text eol=lf diff=html
+*.md text eol=lf diff=markdown
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.zip binary
+*.7z binary
 
 /.github export-ignore
 CHANGELOG.md export-ignore

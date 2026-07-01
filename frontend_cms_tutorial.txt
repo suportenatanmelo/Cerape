@@ -1,0 +1,65 @@
+Tutorial rápido — CMS Frontend (CERAPE)
+
+Objetivo
+- Fazer com que tudo alterado no painel `/frontend` (Filament) seja refletido automaticamente no site público.
+- Remover as imagens atuais do carrossel (Hero) para que você possa enviar novas imagens via painel.
+
+O que foi implementado
+1) View Service Provider
+- Arquivo: app/Providers/FrontendViewServiceProvider.php
+- O que faz: compartilha automaticamente com todas as views em `resources/views/frontend/*` as variáveis:
+  - `settings` (registro em `FrontendSetting`)
+  - `palettes` (paletas ativas de `ThemePalette`)
+  - `activePalette` (paleta marcada como `is_current`)
+  - e os arrays retornados por `CmsFrontendService::homeData()` como `homeBlocks`, `treatments`, `news`, `events`, `testimonials`, `partners`, `faqs`, `banners`, `popups`, `menuItems`, `footerWidgets`, `socialLinks`.
+- Benefício: alterar conteúdo no painel `/frontend` atualiza o site público imediatamente (sem editar views manualmente). As views consomem essas variáveis.
+
+2) Integração de Tema
+- Alterei `resources/views/frontend/layout.blade.php` para usar a `ThemePalette` ativa (campo `is_current`) quando existir.
+- Se não houver paleta ativa, usa os campos de cor em `FrontendSetting` como fallback.
+- As variáveis CSS `:root` agora são preenchidas dinamicamente a partir da paleta ativa.
+
+3) Comando Artisan para limpar imagens do carrossel
+- Comando: `php artisan frontend:clear-hero-images`
+- Uso: remove `image_path`, `mobile_image_path` e `og_image_path` de todos os registros em `hero_slides`.
+- Opção `--dry-run`: mostra quantos registros existem sem alterar nada.
+
+Como usar (passo a passo)
+1) Atualizar a paleta de cores
+- Acesse o painel Filament (normalmente `/admin` ou rota Filament configurada) → Recursos → Theme Palettes.
+- Marque uma paleta com "Tema atual" (`is_current`) — a view pública passará a usar suas cores.
+
+2) Gerenciar conteúdo do site
+- Acesse `/frontend` no Filament (painel CMS já implementado).
+- Modifique `CmsContent`, `HeroSlide`, `TeamMember`, `BlogPost`, etc. → as alterações aparecerão automaticamente no site público.
+
+3) Remover imagens atuais do carrossel (opcional)
+- No terminal do projeto, execute:
+
+```bash
+php artisan frontend:clear-hero-images --dry-run
+php artisan frontend:clear-hero-images
+```
+
+- O primeiro comando verifica quantos slides existem (sem alterar). O segundo executa a remoção das imagens.
+
+4) Upload de novas imagens
+- Após limpar as imagens, vá ao recurso `HeroSlide` no Filament e faça o upload das novas imagens.
+- A home do site irá exibir as novas imagens (o `layout.blade.php` já lê `HeroSlide::published()->orderBy('position')->get()`).
+
+Notas importantes
+- Cache: se você usa `php artisan view:cache` ou `config:cache`, limpe o cache após mudanças em providers ou configurações: `php artisan optimize:clear`.
+- Segurança: o comando Artisan escrito é seguro para uso local/servidor; execute com cuidado em produção.
+
+Arquivos adicionados/alterados
+- Added: `app/Providers/FrontendViewServiceProvider.php`
+- Updated: `bootstrap/providers.php` (registrou o provider)
+- Updated: `resources/views/frontend/layout.blade.php` (usa ThemePalette ativa)
+- Added: `app/Console/Commands/ClearHeroImages.php`
+- Added: `frontend_cms_tutorial.txt` (este arquivo)
+
+Se quiser, eu posso:
+- Rodar o comando `php artisan frontend:clear-hero-images` aqui (preciso de permissão para executar comandos no seu ambiente).
+- Criar um botão no painel Filament que rode esse comando com segurança (requer alteração extra no Filament admin).
+
+Fim do tutorial.

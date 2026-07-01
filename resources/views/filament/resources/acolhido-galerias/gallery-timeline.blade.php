@@ -1,4 +1,4 @@
-@php
+﻿@php
     $context = $context ?? 'admin';
     $isFamily = $context === 'family';
     $wrapperClasses = $isFamily
@@ -89,7 +89,7 @@
 <div class="{{ $wrapperClasses }}">
     <div class="relative border-b {{ $headerBorder }} px-6 py-6 sm:px-8">
         <p class="{{ $eyebrowClass }}">
-            {{ $isFamily ? 'Painel da família' : 'Painel institucional' }}
+<<            {{ $isFamily ? 'Painel da família' : 'Painel institucional' }}
         </p>
         <div class="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div class="max-w-3xl">

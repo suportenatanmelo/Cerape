@@ -3,15 +3,18 @@
 use App\Filament\Resources\ArquivosDiarios\ArquivosDiarioResource;
 use App\Models\BlogPost;
 use App\Models\ArquivosDiario;
+use App\Models\CmsContent;
 use App\Models\HeroSlide;
 use App\Models\FrontendSetting;
 use App\Models\ContactLead;
+use App\Models\NewsletterSubscriber;
 use App\Models\ChMessage;
 use App\Models\GalleryCategory;
 use App\Models\PillarCard;
 use App\Models\ThemePalette;
 use App\Models\User;
 use App\Models\TeamMember;
+use App\Services\Cms\CmsFrontendService;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
@@ -27,12 +30,13 @@ Route::get('/', function () {
         if (! $settings || $settings->site_enabled) {
             return view('frontend.index', [
                 'settings' => $settings,
-                'slides' => HeroSlide::query()->where('is_active', true)->orderBy('position')->get(),
+                'slides' => HeroSlide::query()->published()->orderBy('position')->get(),
                 'pillars' => PillarCard::query()->where('active', true)->orderBy('position')->limit(4)->get(),
                 'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
                 'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
                 'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
                 'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
+                ...app(CmsFrontendService::class)->homeData(),
             ]);
         }
     } catch (\Throwable $e) {
@@ -87,6 +91,52 @@ Route::post('/contato', function (Request $request) {
 
     return back()->with('contact_sent', true);
 })->name('contact.submit');
+
+Route::post('/newsletter', function (Request $request) {
+    $data = $request->validate([
+        'name' => ['nullable', 'string', 'max:255'],
+        'email' => ['required', 'email', 'max:255'],
+        'phone' => ['nullable', 'string', 'max:30'],
+    ]);
+
+    NewsletterSubscriber::query()->updateOrCreate(
+        ['email' => $data['email']],
+        [
+            'name' => $data['name'] ?? null,
+            'phone' => isset($data['phone']) ? preg_replace('/\D+/', '', $data['phone']) : null,
+            'source' => 'site',
+            'subscribed_at' => now(),
+            'unsubscribed_at' => null,
+            'is_active' => true,
+        ]
+    );
+
+    return back()->with('newsletter_sent', true);
+})->name('newsletter.submit');
+
+Route::get('/noticias', function () {
+    return view('frontend.cms-list', [
+        'settings' => FrontendSetting::query()->first(),
+        'title' => 'Notícias',
+        'items' => CmsContent::query()->type(CmsContent::TYPE_NEWS)->published()->orderByDesc('starts_at')->orderBy('position')->get(),
+    ]);
+})->name('news.index');
+
+Route::get('/eventos', function () {
+    return view('frontend.cms-list', [
+        'settings' => FrontendSetting::query()->first(),
+        'title' => 'Eventos',
+        'items' => CmsContent::query()->type(CmsContent::TYPE_EVENT)->published()->orderBy('starts_at')->orderBy('position')->get(),
+    ]);
+})->name('events.index');
+
+Route::get('/faq', function () {
+    return view('frontend.cms-list', [
+        'settings' => FrontendSetting::query()->first(),
+        'title' => 'Perguntas frequentes',
+        'items' => CmsContent::query()->type(CmsContent::TYPE_FAQ)->published()->orderBy('category')->orderBy('position')->get(),
+    ]);
+})->name('faq.index');
 
 Route::middleware('auth')->post('/frontend/site-status', function (Request $request) {
     $user = $request->user();
@@ -154,6 +204,18 @@ Route::middleware('auth')->get('/media/{path}', function (Request $request, stri
 
     return Storage::disk('public')->response($path);
 })->where('path', '.*')->name('media.serve');
+
+// Admin: clear hero images endpoint used by Filament page
+use App\Http\Controllers\Admin\ClearHeroImagesController;
+Route::middleware(['auth'])->post('/admin/clear-hero-images', [ClearHeroImagesController::class, 'dispatch'])->name('admin.clear-hero-images');
+
+use App\Http\Controllers\Admin\HeroSlideTrashController;
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/admin/hero-slide-trash/restore/{id}', [HeroSlideTrashController::class, 'restore'])->name('admin.hero-slide-trash.restore');
+    Route::post('/admin/hero-slide-trash/delete/{id}', [HeroSlideTrashController::class, 'destroy'])->name('admin.hero-slide-trash.delete');
+    Route::post('/admin/hero-slide-trash/empty', [HeroSlideTrashController::class, 'empty'])->name('admin.hero-slide-trash.empty');
+});
 
 Route::middleware('auth')->get('/arquivos-upload/{record}/visualizar', function (ArquivosDiario $record) {
     return ArquivosDiarioResource::previewResponse($record);

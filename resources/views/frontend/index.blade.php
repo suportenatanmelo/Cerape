@@ -195,6 +195,102 @@
         </div>
     </section>
 
+    @if (($treatments ?? collect())->isNotEmpty())
+        <section class="section" id="tratamentos">
+            <div class="section-head reveal">
+                <span class="eyebrow">Tratamentos</span>
+                <h2>Frentes de cuidado</h2>
+                <p>Conteúdos cadastrados no módulo CMS institucional.</p>
+            </div>
+            <div class="steps">
+                @foreach ($treatments as $index => $treatment)
+                    <article class="step reveal" style="--reveal-delay:{{ $index * 0.08 }}s">
+                        <span class="num">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
+                        <h3>{{ $treatment->title }}</h3>
+                        <p>{{ $treatment->summary }}</p>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    @if (($testimonials ?? collect())->isNotEmpty())
+        <section class="section" id="depoimentos">
+            <div class="section-head reveal">
+                <span class="eyebrow">Depoimentos</span>
+                <h2>Histórias de confiança</h2>
+            </div>
+            <div class="team-grid">
+                @foreach ($testimonials as $testimonial)
+                    <article class="team-card reveal">
+                        @if ($testimonial->imageUrl())
+                            <div class="team-photo"><img src="{{ $testimonial->imageUrl() }}" alt="{{ $testimonial->title }}"></div>
+                        @endif
+                        <div class="team-info">
+                            <span class="role">{{ $testimonial->category ?: 'Depoimento' }}</span>
+                            <h3>{{ $testimonial->title }}</h3>
+                            <p>{{ $testimonial->summary }}</p>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    @if (($partners ?? collect())->isNotEmpty())
+        <section class="section" id="parceiros">
+            <div class="section-head reveal">
+                <span class="eyebrow">Parceiros</span>
+                <h2>Quem caminha conosco</h2>
+            </div>
+            <div class="gallery-grid">
+                @foreach ($partners as $partner)
+                    <article class="g-item reveal">
+                        @if ($partner->imageUrl())
+                            <div class="team-photo" style="height: 160px;"><img src="{{ $partner->imageUrl() }}" alt="{{ $partner->title }}"></div>
+                        @endif
+                        <div class="team-info">
+                            <h3>{{ $partner->title }}</h3>
+                            <p>{{ $partner->summary }}</p>
+                            @if ($partner->external_url)
+                                <a href="{{ $partner->external_url }}" target="_blank" rel="noopener" class="btn btn-line">Visitar site</a>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+        </section>
+    @endif
+
+    <section class="section" id="newsletter">
+        <div class="section-head reveal">
+            <span class="eyebrow">Newsletter</span>
+            <h2>Receba novidades</h2>
+            <p>Cadastre seu e-mail para receber conteúdos e comunicados da CERAPE.</p>
+        </div>
+        <div class="contact-form-card reveal">
+            @if (session('newsletter_sent'))
+                <div class="contact-success">Cadastro realizado com sucesso.</div>
+            @endif
+            <form class="contact-form" method="POST" action="{{ route('newsletter.submit') }}">
+                @csrf
+                <div class="contact-grid">
+                    <label class="contact-field">
+                        <span>Nome</span>
+                        <input type="text" name="name" placeholder="Seu nome" value="{{ old('name') }}">
+                    </label>
+                    <label class="contact-field">
+                        <span>E-mail</span>
+                        <input type="email" name="email" placeholder="seu@email.com" value="{{ old('email') }}" required>
+                    </label>
+                </div>
+                <div class="contact-actions">
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
     <section class="section" id="contato">
         @php
             $contactSuccess = session('contact_sent');

@@ -13,23 +13,47 @@ class HeroSlide extends Model
         'subtitle',
         'description',
         'image_path',
+        'mobile_image_path',
         'cta_label',
         'cta_url',
+        'secondary_cta_label',
+        'secondary_cta_url',
+        'text_color',
+        'alignment',
+        'overlay_color',
+        'overlay_opacity',
         'show_buttons',
         'position',
         'is_active',
+        'starts_at',
+        'ends_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'show_buttons' => 'boolean',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
     ];
 
     protected static function booted(): void
     {
         static::saved(function (self $slide): void {
             ImageStorageNaming::syncStoredImage($slide, 'image_path', 'galeria', $slide->title);
+            ImageStorageNaming::syncStoredImage($slide, 'mobile_image_path', 'galeria', $slide->title . ' mobile');
         });
+    }
+
+    public function scopePublished($query)
+    {
+        return $query
+            ->where('is_active', true)
+            ->where(function ($query): void {
+                $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
+            })
+            ->where(function ($query): void {
+                $query->whereNull('ends_at')->orWhere('ends_at', '>=', now());
+            });
     }
 
     public function imageUrl(): ?string
@@ -39,6 +63,15 @@ class HeroSlide extends Model
         }
 
         return $this->normalizeMediaUrl($this->image_path);
+    }
+
+    public function mobileImageUrl(): ?string
+    {
+        if (! filled($this->mobile_image_path)) {
+            return null;
+        }
+
+        return $this->normalizeMediaUrl($this->mobile_image_path);
     }
 
     protected function normalizeMediaUrl(string $path): string

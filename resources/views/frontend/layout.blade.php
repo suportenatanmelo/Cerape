@@ -1,12 +1,52 @@
 @php
     $settings ??= null;
-    $headerPrimary = $settings?->header_primary_color ?? '#0f172a';
-    $headerSecondary = $settings?->header_secondary_color ?? '#155e75';
-    $footerPrimary = $settings?->footer_primary_color ?? '#111827';
-    $footerSecondary = $settings?->footer_secondary_color ?? '#0f766e';
-    $fontColor = $settings?->font_color ?? '#e5e7eb';
-    $accent = $settings?->accent_color ?? '#38bdf8';
-    $paletteName = $paletteName ?? null;
+
+    $activePalette = \App\Models\ThemePalette::query()->where('is_current', true)->first();
+
+    if ($activePalette) {
+        $headerPrimary = $activePalette->header_color ?? $settings?->header_primary_color ?? '#0f172a';
+        $headerSecondary = $activePalette->secondary_color ?? $settings?->header_secondary_color ?? '#155e75';
+        $footerPrimary = $activePalette->footer_color ?? $settings?->footer_primary_color ?? '#111827';
+        $footerSecondary = $activePalette->secondary_color ?? $settings?->footer_secondary_color ?? '#0f766e';
+        $fontColor = $activePalette->text_color ?? $settings?->font_color ?? '#e5e7eb';
+        $accent = $activePalette->accent_color ?? $settings?->accent_color ?? '#38bdf8';
+        $bg = $activePalette->background_color ?? '#faf7f2';
+        $bgSoft = $activePalette->card_color ?? '#f1ece2';
+        $surface = $activePalette->surface_color ?? 'rgba(255, 255, 255, 0.82)';
+        $surfaceStrong = $activePalette->card_color ?? '#ffffff';
+        $pine = $headerPrimary;
+        $pineLight = $headerSecondary;
+        $amber = $accent;
+        $amberSoft = $accent;
+        $sage = $footerSecondary;
+        $ink = $fontColor;
+        $inkSoft = $fontColor;
+        $line = $activePalette->border_color ?? '#e2dbcb';
+        $shadow = '0 18px 36px rgba(30, 61, 54, 0.08)';
+        $paletteName = $activePalette->name;
+    } else {
+        $headerPrimary = $settings?->header_primary_color ?? '#0f172a';
+        $headerSecondary = $settings?->header_secondary_color ?? '#155e75';
+        $footerPrimary = $settings?->footer_primary_color ?? '#111827';
+        $footerSecondary = $settings?->footer_secondary_color ?? '#0f766e';
+        $fontColor = $settings?->font_color ?? '#e5e7eb';
+        $accent = $settings?->accent_color ?? '#38bdf8';
+        $paletteName = $paletteName ?? null;
+        $bg = '#faf7f2';
+        $bgSoft = '#f1ece2';
+        $surface = 'rgba(255, 255, 255, 0.82)';
+        $surfaceStrong = '#ffffff';
+        $pine = '#1e3d36';
+        $pineLight = '#2c5a4f';
+        $amber = '#e08e4f';
+        $amberSoft = '#f2c49a';
+        $sage = '#6b8e78';
+        $ink = '#2b2823';
+        $inkSoft = '#6b6459';
+        $line = '#e2dbcb';
+        $shadow = '0 18px 36px rgba(30, 61, 54, 0.08)';
+    }
+
     $whatsappDigits = preg_replace('/\D+/', '', (string) ($settings?->whatsapp_number ?? ''));
     $whatsappDigits = $whatsappDigits ? (str_starts_with($whatsappDigits, '55') ? $whatsappDigits : '55'.$whatsappDigits) : '';
     $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
@@ -29,19 +69,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #faf7f2;
-            --bg-soft: #f1ece2;
-            --surface: rgba(255, 255, 255, 0.82);
-            --surface-strong: #ffffff;
-            --pine: #1e3d36;
-            --pine-light: #2c5a4f;
-            --amber: #e08e4f;
-            --amber-soft: #f2c49a;
-            --sage: #6b8e78;
-            --ink: #2b2823;
-            --ink-soft: #6b6459;
-            --line: #e2dbcb;
-            --shadow: 0 18px 36px rgba(30, 61, 54, 0.08);
+            --bg: {{ $bg ?? '#faf7f2' }};
+            --bg-soft: {{ $bgSoft ?? '#f1ece2' }};
+            --surface: {{ $surface ?? 'rgba(255, 255, 255, 0.82)' }};
+            --surface-strong: {{ $surfaceStrong ?? '#ffffff' }};
+            --pine: {{ $pine ?? '#1e3d36' }};
+            --pine-light: {{ $pineLight ?? '#2c5a4f' }};
+            --amber: {{ $amber ?? '#e08e4f' }};
+            --amber-soft: {{ $amberSoft ?? '#f2c49a' }};
+            --sage: {{ $sage ?? '#6b8e78' }};
+            --ink: {{ $ink ?? '#2b2823' }};
+            --ink-soft: {{ $inkSoft ?? '#6b6459' }};
+            --line: {{ $line ?? '#e2dbcb' }};
+            --shadow: {{ $shadow ?? '0 18px 36px rgba(30, 61, 54, 0.08)' }};
         }
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -698,7 +738,7 @@
     <header class="topbar">
         <div class="wrap">
             <a class="brand" href="{{ url('/') }}">
-                <img class="brand-logo" src="{{ $siteLogoUrl }}" alt="Logo CERAPE">
+                <img class="brand-logo" src="{{ $siteLogoUrl ?? asset('logo.png') }}" alt="Logo CERAPE">
                 <span>{{ $settings?->brand_name ?? 'CERAPE' }}</span>
             </a>
             <nav>

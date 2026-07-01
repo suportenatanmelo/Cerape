@@ -2,20 +2,22 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Frontend\Resources\BlogPostResource;
-use App\Filament\Frontend\Resources\ContactLeadResource;
-use App\Filament\Frontend\Resources\HeroSlideResource;
-use App\Filament\Frontend\Resources\FrontendSettingResource;
-use App\Filament\Frontend\Resources\GalleryCategoryResource;
-use App\Filament\Frontend\Resources\PillarCardResource;
-use App\Filament\Frontend\Resources\TeamMemberResource;
-use App\Filament\Frontend\Pages\MediaManager;
-use App\Filament\Frontend\Pages\QuemSomos;
 use App\Filament\Frontend\Pages\ClinicSettings;
 use App\Filament\Frontend\Pages\ContactSettings;
-use App\Filament\Frontend\Pages\WhatsAppSettings;
-use App\Filament\Frontend\Pages\SitePreview;
 use App\Filament\Frontend\Pages\EditFrontendSettings;
+use App\Filament\Frontend\Pages\MediaManager;
+use App\Filament\Frontend\Pages\QuemSomos;
+use App\Filament\Frontend\Pages\SitePreview;
+use App\Filament\Frontend\Pages\WhatsAppSettings;
+use App\Filament\Frontend\Resources\BlogPostResource;
+use App\Filament\Frontend\Resources\CmsContentResource;
+use App\Filament\Frontend\Resources\ContactLeadResource;
+use App\Filament\Frontend\Resources\FrontendSettingResource;
+use App\Filament\Frontend\Resources\GalleryCategoryResource;
+use App\Filament\Frontend\Resources\HeroSlideResource;
+use App\Filament\Frontend\Resources\NewsletterSubscriberResource;
+use App\Filament\Frontend\Resources\PillarCardResource;
+use App\Filament\Frontend\Resources\TeamMemberResource;
 use App\Http\Middleware\EnsureFrontendOwnerAccess;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -50,6 +52,8 @@ class FrontendPanelProvider extends PanelProvider
                 GalleryCategoryResource::class,
                 TeamMemberResource::class,
                 BlogPostResource::class,
+                CmsContentResource::class,
+                NewsletterSubscriberResource::class,
                 ContactLeadResource::class,
             ])
             ->pages([

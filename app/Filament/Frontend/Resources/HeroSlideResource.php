@@ -4,13 +4,25 @@ namespace App\Filament\Frontend\Resources;
 
 use App\Filament\Frontend\Resources\HeroSlideResource\Pages\ManageHeroSlides;
 use App\Models\HeroSlide;
+use App\Support\ImageStorageNaming;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\DB;
 use UnitEnum;
@@ -27,26 +39,51 @@ class HeroSlideResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->components([
-            \Filament\Schemas\Components\Section::make('Slide principal')
+            Section::make('Slide')
+                ->description('Cadastre um Slide. Você pode alterar imagens Desktop e Mobile. As imagens serão exibidas automaticamente no topo do site.')
                 ->schema([
-                    \Filament\Forms\Components\TextInput::make('title')->label('Título')->required(),
-                    \Filament\Forms\Components\TextInput::make('subtitle')->label('Subtítulo'),
-                    \Filament\Forms\Components\Textarea::make('description')->label('Descrição')->rows(3),
-                    \Filament\Forms\Components\FileUpload::make('image_path')->label('Imagem')->disk('public')->image()->directory(\App\Support\ImageStorageNaming::directory('galeria')),
-                    \Filament\Forms\Components\TextInput::make('cta_label')->label('Texto do botão'),
-                    \Filament\Forms\Components\TextInput::make('cta_url')
-                        ->label('Link do botão')
-                        ->default('/blog')
-                        ->placeholder('Ex.: /blog/artigo-exemplo')
-                        ->helperText('Use /blog para levar o visitante ao blog. A imagem do slide pode ser reaproveitada ou trocada depois no módulo Blog.'),
-                    \Filament\Forms\Components\Toggle::make('show_buttons')
-                        ->label('Exibir botões no carrossel')
-                        ->default(true),
-                    \Filament\Forms\Components\TextInput::make('position')
+                    TextInput::make('title')->label('Título')->required()->placeholder('Título principal do slide'),
+                    TextInput::make('subtitle')->label('Subtítulo')->placeholder('Chamada curta acima do título'),
+                    Textarea::make('description')->label('Texto')->rows(3)->columnSpanFull(),
+                    FileUpload::make('image_path')->label('Imagem desktop')->disk('public')->image()->directory(ImageStorageNaming::directory('galeria')),
+                    FileUpload::make('mobile_image_path')->label('Imagem mobile')->disk('public')->image()->directory(ImageStorageNaming::directory('galeria')),
+                    TextInput::make('cta_label')->label('Botão 1')->placeholder('Agendar uma conversa'),
+                    TextInput::make('cta_url')->label('URL botão 1')->placeholder('/contato'),
+                    TextInput::make('secondary_cta_label')->label('Botão 2')->placeholder('Conhecer a jornada'),
+                    TextInput::make('secondary_cta_url')->label('URL botão 2')->placeholder('#jornada'),
+                ])->columns(2),
+
+            Section::make('Aparência e comportamento')
+                ->schema([
+                    ColorPicker::make('text_color')->label('Cor do texto')->default('#ffffff'),
+                    Select::make('alignment')
+                        ->label('Alinhamento')
+                        ->options([
+                            'left' => 'Esquerda',
+                            'center' => 'Centro',
+                            'right' => 'Direita',
+                        ])
+                        ->default('left'),
+                    ColorPicker::make('overlay_color')->label('Overlay')->default('#000000'),
+                    TextInput::make('overlay_opacity')
+                        ->label('Opacidade')
+                        ->numeric()
+                        ->minValue(0)
+                        ->maxValue(100)
+                        ->default(45)
+                        ->helperText('Valor entre 0 e 100.'),
+                    TextInput::make('position')
                         ->label('Ordem')
                         ->numeric()
                         ->default(fn (): int => static::nextSlidePosition()),
-                    \Filament\Forms\Components\Toggle::make('is_active')->label('Ativo')->default(true),
+                    Toggle::make('show_buttons')->label('Exibir botões')->default(true),
+                    Toggle::make('is_active')->label('Ativo')->default(true),
+                ])->columns(4),
+
+            Section::make('Agendamento')
+                ->schema([
+                    DateTimePicker::make('starts_at')->label('Data inicial'),
+                    DateTimePicker::make('ends_at')->label('Data final'),
                 ])->columns(2),
         ]);
     }
@@ -59,25 +96,37 @@ class HeroSlideResource extends Resource
     public static function table(Table $table): Table
     {
         return $table->columns([
-            \Filament\Tables\Columns\ImageColumn::make('image_path')
+            ImageColumn::make('image_path')
                 ->label('Imagem')
                 ->getStateUsing(fn (HeroSlide $record): ?string => $record->imageUrl())
                 ->size(64),
-            \Filament\Tables\Columns\TextColumn::make('title')->label('Título')->searchable(),
-            \Filament\Tables\Columns\TextColumn::make('subtitle')->label('Subtítulo'),
-            \Filament\Tables\Columns\TextColumn::make('position')->label('Ordem')->sortable(),
-            \Filament\Tables\Columns\IconColumn::make('is_active')->boolean()->label('Ativo'),
+            TextColumn::make('title')->label('Título')->searchable(),
+            TextColumn::make('subtitle')->label('Subtítulo'),
+            TextColumn::make('position')->label('Ordem')->sortable(),
+            TextColumn::make('starts_at')->label('Início')->dateTime('d/m/Y H:i')->placeholder('-'),
+            TextColumn::make('ends_at')->label('Fim')->dateTime('d/m/Y H:i')->placeholder('-'),
+            IconColumn::make('is_active')->boolean()->label('Ativo'),
         ])->recordActions([
             ActionGroup::make([
+                Action::make('duplicar')
+                    ->label('Duplicar')
+                    ->icon('heroicon-o-document-duplicate')
+                    ->action(function (HeroSlide $record): void {
+                        $copy = $record->replicate();
+                        $copy->title = $record->title . ' (cópia)';
+                        $copy->is_active = false;
+                        $copy->position = static::nextSlidePosition();
+                        $copy->save();
+                    }),
                 Action::make('visualizar')
-                    ->label('Visualizar')
+                    ->label('Preview')
                     ->icon('heroicon-o-eye')
-                    ->modalHeading('Visualizar slide')
+                    ->modalHeading('Preview do slide')
                     ->modalSubmitAction(false)
                     ->modalCancelActionLabel('Fechar')
                     ->modalContent(fn ($record) => view('filament.frontend.record-preview', ['record' => $record])),
                 EditAction::make()->label('Editar'),
-                DeleteAction::make()->label('Deletar'),
+                DeleteAction::make()->label('Excluir'),
             ]),
         ]);
     }

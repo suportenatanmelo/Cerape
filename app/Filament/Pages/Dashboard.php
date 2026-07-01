@@ -2,9 +2,9 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\DashboardAtendimentosPorSetorChart;
 use App\Filament\Widgets\DashboardAgendaWidget;
 use App\Filament\Widgets\DashboardAlertsWidget;
+use App\Filament\Widgets\DashboardAtendimentosPorSetorChart;
 use App\Filament\Widgets\DashboardBirthdaysWidget;
 use App\Filament\Widgets\DashboardEntradasAltasChart;
 use App\Filament\Widgets\DashboardEvolucaoAtendimentosChart;
@@ -16,8 +16,8 @@ use App\Filament\Widgets\DashboardOrigemEncaminhamentoChart;
 use App\Filament\Widgets\DashboardQuickActionsWidget;
 use App\Filament\Widgets\DashboardSituacaoAcolhidosChart;
 use App\Filament\Widgets\DashboardStatsOverviewWidget;
-use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
