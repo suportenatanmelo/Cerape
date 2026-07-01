@@ -1,3 +1,6 @@
+# Ensure .gitattributes is checked out with Windows CRLF to avoid warnings
+.gitattributes text eol=crlf
+
 # Default: let Git handle text files and normalize by platform
 * text=auto
 
