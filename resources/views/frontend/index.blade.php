@@ -187,11 +187,18 @@
                         <h3>{{ $post->title }}</h3>
                         <p>{{ $post->excerpt }}</p>
                         <p>Tags: {{ is_array($post->tags) ? implode(', ', $post->tags) : ($post->tags ?? '-') }}</p>
+                        @if ($post->slug)
+                            <a class="btn btn-line" href="{{ route('blog.show', ['slug' => $post->slug]) }}">Leia mais</a>
+                        @endif
                     </div>
                 </article>
             @empty
                 <article class="post-card"><div class="post-body"><p>{{ $settings?->blog_empty_message ?? 'Cadastre até 5 cards do blog no painel /frontend.' }}</p></div></article>
             @endforelse
+        </div>
+
+        <div class="section-actions reveal" style="margin-top: 2rem; text-align: center;">
+            <a class="btn btn-primary" href="{{ route('news.index') }}">Ver mais notícias</a>
         </div>
     </section>
 

@@ -46,6 +46,22 @@ Route::get('/', function () {
     return redirect()->route('welcome');
 })->name('home');
 
+Route::get('/blog/{slug}', function (string $slug) {
+    try {
+        $settings = FrontendSetting::query()->first();
+        $post = BlogPost::query()->where('slug', $slug)->where('active', true)->firstOrFail();
+
+        return view('frontend.blog-post', [
+            'settings' => $settings,
+            'post' => $post,
+        ]);
+    } catch (\Throwable $e) {
+        report($e);
+    }
+
+    abort(404);
+})->name('blog.show');
+
 Route::get('/galeria', function () {
     try {
         $settings = FrontendSetting::query()->first();
