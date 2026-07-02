@@ -1,5 +1,11 @@
 @extends('frontend.layout')
 
+@section('meta_title', $post->title . ' | ' . ($settings?->brand_name ?? 'CERAPE'))
+@section('meta_description', $post->excerpt)
+@section('meta_image', $post->imageUrl() ?? asset('favicon/favicon-32x32.png'))
+@section('meta_type', 'article')
+@section('meta_canonical', route('blog.show', ['slug' => $post->slug]))
+
 @section('content')
     <section class="section" style="padding-top: 8rem;">
         <div class="section-head reveal">

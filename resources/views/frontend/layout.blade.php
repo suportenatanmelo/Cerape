@@ -61,7 +61,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $settings?->brand_name ?? 'CERAPE' }}</title>
+    <title>@yield('meta_title', $settings?->brand_name ?? 'CERAPE')</title>
+    <meta name="description" content="@yield('meta_description', $settings?->brand_name ?? 'CERAPE')">
+    <link rel="canonical" href="@yield('meta_canonical', request()->url())">
+    <meta property="og:title" content="@yield('meta_title', $settings?->brand_name ?? 'CERAPE')">
+    <meta property="og:description" content="@yield('meta_description', $settings?->brand_name ?? 'CERAPE')">
+    <meta property="og:url" content="{{ request()->url() }}">
+    <meta property="og:type" content="@yield('meta_type', 'website')">
+    <meta property="og:image" content="@yield('meta_image', asset('favicon/favicon-32x32.png'))">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('meta_title', $settings?->brand_name ?? 'CERAPE')">
+    <meta name="twitter:description" content="@yield('meta_description', $settings?->brand_name ?? 'CERAPE')">
+    <meta name="twitter:image" content="@yield('meta_image', asset('favicon/favicon-32x32.png'))">
     <link rel="icon" type="image/png" href="{{ asset('favicon/favicon-32x32.png') }}">
     <link rel="apple-touch-icon" href="{{ asset('favicon/apple-touch-icon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -286,6 +297,8 @@
         .btn-primary:hover { background: #d47f3c; }
         .btn-ghost { border-color: rgba(255,255,255,.42); color:#fff; background: rgba(255,255,255,.08); }
         .btn-ghost:hover { background: rgba(255,255,255,.16); }
+        .btn-line { color: var(--pine); background: transparent; border: 1.5px solid rgba(54, 135, 95, .22); box-shadow: inset 0 0 0 1px rgba(255,255,255,.12); transition: background .25s ease, color .25s ease, transform .25s ease; }
+        .btn-line:hover { background: rgba(56, 189, 248, .12); color: var(--sage); transform: translateY(-1px); }
         .eyebrow, .pill {
             display:inline-flex;
             align-items:center;
@@ -304,9 +317,12 @@
         .hero p { max-width: 720px; }
         .section { margin-top: 34px; }
         .section h2 { margin: 0 0 18px; font-size: clamp(1.6rem, 3vw, 2.3rem); }
-        .grid { display:grid; gap:18px; }
         .section-head { max-width: 560px; margin-bottom: 34px; }
         .section-head h2 { margin-bottom: 12px; }
+        .section-head p { font-size: 1rem; line-height: 1.75; color: var(--ink-soft); max-width: 45rem; }
+        .section-actions { margin-top: 1.75rem; display:flex; justify-content:flex-start; }
+        .section-actions .btn { min-width: 190px; }
+        .grid { display:grid; gap:18px; }
         .cards-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
         .cards-3 { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
         .card {
@@ -356,26 +372,64 @@
         .stat strong { display:block; font-family:'Fraunces', serif; font-size:1.9rem; color:var(--pine); }
         .stat span { font-size:.82rem; color:var(--ink-soft); }
         .steps { display:grid; grid-template-columns: repeat(4, 1fr); gap: 28px; }
-        .step { background: rgba(255,255,255,.82); border:1px solid var(--line); border-radius:22px; padding: 28px 22px; box-shadow: var(--shadow); }
-        .step .num { font-family:'Fraunces', serif; font-size:1.6rem; color:var(--amber); font-weight:600; }
-        .step h3 { margin: 10px 0 8px; }
-        .team-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
-        .team-card { background: rgba(255,255,255,.82); border:1px solid var(--line); border-radius:22px; overflow:hidden; box-shadow: var(--shadow); }
-        .team-photo { width:100%; height:190px; background: var(--bg-soft); }
-        .team-photo img { width:100%; height:100%; object-fit:cover; }
-        .team-info { padding:18px 16px 20px; }
+        .step { background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(242,250,245,.92)); border:1px solid rgba(89, 133, 106, .18); border-radius:28px; padding: 32px 28px; box-shadow: 0 26px 55px rgba(25, 60, 47, .09); transition: transform .25s ease, border-color .25s ease; }
+        .step:hover { transform: translateY(-3px); border-color: rgba(89, 133, 106, .32); }
+        .step .num { font-family:'Fraunces', serif; font-size:1.8rem; color:var(--amber); font-weight:600; }
+        .step h3 { margin: 14px 0 10px; font-size: 1.3rem; line-height: 1.3; }
+        .step p { color: var(--ink-soft); line-height: 1.8; }
+        .team-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 26px; }
+        .team-grid.testimonials { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+        .team-grid.testimonials .team-card { background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(244,251,246,.96)); border:1px solid rgba(110, 163, 129, .18); }
+        .team-grid.testimonials .team-card:hover { transform: translateY(-5px); box-shadow: 0 40px 100px rgba(25, 60, 47, .14); }
+        .team-grid.testimonials .team-info { padding: 24px 22px 28px; }
+        .team-grid.testimonials .team-info h3 { font-size: 1.45rem; }
+        .team-card { background: rgba(255,255,255,.92); border:1px solid var(--line); border-radius:28px; overflow:hidden; box-shadow: 0 28px 60px rgba(25, 60, 47, .08); transition: transform .25s ease, box-shadow .25s ease; }
+        .team-card:hover { transform: translateY(-4px); box-shadow: 0 34px 80px rgba(25, 60, 47, .12); }
+        .team-photo { width:100%; height:220px; background: var(--bg-soft); }
+        .team-photo img { width:100%; height:100%; object-fit:cover; transition: transform .4s ease; }
+        .team-card:hover .team-photo img { transform: scale(1.03); }
+        .team-info { padding:24px 20px 26px; display:grid; gap: 14px; }
         .team-info .role, .post-tag { display:inline-block; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--sage); margin-bottom:8px; }
+        .team-info h3 { margin: 0; font-size: 1.3rem; line-height: 1.25; }
+        .team-info p { margin:0; color: var(--ink-soft); line-height: 1.8; }
         .gallery-filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px; }
         .filter-btn { padding:9px 18px; border-radius:999px; border:1px solid var(--line); background: rgba(255,255,255,.78); color:var(--ink-soft); font-size:.86rem; font-weight:700; }
         .filter-btn.active { background: var(--pine); border-color: var(--pine); color:#fff; }
-        .gallery-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
-        .g-item, .post-card, .palette-card { background: rgba(255,255,255,.82); border:1px solid var(--line); border-radius:22px; box-shadow: var(--shadow); }
+        .gallery-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
+        .g-item, .post-card, .palette-card { background: rgba(255,255,255,.92); border:1px solid var(--line); border-radius:28px; box-shadow: var(--shadow); transition: transform .3s ease, box-shadow .3s ease; }
         .g-item { min-height: 180px; padding: 18px; }
-        .blog-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:28px; }
-        .post-card { overflow:hidden; }
-        .post-img { height: 190px; }
-        .post-img img { width:100%; height:100%; object-fit:cover; }
-        .post-body { padding: 24px; }
+        .g-item.partner-card { background: linear-gradient(180deg, rgba(255,255,255,.96), rgba(243,249,246,.95)); border:1px solid rgba(84, 132, 102, .16); overflow:hidden; }
+        .g-item.partner-card .team-photo { min-height: 160px; }
+        .g-item.partner-card .team-info { padding: 22px; }
+        .g-item.partner-card h3 { margin: 0 0 10px; font-size: 1.35rem; color: var(--pine); }
+        .g-item.partner-card p { margin:0 0 18px; color: var(--ink-soft); line-height: 1.75; }
+        .g-item.partner-card .btn-line { border-color: rgba(83, 134, 101, .3); }
+        .g-item:hover, .post-card:hover, .palette-card:hover { transform: translateY(-4px); box-shadow: 0 32px 70px rgba(30,61,54,.12); }
+        .blog-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:28px; }
+        .post-card { overflow:hidden; display:flex; flex-direction:column; }
+        .post-img { position:relative; height: 220px; overflow:hidden; border-bottom-left-radius: 28px; border-bottom-right-radius: 28px; }
+        .post-img img { width:100%; height:100%; object-fit:cover; transition: transform .5s ease; }
+        .post-card:hover .post-img img { transform: scale(1.05); }
+        .post-body { padding: 28px 26px 30px; display:flex; flex-direction:column; gap: 18px; }
+        .post-body h2, .post-body h3 { margin: 0; font-size: 1.5rem; line-height: 1.2; color: var(--pine); }
+        .post-body h2 a, .post-body h3 a { color: inherit; text-decoration:none; transition: color .2s ease; }
+        .post-body h2 a:hover, .post-body h3 a:hover { color: var(--sage); }
+        .post-body p { margin: 0; color: var(--ink-soft); }
+        .post-meta { display:flex; flex-wrap:wrap; gap: 10px; color: var(--ink-soft); font-size:.88rem; }
+        .post-tag { display:inline-flex; align-items:center; gap:8px; padding: 9px 14px; border-radius: 999px; background: rgba(56, 189, 248, 0.12); color: var(--amber); font-size: .75rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+        .post-card .btn { align-self:flex-start; margin-top:auto; }
+        .post-tags { margin-top: 0.75rem; font-size: .86rem; color: var(--ink-soft); }
+        .blog-post-detail { display:grid; grid-template-columns: 1.1fr .9fr; gap: 36px; align-items: start; margin-top: 24px; }
+        .blog-post-detail .post-img { height: 100%; border-radius: 28px; overflow:hidden; }
+        .blog-post-detail .post-img img { width:100%; height:100%; object-fit:cover; }
+        .blog-post-detail .post-body { padding: 32px; border-radius: 28px; background: rgba(255,255,255,.92); border:1px solid var(--line); box-shadow: var(--shadow); }
+        .pagination-container { margin-top: 2.5rem; display:flex; justify-content:center; }
+        .pagination { display:flex; flex-wrap:wrap; justify-content:center; gap: 8px; padding: 0; list-style:none; margin:0; }
+        .pagination li { display:inline-flex; }
+        .pagination a, .pagination span { display:inline-flex; align-items:center; justify-content:center; min-width:42px; min-height:42px; padding:0 12px; border-radius:14px; border:1px solid var(--line); background: rgba(255,255,255,.94); color: var(--pine); font-weight:600; text-decoration:none; transition: background .3s ease, border-color .3s ease, color .3s ease; }
+        .pagination a:hover { background: rgba(56, 189, 248, .12); border-color: rgba(56,189,248,.3); }
+        .pagination .active span { background: var(--pine); color: #fff; border-color: var(--pine); }
+        .pagination .disabled span { opacity:.45; cursor:not-allowed; }
         footer {
             background: linear-gradient(90deg, var(--pine), #16291f);
             padding: 48px 0 26px;
@@ -411,6 +465,21 @@
         .foot-grid a:hover {
             color: #fff;
             text-decoration: underline;
+        }
+        .footer-note {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #c9dcc9;
+            font-size: .92rem;
+        }
+        .footer-note::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,.35);
+            box-shadow: 0 0 0 4px rgba(255,255,255,.04);
         }
         .foot-bottom {
             border-top: 1px solid rgba(255,255,255,.08);
@@ -479,12 +548,29 @@
             align-items: stretch;
         }
         .clinic-card {
-            background: var(--surface);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(8px);
+            background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(249,252,250,.94));
+            border: 1px solid rgba(80, 127, 99, .15);
+            border-radius: 28px;
+            padding: 28px;
+            box-shadow: 0 28px 72px rgba(25, 60, 47, .09);
+        }
+        .clinic-details {
+            display:flex;
+            flex-direction:column;
+            gap: 18px;
+            justify-content: center;
+        }
+        .clinic-details h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: var(--pine);
+        }
+        .clinic-list li {
+            color: var(--ink-soft);
+            line-height: 1.8;
+        }
+        .clinic-list li strong {
+            color: var(--pine);
         }
         .clinic-map {
             position: relative;
@@ -723,6 +809,11 @@
             .clinic-map, .clinic-map iframe, .clinic-map-empty { min-height: 300px; }
             .sobre-img img { height: 300px; }
             .video-card { width: 100%; }
+            .post-img { height: 240px; border-radius: 24px 24px 0 0; }
+            .post-body { padding: 22px 20px 26px; }
+            .blog-post-detail { display:block; }
+            .blog-post-detail .post-img { width: 100%; min-height: 320px; }
+            .blog-post-detail .post-body { margin-top: 22px; }
             .foot-bottom { flex-direction: column; }
             .whatsapp-float {
                 right: 14px;
@@ -742,13 +833,13 @@
                 <span>{{ $settings?->brand_name ?? 'CERAPE' }}</span>
             </a>
             <nav>
-                <a href="{{ url('/') }}">{{ $settings?->menu_label_home ?? 'Iniciar' }}</a>
-                <a href="#sobre">{{ $settings?->menu_label_about ?? 'Quem somos' }}</a>
-                <a href="#pilares">{{ $settings?->menu_label_pillars ?? 'Pilares' }}</a>
-                <a href="#equipe">{{ $settings?->menu_label_team ?? 'Equipe' }}</a>
+                <a href="{{ route('home') }}">{{ $settings?->menu_label_home ?? 'Iniciar' }}</a>
+                <a href="{{ route('home') }}#sobre">{{ $settings?->menu_label_about ?? 'Quem somos' }}</a>
+                <a href="{{ route('home') }}#jornada">{{ $settings?->menu_label_pillars ?? 'Pilares' }}</a>
+                <a href="{{ route('home') }}#equipe">{{ $settings?->menu_label_team ?? 'Equipe' }}</a>
                 <a href="{{ route('gallery.index') }}">{{ $settings?->menu_label_gallery ?? 'Galeria' }}</a>
-                <a href="#blog">{{ $settings?->menu_label_blog ?? 'Blog' }}</a>
-                <a href="#contato">{{ $settings?->menu_label_contact ?? 'Contato' }}</a>
+                <a href="{{ route('home') }}#blog">{{ $settings?->menu_label_blog ?? 'Blog' }}</a>
+                <a href="{{ route('home') }}#contato">{{ $settings?->menu_label_contact ?? 'Contato' }}</a>
             </nav>
         </div>
     </header>
@@ -812,11 +903,11 @@
                 <div>
                     <h4>Navegação</h4>
                     <ul>
-                        <li><a href="#sobre">{{ $settings?->menu_label_about ?? 'Sobre Nós' }}</a></li>
-                        <li><a href="#jornada">{{ $settings?->menu_label_pillars ?? 'A Jornada' }}</a></li>
+                        <li><a href="{{ route('home') }}#sobre">{{ $settings?->menu_label_about ?? 'Sobre Nós' }}</a></li>
+                        <li><a href="{{ route('home') }}#jornada">{{ $settings?->menu_label_pillars ?? 'A Jornada' }}</a></li>
                         <li><a href="{{ route('gallery.index') }}">{{ $settings?->menu_label_gallery ?? 'Galeria' }}</a></li>
-                        <li><a href="#blog">{{ $settings?->menu_label_blog ?? 'Blog' }}</a></li>
-                        <li><a href="#contato">{{ $settings?->menu_label_contact ?? 'Contato' }}</a></li>
+                        <li><a href="{{ route('home') }}#blog">{{ $settings?->menu_label_blog ?? 'Blog' }}</a></li>
+                        <li><a href="{{ route('home') }}#contato">{{ $settings?->menu_label_contact ?? 'Contato' }}</a></li>
                     </ul>
                 </div>
                 <div>

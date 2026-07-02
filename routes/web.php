@@ -46,21 +46,8 @@ Route::get('/', function () {
     return redirect()->route('welcome');
 })->name('home');
 
-Route::get('/blog/{slug}', function (string $slug) {
-    try {
-        $settings = FrontendSetting::query()->first();
-        $post = BlogPost::query()->where('slug', $slug)->where('active', true)->firstOrFail();
-
-        return view('frontend.blog-post', [
-            'settings' => $settings,
-            'post' => $post,
-        ]);
-    } catch (\Throwable $e) {
-        report($e);
-    }
-
-    abort(404);
-})->name('blog.show');
+Route::get('/blog', [\App\Http\Controllers\Frontend\BlogController::class, 'index'])->name('blog.index');
+Route::get('/blog/{slug}', [\App\Http\Controllers\Frontend\BlogController::class, 'show'])->name('blog.show');
 
 Route::get('/galeria', function () {
     try {
@@ -130,29 +117,25 @@ Route::post('/newsletter', function (Request $request) {
     return back()->with('newsletter_sent', true);
 })->name('newsletter.submit');
 
-Route::get('/noticias', function () {
-    return view('frontend.cms-list', [
-        'settings' => FrontendSetting::query()->first(),
-        'title' => 'Notícias',
-        'items' => CmsContent::query()->type(CmsContent::TYPE_NEWS)->published()->orderByDesc('starts_at')->orderBy('position')->get(),
-    ]);
-})->name('news.index');
+Route::get('/noticias', [\App\Http\Controllers\Frontend\CmsContentController::class, 'index'])
+    ->defaults('type', CmsContent::TYPE_NEWS)
+    ->name('news.index');
 
-Route::get('/eventos', function () {
-    return view('frontend.cms-list', [
-        'settings' => FrontendSetting::query()->first(),
-        'title' => 'Eventos',
-        'items' => CmsContent::query()->type(CmsContent::TYPE_EVENT)->published()->orderBy('starts_at')->orderBy('position')->get(),
-    ]);
-})->name('events.index');
+Route::get('/noticias/{slug}', [\App\Http\Controllers\Frontend\CmsContentController::class, 'show'])
+    ->defaults('type', CmsContent::TYPE_NEWS)
+    ->name('news.show');
 
-Route::get('/faq', function () {
-    return view('frontend.cms-list', [
-        'settings' => FrontendSetting::query()->first(),
-        'title' => 'Perguntas frequentes',
-        'items' => CmsContent::query()->type(CmsContent::TYPE_FAQ)->published()->orderBy('category')->orderBy('position')->get(),
-    ]);
-})->name('faq.index');
+Route::get('/eventos', [\App\Http\Controllers\Frontend\CmsContentController::class, 'index'])
+    ->defaults('type', CmsContent::TYPE_EVENT)
+    ->name('events.index');
+
+Route::get('/eventos/{slug}', [\App\Http\Controllers\Frontend\CmsContentController::class, 'show'])
+    ->defaults('type', CmsContent::TYPE_EVENT)
+    ->name('events.show');
+
+Route::get('/faq', [\App\Http\Controllers\Frontend\CmsContentController::class, 'index'])
+    ->defaults('type', CmsContent::TYPE_FAQ)
+    ->name('faq.index');
 
 Route::middleware('auth')->post('/frontend/site-status', function (Request $request) {
     $user = $request->user();

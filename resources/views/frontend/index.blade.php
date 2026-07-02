@@ -183,10 +183,13 @@
                         <div class="post-img"><img src="{{ $post->imageUrl() }}" alt="{{ $post->title }}"></div>
                     @endif
                     <div class="post-body">
-                        <span class="post-tag">{{ $post->author_name }} | {{ optional($post->published_at)->format('d/m/Y') }}</span>
+                        <div class="post-meta">
+                            <span class="post-tag">{{ $post->author_name ?: 'Equipe CERAPE' }}</span>
+                            <span>{{ optional($post->published_at)->format('d/m/Y') }}</span>
+                        </div>
                         <h3>{{ $post->title }}</h3>
                         <p>{{ $post->excerpt }}</p>
-                        <p>Tags: {{ is_array($post->tags) ? implode(', ', $post->tags) : ($post->tags ?? '-') }}</p>
+                        <p class="post-tags">Tags: {{ is_array($post->tags) ? implode(', ', $post->tags) : ($post->tags ?? '-') }}</p>
                         @if ($post->slug)
                             <a class="btn btn-line" href="{{ route('blog.show', ['slug' => $post->slug]) }}">Leia mais</a>
                         @endif
@@ -198,7 +201,7 @@
         </div>
 
         <div class="section-actions reveal" style="margin-top: 2rem; text-align: center;">
-            <a class="btn btn-primary" href="{{ route('news.index') }}">Ver mais notícias</a>
+            <a class="btn btn-primary" href="{{ route('blog.index') }}">Ver mais do blog</a>
         </div>
     </section>
 
@@ -227,7 +230,7 @@
                 <span class="eyebrow">Depoimentos</span>
                 <h2>Histórias de confiança</h2>
             </div>
-            <div class="team-grid">
+            <div class="team-grid testimonials">
                 @foreach ($testimonials as $testimonial)
                     <article class="team-card reveal">
                         @if ($testimonial->imageUrl())
@@ -252,7 +255,7 @@
             </div>
             <div class="gallery-grid">
                 @foreach ($partners as $partner)
-                    <article class="g-item reveal">
+                    <article class="g-item partner-card reveal">
                         @if ($partner->imageUrl())
                             <div class="team-photo" style="height: 160px;"><img src="{{ $partner->imageUrl() }}" alt="{{ $partner->title }}"></div>
                         @endif
