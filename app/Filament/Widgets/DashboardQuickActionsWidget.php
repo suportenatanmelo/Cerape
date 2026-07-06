@@ -34,9 +34,11 @@ class DashboardQuickActionsWidget extends Widget
                 ['label' => 'Emitir Relatório', 'url' => ProntuarioEvolucaoResource::getUrl('index'), 'icon' => 'heroicon-o-printer'],
         ];
 
-        if (Route::has('filament.admin.resources.users.create')) {
-            $items[] = ['label' => 'Novo Funcionário', 'url' => UserResource::getUrl('create'), 'icon' => 'heroicon-o-briefcase'];
-        }
+            $items[] = [
+            'label' => 'Funcionários',
+            'url' => UserResource::getUrl('index'),
+            'icon' => 'heroicon-o-briefcase',
+        ];
 
         return ['items' => $items];
     }
