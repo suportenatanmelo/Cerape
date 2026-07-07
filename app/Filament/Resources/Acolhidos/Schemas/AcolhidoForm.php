@@ -330,6 +330,7 @@ class AcolhidoForm
                                                 'certidao_casamento' => 'Certidao de casamento',
                                                 'carteira_trabalho' => 'Carteira de trabalho',
                                                 'titulo_eleitor' => 'Titulo de eleitor',
+                                                //cnh novo campo na tabela
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
