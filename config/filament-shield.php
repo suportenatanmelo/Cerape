@@ -187,6 +187,11 @@ return [
                 'update',
                 'delete',
             ],
+            // Activity logs are view-only by default
+            App\Filament\Resources\ActivityLogs\ActivityLogResource::class => [
+                'viewAny',
+                'view',
+            ],
         ],
         'exclude' => [
             //

@@ -18,6 +18,8 @@ use App\Filament\Frontend\Resources\HeroSlideResource;
 use App\Filament\Frontend\Resources\NewsletterSubscriberResource;
 use App\Filament\Frontend\Resources\PillarCardResource;
 use App\Filament\Frontend\Resources\TeamMemberResource;
+use App\Filament\Frontend\Resources\ThemePalettes\ThemePaletteResource;
+use App\Http\Middleware\CheckIfUserIsBlocked;
 use App\Http\Middleware\EnsureFrontendOwnerAccess;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -46,6 +48,7 @@ class FrontendPanelProvider extends PanelProvider
                 'primary' => Color::Amber,
             ])
             ->resources([
+                \App\Filament\Frontend\Resources\ActivityLogs\ActivityLogResource::class,
                 HeroSlideResource::class,
                 FrontendSettingResource::class,
                 PillarCardResource::class,
@@ -55,6 +58,7 @@ class FrontendPanelProvider extends PanelProvider
                 CmsContentResource::class,
                 NewsletterSubscriberResource::class,
                 ContactLeadResource::class,
+                ThemePaletteResource::class,
             ])
             ->pages([
                 SitePreview::class,
@@ -67,7 +71,7 @@ class FrontendPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Administração e acesso')
+                    ->navigationGroup('Controle de acesso e auditoria')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')
@@ -103,13 +107,14 @@ class FrontendPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                CheckIfUserIsBlocked::class,
                 EnsureFrontendOwnerAccess::class,
             ])
             ->navigationGroups([
                 'Site público',
                 'Conteúdo',
                 'Mídia',
-                'Administração e acesso',
+                'Controle de acesso e auditoria',
             ]);
     }
 }
