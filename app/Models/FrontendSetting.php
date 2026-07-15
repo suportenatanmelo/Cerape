@@ -15,12 +15,23 @@ class FrontendSetting extends Model
         'hero_subtitle' => 'Conteúdo editável pelo painel /frontend.',
         'hero_cta_label' => 'Agendar uma conversa',
         'hero_secondary_cta_label' => 'Conhecer a jornada',
+        'stats_enabled' => true,
+        'stats_item_one_value' => '12+',
+        'stats_item_one_label' => 'anos de atuação',
+        'stats_item_two_value' => '500+',
+        'stats_item_two_label' => 'vidas acolhidas',
+        'stats_item_three_value' => '24h',
+        'stats_item_three_label' => 'equipe de plantão',
         'about_title' => 'Sobre a CERAPE',
         'about_paragraph_one' => 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.',
         'about_paragraph_two' => 'Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.',
         'about_video_url' => null,
         'about_video_width' => 560,
         'about_video_height' => 315,
+        'about_text_alignment' => 'left',
+        'about_image_position' => 'right',
+        'about_show_image' => true,
+        'about_show_video' => true,
         'journey_eyebrow' => 'Como funciona',
         'journey_title' => 'Uma jornada em quatro etapas',
         'journey_description' => 'Cada fase tem objetivos claros, sempre com acompanhamento próximo da família e da equipe técnica.',
@@ -101,6 +112,13 @@ class FrontendSetting extends Model
         'hero_subtitle',
         'hero_cta_label',
         'hero_secondary_cta_label',
+        'stats_enabled',
+        'stats_item_one_value',
+        'stats_item_one_label',
+        'stats_item_two_value',
+        'stats_item_two_label',
+        'stats_item_three_value',
+        'stats_item_three_label',
         'about_title',
         'about_paragraph_one',
         'about_paragraph_two',
@@ -108,6 +126,10 @@ class FrontendSetting extends Model
         'about_video_url',
         'about_video_width',
         'about_video_height',
+        'about_text_alignment',
+        'about_image_position',
+        'about_show_image',
+        'about_show_video',
         'journey_eyebrow',
         'journey_title',
         'journey_description',
@@ -191,5 +213,54 @@ class FrontendSetting extends Model
     protected $casts = [
         'site_enabled' => 'boolean',
         'home_enabled' => 'boolean',
+        'stats_enabled' => 'boolean',
+        'about_show_image' => 'boolean',
+        'about_show_video' => 'boolean',
     ];
+
+    public function statsItems(): array
+    {
+        if (! $this->stats_enabled) {
+            return [];
+        }
+
+        return [
+            [
+                'value' => (string) ($this->stats_item_one_value ?? '12+'),
+                'label' => (string) ($this->stats_item_one_label ?? 'anos de atuação'),
+            ],
+            [
+                'value' => (string) ($this->stats_item_two_value ?? '500+'),
+                'label' => (string) ($this->stats_item_two_label ?? 'vidas acolhidas'),
+            ],
+            [
+                'value' => (string) ($this->stats_item_three_value ?? '24h'),
+                'label' => (string) ($this->stats_item_three_label ?? 'equipe de plantão'),
+            ],
+        ];
+    }
+
+    public function aboutTextAlignment(): string
+    {
+        return in_array((string) ($this->about_text_alignment ?? 'left'), ['left', 'center', 'right'], true)
+            ? (string) $this->about_text_alignment
+            : 'left';
+    }
+
+    public function aboutImagePosition(): string
+    {
+        return in_array((string) ($this->about_image_position ?? 'right'), ['left', 'center', 'right'], true)
+            ? (string) $this->about_image_position
+            : 'right';
+    }
+
+    public function aboutShouldShowImage(): bool
+    {
+        return (bool) ($this->about_show_image ?? true);
+    }
+
+    public function aboutShouldShowVideo(): bool
+    {
+        return (bool) ($this->about_show_video ?? true);
+    }
 }

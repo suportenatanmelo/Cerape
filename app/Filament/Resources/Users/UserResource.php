@@ -32,6 +32,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+
 use App\Support\ImageStorageNaming;
 
 class UserResource extends Resource
@@ -113,7 +114,7 @@ class UserResource extends Resource
                             DateTimePicker::make('email_verified_at')
                                 ->label('Email verificado em'),
                             Toggle::make('active_status')
-                                ->label('Usuario ativo')
+                                ->label('Usuário ativo')
                                 ->helperText('Use para ativar ou desativar este usuario.')
                                 ->default(true)
                                 ->inline(false),

@@ -133,6 +133,10 @@ class CmsContentResource extends Resource
                     Toggle::make('is_active')
                         ->label('Ativo')
                         ->default(true),
+                    Toggle::make('hidden')
+                        ->label('Oculto no site')
+                        ->default(false)
+                        ->helperText('Se ativado, o conteúdo não aparece no frontend, mas permanece cadastrado.'),
                 ])->columns(3),
 
             Section::make('SEO')

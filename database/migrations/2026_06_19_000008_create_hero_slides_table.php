@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('cta_url')->nullable();
             $table->unsignedInteger('position')->default(1);
             $table->boolean('is_active')->default(true);
+            $table->boolean('hidden')->default(false);
             $table->timestamps();
         });
     }

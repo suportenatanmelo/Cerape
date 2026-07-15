@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\ImageStorageNaming;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
@@ -17,13 +18,20 @@ class GalleryCategory extends Model
         'show_on_home',
         'show_in_menu',
         'active',
+        'hidden',
     ];
 
     protected $casts = [
         'show_on_home' => 'boolean',
         'show_in_menu' => 'boolean',
         'active' => 'boolean',
+        'hidden' => 'boolean',
     ];
+
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('active', true)->where('hidden', false);
+    }
 
     protected static function booted(): void
     {

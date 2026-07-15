@@ -8,7 +8,7 @@ use App\Filament\Pages\Dashboard as AdminDashboard;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\Roles\RoleResource;
-use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
+use App\Http\Middleware\CheckIfUserIsBlocked;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
 use App\Support\PortalContext;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -45,7 +45,7 @@ class AdminPanelProvider extends PanelProvider
                 PortalContext::documentsNavigationGroup(),
                 PortalContext::mediaNavigationGroup(),
                 PortalContext::communicationNavigationGroup(),
-                'Administração e acesso',
+                'Controle de acesso e auditoria',
             ];
 
         return $panel
@@ -95,10 +95,18 @@ class AdminPanelProvider extends PanelProvider
                 PanelsRenderHook::BODY_START,
                 fn (): View => view('filament.portal.family-dashboard-url')
             )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): View => view('filament.portal.reminder-scripts')
+            )
+            ->renderHook(
+                PanelsRenderHook::BODY_END,
+                fn (): View => view('filament.portal.missing-fields-modal')
+            )
             ->plugins([
                 ImageGalleryPlugin::make(),
                 FilamentShieldPlugin::make()
-                    ->navigationGroup('Administração e acesso')
+                    ->navigationGroup('Controle de acesso e auditoria')
                     ->navigationSort(100)
                     ->navigationIcon('heroicon-o-shield-check')
                     ->activeNavigationIcon('heroicon-s-shield-check')
@@ -123,7 +131,6 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->resources([
                 RoleResource::class,
-                ThemePaletteResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
@@ -145,6 +152,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                CheckIfUserIsBlocked::class,
                 EnsureFamilyProfileIsComplete::class,
             ]);
     }

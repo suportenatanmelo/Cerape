@@ -10,6 +10,7 @@ use Filament\Pages\Page;
 class ClearHeroImages extends Page
 {
     protected static ?string $navigationLabel = 'Limpar imagens (Hero)';
+    protected static bool $shouldRegisterNavigation = false;
     protected static string|\UnitEnum|null $navigationGroup = 'Administração e acesso';
     protected static ?int $navigationSort = 120;
     protected static string $routePath = '/clear-hero-images';
@@ -20,15 +21,5 @@ class ClearHeroImages extends Page
         $user = auth()->user();
 
         return $user instanceof User && $user->hasAnyRole([User::ROLE_ADMIN, User::ROLE_SUPER_ADMIN]);
-    }
-
-    public static function getNavigationItems(): array
-    {
-        return [
-            NavigationItem::make(static::$navigationLabel)
-                ->group(static::$navigationGroup)
-                ->url(static::getUrl())
-                ->sort(static::$navigationSort),
-        ];
     }
 }

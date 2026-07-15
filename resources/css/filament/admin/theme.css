@@ -41,14 +41,6 @@
         -webkit-text-fill-color: var(--color-gray-300);
     }
 
-    .fi-sidebar-nav .fi-sidebar-nav-groups {
-        display: none !important;
-    }
-
-    .fi-sidebar-nav .fi-sidebar-group {
-        display: none !important;
-    }
-
     .fi-input[type='date'],
     .fi-input[type='datetime-local'],
     .fi-input[type='time'] {
@@ -112,49 +104,5 @@
     .fi-input[type='datetime-local']::-webkit-datetime-edit-fields-wrapper,
     .fi-input[type='time']::-webkit-datetime-edit-fields-wrapper {
         padding-inline: 0.15rem;
-    }
-
-    /* CERAPE: Custom sidebar tree styles */
-    .cerape-sidebar-tree {
-        padding: 0.5rem;
-        max-height: calc(100vh - 6rem);
-        overflow: auto;
-    }
-
-    :root {
-        --cerape-indent-per-level: 0.75rem;
-        --cerape-transition-duration: 200ms;
-        --cerape-active-bg: color-mix(in srgb, var(--color-primary-50) 60%, transparent);
-    }
-
-    .cerape-sidebar-tree .rounded-xl {
-        transition: background var(--cerape-transition-duration) ease, color var(--cerape-transition-duration) ease, transform var(--cerape-transition-duration) ease;
-    }
-
-    .cerape-sidebar-tree a.bg-primary-50,
-    .cerape-sidebar-tree a.active,
-    .cerape-sidebar-tree .item-active {
-        background: var(--cerape-active-bg);
-    }
-
-    .cerape-sidebar-tree .h-4.w-4 {
-        opacity: 0.95;
-    }
-
-    .cerape-sidebar-tree::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .cerape-sidebar-tree::-webkit-scrollbar-thumb {
-        background: color-mix(in srgb, var(--color-gray-300) 60%, transparent);
-        border-radius: 9999px;
-    }
-
-    .cerape-sidebar-tree .rounded-2xl {
-        border-radius: 12px;
-    }
-
-    @media (max-width: 768px) {
-        .cerape-sidebar-tree { max-height: none; }
     }
 }

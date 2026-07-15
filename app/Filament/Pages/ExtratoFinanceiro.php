@@ -29,7 +29,7 @@ class ExtratoFinanceiro extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Extratos';
 
-    protected static ?int $navigationSort = 6;
+    protected static ?int $navigationSort = 5;
 
     protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-receipt-refund';
 
@@ -212,7 +212,7 @@ class ExtratoFinanceiro extends Page implements HasForms
 
         return response()->streamDownload(function () use ($dataSet): void {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Data', 'Tipo', 'Descricao', 'Empresa', 'Credito', 'Debito', 'Saldo apos lancamento', 'Responsavel', 'Observacoes']);
+            fputcsv($out, ['Data', 'Tipo', 'Descrição', 'Empresa', 'Crédito', 'Débito', 'Saldo apos lancamento', 'Responsável', 'Observações']);
 
             foreach ($dataSet['entries'] as $entry) {
                 fputcsv($out, [

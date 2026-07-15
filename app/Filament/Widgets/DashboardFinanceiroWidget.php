@@ -24,6 +24,13 @@ class DashboardFinanceiroWidget extends Widget
             'saldo' => 'R$ 39.220,00',
             'contasPagar' => '5 vencendo',
             'contasReceber' => '8 a receber',
+            'links' => [
+                'empresas' => '/admin/financeiro/empresa-parceiras',
+                'frentes' => '/admin/financeiro/frente-trabalhos',
+                'diarias' => '/admin/financeiro/diaria-trabalhos',
+                'saques' => '/admin/financeiro/saque-financeiros',
+                'extratos' => '/admin/extrato-financeiro',
+            ],
         ];
     }
 }

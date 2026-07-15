@@ -21,6 +21,7 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
+use App\Enums\SituacaoAcolhido;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -100,10 +101,10 @@ class AcolhidoForm
                                             ->searchable()
                                             ->preload()
                                             ->default(fn(): ?int => auth()->id())
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         TextInput::make('nome_completo_paciente')
                                             ->label('Nome completo do acolhido')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         DateTimePicker::make('created_at')
                                             ->label('Data de criacao do cadastro')
                                             ->seconds(false)
@@ -114,6 +115,16 @@ class AcolhidoForm
                                             ->onColor('success')
                                             ->offColor('danger')
                                             ->helperText('Desative quando o acolhido nao estiver mais em acompanhamento ativo.'),
+                                        Select::make('situacao')
+                                            ->label('Situação')
+                                            ->options(fn (): array => array_combine(
+                                                array_map(fn(SituacaoAcolhido $c) => $c->value, SituacaoAcolhido::cases()),
+                                                array_map(fn(SituacaoAcolhido $c) => $c->label(), SituacaoAcolhido::cases()),
+                                            ))
+                                            ->searchable()
+                                            ->default(SituacaoAcolhido::acolhido->value)
+                                            ->required()
+                                            ->helperText('Situação atual do acolhido. Escolha a situação atual do acolhido para controle e relatórios.'),
                                         FileUpload::make('avatar')
                                             ->label('Foto do Acolhido')
                                             ->image()
@@ -123,10 +134,10 @@ class AcolhidoForm
                                             ->directory(ImageStorageNaming::directory('acolhido-avatar'))
                                             ->visibility('public')
                                             ->maxFiles(1)
-                                            ->helperText('A imagem será salva em documentos/acolhido-avatar e receberá o nome padronizado do sistema.'),
+                                            ->helperText('A imagem serÃ¡ salva em documentos/acolhido-avatar e receberÃ¡ o nome padronizado do sistema.'),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         Radio::make('estado_civil')
                                             ->label('Estado civil')
                                             ->options([
@@ -147,30 +158,30 @@ class AcolhidoForm
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('nome_da_mae')
                                             ->label('Nome da mae')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         TextInput::make('nome_do_pai')
                                             ->label('Nome do pai')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         TextInput::make('cor_da_pele')
                                             ->label('Cor da pele')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         Select::make('escolaridade')
                                             ->label('Escolaridade')
                                             ->options(self::getBrazilianEducationLevels())
                                             ->searchable()
                                             ->preload()
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         TextInput::make('escolaridade_observacao')
                                             ->label('Observacao da escolaridade')
                                             ->placeholder('Ex.: cursando, interrompido, incompleto, EJA, supletivo...')
                                             ->maxLength(255),
                                         TextInput::make('profissao')
                                             ->label('Profissao')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                         TextInput::make('religiao')
                                             ->label('Qual a religiao do acolhido?')
                                             ->placeholder('Informe a religiao do acolhido')
-                                            ->required(),
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true)),
                                     ]),
                                 ]),
                         ]),
@@ -211,7 +222,7 @@ class AcolhidoForm
                                                             ->send(),
                                                         'not_found' => Notification::make()
                                                             ->title('CEP nao encontrado')
-                                                            ->body('O CEP foi aceito, mas o endereço nao foi localizado. Você pode seguir com o cadastro.')
+                                                            ->body('O CEP foi aceito, mas o endereÃ§o nao foi localizado. VocÃª pode seguir com o cadastro.')
                                                             ->info()
                                                             ->send(),
                                                         default => Notification::make()
@@ -245,11 +256,10 @@ class AcolhidoForm
                                             ->searchable()
                                             ->helperText('Opcional quando o CEP nao localizar a UF.'),
                                         Radio::make('moradia_propria')
-                                            ->label('Moradia propria')
-                                            ->boolean('Sim', 'Nao')
+                                            ->label('Moradia própria')
+                                            ->boolean('Sim', 'Não')
                                             ->inline()
                                             ->default(false)
-                                            ->required()
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (! self::isYes($state)) {
@@ -257,37 +267,20 @@ class AcolhidoForm
                                                 }
 
                                                 $set('mora_em_casa_aluguada', false);
-                                                $set('quanto_tempo_de_aluguel', null);
-                                                $set('em_qual_regiao', null);
                                             }),
                                         Radio::make('mora_em_casa_aluguada')
-                                            ->label('Mora em casa alugada?')
-                                            ->boolean('Sim', 'Nao')
+                                            ->label('Mora em casa de aluguel')
+                                            ->boolean('Sim', 'Não')
                                             ->inline()
                                             ->default(false)
                                             ->live()
-                                            ->hidden(fn(Get $get): bool => self::isYes($get('moradia_propria')))
-                                            ->dehydratedWhenHidden()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (self::isYes($state)) {
+                                                if (! self::isYes($state)) {
                                                     return;
                                                 }
 
-                                                $set('quanto_tempo_de_aluguel', null);
-                                                $set('em_qual_regiao', null);
+                                                $set('moradia_propria', false);
                                             }),
-                                        Select::make('quanto_tempo_de_aluguel')
-                                            ->label('Quanto tempo de aluguel')
-                                            ->options([
-                                                '6 meses' => '6 meses',
-                                                'Mais de 1 ano' => 'Mais de 1 ano',
-                                            ])
-                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
-                                            ->dehydratedWhenHidden(),
-                                        TextInput::make('em_qual_regiao')
-                                            ->label('Em qual regiao')
-                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
-                                            ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
                             Radio::make('tem_documentacao')
@@ -297,10 +290,11 @@ class AcolhidoForm
                                 ->columnSpanFull()
                                 ->default(false)
                                 ->live()
-                                ->helperText('Marque Sim para liberar os campos de documentação.')
+                                ->helperText('Marque Sim para liberar os campos de documentaÃ§Ã£o.')
                                 ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                    $set('razao_caso_nao_tenha_documentacao', null);
+
                                     if (self::isYes($state)) {
-                                        $set('razao_caso_nao_tenha_documentacao', null);
                                         return;
                                     }
 
@@ -330,7 +324,7 @@ class AcolhidoForm
                                                 'certidao_casamento' => 'Certidao de casamento',
                                                 'carteira_trabalho' => 'Carteira de trabalho',
                                                 'titulo_eleitor' => 'Titulo de eleitor',
-                                                //cnh novo campo na tabela
+                                                'cnh' => 'CNH'
                                             ])
                                             ->columns(2)
                                             ->columnSpanFull()
@@ -367,6 +361,12 @@ class AcolhidoForm
                                             ->mask('9999 9999 9999')
                                             ->maxLength(14)
                                             ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'titulo_eleitor'))
+                                            ->dehydratedWhenHidden(),
+                                        TextInput::make('numero_cnh')
+                                            ->label('Numero da CNH')
+                                            ->mask('99999999999')
+                                            ->maxLength(11)
+                                            ->hidden(fn(Get $get): bool => ! self::hasSelectedDocument($get, 'documentos_civis', 'cnh'))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_outros')
                                             ->label('Outros documentos')
@@ -497,7 +497,7 @@ class AcolhidoForm
                                             ->boolean('Sim', 'Nao')
                                             ->inline()
                                             ->default(false)
-                                            ->required()
+                                            ->required(fn(Get $get): bool => ! in_array($get('situacao') ?? 'acolhido', ['pre_cadastro', 'aguardando_vaga'], true))
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 if (self::isYes($state)) {
@@ -510,7 +510,7 @@ class AcolhidoForm
                                             }),
                                         TagsInput::make('qual_sao_as_medicacao')
                                             ->label('Quais sao as medicacoes psicoativas')
-                                            ->placeholder('Digite a medicaçao e pressione Enter')
+                                            ->placeholder('Digite a medicaÃ§ao e pressione Enter')
                                             ->suggestions([
                                                 'Amitriptilina',
                                                 'Clomipramina',
@@ -576,7 +576,7 @@ class AcolhidoForm
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
-                                            ->helperText('Os arquivos serão salvos em documentos/acolhido-receituario e receberão o nome padronizado do sistema.')
+                                            ->helperText('Os arquivos serÃ£o salvos em documentos/acolhido-receituario e receberÃ£o o nome padronizado do sistema.')
                                             ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_receituario')))
                                             ->required(fn(Get $get): bool => self::isYes($get('tem_receituario')))
                                             ->dehydrated(fn(Get $get): bool => self::isYes($get('tem_receituario'))),
@@ -610,7 +610,7 @@ class AcolhidoForm
                                 ->columnSpanFull()
                                 ->default(false)
                                 ->live()
-                                ->helperText('Marque Sim para informar dados dos filhos e responsáveis.')
+                                ->helperText('Marque Sim para informar dados dos filhos e responsÃ¡veis.')
                                 ->afterStateUpdated(function (Set $set, mixed $state): void {
                                     if (self::isYes($state)) {
                                         return;
@@ -905,12 +905,12 @@ class AcolhidoForm
 
         if ($data['moradia_propria']) {
             $data['mora_em_casa_aluguada'] = false;
+        } elseif ($data['mora_em_casa_aluguada']) {
+            $data['moradia_propria'] = false;
         }
 
-        if (! $data['mora_em_casa_aluguada']) {
-            $data['quanto_tempo_de_aluguel'] = null;
-            $data['em_qual_regiao'] = null;
-        }
+        $data['quanto_tempo_de_aluguel'] = null;
+        $data['em_qual_regiao'] = null;
 
         if (! $data['tem_documentacao']) {
             $data['razao_caso_nao_tenha_documentacao'] = $data['razao_caso_nao_tenha_documentacao'] ?? null;
@@ -1062,15 +1062,6 @@ class AcolhidoForm
         return AcolhidoResource::getUrl('view', ['record' => $acolhido]);
     }
 
-    private static function shouldHideQuantoTempoDeAluguel(Get $get): bool
-    {
-        if (self::isYes($get('moradia_propria'))) {
-            return true;
-        }
-
-        return ! self::isYes($get('mora_em_casa_aluguada'));
-    }
-
     private static function shouldHideOutroMeioDeEncaminhamento(Get $get): bool
     {
         if (! self::isYes($get('tem_meio_de_encaminhamento'))) {
@@ -1143,6 +1134,7 @@ class AcolhidoForm
             'certidao_casamento' => 'numero_certidao_casamento',
             'carteira_trabalho' => 'numero_carteira_trabalho',
             'titulo_eleitor' => 'numero_titulo_eleitor',
+            'cnh' => 'numero_cnh',
         ];
     }
 
@@ -1238,3 +1230,5 @@ class AcolhidoForm
         return array_values(array_filter($value, static fn(mixed $item): bool => filled($item)));
     }
 }
+
+

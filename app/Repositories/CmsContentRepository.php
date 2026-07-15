@@ -12,6 +12,7 @@ class CmsContentRepository
         $query = CmsContent::query()
             ->type($type)
             ->published()
+            ->visible()
             ->orderBy('position')
             ->orderBy('title');
 

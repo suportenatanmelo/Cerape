@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('tags')->nullable();
             $table->boolean('show_on_home')->default(true);
             $table->boolean('show_in_blog')->default(true);
+            $table->boolean('hidden')->default(false);
             $table->unsignedInteger('position')->default(1);
             $table->boolean('active')->default(true);
             $table->timestamps();

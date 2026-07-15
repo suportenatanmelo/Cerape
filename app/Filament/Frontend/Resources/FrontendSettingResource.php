@@ -49,6 +49,13 @@ class FrontendSettingResource extends Resource
                             \Filament\Forms\Components\TextInput::make('hero_subtitle')->label('Subtítulo')->default('Conteúdo editável pelo painel /frontend.'),
                             \Filament\Forms\Components\TextInput::make('hero_cta_label')->label('Texto do botão principal')->default('Agendar uma conversa'),
                             \Filament\Forms\Components\TextInput::make('hero_secondary_cta_label')->label('Texto do botão secundário')->default('Conhecer a jornada'),
+                            \Filament\Forms\Components\Toggle::make('stats_enabled')->label('Exibir blocos de estatísticas na home')->default(true),
+                            \Filament\Forms\Components\TextInput::make('stats_item_one_value')->label('Valor 1')->default('12+'),
+                            \Filament\Forms\Components\TextInput::make('stats_item_one_label')->label('Texto 1')->default('anos de atuação'),
+                            \Filament\Forms\Components\TextInput::make('stats_item_two_value')->label('Valor 2')->default('500+'),
+                            \Filament\Forms\Components\TextInput::make('stats_item_two_label')->label('Texto 2')->default('vidas acolhidas'),
+                            \Filament\Forms\Components\TextInput::make('stats_item_three_value')->label('Valor 3')->default('24h'),
+                            \Filament\Forms\Components\TextInput::make('stats_item_three_label')->label('Texto 3')->default('equipe de plantão'),
                         ])->columns(2),
                     Tabs\Tab::make('Quem somos')
                         ->schema([
@@ -64,6 +71,10 @@ class FrontendSettingResource extends Resource
                                 ->rows(4)
                                 ->helperText('Você pode usar HTML simples, como <strong>texto em destaque</strong>.')
                                 ->default('Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.'),
+                            \Filament\Forms\Components\Select::make('about_text_alignment')->label('Alinhamento do texto')->options(['left' => 'Esquerda', 'center' => 'Centralizado', 'right' => 'Direita'])->default('left'),
+                            \Filament\Forms\Components\Select::make('about_image_position')->label('Posição da imagem')->options(['left' => 'Esquerda', 'center' => 'Centralizada', 'right' => 'Direita'])->default('right'),
+                            \Filament\Forms\Components\Toggle::make('about_show_image')->label('Exibir imagem')->default(true),
+                            \Filament\Forms\Components\Toggle::make('about_show_video')->label('Exibir vídeo')->default(true),
                             \Filament\Forms\Components\FileUpload::make('about_image_path')->label('Imagem da seção')->disk('public')->image()->directory(\App\Support\ImageStorageNaming::directory('galeria')),
                             \Filament\Forms\Components\TextInput::make('about_video_url')
                                 ->label('Link do vídeo do YouTube')

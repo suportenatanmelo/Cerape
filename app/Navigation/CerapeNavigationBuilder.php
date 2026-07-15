@@ -18,26 +18,6 @@ class CerapeNavigationBuilder
         $groups = filament()->getNavigation();
         $nodes = [];
 
-        $nodes[] = [
-            'key' => 'dashboard',
-            'label' => 'Dashboard',
-            'icon' => Heroicon::OutlinedHome,
-            'isActive' => request()->routeIs('filament.admin.pages.dashboard') || request()->routeIs('filament.admin.pages.*'),
-            'isExpanded' => request()->routeIs('filament.admin.pages.dashboard') || request()->routeIs('filament.admin.pages.*'),
-            'items' => [[
-                'key' => 'dashboard-home',
-                'label' => 'Dashboard',
-                'url' => filament()->getUrl(),
-                'icon' => Heroicon::OutlinedHome,
-                'badge' => null,
-                'badgeColor' => 'gray',
-                'isActive' => request()->routeIs('filament.admin.pages.dashboard') || request()->routeIs('filament.admin.pages.*'),
-                'isExpanded' => request()->routeIs('filament.admin.pages.dashboard') || request()->routeIs('filament.admin.pages.*'),
-                'hasChildren' => false,
-                'children' => [],
-            ]],
-        ];
-
         foreach ($groups as $group) {
             $items = $this->buildItems($group->getItems(), $group->isActive());
 
@@ -109,6 +89,7 @@ class CerapeNavigationBuilder
         return match ($normalized) {
             '' => 'Dashboard',
             'Cadastros e Acompanhamento' => 'Cadastros e Acolhimento',
+            'Cadastros e Acolhimento' => 'Cadastros e Acolhimento',
             'Atendimentos' => 'Cadastros e Acolhimento',
             'Documentos e Relatórios' => 'Relatórios',
             'Mídia e Galeria' => 'Institucional',

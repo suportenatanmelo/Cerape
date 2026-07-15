@@ -31,7 +31,7 @@ class ViewAcolhido extends ViewRecord
     {
         $record = $this->getRecord();
 
-        return trim(implode(' • ', array_filter([
+        return trim(implode(' â€¢ ', array_filter([
             $record->nome_completo_paciente,
             $record->municipio_do_acolhido ?? $record->municipio_do_paciente,
             $record->uf_municipio_do_acolhido ?? $record->uf_municipio_do_paciente,
@@ -157,6 +157,7 @@ class ViewAcolhido extends ViewRecord
                 'Numero da certidao de casamento' => $acolhido->numero_certidao_casamento,
                 'Numero da carteira de trabalho' => $acolhido->numero_carteira_trabalho,
                 'Numero do titulo de eleitor' => $acolhido->numero_titulo_eleitor,
+                'Numero da CNH' => $acolhido->numero_cnh,
                 'Numero do NIS/PIS' => $acolhido->numero_nis,
                 'Numero do cartao do SUS' => $acolhido->numero_cartao_sus,
             ],
@@ -257,3 +258,5 @@ class ViewAcolhido extends ViewRecord
     }
 
 }
+
+

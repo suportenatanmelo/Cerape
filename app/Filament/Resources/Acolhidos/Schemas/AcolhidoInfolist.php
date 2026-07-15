@@ -76,7 +76,7 @@ class AcolhidoInfolist
                                     ->size('lg')
                                     ->weight('bold'),
                                 TextEntry::make('user.name')
-                                    ->label('Usuario responsavel')
+                                    ->label('Usuário responsável')
                                     ->badge()
                                     ->color('primary')
                                     ->placeholder('-'),
@@ -206,6 +206,10 @@ class AcolhidoInfolist
                             ->label('Numero do titulo de eleitor')
                             ->placeholder('-')
                             ->hidden(fn($record) => blank($record?->numero_titulo_eleitor)),
+                        TextEntry::make('numero_cnh')
+                            ->label('Numero da CNH')
+                            ->placeholder('-')
+                            ->hidden(fn($record) => blank($record?->numero_cnh)),
                         TextEntry::make('numero_nis')
                             ->label('Numero do NIS/PIS')
                             ->placeholder('-')
@@ -452,3 +456,5 @@ class AcolhidoInfolist
         return $path;
     }
 }
+
+

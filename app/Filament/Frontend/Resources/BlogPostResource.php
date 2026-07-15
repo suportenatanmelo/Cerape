@@ -38,6 +38,7 @@ class BlogPostResource extends Resource
                 \Filament\Forms\Components\TextInput::make('position')->label('Ordem')->numeric()->default(1),
                 \Filament\Forms\Components\Toggle::make('show_on_home')->label('Mostrar no site principal')->default(true),
                 \Filament\Forms\Components\Toggle::make('show_in_blog')->label('Mostrar na página do blog')->default(true),
+                \Filament\Forms\Components\Toggle::make('hidden')->label('Oculto no site')->default(false)->helperText('Se ativado, o item não aparece no frontend, mas permanece cadastrado.'),
                 \Filament\Forms\Components\Toggle::make('active')->label('Ativo')->default(true),
             ])->columns(2),
         ]);

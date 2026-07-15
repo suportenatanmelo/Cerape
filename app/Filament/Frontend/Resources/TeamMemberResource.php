@@ -32,6 +32,7 @@ class TeamMemberResource extends Resource
                 \Filament\Forms\Components\Textarea::make('description')->label('Descrição breve')->required()->rows(4),
                 \Filament\Forms\Components\FileUpload::make('photo_path')->label('Foto')->disk('public')->image()->directory(\App\Support\ImageStorageNaming::directory('equipe_tecnica')),
                 \Filament\Forms\Components\TextInput::make('position')->label('Ordem')->numeric()->default(1),
+                \Filament\Forms\Components\Toggle::make('hidden')->label('Oculto no site')->default(false)->helperText('Se ativado, o profissional não aparece no frontend, mas permanece cadastrado.'),
                 \Filament\Forms\Components\Toggle::make('active')->label('Ativo')->default(true),
             ])->columns(2),
         ]);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Roles\Pages;
 
 use App\Filament\Resources\Roles\RoleResource;
+use App\Support\ActivityLogger;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Arr;
@@ -45,5 +46,18 @@ class CreateRole extends CreateRecord
         });
 
         $this->record->syncPermissions($permissionModels);
+
+        $permissions = $permissionModels->pluck('name')->values()->all();
+
+        if ($permissions !== []) {
+            app(ActivityLogger::class)->custom(
+                'Usuários',
+                'create',
+                'Criou perfil de acesso ' . $this->record->name,
+                $this->record,
+                [],
+                ['permissions' => $permissions],
+            );
+        }
     }
 }

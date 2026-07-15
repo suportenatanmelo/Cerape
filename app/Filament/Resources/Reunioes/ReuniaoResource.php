@@ -77,7 +77,7 @@ class ReuniaoResource extends Resource
                                         ->disabled()
                                         ->dehydrated(false),
                                     Textarea::make('descricao')
-                                        ->label('Descricao')
+                                        ->label('Descrição')
                                         ->rows(3)
                                         ->columnSpanFull(),
                                     DateTimePicker::make('data_reuniao')
@@ -151,7 +151,7 @@ class ReuniaoResource extends Resource
                             ->placeholder('-')
                             ->columnSpanFull(),
                         TextEntry::make('descricao')
-                            ->label('Descricao')
+                            ->label('Descrição')
                             ->placeholder('-')
                             ->columnSpanFull(),
                     ]),

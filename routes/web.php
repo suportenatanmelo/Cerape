@@ -14,6 +14,7 @@ use App\Models\PillarCard;
 use App\Models\ThemePalette;
 use App\Models\User;
 use App\Models\TeamMember;
+use App\Http\Controllers\Frontend\CmsPageController;
 use App\Services\Cms\CmsFrontendService;
 use App\Support\PortalContext;
 use Filament\Facades\Filament;
@@ -31,10 +32,10 @@ Route::get('/', function () {
             return view('frontend.index', [
                 'settings' => $settings,
                 'slides' => HeroSlide::query()->published()->orderBy('position')->get(),
-                'pillars' => PillarCard::query()->where('active', true)->orderBy('position')->limit(4)->get(),
-                'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
-                'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
-                'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
+                'pillars' => PillarCard::query()->visible()->orderBy('position')->limit(4)->get(),
+                'team' => TeamMember::query()->visible()->orderBy('position')->get(),
+                'categories' => GalleryCategory::query()->visible()->orderBy('position')->get(),
+                'posts' => BlogPost::query()->visible()->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
                 'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
                 ...app(CmsFrontendService::class)->homeData(),
             ]);
@@ -53,7 +54,7 @@ Route::get('/galeria', function () {
     try {
         $settings = FrontendSetting::query()->first();
         $categories = GalleryCategory::query()
-            ->where('active', true)
+            ->visible()
             ->with(['items' => fn ($query) => $query->where('active', true)->orderBy('position')->orderBy('id')])
             ->orderBy('position')
             ->orderBy('id')
@@ -136,6 +137,9 @@ Route::get('/eventos/{slug}', [\App\Http\Controllers\Frontend\CmsContentControll
 Route::get('/faq', [\App\Http\Controllers\Frontend\CmsContentController::class, 'index'])
     ->defaults('type', CmsContent::TYPE_FAQ)
     ->name('faq.index');
+
+Route::get('/pagina/{slug}', [CmsPageController::class, 'show'])
+    ->name('cms.page.show');
 
 Route::middleware('auth')->post('/frontend/site-status', function (Request $request) {
     $user = $request->user();
@@ -223,6 +227,9 @@ Route::middleware('auth')->get('/arquivos-upload/{record}/visualizar', function 
 Route::middleware('auth')->get('/arquivos-upload/{record}/baixar', function (ArquivosDiario $record) {
     return ArquivosDiarioResource::downloadReportResponse($record);
 })->name('arquivos-upload.download');
+
+Route::middleware('auth')->get('/reminder/{reminder}/mark', [\App\Http\Controllers\ReminderController::class, 'mark'])->name('reminder.mark');
+Route::middleware('auth')->post('/reminder/{reminder}/ack', [\App\Http\Controllers\ReminderController::class, 'ack'])->name('reminder.ack');
 
 Route::middleware('auth')->get('/arquivos-diarios/{record}/visualizar', function (ArquivosDiario $record) {
     return redirect()->route('arquivos-upload.preview', $record);

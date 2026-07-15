@@ -26,7 +26,7 @@ class AcolhidosChecklist extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Documentos e Relatórios';
+    protected static string | \UnitEnum | null $navigationGroup = 'Documentos e RelatÃ³rios';
 
     protected static ?string $navigationLabel = 'Gerador de acolhidos';
 
@@ -74,7 +74,7 @@ class AcolhidosChecklist extends Page implements HasForms
                     ->live(),
                 Placeholder::make('description')
                     ->label('O que faz este gerador')
-                    ->content('Use o botão Baixar PDF para escolher as colunas que serão exibidas no relatório. Os campos Nome completo, CPF, Data de nascimento e Data do acolhimento são os padrões.'),
+                    ->content('Use o botÃ£o Baixar PDF para escolher as colunas que serÃ£o exibidas no relatÃ³rio. Os campos Nome completo, CPF, Data de nascimento e Data do acolhimento sÃ£o os padrÃµes.'),
             ])
             ->statePath('data');
     }
@@ -90,7 +90,7 @@ class AcolhidosChecklist extends Page implements HasForms
                 ->form([
                     Placeholder::make('fields_info')
                         ->hiddenLabel()
-                        ->content('Marque os campos que devem aparecer no PDF. Os campos Nome completo, CPF, Data de nascimento e Data do acolhimento vêm selecionados por padrão.'),
+                        ->content('Marque os campos que devem aparecer no PDF. Os campos Nome completo, CPF, Data de nascimento e Data do acolhimento vÃªm selecionados por padrÃ£o.'),
                     Toggle::make('select_all_columns')
                         ->label('Marcar todas as colunas')
                         ->live()
@@ -104,7 +104,7 @@ class AcolhidosChecklist extends Page implements HasForms
                         ->default(self::defaultSelectedColumns())
                         ->columns(2)
                         ->required()
-                        ->helperText('Selecione as colunas que deverão ser incluídas no PDF.'),
+                        ->helperText('Selecione as colunas que deverÃ£o ser incluÃ­das no PDF.'),
                 ])
                 ->action(function (array $data) {
                     $selectedColumns = array_values(array_filter($data['selected_columns'] ?? [], fn (mixed $value): bool => is_string($value) && $value !== ''));
@@ -201,44 +201,45 @@ class AcolhidosChecklist extends Page implements HasForms
             'data_nascimento' => 'Data de nascimento',
             'created_at' => 'Data do acolhimento',
             'numero_rg' => 'RG',
-            'numero_certidao_nascimento' => 'Certidão de nascimento',
-            'numero_certidao_casamento' => 'Certidão de casamento',
+            'numero_certidao_nascimento' => 'CertidÃ£o de nascimento',
+            'numero_certidao_casamento' => 'CertidÃ£o de casamento',
             'numero_carteira_trabalho' => 'Carteira de trabalho',
-            'numero_titulo_eleitor' => 'Título de eleitor',
+            'numero_titulo_eleitor' => 'TÃ­tulo de eleitor',
+            'numero_cnh' => 'CNH',
             'numero_nis' => 'NIS',
-            'numero_cartao_sus' => 'Cartão SUS',
+            'numero_cartao_sus' => 'CartÃ£o SUS',
             'CEP' => 'CEP',
-            'endereco_paciente' => 'Endereço',
+            'endereco_paciente' => 'EndereÃ§o',
             'bairro_do_paciente' => 'Bairro',
-            'municipio_do_paciente' => 'Município',
+            'municipio_do_paciente' => 'MunicÃ­pio',
             'uf_municipio_do_paciente' => 'UF',
             'estado_civil' => 'Estado civil',
-            'nome_do_conjuge' => 'Nome do cônjuge',
-            'nome_da_mae' => 'Nome da mãe',
+            'nome_do_conjuge' => 'Nome do cÃ´njuge',
+            'nome_da_mae' => 'Nome da mÃ£e',
             'nome_do_pai' => 'Nome do pai',
-            'tem_documentacao' => 'Tem documentação',
+            'tem_documentacao' => 'Tem documentaÃ§Ã£o',
             'documentos_civis' => 'Documentos civis',
             'documentos_outros' => 'Documentos outros',
             'cor_da_pele' => 'Cor da pele',
             'escolaridade' => 'Escolaridade',
-            'profissao' => 'Profissão',
-            'religiao' => 'Religião',
+            'profissao' => 'ProfissÃ£o',
+            'religiao' => 'ReligiÃ£o',
             'tem_telefone' => 'Tem telefone',
             'numero_do_telefone' => 'Telefone',
             'tem_meio_de_encaminhamento' => 'Tem meio de encaminhamento',
             'meio_de_encaminhamento' => 'Meio de encaminhamento',
             'outro_meio_de_encaminhamento_qual' => 'Outro meio de encaminhamento',
-            'indicacao' => 'Indicação',
+            'indicacao' => 'IndicaÃ§Ã£o',
             'toma_medicamento' => 'Toma medicamento',
             'qual_sao_as_medicacao' => 'Quais medicamentos',
-            'tem_receituario' => 'Tem receituário',
-            'receituario' => 'Receituário',
+            'tem_receituario' => 'Tem receituÃ¡rio',
+            'receituario' => 'ReceituÃ¡rio',
             'exames_laboratoriais' => 'Exames laboratoriais',
             'outros' => 'Outros',
             'tem_filhos' => 'Tem filhos',
             'quantidade_filhos' => 'Quantidade de filhos',
             'nome_da_empresa_que_trabalha' => 'Empresa onde trabalha',
-            'profissional_referencia_acolhido_instituicao' => 'Profissional de referência / instituição',
+            'profissional_referencia_acolhido_instituicao' => 'Profissional de referÃªncia / instituiÃ§Ã£o',
         ];
 
         return $map[$column] ?? Str::of($column)
@@ -250,3 +251,5 @@ class AcolhidosChecklist extends Page implements HasForms
             ->toString();
     }
 }
+
+

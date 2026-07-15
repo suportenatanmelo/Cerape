@@ -35,6 +35,7 @@ return new class extends Migration
             $table->unsignedInteger('position')->default(1);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true)->index();
+            $table->boolean('hidden')->default(false);
             $table->timestamps();
 
             $table->unique(['type', 'slug']);

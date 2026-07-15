@@ -30,6 +30,7 @@ class PillarCardResource extends Resource
                 \Filament\Forms\Components\TextInput::make('title')->label('Título')->required(),
                 \Filament\Forms\Components\Textarea::make('summary')->label('Texto sucinto')->required()->rows(3),
                 \Filament\Forms\Components\TextInput::make('position')->label('Ordem')->numeric()->default(1),
+                \Filament\Forms\Components\Toggle::make('hidden')->label('Oculto no site')->default(false)->helperText('Se ativado, o pilar não aparece no frontend, mas permanece cadastrado.'),
                 \Filament\Forms\Components\Toggle::make('active')->label('Ativo')->default(true),
             ])->columns(2),
         ]);

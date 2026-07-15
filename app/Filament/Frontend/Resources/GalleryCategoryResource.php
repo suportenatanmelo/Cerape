@@ -41,6 +41,7 @@ class GalleryCategoryResource extends Resource
                 TextInput::make('position')->label('Ordem')->numeric()->default(1),
                 Toggle::make('show_on_home')->label('Mostrar no site principal')->default(true),
                 Toggle::make('show_in_menu')->label('Mostrar no menu Galeria')->default(true),
+                Toggle::make('hidden')->label('Oculta no site')->default(false)->helperText('Se ativado, a categoria não aparece no frontend, mas permanece cadastrada.'),
                 Toggle::make('active')->label('Ativa')->default(true),
             ])->columns(2),
         ]);

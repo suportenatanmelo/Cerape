@@ -1,21 +1,10 @@
 <x-filament-widgets::widget>
     <x-filament::section>
-        <x-slot name="heading">Indicadores Gerais (Financeiro)</x-slot>
         <div class="space-y-3">
-            <div class="flex justify-between rounded-xl border p-4 dark:border-gray-700">
-                <span>Receitas</span><strong>{{ $receitas }}</strong>
-            </div>
-            <div class="flex justify-between rounded-xl border p-4 dark:border-gray-700">
-                <span>Despesas</span><strong>{{ $despesas }}</strong>
-            </div>
-            <div class="flex justify-between rounded-xl border p-4 dark:border-gray-700">
-                <span>Saldo</span><strong>{{ $saldo }}</strong>
-            </div>
-            <div class="flex justify-between rounded-xl border p-4 dark:border-gray-700">
-                <span>Contas a pagar</span><strong>{{ $contasPagar }}</strong>
-            </div>
-            <div class="flex justify-between rounded-xl border p-4 dark:border-gray-700">
-                <span>Contas a receber</span><strong>{{ $contasReceber }}</strong>
+            <div class="text-sm text-gray-600">Financeiro</div>
+            <div class="flex gap-2">
+                <a href="/admin/extrato-financeiro" class="px-3 py-1 rounded bg-amber-500 text-white">Abrir Extratos</a>
+                <a href="/admin/financeiro/empresa-parceiras" class="px-3 py-1 rounded bg-gray-100">Empresas parceiras</a>
             </div>
         </div>
     </x-filament::section>

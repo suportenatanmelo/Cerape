@@ -12,49 +12,6 @@ return new class extends Migration
             return;
         }
 
-        \Illuminate\Support\Facades\DB::statement('ALTER TABLE `frontend_settings` ROW_FORMAT=DYNAMIC');
-        foreach ([
-            'brand_name',
-            'hero_title',
-            'hero_subtitle',
-            'about_title',
-            'menu_label_about',
-            'menu_label_home',
-            'menu_label_pillars',
-            'menu_label_team',
-            'menu_label_gallery',
-            'menu_label_blog',
-            'menu_label_contact',
-            'clinic_name',
-            'clinic_description',
-            'clinic_contact_title',
-            'clinic_contact_name',
-            'clinic_contact_address_label',
-            'clinic_contact_city_label',
-            'clinic_contact_state_label',
-            'clinic_contact_zip_label',
-            'clinic_contact_phone_label',
-            'clinic_contact_email_label',
-            'contact_eyebrow',
-            'contact_title',
-            'contact_description',
-            'contact_phone_label',
-            'contact_phone_line',
-            'contact_whatsapp_cta_label',
-            'contact_address_label',
-            'contact_address_line',
-            'contact_email_label',
-            'contact_email_line',
-            'contact_form_name_placeholder',
-            'contact_form_phone_placeholder',
-            'contact_form_email_placeholder',
-            'contact_form_message_placeholder',
-        ] as $column) {
-            if (Schema::hasColumn('frontend_settings', $column)) {
-                \Illuminate\Support\Facades\DB::statement("ALTER TABLE `frontend_settings` MODIFY `{$column}` TEXT NULL");
-            }
-        }
-
         Schema::table('frontend_settings', function (Blueprint $table): void {
             foreach ([
                 ['hero_cta_label', fn (Blueprint $table) => $table->text('hero_cta_label')->nullable()],

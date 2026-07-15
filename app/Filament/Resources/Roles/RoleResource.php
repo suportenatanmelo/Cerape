@@ -269,6 +269,6 @@ class RoleResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        return false;
     }
 }

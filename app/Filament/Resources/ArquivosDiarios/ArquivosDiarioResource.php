@@ -144,6 +144,15 @@ class ArquivosDiarioResource extends Resource
         $path = $disk->path($record->upload_arquivo);
         $fileName = basename($record->upload_arquivo);
 
+        app(ActivityLogger::class)->custom(
+            'Documentos',
+            'download',
+            'Baixou arquivo do módulo de arquivos diários',
+            $record,
+            ['arquivo' => $record->upload_arquivo],
+            ['filename' => $fileName],
+        );
+
         return response()->download($path, $fileName, [
             'Content-Type' => $disk->mimeType($record->upload_arquivo) ?: 'application/octet-stream',
         ]);
@@ -162,6 +171,15 @@ class ArquivosDiarioResource extends Resource
         }
 
         $path = $disk->path($record->upload_arquivo);
+
+        app(ActivityLogger::class)->custom(
+            'Documentos',
+            'view',
+            'Visualizou arquivo do módulo de arquivos diários',
+            $record,
+            ['arquivo' => $record->upload_arquivo],
+            ['filename' => basename($record->upload_arquivo)],
+        );
 
         return response()->file($path, [
             'Content-Type' => $disk->mimeType($record->upload_arquivo) ?: 'application/pdf',

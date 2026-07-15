@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Support\Concerns\HasActivityLogs;
+use App\Enums\SituacaoAcolhido;
 use App\Support\ImageStorageNaming;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +17,18 @@ use App\Models\TransferenciaFamilia;
 
 class Acolhido extends Model
 {
+    use HasActivityLogs;
+
+    public function activityLogModule(): ?string
+    {
+        return 'Acolhidos';
+    }
+
+    public function activityLogLabel(): ?string
+    {
+        return 'Acolhido';
+    }
+
     protected $fillable = [
         'user_id',
         'ativo',
@@ -87,6 +101,7 @@ class Acolhido extends Model
         'interventor_endereco_uf',
         'interventor_telefone_contato',
         'profissional_referencia_acolhido_instituicao',
+        'situacao',
         'created_at',
     ];
 
@@ -112,6 +127,7 @@ class Acolhido extends Model
         'possui_contato_dos_filhos' => 'boolean',
         'documentos_civis' => 'array',
         'documentos_outros' => 'array',
+        'situacao' => SituacaoAcolhido::class,
     ];
 
     protected static function booted(): void
@@ -202,6 +218,34 @@ class Acolhido extends Model
         return $this->hasOne(CarteiraAcolhido::class);
     }
 
+    public function historicoSituacoes(): HasMany
+    {
+        return $this->hasMany(AcolhidoHistoricoSituacao::class, 'acolhido_id');
+    }
+
+    public function isAtivo(): bool
+    {
+        return (bool) $this->ativo;
+    }
+
+    public function isEgresso(): bool
+    {
+        return $this->situacao instanceof SituacaoAcolhido
+            && $this->situacao === SituacaoAcolhido::egresso;
+    }
+
+    public function isInternado(): bool
+    {
+        return $this->situacao instanceof SituacaoAcolhido
+            && $this->situacao === SituacaoAcolhido::internado;
+    }
+
+    public function isDesistente(): bool
+    {
+        return $this->situacao instanceof SituacaoAcolhido
+            && $this->situacao === SituacaoAcolhido::desistente;
+    }
+
     public function movimentacoesFinanceiras(): HasMany
     {
         return $this->hasMany(MovimentacaoFinanceira::class);
@@ -222,3 +266,4 @@ class Acolhido extends Model
         return $this->hasMany(TransferenciaFamilia::class);
     }
 }
+

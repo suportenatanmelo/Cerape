@@ -44,11 +44,19 @@
     <div class="horizon"></div>
 
     <section id="sobre" class="section">
-        <div class="sobre-grid">
-            <div class="sobre-img card reveal">
-                <img src="{{ $settings?->about_image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->about_image_path) : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop' }}" alt="Casa CERAPE">
-            </div>
-            <div class="sobre-text reveal" style="--reveal-delay:.15s">
+        <div class="sobre-grid" style="align-items: center;">
+            @php
+                $aboutImageVisible = $settings?->aboutShouldShowImage() ?? true;
+                $aboutVideoVisible = $settings?->aboutShouldShowVideo() ?? true;
+                $aboutTextAlignment = $settings?->aboutTextAlignment() ?? 'left';
+                $aboutImagePosition = $settings?->aboutImagePosition() ?? 'right';
+            @endphp
+            @if ($aboutImageVisible)
+                <div class="sobre-img card reveal" style="order: {{ $aboutImagePosition === 'left' ? 1 : ($aboutImagePosition === 'center' ? 2 : 3) }};">
+                    <img src="{{ $settings?->about_image_path ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->about_image_path) : 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=900&auto=format&fit=crop' }}" alt="Casa CERAPE">
+                </div>
+            @endif
+            <div class="sobre-text reveal" style="--reveal-delay:.15s; text-align: {{ $aboutTextAlignment }}; order: {{ $aboutImagePosition === 'left' ? 2 : 1 }};">
                 <span class="eyebrow">{{ $settings?->menu_label_about ?? 'Quem somos' }}</span>
                 <h2>{{ $settings?->about_title ?? 'Sobre a CERAPE' }}</h2>
                 <p>{!! $settings?->about_paragraph_one ?? 'A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.' !!}</p>
@@ -64,7 +72,7 @@
                     }
                 @endphp
 
-                @if (!empty($aboutVideoEmbedUrl))
+                @if ($aboutVideoVisible && !empty($aboutVideoEmbedUrl))
                     <div class="video-card" style="--video-width: {{ $aboutVideoWidth }}px; --video-height: {{ $aboutVideoHeight }}px;">
                         <iframe
                             src="{{ $aboutVideoEmbedUrl }}"
@@ -76,11 +84,19 @@
                         ></iframe>
                     </div>
                 @endif
-                <div class="stats-row">
-                    <div class="stat"><strong>12+</strong><span>anos de atuação</span></div>
-                    <div class="stat"><strong>500+</strong><span>vidas acolhidas</span></div>
-                    <div class="stat"><strong>24h</strong><span>equipe de plantão</span></div>
-                </div>
+                @php
+                    $statsItems = $settings?->statsItems() ?? [];
+                @endphp
+                @if (!empty($statsItems))
+                    <div class="stats-row">
+                        @foreach ($statsItems as $stat)
+                            <div class="stat">
+                                <strong>{{ $stat['value'] }}</strong>
+                                <span>{{ $stat['label'] }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </section>

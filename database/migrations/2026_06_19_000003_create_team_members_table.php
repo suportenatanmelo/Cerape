@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('photo_path')->nullable();
             $table->unsignedInteger('position')->default(1);
             $table->boolean('active')->default(true);
+            $table->boolean('hidden')->default(false);
             $table->timestamps();
         });
     }

@@ -23,9 +23,10 @@ use UnitEnum;
 class ThemePaletteResource extends Resource
 {
     protected static ?string $model = ThemePalette::class;
-    protected static string|UnitEnum|null $navigationGroup = 'Administração e acesso';
+    protected static string|UnitEnum|null $navigationGroup = 'Administração';
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-swatch';
     protected static ?string $navigationLabel = 'Temas';
+    protected static ?int $navigationSort = 30;
     protected static ?string $modelLabel = 'tema';
     protected static ?string $pluralModelLabel = 'temas';
 

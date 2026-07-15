@@ -49,7 +49,7 @@ class AcolhidoGaleriaForm
                                 ->placeholder('Ex.: Visita da familia em maio')
                                 ->columnSpanFull(),
                             Textarea::make('descricao')
-                                ->label('Descricao')
+                                ->label('Descrição')
                                 ->rows(3)
                                 ->maxLength(500)
                                 ->placeholder('Mensagem breve para contextualizar este album no portal.')

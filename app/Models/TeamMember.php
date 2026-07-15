@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\ImageStorageNaming;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -15,11 +16,18 @@ class TeamMember extends Model
         'photo_path',
         'position',
         'active',
+        'hidden',
     ];
 
     protected $casts = [
         'active' => 'boolean',
+        'hidden' => 'boolean',
     ];
+
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('active', true)->where('hidden', false);
+    }
 
     protected static function booted(): void
     {

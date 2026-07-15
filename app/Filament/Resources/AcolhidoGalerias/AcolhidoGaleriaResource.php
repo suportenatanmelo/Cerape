@@ -150,7 +150,7 @@ class AcolhidoGaleriaResource extends Resource
     {
         return [
             'Acolhido' => $record->acolhido?->nome_completo_paciente ?: '-',
-            'Descricao' => $record->descricao ?: '-',
+            'Descrição' => $record->descricao ?: '-',
         ];
     }
 }

@@ -62,7 +62,7 @@ class ProntuarioEvolucaoForm
                                 })
                                 ->helperText('Quando houver mais de uma atividade pendente, escolha a que será evoluida.'),
                             Select::make('user_id')
-                                ->label('Usuario responsavel')
+                                ->label('Usuário responsável')
                                 ->relationship('user', 'name')
                                 ->searchable()
                                 ->preload()

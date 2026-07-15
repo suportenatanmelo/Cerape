@@ -66,6 +66,7 @@ class CmsContent extends Model
         'position',
         'is_featured',
         'is_active',
+        'hidden',
     ];
 
     protected $casts = [
@@ -76,6 +77,7 @@ class CmsContent extends Model
         'ends_at' => 'datetime',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'hidden' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -92,9 +94,15 @@ class CmsContent extends Model
         return $query->where('type', $type);
     }
 
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('hidden', false);
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query
+            ->visible()
             ->where('is_active', true)
             ->where(function (Builder $query): void {
                 $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());

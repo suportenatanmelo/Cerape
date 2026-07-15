@@ -77,6 +77,7 @@ class HeroSlideResource extends Resource
                         ->numeric()
                         ->default(fn (): int => static::nextSlidePosition()),
                     Toggle::make('show_buttons')->label('Exibir botões')->default(true),
+                    Toggle::make('hidden')->label('Oculto no site')->default(false)->helperText('Se ativado, o slide não aparece no frontend, mas permanece cadastrado.'),
                     Toggle::make('is_active')->label('Ativo')->default(true),
                 ])->columns(4),
 

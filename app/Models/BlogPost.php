@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\ImageStorageNaming;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,6 +22,7 @@ class BlogPost extends Model
         'show_in_blog',
         'position',
         'active',
+        'hidden',
     ];
 
     protected $casts = [
@@ -29,6 +31,7 @@ class BlogPost extends Model
         'show_on_home' => 'boolean',
         'show_in_blog' => 'boolean',
         'active' => 'boolean',
+        'hidden' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -36,6 +39,11 @@ class BlogPost extends Model
         static::saved(function (self $post): void {
             ImageStorageNaming::syncStoredImage($post, 'image_path', 'blog', $post->title);
         });
+    }
+
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('active', true)->where('hidden', false);
     }
 
     public function imageUrl(): ?string

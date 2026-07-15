@@ -23,6 +23,11 @@ class EditAcolhido extends EditRecord
         parent::mount($record);
 
         $this->restoreAcolhidoDraft();
+        // If the previous create flow flagged missing fields in session, dispatch browser event to show modal
+        $payload = session()->pull('acolhido_missing_fields');
+        if ($payload && is_array($payload)) {
+            $this->dispatchBrowserEvent('show-missing-fields', $payload);
+        }
     }
 
     protected function getHeaderActions(): array
@@ -49,7 +54,7 @@ class EditAcolhido extends EditRecord
         return AcolhidoForm::prepareForPersistence($data);
     }
 
-    protected function afterSave(): void
+    public function afterSave(): void
     {
         $this->forgetAcolhidoDraft();
         AcolhidoForm::persistDemandaFromForm($this->getRecord(), $this->data);

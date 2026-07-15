@@ -17,6 +17,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
+use App\Support\Concerns\HasActivityLogs;
 use App\Support\UserRoleManager;
 use App\Support\ImageStorageNaming;
 
@@ -38,7 +39,7 @@ use App\Support\ImageStorageNaming;
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasActivityLogs;
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
@@ -50,8 +51,17 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
     public const PERMISSION_WIDGETS_VIEW = 'View:Widgets';
     public const PERMISSION_USER_VIEW = 'View:User';
 
+    public function activityLogModule(): ?string
+    {
+        return 'Usuários';
+    }
 
-    /**
+    public function activityLogLabel(): ?string
+    {
+        return 'Usuário';
+    }
+
+/**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>

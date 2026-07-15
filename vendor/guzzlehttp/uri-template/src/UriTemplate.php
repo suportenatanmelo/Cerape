@@ -202,7 +202,7 @@ final class UriTemplate
 
         $result['values'] = [];
         foreach (\explode(',', $expression) as $value) {
-            $value = \trim($value);
+            $value = \trim($value, " \n\r\t\0\x0B");
             $varspec = [];
             if ($colonPos = \strpos($value, ':')) {
                 $varspec['value'] = (string) \substr($value, 0, $colonPos);
@@ -281,7 +281,7 @@ final class UriTemplate
 
         $matches = [];
         if (\preg_match_all('/%[0-9A-Fa-f]{2}|./s', $value, $matches) === false) {
-            throw new \RuntimeException('Unable to encode URI template value.');
+            throw new \RuntimeException(\sprintf('Unable to encode URI template value: %s', \preg_last_error_msg()));
         }
 
         $encoded = '';

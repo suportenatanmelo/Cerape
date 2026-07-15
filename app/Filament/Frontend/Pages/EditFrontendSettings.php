@@ -49,12 +49,23 @@ class EditFrontendSettings extends Page implements HasForms
                         \Filament\Forms\Components\TextInput::make('hero_subtitle')->label('Subtítulo')->default('Conteúdo editável pelo painel /frontend.'),
                         \Filament\Forms\Components\TextInput::make('hero_cta_label')->label('Texto do botão principal')->default('Agendar uma conversa'),
                         \Filament\Forms\Components\TextInput::make('hero_secondary_cta_label')->label('Texto do botão secundário')->default('Conhecer a jornada'),
+                        \Filament\Forms\Components\Toggle::make('stats_enabled')->label('Exibir blocos de estatísticas na home')->default(true),
+                        \Filament\Forms\Components\TextInput::make('stats_item_one_value')->label('Valor 1')->default('12+'),
+                        \Filament\Forms\Components\TextInput::make('stats_item_one_label')->label('Texto 1')->default('anos de atuação'),
+                        \Filament\Forms\Components\TextInput::make('stats_item_two_value')->label('Valor 2')->default('500+'),
+                        \Filament\Forms\Components\TextInput::make('stats_item_two_label')->label('Texto 2')->default('vidas acolhidas'),
+                        \Filament\Forms\Components\TextInput::make('stats_item_three_value')->label('Valor 3')->default('24h'),
+                        \Filament\Forms\Components\TextInput::make('stats_item_three_label')->label('Texto 3')->default('equipe de plantão'),
                     ])->columns(2),
                     Tabs\Tab::make('Quem somos')->schema([
                         \Filament\Forms\Components\TextInput::make('menu_label_about')->label('Texto do menu')->default('Quem somos'),
                         \Filament\Forms\Components\TextInput::make('about_title')->label('Título da seção')->default('Sobre a CERAPE'),
                         \Filament\Forms\Components\Textarea::make('about_paragraph_one')->label('Primeiro parágrafo')->rows(4)->default('A CERAPE é uma casa de recuperação dedicada a oferecer acolhimento, tratamento e um novo começo para quem enfrenta a dependência química.'),
                         \Filament\Forms\Components\Textarea::make('about_paragraph_two')->label('Segundo parágrafo')->rows(4)->default('Acreditamos que a recuperação acontece em comunidade: por isso trabalhamos junto às famílias, com transparência e respeito ao tempo de cada pessoa, do primeiro dia até a reinserção social.'),
+                        \Filament\Forms\Components\Select::make('about_text_alignment')->label('Alinhamento do texto')->options(['left' => 'Esquerda', 'center' => 'Centralizado', 'right' => 'Direita'])->default('left'),
+                        \Filament\Forms\Components\Select::make('about_image_position')->label('Posição da imagem')->options(['left' => 'Esquerda', 'center' => 'Centralizada', 'right' => 'Direita'])->default('right'),
+                        \Filament\Forms\Components\Toggle::make('about_show_image')->label('Exibir imagem')->default(true),
+                        \Filament\Forms\Components\Toggle::make('about_show_video')->label('Exibir vídeo')->default(true),
                         \Filament\Forms\Components\FileUpload::make('about_image_path')->label('Imagem da seção')->disk('public')->image()->directory(\App\Support\ImageStorageNaming::directory('galeria')),
                         \Filament\Forms\Components\TextInput::make('about_video_url')->label('Link do vídeo do YouTube')->placeholder('https://www.youtube.com/watch?v=...')->helperText('Cole o link do YouTube para exibir o vídeo na seção Quem somos.')->url(),
                         \Filament\Forms\Components\TextInput::make('about_video_width')->label('Largura do vídeo')->numeric()->default(560),
@@ -116,10 +127,24 @@ class EditFrontendSettings extends Page implements HasForms
         $settings = FrontendSetting::query()->firstOrNew([]);
         $data = $this->form->getState();
 
+        $availableColumns = $this->getAvailableFrontendSettingColumns();
+        $data = array_intersect_key($data, array_flip($availableColumns));
+
         $settings->fill($data);
         $settings->save();
 
         Notification::make()->title('Configurações do site atualizadas')->success()->send();
+    }
+
+    protected function getAvailableFrontendSettingColumns(): array
+    {
+        $table = (new FrontendSetting())->getTable();
+
+        try {
+            return \Schema::getColumnListing($table);
+        } catch (\Throwable) {
+            return [];
+        }
     }
 
     public function getSubmitAction(): Action

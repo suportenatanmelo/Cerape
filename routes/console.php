@@ -12,3 +12,7 @@ Artisan::command('inspire', function () {
 Schedule::command('notifications:send-user-profile-messages')
     ->dailyAt('08:00')
     ->withoutOverlapping();
+
+Schedule::command('reminders:process')
+    ->everyFiveMinutes()
+    ->withoutOverlapping();

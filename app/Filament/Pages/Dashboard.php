@@ -10,6 +10,7 @@ use App\Filament\Widgets\DashboardEntradasAltasChart;
 use App\Filament\Widgets\DashboardEvolucaoAtendimentosChart;
 use App\Filament\Widgets\DashboardFaixaEtariaChart;
 use App\Filament\Widgets\DashboardFinanceiroWidget;
+use App\Filament\Widgets\FinanceiroAcolhidoWidget;
 use App\Filament\Widgets\DashboardGeneralIndicatorsWidget;
 use App\Filament\Widgets\DashboardLatestActivitiesWidget;
 use App\Filament\Widgets\DashboardOrigemEncaminhamentoChart;
@@ -50,6 +51,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             DashboardAlertsWidget::class,
             DashboardLatestActivitiesWidget::class,
             DashboardFinanceiroWidget::class,
+            FinanceiroAcolhidoWidget::class,
             DashboardBirthdaysWidget::class,
             DashboardQuickActionsWidget::class,
             DashboardGeneralIndicatorsWidget::class,

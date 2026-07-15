@@ -26,6 +26,7 @@ class UserRoleManager
      */
     public static function syncRoles(User $user, array $selectedRoles): void
     {
+        $beforeRoles = $user->roles->pluck('name')->values()->all();
         $roleModel = app(config('permission.models.role'));
 
         $roles = collect($selectedRoles)
@@ -36,30 +37,41 @@ class UserRoleManager
 
         if ($roles->isEmpty()) {
             $user->syncRoles([]);
+            $afterRoles = [];
+        } else {
+            $roles = $roles
+                ->pipe(function (Collection $roles) use ($roleModel): Collection {
+                    $ids = $roles->filter(fn (mixed $role): bool => is_int($role))->values();
+                    $names = $roles->filter(fn (mixed $role): bool => is_string($role))->values();
 
-            return;
+                    return $roleModel::query()
+                        ->where(function ($query) use ($ids, $names): void {
+                            if ($ids->isNotEmpty()) {
+                                $query->whereIn('id', $ids->all());
+                            }
+
+                            if ($names->isNotEmpty()) {
+                                $method = $ids->isNotEmpty() ? 'orWhereIn' : 'whereIn';
+                                $query->{$method}('name', $names->all());
+                            }
+                        })
+                        ->get();
+                });
+
+            $user->syncRoles($roles);
+            $afterRoles = $user->roles->pluck('name')->values()->all();
         }
 
-        $roles = $roles
-            ->pipe(function (Collection $roles) use ($roleModel): Collection {
-                $ids = $roles->filter(fn (mixed $role): bool => is_int($role))->values();
-                $names = $roles->filter(fn (mixed $role): bool => is_string($role))->values();
-
-                return $roleModel::query()
-                    ->where(function ($query) use ($ids, $names): void {
-                        if ($ids->isNotEmpty()) {
-                            $query->whereIn('id', $ids->all());
-                        }
-
-                        if ($names->isNotEmpty()) {
-                            $method = $ids->isNotEmpty() ? 'orWhereIn' : 'whereIn';
-                            $query->{$method}('name', $names->all());
-                        }
-                    })
-                    ->get();
-            });
-
-        $user->syncRoles($roles);
+        if ($beforeRoles !== $afterRoles) {
+            app(ActivityLogger::class)->custom(
+                'Usuários',
+                'update',
+                'Atualizou perfis de acesso do usuário ' . $user->name,
+                $user,
+                ['roles' => $beforeRoles],
+                ['roles' => $afterRoles],
+            );
+        }
     }
 
     public static function hasAssignedRole(User $user): bool

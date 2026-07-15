@@ -18,4 +18,11 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_cms_page_route_resolves_to_controller(): void
+    {
+        $response = $this->get('/pagina/qualquer-slug');
+
+        $response->assertStatus(404);
+    }
 }

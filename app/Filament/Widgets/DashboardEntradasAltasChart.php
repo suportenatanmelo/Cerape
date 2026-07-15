@@ -25,15 +25,19 @@ class DashboardEntradasAltasChart extends LineChartWidget
     {
         $start = now()->subMonths(11)->startOfMonth();
         $end = now()->endOfMonth();
+        $driver = DB::connection()->getDriverName();
+        $monthExpression = $driver === 'sqlite'
+            ? "strftime('%%Y-%%m', %s)"
+            : "DATE_FORMAT(%s, '%%Y-%%m')";
 
         $entradas = Acolhido::query()
-            ->select([DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
+            ->select([DB::raw(sprintf($monthExpression, 'created_at'). ' as period'), DB::raw('COUNT(*) as total')])
             ->whereBetween('created_at', [$start, $end])
             ->groupBy('period')
             ->pluck('total', 'period');
 
         $altas = Acolhido::query()
-            ->select([DB::raw("DATE_FORMAT(updated_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
+            ->select([DB::raw(sprintf($monthExpression, 'updated_at'). ' as period'), DB::raw('COUNT(*) as total')])
             ->where('ativo', false)
             ->whereBetween('updated_at', [$start, $end])
             ->groupBy('period')

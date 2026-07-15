@@ -53,7 +53,7 @@ class AcolhidoGaleriaInfolist
                                     ->badge()
                                     ->color('warning'),
                                 TextEntry::make('descricao')
-                                    ->label('Descricao')
+                                    ->label('Descrição')
                                     ->placeholder('Sem descricao cadastrada para este album.')
                                     ->columnSpanFull(),
                             ]),

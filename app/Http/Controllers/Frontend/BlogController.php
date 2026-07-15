@@ -13,14 +13,14 @@ class BlogController extends Controller
     {
         return view('frontend.blog-list', [
             'settings' => FrontendSetting::query()->first(),
-            'posts' => BlogPost::query()->where('active', true)->where('show_in_blog', true)->orderByDesc('published_at')->orderBy('position')->paginate(9),
+            'posts' => BlogPost::query()->visible()->where('show_in_blog', true)->orderByDesc('published_at')->orderBy('position')->paginate(9),
         ]);
     }
 
     public function show(string $slug)
     {
         $settings = FrontendSetting::query()->first();
-        $post = BlogPost::query()->where('slug', $slug)->where('active', true)->firstOrFail();
+        $post = BlogPost::query()->visible()->where('slug', $slug)->where('show_in_blog', true)->firstOrFail();
 
         return view('frontend.blog-post', [
             'settings' => $settings,

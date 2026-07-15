@@ -3,8 +3,8 @@
 namespace App\Jobs;
 
 use App\Models\HeroSlide;
-use App\Models\FrontendMaintenanceLog;
 use App\Models\HeroSlideTrash;
+use App\Support\ActivityLogger;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -49,7 +49,6 @@ class ClearHeroImagesJob implements ShouldQueue
             }
 
             if ($slides->isNotEmpty()) {
-                // Insert trash entries for each slide before clearing
                 foreach ($slides as $s) {
                     HeroSlideTrash::create([
                         'hero_slide_id' => $s->id,
@@ -73,22 +72,28 @@ class ClearHeroImagesJob implements ShouldQueue
             }
 
             $result['backup_path'] = $backupPath;
-            FrontendMaintenanceLog::create([
-                'user_id' => $this->userId,
-                'action' => 'clear_hero_images',
-                'payload' => ['make_backup' => $this->makeBackup],
-                'result' => $result,
-            ]);
+
+            app(ActivityLogger::class)->custom(
+                'Hero Slides',
+                'update',
+                'Executou limpeza de imagens dos hero slides',
+                null,
+                ['make_backup' => $this->makeBackup],
+                $result,
+            );
 
             Log::info('ClearHeroImagesJob completed', ['user_id' => $this->userId, 'result' => $result]);
         } catch (\Throwable $e) {
             $result['errors'][] = $e->getMessage();
-            FrontendMaintenanceLog::create([
-                'user_id' => $this->userId,
-                'action' => 'clear_hero_images',
-                'payload' => ['make_backup' => $this->makeBackup],
-                'result' => $result,
-            ]);
+
+            app(ActivityLogger::class)->custom(
+                'Hero Slides',
+                'update',
+                'Falha ao limpar imagens dos hero slides',
+                null,
+                ['make_backup' => $this->makeBackup],
+                $result,
+            );
 
             Log::error('ClearHeroImagesJob failed', ['user_id' => $this->userId, 'error' => $e->getMessage()]);
             throw $e;

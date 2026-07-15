@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\ImageStorageNaming;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,6 +26,7 @@ class HeroSlide extends Model
         'show_buttons',
         'position',
         'is_active',
+        'hidden',
         'starts_at',
         'ends_at',
     ];
@@ -34,6 +36,7 @@ class HeroSlide extends Model
         'show_buttons' => 'boolean',
         'starts_at' => 'datetime',
         'ends_at' => 'datetime',
+        'hidden' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -44,11 +47,17 @@ class HeroSlide extends Model
         });
     }
 
-    public function scopePublished($query)
+    public function scopeVisible(Builder $query): Builder
+    {
+        return $query->where('hidden', false);
+    }
+
+    public function scopePublished(Builder $query): Builder
     {
         return $query
+            ->visible()
             ->where('is_active', true)
-            ->where(function ($query): void {
+            ->where(function (Builder $query): void {
                 $query->whereNull('starts_at')->orWhere('starts_at', '<=', now());
             })
             ->where(function ($query): void {

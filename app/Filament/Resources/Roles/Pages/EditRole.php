@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Filament\Resources\Roles\Pages;
 
 use App\Filament\Resources\Roles\RoleResource;
+use App\Support\ActivityLogger;
 use BezhanSalleh\FilamentShield\Support\Utils;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
@@ -52,6 +53,20 @@ class EditRole extends EditRecord
             ]));
         });
 
+        $beforePermissions = $this->record->permissions()->pluck('name')->values()->all();
+        $afterPermissions = $permissionModels->pluck('name')->values()->all();
+
         $this->record->syncPermissions($permissionModels);
+
+        if ($beforePermissions !== $afterPermissions) {
+            app(ActivityLogger::class)->custom(
+                'Usuários',
+                'update',
+                'Alterou permissões do perfil ' . $this->record->name,
+                $this->record,
+                ['permissions' => $beforePermissions],
+                ['permissions' => $afterPermissions],
+            );
+        }
     }
 }

@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use App\Models\HeroSlideTrash;
-use App\Models\FrontendMaintenanceLog;
+use App\Support\ActivityLogger;
+use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
-use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class HeroSlideTrashController extends Controller
@@ -25,7 +25,6 @@ class HeroSlideTrashController extends Controller
 
         $slide = HeroSlide::find($trash->hero_slide_id);
         if (! $slide) {
-            // If original slide no longer exists, create a new one from payload
             $slide = HeroSlide::create([
                 'title' => $trash->title,
                 'image_path' => $trash->image_path,
@@ -41,12 +40,14 @@ class HeroSlideTrashController extends Controller
             ]);
         }
 
-        FrontendMaintenanceLog::create([
-            'user_id' => $user->getKey(),
-            'action' => 'restore_hero_slide',
-            'payload' => ['trash_id' => $trash->id, 'hero_slide_id' => $slide->id],
-            'result' => ['status' => 'restored'],
-        ]);
+        app(ActivityLogger::class)->custom(
+            'Hero Slides',
+            'restore',
+            'Restaurou hero slide da lixeira',
+            $slide,
+            ['trash_id' => $trash->id],
+            ['hero_slide_id' => $slide->id, 'status' => 'restored'],
+        );
 
         $trash->delete();
 
@@ -67,7 +68,6 @@ class HeroSlideTrashController extends Controller
 
         $trash = HeroSlideTrash::findOrFail($id);
 
-        // Optionally delete stored images
         try {
             if ($trash->image_path) {
                 $this->maybeDeleteStoragePath($trash->image_path);
@@ -82,17 +82,19 @@ class HeroSlideTrashController extends Controller
             // continue
         }
 
-        FrontendMaintenanceLog::create([
-            'user_id' => $user->getKey(),
-            'action' => 'force_delete_hero_slide_trash',
-            'payload' => ['trash_id' => $trash->id],
-            'result' => ['status' => 'deleted'],
-        ]);
+        app(ActivityLogger::class)->custom(
+            'Hero Slides',
+            'force_delete',
+            'Removeu definitivamente item da lixeira de hero slides',
+            $trash,
+            ['trash_id' => $trash->id],
+            ['status' => 'deleted'],
+        );
 
         $trash->delete();
 
         Notification::make()
-            ->title('Item excluÃ­do definitivamente')
+            ->title('Item excluído definitivamente')
             ->danger()
             ->send();
 
@@ -108,7 +110,6 @@ class HeroSlideTrashController extends Controller
 
         $count = HeroSlideTrash::count();
 
-        // delete files and records
         foreach (HeroSlideTrash::cursor() as $trash) {
             try {
                 if ($trash->image_path) {
@@ -116,15 +117,18 @@ class HeroSlideTrashController extends Controller
                 }
             } catch (\Throwable $e) {
             }
+
             $trash->delete();
         }
 
-        FrontendMaintenanceLog::create([
-            'user_id' => $user->getKey(),
-            'action' => 'empty_hero_slide_trash',
-            'payload' => ['count' => $count],
-            'result' => ['status' => 'emptied', 'count' => $count],
-        ]);
+        app(ActivityLogger::class)->custom(
+            'Hero Slides',
+            'delete',
+            'Esvaziou a lixeira de hero slides',
+            null,
+            ['count' => $count],
+            ['status' => 'emptied', 'count' => $count],
+        );
 
         Notification::make()
             ->title('Lixeira esvaziada')
