@@ -18,6 +18,7 @@ use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Radio;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -78,6 +79,29 @@ class AcolhidoForm
 
     public static function configure(Schema $schema): Schema
     {
+        $syncMoradiaState = function (Set $set, Get $get, mixed $state): void {
+            if (self::isYes($get('moradia_propria'))) {
+                $set('mora_em_casa_aluguada', false);
+
+                return;
+            }
+
+            if (self::isYes($state)) {
+                $set('moradia_propria', false);
+
+                return;
+            }
+
+            $set('CEP', null);
+            $set('endereco_paciente', null);
+            $set('bairro_do_paciente', null);
+            $set('municipio_do_paciente', null);
+            $set('uf_municipio_do_paciente', null);
+        };
+
+        $requiresMoradiaAddress = fn(Get $get): bool => self::isYes($get('moradia_propria')) || self::isYes($get('mora_em_casa_aluguada'));
+        $isMoradorDeRua = fn(Get $get): bool => ! self::isYes($get('moradia_propria')) && ! self::isYes($get('mora_em_casa_aluguada'));
+
         return $schema
             ->components([
                 Wizard::make([
@@ -197,6 +221,10 @@ class AcolhidoForm
                                             ->label('CEP')
                                             ->mask('99999-999')
                                             ->live(onBlur: true)
+                                            ->nullable()
+                                            ->visible(fn(Get $get): bool => ! $isMoradorDeRua($get))
+                                            ->dehydratedWhenHidden()
+                                            ->required(fn(Get $get): bool => $requiresMoradiaAddress($get))
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 $cep = preg_replace('/\D+/', '', (string) $state);
 
@@ -243,17 +271,33 @@ class AcolhidoForm
                                             ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
                                             ->label('Endereco do acolhido')
+                                            ->nullable()
+                                            ->visible(fn(Get $get): bool => ! $isMoradorDeRua($get))
+                                            ->dehydratedWhenHidden()
+                                            ->required(fn(Get $get): bool => $requiresMoradiaAddress($get))
                                             ->helperText('Se o CEP geral nao retornar endereco, este campo pode ser preenchido manualmente ou deixado em branco.'),
                                         TextInput::make('bairro_do_paciente')
                                             ->label('Bairro do acolhido')
+                                            ->nullable()
+                                            ->visible(fn(Get $get): bool => ! $isMoradorDeRua($get))
+                                            ->dehydratedWhenHidden()
+                                            ->required(fn(Get $get): bool => $requiresMoradiaAddress($get))
                                             ->helperText('Opcional quando o CEP geral nao localizar o bairro.'),
                                         TextInput::make('municipio_do_paciente')
                                             ->label('Municipio')
+                                            ->nullable()
+                                            ->visible(fn(Get $get): bool => ! $isMoradorDeRua($get))
+                                            ->dehydratedWhenHidden()
+                                            ->required(fn(Get $get): bool => $requiresMoradiaAddress($get))
                                             ->helperText('Opcional quando a busca do CEP nao retornar municipio.'),
                                         Select::make('uf_municipio_do_paciente')
                                             ->label('UF')
                                             ->options(self::getBrazilianStates())
                                             ->searchable()
+                                            ->nullable()
+                                            ->visible(fn(Get $get): bool => ! $isMoradorDeRua($get))
+                                            ->dehydratedWhenHidden()
+                                            ->required(fn(Get $get): bool => $requiresMoradiaAddress($get))
                                             ->helperText('Opcional quando o CEP nao localizar a UF.'),
                                         Radio::make('moradia_propria')
                                             ->label('Moradia própria')
@@ -261,12 +305,8 @@ class AcolhidoForm
                                             ->inline()
                                             ->default(false)
                                             ->live()
-                                            ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (! self::isYes($state)) {
-                                                    return;
-                                                }
-
-                                                $set('mora_em_casa_aluguada', false);
+                                            ->afterStateUpdated(function (Set $set, Get $get, mixed $state) use ($syncMoradiaState): void {
+                                                $syncMoradiaState($set, $get, $state);
                                             }),
                                         Radio::make('mora_em_casa_aluguada')
                                             ->label('Mora em casa de aluguel')
@@ -274,13 +314,16 @@ class AcolhidoForm
                                             ->inline()
                                             ->default(false)
                                             ->live()
-                                            ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (! self::isYes($state)) {
-                                                    return;
-                                                }
-
-                                                $set('moradia_propria', false);
+                                            ->disabled(fn(Get $get): bool => self::isYes($get('moradia_propria')))
+                                            ->helperText('Desabilitado quando a moradia própria for marcada como Sim.')
+                                            ->afterStateUpdated(function (Set $set, Get $get, mixed $state) use ($syncMoradiaState): void {
+                                                $syncMoradiaState($set, $get, $state);
                                             }),
+                                        Placeholder::make('moradia_situacao')
+                                            ->label('Situação de Moradia')
+                                            ->content(new \Illuminate\Support\HtmlString('<div class="rounded-lg border border-danger-200 bg-danger-50 px-4 py-3 text-sm font-medium text-danger-700">Morador de Rua</div>'))
+                                            ->visible(fn(Get $get): bool => $isMoradorDeRua($get))
+                                            ->columnSpanFull(),
                                     ]),
                                 ]),
                             Radio::make('tem_documentacao')
@@ -303,7 +346,7 @@ class AcolhidoForm
                                     self::clearDocumentNumberFields($set);
                                 }),
                             Section::make('Documentacao')
-                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')) || $isMoradorDeRua($get))
                                 ->dehydratedWhenHidden()
                                 ->schema([
                                     Grid::make([
@@ -312,8 +355,8 @@ class AcolhidoForm
                                     ])->schema([
                                         TextInput::make('razao_caso_nao_tenha_documentacao')
                                             ->label('Caso nao tenha documento')
-                                            ->hidden(fn(Get $get): bool => self::isYes($get('tem_documentacao')))
-                                            ->required(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->hidden(fn(Get $get): bool => self::isYes($get('tem_documentacao')) || $isMoradorDeRua($get))
+                                            ->required(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')) && $requiresMoradiaAddress($get))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_civis')
                                             ->label('Documentos civis')
@@ -907,6 +950,12 @@ class AcolhidoForm
             $data['mora_em_casa_aluguada'] = false;
         } elseif ($data['mora_em_casa_aluguada']) {
             $data['moradia_propria'] = false;
+        } else {
+            $data['CEP'] = null;
+            $data['endereco_paciente'] = null;
+            $data['bairro_do_paciente'] = null;
+            $data['municipio_do_paciente'] = null;
+            $data['uf_municipio_do_paciente'] = null;
         }
 
         $data['quanto_tempo_de_aluguel'] = null;
