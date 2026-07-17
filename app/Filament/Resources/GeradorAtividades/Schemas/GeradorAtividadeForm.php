@@ -13,6 +13,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use App\Models\GeradorAtividade;
 use Filament\Schemas\Schema;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
@@ -115,6 +117,20 @@ class GeradorAtividadeForm
                                     TagsInput::make('atividade_pratica')
                                         ->label('Atividade pratica')
                                         ->live()
+                                        ->reactive()
+                                        ->afterStateUpdated(function (Set $set, mixed $state): void {
+                                            $atividades = self::normalizeTags($state);
+
+                                            foreach ($atividades as $atividade) {
+                                                $demanda = GeradorAtividade::demandaForActivity($atividade);
+
+                                                if ($demanda !== null) {
+                                                    $set('demanda', $demanda);
+
+                                                    return;
+                                                }
+                                            }
+                                        })
                                         ->separator(',')
                                         ->splitKeys(['Tab', 'Enter', ','])
                                         ->placeholder('Digite e pressione Enter')

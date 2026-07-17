@@ -213,9 +213,25 @@ class GeradorAtividadeResource extends Resource
             ->map(function (mixed $item): array {
                 $item = is_array($item) ? $item : [];
 
+                $atividades = self::normalizeStringList($item['atividade_pratica'] ?? null);
+
+                $demandaRaw = trim((string) ($item['demanda'] ?? ''));
+
+                if ($demandaRaw === '') {
+                    foreach ($atividades as $atividade) {
+                        $demandaFromMap = \App\Models\GeradorAtividade::demandaForActivity($atividade);
+
+                        if ($demandaFromMap !== null) {
+                            $demandaRaw = $demandaFromMap;
+
+                            break;
+                        }
+                    }
+                }
+
                 return [
-                    'atividade_pratica' => self::normalizeStringList($item['atividade_pratica'] ?? null),
-                    'demanda' => self::normalizeNullableHtml($item['demanda'] ?? null),
+                    'atividade_pratica' => $atividades,
+                    'demanda' => self::normalizeNullableHtml($demandaRaw),
                     'acolhidos_ids' => self::normalizeStringList($item['acolhidos_ids'] ?? null),
                 ];
             })
@@ -255,6 +271,31 @@ class GeradorAtividadeResource extends Resource
                 $item['atividade_pratica'] = self::normalizeStringList($item['atividade_pratica'] ?? null);
 
                 $item['acolhidos_ids'] = self::normalizeStringList($item['acolhidos_ids'] ?? null);
+
+                return $item;
+            }, $data['atividades_planejadas']);
+
+            // Preencher demanda padrao para itens que nao possuem demanda
+            $data['atividades_planejadas'] = array_map(function (mixed $item): array {
+                $item = is_array($item) ? $item : [];
+
+                $atividades = self::normalizeStringList($item['atividade_pratica'] ?? null);
+
+                $demanda = trim((string) ($item['demanda'] ?? ''));
+
+                if ($demanda === '') {
+                    foreach ($atividades as $atividade) {
+                        $fromMap = \App\Models\GeradorAtividade::demandaForActivity($atividade);
+
+                        if ($fromMap !== null) {
+                            $demanda = $fromMap;
+
+                            break;
+                        }
+                    }
+                }
+
+                $item['demanda'] = $demanda === '' ? null : $demanda;
 
                 return $item;
             }, $data['atividades_planejadas']);
