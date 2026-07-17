@@ -5,7 +5,7 @@
 <x-filament-panels::page>
     <form wire:submit="submit" class="space-y-6">
         @if (filled($heading))
-            <x-filament::heading size="lg">{{ $heading }}</x-filament::heading>
+            <x-filament::section.heading>{{ $heading }}</x-filament::section.heading>
         @endif
 
         {{ $this->form }}
