@@ -31,7 +31,7 @@ class AcolhidoBirthdayNotification extends Mailable
             view: 'emails.acolhido-birthday',
             with: [
                 'acolhido' => $this->acolhido,
-                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'logoUrl' => \App\Support\SystemBranding::logoUrl(),
                 'profileUrl' => AcolhidoResource::getUrl('view', ['record' => $this->acolhido], panel: 'admin'),
             ],
         );

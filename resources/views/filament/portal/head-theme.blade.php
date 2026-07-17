@@ -4,6 +4,7 @@
 @endphp
 
 @include('filament.portal.browser-title-alerts')
+@include('filament.partials.branding-head')
 
 @if ($isFamily)
     <style>

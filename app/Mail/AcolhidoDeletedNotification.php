@@ -30,7 +30,7 @@ class AcolhidoDeletedNotification extends Mailable
             view: 'emails.acolhido-deleted',
             with: [
                 'acolhido' => $this->acolhido,
-                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'logoUrl' => \App\Support\SystemBranding::logoUrl(),
             ],
         );
     }

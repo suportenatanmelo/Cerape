@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use Alsaloul\ImageGallery\ImageGalleryPlugin;
 use App\Filament\Pages\Agenda;
+use App\Filament\Pages\BrandSettings;
 use App\Filament\Pages\Dashboard as AdminDashboard;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
@@ -11,11 +12,13 @@ use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
 use App\Support\PortalContext;
+use App\Support\SystemBranding;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -66,10 +69,18 @@ class AdminPanelProvider extends PanelProvider
 
             ])
             ->profile(Profile::class, isSimple: false)
+            ->userMenuItems([
+                MenuItem::make()
+                    ->label('Identidade visual')
+                    ->icon(Heroicon::OutlinedSwatch)
+                    ->url(fn (): string => BrandSettings::getUrl())
+                    ->sort(PHP_INT_MAX - 1)
+                    ->visible(fn (): bool => BrandSettings::canAccess()),
+            ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('10s')
             ->brandName(fn (): string => PortalContext::brandName())
-            ->brandLogo(asset('storage/images/logo.png'))
+            ->brandLogo(fn (): ?string => SystemBranding::logoUrl())
             ->brandLogoHeight(fn (): string => PortalContext::isFamilyUser() ? '52px' : '60px')
             ->homeUrl(fn (): ?string => PortalContext::familyDashboardUrl())
             //->topNavigation((bool) env('FILAMENT_TOPBAR', true))

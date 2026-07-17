@@ -2,7 +2,7 @@
 
 @section('meta_title', $item->meta_title ?: $item->title . ' | ' . ($settings?->brand_name ?? 'CERAPE'))
 @section('meta_description', $item->meta_description ?: $item->summary ?: ($settings?->brand_name ?? 'CERAPE'))
-@section('meta_image', $item->imageUrl() ?: ($item->og_image_path ? $item->imageUrl('og_image_path') : asset('favicon/favicon-32x32.png')))
+@section('meta_image', $item->imageUrl() ?: ($item->og_image_path ? $item->imageUrl('og_image_path') : \App\Support\SystemBranding::faviconUrl()))
 @section('meta_type', 'article')
 @section('meta_canonical', $item->canonical_url ?: request()->url())
 

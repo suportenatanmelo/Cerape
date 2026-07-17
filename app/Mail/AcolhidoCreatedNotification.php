@@ -31,7 +31,7 @@ class AcolhidoCreatedNotification extends Mailable
             view: 'emails.acolhido-created',
             with: [
                 'acolhido' => $this->acolhido,
-                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'logoUrl' => \App\Support\SystemBranding::logoUrl(),
                 'profileUrl' => AcolhidoResource::getUrl('view', ['record' => $this->acolhido], panel: 'admin'),
             ],
         );

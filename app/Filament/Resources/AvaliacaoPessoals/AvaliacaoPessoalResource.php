@@ -515,7 +515,7 @@ class AvaliacaoPessoalResource extends Resource
             'primeiraAvaliacao' => $avaliacoes->last(),
             'periodComparisons' => $periodComparisons,
             'fotoAcolhido' => self::imageDataUri($record->acolhido?->avatar),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'formatScore' => fn(float $score): string => self::formatScore($score),
             'scoreColor' => fn(float $score): string => self::scoreColor($score),
         ];
@@ -774,7 +774,7 @@ class AvaliacaoPessoalResource extends Resource
 
         return [
             'acolhidos' => $acolhidos,
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'geradoEm' => now(),
         ];
     }
@@ -876,7 +876,7 @@ class AvaliacaoPessoalResource extends Resource
             'totalVotos' => $evaluations->count(),
             'overallMediaUsuarios' => $overallMediaUsuarios,
             'overallMediaVotos' => $overallMediaVotos,
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'formatScore' => fn (float $score): string => self::formatScore($score),
         ];
     }

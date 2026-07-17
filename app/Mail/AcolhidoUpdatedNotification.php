@@ -32,7 +32,7 @@ class AcolhidoUpdatedNotification extends Mailable
             with: [
                 'acolhido' => $this->acolhido,
                 'changes' => $this->changes,
-                'logoUrl' => config('app.url') . '/grayscale/assets/favicon.ico',
+                'logoUrl' => \App\Support\SystemBranding::logoUrl(),
                 'profileUrl' => AcolhidoResource::getUrl('view', ['record' => $this->acolhido], panel: 'admin'),
             ],
         );

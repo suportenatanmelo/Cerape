@@ -204,7 +204,7 @@ class AtividadeDesenvolvidaResource extends Resource
             'highlight' => 'Resumo profissional das atividades desenvolvidas',
             'photoData' => self::imageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'CRC',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'sections' => [
                 'Atividades terapeuticas' => [
                     'Estudo sistematico dos 12 passos' => $record->atendimento_grupo_12_passos,

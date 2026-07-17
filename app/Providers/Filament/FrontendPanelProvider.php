@@ -19,6 +19,7 @@ use App\Filament\Frontend\Resources\NewsletterSubscriberResource;
 use App\Filament\Frontend\Resources\PillarCardResource;
 use App\Filament\Frontend\Resources\TeamMemberResource;
 use App\Http\Middleware\EnsureFrontendOwnerAccess;
+use App\Support\SystemBranding;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -27,6 +28,8 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Contracts\View\View;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
@@ -42,9 +45,15 @@ class FrontendPanelProvider extends PanelProvider
             ->id('frontend')
             ->path('frontend')
             ->login()
+            ->brandName(fn (): string => SystemBranding::brandName('CERAPE'))
+            ->brandLogo(fn (): ?string => SystemBranding::logoUrl())
             ->colors([
                 'primary' => Color::Amber,
             ])
+            ->renderHook(
+                PanelsRenderHook::HEAD_END,
+                fn (): View => view('filament.partials.branding-head')
+            )
             ->resources([
                 HeroSlideResource::class,
                 FrontendSettingResource::class,

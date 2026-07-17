@@ -768,7 +768,7 @@ class SubstanciaPsicoativaResource extends Resource
         return [
             'record' => $record,
             'sections' => $sections,
-            'logoCerape' => static::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => static::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'formatValue' => fn(mixed $value): string => static::formatValue($value),
         ];
     }

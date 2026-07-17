@@ -309,7 +309,7 @@ class ReuniaoResource extends Resource
             'responsavel' => $record->user?->name ?? 'Sistema',
             'descricao' => $record->descricao,
             'conteudoHtml' => (string) str((string) $record->ata)->sanitizeHtml(),
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
         ];
     }
 

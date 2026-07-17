@@ -52,9 +52,8 @@
     $whatsappMessage = trim((string) ($settings?->whatsapp_message ?? 'Olá, gostaria de mais informações.'));
     $whatsappWelcome = trim((string) ($settings?->contact_section_description ?? 'Toda mensagem é tratada com sigilo. Nossa equipe responde em até 24h.'));
     $whatsappUrl = $whatsappDigits ? 'https://wa.me/'.$whatsappDigits.'?text='.urlencode($whatsappMessage) : null;
-    $siteLogoUrl = $settings?->logo_path
-        ? \Illuminate\Support\Facades\Storage::disk('public')->url($settings->logo_path)
-        : asset('logo.png');
+    $siteLogoUrl = \App\Support\SystemBranding::logoUrl();
+    $faviconUrl = \App\Support\SystemBranding::faviconUrl();
 @endphp
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -68,13 +67,13 @@
     <meta property="og:description" content="@yield('meta_description', $settings?->brand_name ?? 'CERAPE')">
     <meta property="og:url" content="{{ request()->url() }}">
     <meta property="og:type" content="@yield('meta_type', 'website')">
-    <meta property="og:image" content="@yield('meta_image', asset('favicon/favicon-32x32.png'))">
+    <meta property="og:image" content="@yield('meta_image', $faviconUrl)">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('meta_title', $settings?->brand_name ?? 'CERAPE')">
     <meta name="twitter:description" content="@yield('meta_description', $settings?->brand_name ?? 'CERAPE')">
-    <meta name="twitter:image" content="@yield('meta_image', asset('favicon/favicon-32x32.png'))">
-    <link rel="icon" type="image/png" href="{{ asset('favicon/favicon-32x32.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon/apple-touch-icon.png') }}">
+    <meta name="twitter:image" content="@yield('meta_image', $faviconUrl)">
+    <link rel="icon" href="{{ $faviconUrl }}">
+    <link rel="apple-touch-icon" href="{{ $faviconUrl }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">

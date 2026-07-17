@@ -1,5 +1,5 @@
 @php
-    $logoUrl = \App\Support\PdfImage::publicUrl('storage/images/logo.png') ?? asset('grayscale/assets/favicon.ico');
+    $logoUrl = \App\Support\PdfImage::publicUrl(\App\Support\SystemBranding::logoPublicPath()) ?? \App\Support\SystemBranding::logoUrl();
     $heroImage = asset('grayscale/assets/img/bg-masthead.jpg');
     $aboutImage = asset('grayscale/assets/img/demo-image-01.jpg');
     $galleryImages = [

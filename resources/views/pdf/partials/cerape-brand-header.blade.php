@@ -1,6 +1,6 @@
 <div class="brand-header">
     <div class="brand-logo-box">
-        @php($brandLogo = \App\Support\PdfImage::publicDataUri('favicon/logo-512.png') ?? asset('favicon/logo-512.png'))
+        @php($brandLogo = \App\Support\PdfImage::publicDataUri(\App\Support\SystemBranding::logoPublicPath()) ?? \App\Support\SystemBranding::logoUrl())
         <img class="brand-logo" src="{{ $brandLogo }}" alt="Logo CERAPE">
     </div>
 

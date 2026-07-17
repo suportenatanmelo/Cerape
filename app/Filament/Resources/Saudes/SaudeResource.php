@@ -127,7 +127,7 @@ class SaudeResource extends Resource
             'highlight' => $record->faz_tratamento_medico ? 'Em tratamento medico' : 'Acompanhamento sem tratamento medico atual',
             'photoData' => self::imageDataUri($record->acolhido?->avatar),
             'photoLabel' => 'Saude',
-            'logoCerape' => self::publicImageDataUri('storage/images/logo.png'),
+            'logoCerape' => self::publicImageDataUri(\App\Support\SystemBranding::logoPublicPath()),
             'sections' => [
                 'Resumo do acolhido' => [
                     'Acolhido' => $record->acolhido?->nome_completo_paciente,

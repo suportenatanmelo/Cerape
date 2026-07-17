@@ -2,9 +2,10 @@
 
 namespace App\Filament\Frontend\Pages;
 
+use App\Filament\Forms\BrandSettingsSchema;
 use App\Models\FrontendSetting;
+use App\Services\Branding\BrandSettingsService;
 use Filament\Actions\Action;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
@@ -38,13 +39,13 @@ class EditFrontendSettings extends Page implements HasForms
     public function form(Schema $schema): Schema
     {
         return $schema->schema([
-            Tabs::make('Configurações do site')
+                    Tabs::make('Configurações do site')
                 ->tabs([
                     Tabs\Tab::make('Identidade')->schema([
                         \Filament\Forms\Components\Toggle::make('site_enabled')->label('Site ativo')->default(true),
                         \Filament\Forms\Components\Toggle::make('home_enabled')->label('Ativar home')->default(true),
                         \Filament\Forms\Components\TextInput::make('brand_name')->label('Nome da marca')->required()->default('Cerape'),
-                        FileUpload::make('logo_path')->label('Logo do site público')->disk('public')->image()->imageEditor()->directory('imagens/logo'),
+                        ...BrandSettingsSchema::components(),
                         \Filament\Forms\Components\TextInput::make('hero_title')->label('Título principal')->required()->default('Como funciona'),
                         \Filament\Forms\Components\TextInput::make('hero_subtitle')->label('Subtítulo')->default('Conteúdo editável pelo painel /frontend.'),
                         \Filament\Forms\Components\TextInput::make('hero_cta_label')->label('Texto do botão principal')->default('Agendar uma conversa'),
@@ -111,13 +112,11 @@ class EditFrontendSettings extends Page implements HasForms
         ])->statePath('data');
     }
 
-    public function save(): void
+    public function save(BrandSettingsService $brandSettingsService): void
     {
-        $settings = FrontendSetting::query()->firstOrNew([]);
         $data = $this->form->getState();
 
-        $settings->fill($data);
-        $settings->save();
+        $brandSettingsService->update($data);
 
         Notification::make()->title('Configurações do site atualizadas')->success()->send();
     }

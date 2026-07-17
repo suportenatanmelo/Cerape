@@ -2,13 +2,13 @@
 
 namespace App\Filament\Frontend\Resources;
 
+use App\Filament\Forms\BrandSettingsSchema;
 use App\Models\FrontendSetting;
 use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\FileUpload;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
@@ -39,12 +39,7 @@ class FrontendSettingResource extends Resource
                             \Filament\Forms\Components\Toggle::make('site_enabled')->label('Site ativo')->default(true),
                             \Filament\Forms\Components\Toggle::make('home_enabled')->label('Ativar home')->default(true),
                             \Filament\Forms\Components\TextInput::make('brand_name')->label('Nome da marca')->required()->default('Cerape'),
-                            FileUpload::make('logo_path')
-                                ->label('Logo do site público')
-                                ->disk('public')
-                                ->image()
-                                ->imageEditor()
-                                ->directory('imagens/logo'),
+                            ...BrandSettingsSchema::components(),
                             \Filament\Forms\Components\TextInput::make('hero_title')->label('Título principal')->required()->default('Como funciona'),
                             \Filament\Forms\Components\TextInput::make('hero_subtitle')->label('Subtítulo')->default('Conteúdo editável pelo painel /frontend.'),
                             \Filament\Forms\Components\TextInput::make('hero_cta_label')->label('Texto do botão principal')->default('Agendar uma conversa'),
