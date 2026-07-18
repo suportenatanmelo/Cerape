@@ -186,7 +186,7 @@ class AcolhidoForm
                                             ->label('CEP')
                                             ->mask('99999-999')
                                             ->live(onBlur: true)
-                                            ->disabled(fn(Get $get): bool => self::shouldHideAddressFields($get))
+                                            ->disabled(fn(Get $get): bool => self::shouldDisableAddressFields($get))
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
                                                 $cep = preg_replace('/\D+/', '', (string) $state);
 
@@ -233,24 +233,24 @@ class AcolhidoForm
                                             ->helperText('Ao informar o CEP, o endereco sera preenchido automaticamente pelo ViaCEP.'),
                                         TextInput::make('endereco_paciente')
                                             ->label('Endereco do acolhido')
-                                            ->disabled(fn(Get $get): bool => self::shouldHideAddressFields($get))
+                                            ->disabled(fn(Get $get): bool => self::shouldDisableAddressFields($get))
                                             ->required(fn(Get $get): bool => self::shouldRequireAddressFields($get))
                                             ->helperText('Se o CEP geral nao retornar endereco, este campo pode ser preenchido manualmente.'),
                                         TextInput::make('bairro_do_paciente')
                                             ->label('Bairro do acolhido')
-                                            ->disabled(fn(Get $get): bool => self::shouldHideAddressFields($get))
+                                            ->disabled(fn(Get $get): bool => self::shouldDisableAddressFields($get))
                                             ->required(fn(Get $get): bool => self::shouldRequireAddressFields($get))
                                             ->helperText('Opcional quando o CEP geral nao localizar o bairro.'),
                                         TextInput::make('municipio_do_paciente')
                                             ->label('Municipio')
-                                            ->disabled(fn(Get $get): bool => self::shouldHideAddressFields($get))
+                                            ->disabled(fn(Get $get): bool => self::shouldDisableAddressFields($get))
                                             ->required(fn(Get $get): bool => self::shouldRequireAddressFields($get))
                                             ->helperText('Opcional quando a busca do CEP nao retornar municipio.'),
                                         Select::make('uf_municipio_do_paciente')
                                             ->label('UF')
                                             ->options(self::getBrazilianStates())
                                             ->searchable()
-                                            ->disabled(fn(Get $get): bool => self::shouldHideAddressFields($get))
+                                            ->disabled(fn(Get $get): bool => self::shouldDisableAddressFields($get))
                                             ->required(fn(Get $get): bool => self::shouldRequireAddressFields($get))
                                             ->helperText('Opcional quando o CEP nao localizar a UF.'),
                                         Radio::make('moradia_propria')
@@ -261,17 +261,8 @@ class AcolhidoForm
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (self::isYes($state)) {
-                                                    $set('mora_em_casa_aluguada', false);
-                                                    $set('quanto_tempo_de_aluguel', null);
-                                                    $set('em_qual_regiao', null);
-                                                    return;
-                                                }
-
-                                                $set('mora_em_casa_aluguada', false);
-                                                $set('quanto_tempo_de_aluguel', null);
-                                                $set('em_qual_regiao', null);
-                                                self::clearAddressFields($set);
+                                                $set('mora_em_casa_aluguada', null);
+                                                $set('situacao_moradia', null);
                                             }),
                                         Radio::make('mora_em_casa_aluguada')
                                             ->label('Mora em casa alugada?')
@@ -282,25 +273,25 @@ class AcolhidoForm
                                             ->hidden(fn(Get $get): bool => self::isYes($get('moradia_propria')))
                                             ->dehydratedWhenHidden()
                                             ->afterStateUpdated(function (Set $set, mixed $state): void {
-                                                if (self::isYes($state)) {
-                                                    return;
-                                                }
-
-                                                $set('quanto_tempo_de_aluguel', null);
-                                                $set('em_qual_regiao', null);
-                                                self::clearAddressFields($set);
+                                                $set('situacao_moradia', null);
                                             }),
-                                        Select::make('quanto_tempo_de_aluguel')
-                                            ->label('Quanto tempo de aluguel')
+                                        Select::make('situacao_moradia')
+                                            ->label('Situacao de moradia')
                                             ->options([
-                                                '6 meses' => '6 meses',
-                                                'Mais de 1 ano' => 'Mais de 1 ano',
+                                                'morador_rua' => 'Morador de Rua',
+                                                'casa_cedida' => 'Casa Cedida',
+                                                'parentes' => 'Casa de Parentes',
+                                                'amigos' => 'Casa de Amigos',
+                                                'instituicao' => 'Instituicao',
+                                                'abrigo' => 'Abrigo',
+                                                'ocupacao' => 'Ocupacao',
+                                                'outro' => 'Outro',
                                             ])
-                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
-                                            ->dehydratedWhenHidden(),
-                                        TextInput::make('em_qual_regiao')
-                                            ->label('Em qual regiao')
-                                            ->hidden(fn(Get $get): bool => self::shouldHideQuantoTempoDeAluguel($get))
+                                            ->searchable()
+                                            ->preload()
+                                            ->live()
+                                            ->required(fn(Get $get): bool => self::shouldRequireSituacaoMoradia($get))
+                                            ->hidden(fn(Get $get): bool => self::shouldHideSituacaoMoradia($get))
                                             ->dehydratedWhenHidden(),
                                     ]),
                                 ]),
@@ -930,8 +921,7 @@ class AcolhidoForm
         }
 
         if (! $data['mora_em_casa_aluguada']) {
-            $data['quanto_tempo_de_aluguel'] = null;
-            $data['em_qual_regiao'] = null;
+            // Campos de aluguel/remocao foram removidos do formulário.
         }
 
         if (! $data['tem_documentacao']) {
@@ -1084,13 +1074,15 @@ class AcolhidoForm
         return AcolhidoResource::getUrl('view', ['record' => $acolhido]);
     }
 
-    private static function shouldHideQuantoTempoDeAluguel(Get $get): bool
+    private static function shouldHideSituacaoMoradia(Get $get): bool
     {
-        if (self::isYes($get('moradia_propria'))) {
-            return true;
-        }
+        return self::isYes($get('moradia_propria'))
+            || self::isYes($get('mora_em_casa_aluguada'));
+    }
 
-        return ! self::isYes($get('mora_em_casa_aluguada'));
+    private static function shouldRequireSituacaoMoradia(Get $get): bool
+    {
+        return ! self::shouldHideSituacaoMoradia($get);
     }
 
     private static function shouldRequireAddressFields(Get $get): bool
@@ -1098,18 +1090,26 @@ class AcolhidoForm
         return self::shouldRequireAddressFieldsFromData([
             'moradia_propria' => $get('moradia_propria'),
             'mora_em_casa_aluguada' => $get('mora_em_casa_aluguada'),
+            'situacao_moradia' => $get('situacao_moradia'),
         ]);
     }
 
-    private static function shouldHideAddressFields(Get $get): bool
+    private static function shouldDisableAddressFields(Get $get): bool
     {
-        return ! self::shouldRequireAddressFields($get);
+        return self::isMoradorDeRua($get('situacao_moradia'));
     }
 
     private static function shouldRequireAddressFieldsFromData(array $data): bool
     {
-        return self::isYes($data['moradia_propria'] ?? false)
-            || self::isYes($data['mora_em_casa_aluguada'] ?? false);
+        if (self::isYes($data['moradia_propria'] ?? false)) {
+            return true;
+        }
+
+        if (self::isYes($data['mora_em_casa_aluguada'] ?? false)) {
+            return true;
+        }
+
+        return ! self::isMoradorDeRua($data['situacao_moradia'] ?? null);
     }
 
     private static function clearAddressFields(Set $set): void
@@ -1119,6 +1119,11 @@ class AcolhidoForm
         $set('bairro_do_paciente', null);
         $set('municipio_do_paciente', null);
         $set('uf_municipio_do_paciente', null);
+    }
+
+    private static function isMoradorDeRua(mixed $value): bool
+    {
+        return (string) $value === 'morador_rua';
     }
 
     private static function shouldHideOutroMeioDeEncaminhamento(Get $get): bool
