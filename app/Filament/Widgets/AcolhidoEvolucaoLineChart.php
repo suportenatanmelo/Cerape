@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class AcolhidoEvolucaoLineChart extends LineChartWidget
 {
@@ -136,12 +137,14 @@ class AcolhidoEvolucaoLineChart extends LineChartWidget
      */
     private function dailySeries(int $acolhidoId, Carbon $start, Carbon $end, string $labelFormat): array
     {
-        $averages = AvaliacaoPessoal::query()
-            ->selectRaw('DATE(created_at) as period, AVG(`Total`) as average')
-            ->where('acolhido_id', $acolhidoId)
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('average', 'period');
+        $averages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->selectRaw('DATE(created_at) as period, AVG(`Total`) as average')
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('average', 'period');
+        }, collect());
 
         $labels = [];
         $values = [];
@@ -161,15 +164,17 @@ class AcolhidoEvolucaoLineChart extends LineChartWidget
      */
     private function monthlySeries(int $acolhidoId, Carbon $start, Carbon $end): array
     {
-        $averages = AvaliacaoPessoal::query()
-            ->select([
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
-                DB::raw('AVG(`Total`) as average'),
-            ])
-            ->where('acolhido_id', $acolhidoId)
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('average', 'period');
+        $averages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->select([
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
+                    DB::raw('AVG(`Total`) as average'),
+                ])
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('average', 'period');
+        }, collect());
 
         $labels = [];
         $values = [];

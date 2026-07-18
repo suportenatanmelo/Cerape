@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class AcolhidosCriadosLineChart extends LineChartWidget
 {
@@ -100,11 +101,13 @@ class AcolhidosCriadosLineChart extends LineChartWidget
      */
     private function dailySeries(Carbon $start, Carbon $end, string $labelFormat): array
     {
-        $totals = Acolhido::query()
-            ->selectRaw('DATE(created_at) as period, COUNT(*) as total')
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('total', 'period');
+        $totals = DbSupport::safe(function () use ($start, $end) {
+            return Acolhido::query()
+                ->selectRaw('DATE(created_at) as period, COUNT(*) as total')
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('total', 'period');
+        }, collect());
 
         $labels = [];
         $values = [];
@@ -124,14 +127,16 @@ class AcolhidosCriadosLineChart extends LineChartWidget
      */
     private function monthlySeries(Carbon $start, Carbon $end): array
     {
-        $totals = Acolhido::query()
-            ->select([
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
-                DB::raw('COUNT(*) as total'),
-            ])
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('total', 'period');
+        $totals = DbSupport::safe(function () use ($start, $end) {
+            return Acolhido::query()
+                ->select([
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
+                    DB::raw('COUNT(*) as total'),
+                ])
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('total', 'period');
+        }, collect());
 
         $labels = [];
         $values = [];

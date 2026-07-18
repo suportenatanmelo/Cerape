@@ -7,6 +7,7 @@ use App\Support\PortalContext;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class DashboardEvolucaoAtendimentosChart extends ChartWidget
 {
@@ -29,11 +30,13 @@ class DashboardEvolucaoAtendimentosChart extends ChartWidget
         $start = now()->subDays(29)->startOfDay();
         $end = now()->endOfDay();
 
-        $values = Agenda::query()
-            ->select([DB::raw('DATE(data) as period'), DB::raw('COUNT(*) as total')])
-            ->whereBetween('data', [$start, $end])
-            ->groupBy('period')
-            ->pluck('total', 'period');
+        $values = DbSupport::safe(function () use ($start, $end) {
+            return Agenda::query()
+                ->select([DB::raw('DATE(data) as period'), DB::raw('COUNT(*) as total')])
+                ->whereBetween('data', [$start, $end])
+                ->groupBy('period')
+                ->pluck('total', 'period');
+        }, collect());
 
         $labels = [];
         $data = [];

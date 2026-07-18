@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class AvaliacaoPessoalLineChart extends LineChartWidget
 {
@@ -149,22 +150,26 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
      */
     private function dailySeries(int $acolhidoId, Carbon $start, Carbon $end, string $labelFormat): array
     {
-        $rawAverages = AvaliacaoPessoal::query()
-            ->selectRaw('DATE(created_at) as period, AVG(`Total`) as average')
-            ->where('acolhido_id', $acolhidoId)
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('average', 'period');
+        $rawAverages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->selectRaw('DATE(created_at) as period, AVG(`Total`) as average')
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('average', 'period');
+        }, collect());
 
-        $voterAverages = AvaliacaoPessoal::query()
-            ->selectRaw('DATE(created_at) as period, user_id, AVG(`Total`) as average')
-            ->where('acolhido_id', $acolhidoId)
-            ->whereNotNull('user_id')
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period', 'user_id')
-            ->get()
-            ->groupBy('period')
-            ->map(fn ($periodRows): float => (float) $periodRows->avg('average'));
+        $voterAverages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->selectRaw('DATE(created_at) as period, user_id, AVG(`Total`) as average')
+                ->where('acolhido_id', $acolhidoId)
+                ->whereNotNull('user_id')
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period', 'user_id')
+                ->get()
+                ->groupBy('period')
+                ->map(fn ($periodRows): float => (float) $periodRows->avg('average'));
+        }, collect());
 
         $labels = [];
         $rawValues = [];
@@ -186,29 +191,33 @@ class AvaliacaoPessoalLineChart extends LineChartWidget
      */
     private function monthlySeries(int $acolhidoId, Carbon $start, Carbon $end): array
     {
-        $rawAverages = AvaliacaoPessoal::query()
-            ->select([
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
-                DB::raw('AVG(`Total`) as average'),
-            ])
-            ->where('acolhido_id', $acolhidoId)
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('average', 'period');
+        $rawAverages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->select([
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
+                    DB::raw('AVG(`Total`) as average'),
+                ])
+                ->where('acolhido_id', $acolhidoId)
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('average', 'period');
+        }, collect());
 
-        $voterAverages = AvaliacaoPessoal::query()
-            ->select([
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
-                'user_id',
-                DB::raw('AVG(`Total`) as average'),
-            ])
-            ->where('acolhido_id', $acolhidoId)
-            ->whereNotNull('user_id')
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period', 'user_id')
-            ->get()
-            ->groupBy('period')
-            ->map(fn ($periodRows): float => (float) $periodRows->avg('average'));
+        $voterAverages = DbSupport::safe(function () use ($acolhidoId, $start, $end) {
+            return AvaliacaoPessoal::query()
+                ->select([
+                    DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
+                    'user_id',
+                    DB::raw('AVG(`Total`) as average'),
+                ])
+                ->where('acolhido_id', $acolhidoId)
+                ->whereNotNull('user_id')
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period', 'user_id')
+                ->get()
+                ->groupBy('period')
+                ->map(fn ($periodRows): float => (float) $periodRows->avg('average'));
+        }, collect());
 
         $labels = [];
         $rawValues = [];

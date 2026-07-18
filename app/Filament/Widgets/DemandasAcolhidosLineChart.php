@@ -12,6 +12,7 @@ use Filament\Schemas\Schema;
 use Filament\Widgets\ChartWidget\Concerns\HasFiltersSchema;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class DemandasAcolhidosLineChart extends LineChartWidget
 {
@@ -194,6 +195,8 @@ class DemandasAcolhidosLineChart extends LineChartWidget
             return null;
         }
 
-        return Acolhido::query()->find($acolhidoId);
+        return DbSupport::safe(function () use ($acolhidoId) {
+            return Acolhido::query()->find($acolhidoId);
+        }, null);
     }
 }

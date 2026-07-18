@@ -175,7 +175,14 @@ class AcolhidosChecklist extends Page implements HasForms
      */
     private static function columnOptions(): array
     {
-        return collect(SchemaFacade::getColumnListing('acolhidos'))
+        try {
+            $columns = SchemaFacade::getColumnListing('acolhidos');
+        } catch (\Throwable $e) {
+            // Se o banco nao estiver disponivel, retorna conjunto vazio para evitar erro 500
+            return [];
+        }
+
+        return collect($columns)
             ->mapWithKeys(fn (string $column): array => [$column => self::formatColumnLabel($column)])
             ->all();
     }

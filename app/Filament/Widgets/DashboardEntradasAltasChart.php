@@ -7,6 +7,7 @@ use App\Support\PortalContext;
 use Carbon\CarbonPeriod;
 use Filament\Widgets\LineChartWidget;
 use Illuminate\Support\Facades\DB;
+use App\Support\Db as DbSupport;
 
 class DashboardEntradasAltasChart extends LineChartWidget
 {
@@ -26,18 +27,22 @@ class DashboardEntradasAltasChart extends LineChartWidget
         $start = now()->subMonths(11)->startOfMonth();
         $end = now()->endOfMonth();
 
-        $entradas = Acolhido::query()
-            ->select([DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('total', 'period');
+        $entradas = DbSupport::safe(function () use ($start, $end) {
+            return Acolhido::query()
+                ->select([DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
+                ->whereBetween('created_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('total', 'period');
+        }, collect());
 
-        $altas = Acolhido::query()
-            ->select([DB::raw("DATE_FORMAT(updated_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
-            ->where('ativo', false)
-            ->whereBetween('updated_at', [$start, $end])
-            ->groupBy('period')
-            ->pluck('total', 'period');
+        $altas = DbSupport::safe(function () use ($start, $end) {
+            return Acolhido::query()
+                ->select([DB::raw("DATE_FORMAT(updated_at, '%Y-%m') as period"), DB::raw('COUNT(*) as total')])
+                ->where('ativo', false)
+                ->whereBetween('updated_at', [$start, $end])
+                ->groupBy('period')
+                ->pluck('total', 'period');
+        }, collect());
 
         $labels = [];
         $entradasValues = [];
