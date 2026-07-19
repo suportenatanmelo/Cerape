@@ -28,49 +28,15 @@
             </div>
 
             <div class="dashboard-overview-card">
-                <div class="dashboard-overview-card-label">Novos no mês</div>
-                <div class="dashboard-overview-card-value">{{ $cards['novos_acolhimentos_mes'] }}</div>
-                <div class="dashboard-overview-card-note">Entradas de acolhidos registradas no mês atual.</div>
+                <div class="dashboard-overview-card-label">Novos no período</div>
+                <div class="dashboard-overview-card-value">{{ $cards['novos_periodo'] }}</div>
+                <div class="dashboard-overview-card-note">Entradas de acolhidos no intervalo selecionado.</div>
             </div>
 
             <div class="dashboard-overview-card">
                 <div class="dashboard-overview-card-label">Consultas hoje</div>
                 <div class="dashboard-overview-card-value">{{ $cards['consultas_hoje'] }}</div>
                 <div class="dashboard-overview-card-note">Consultas agendadas para hoje.</div>
-            </div>
-        </div>
-
-        <div class="mt-10 dashboard-overview-panel">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <h3>Aniversariantes do mês</h3>
-                    <p class="dashboard-overview-subtitle">Fotos e nomes dos próximos aniversariantes, com foco em identificação rápida e elegante.</p>
-                </div>
-                <span class="dashboard-overview-summary-label">{{ count($birthdays) }} no mês</span>
-            </div>
-
-            <div class="dashboard-overview-birthday-list mt-6">
-                @forelse ($birthdays as $birthday)
-                    @php
-                        $avatar = $birthday['avatar'] ? route('media.serve', ['path' => ltrim($birthday['avatar'], '/')]) : 'https://ui-avatars.com/api/?name=' . urlencode($birthday['name']);
-                    @endphp
-
-                    <div class="dashboard-overview-birthday-item">
-                        <img src="{{ $avatar }}" alt="{{ $birthday['name'] }}" class="dashboard-overview-birthday-avatar" loading="lazy">
-
-                        <div class="min-w-0 flex-1">
-                            <div class="dashboard-overview-birthday-name">{{ $birthday['name'] }}</div>
-                            <div class="dashboard-overview-birthday-meta">{{ $birthday['role'] }} · {{ $birthday['birthday'] }} · {{ $birthday['age'] }} anos</div>
-                        </div>
-
-                        <span class="dashboard-overview-birthday-tag">{{ $birthday['label'] }}</span>
-                    </div>
-                @empty
-                    <div class="dashboard-overview-list-item">
-                        <div class="dashboard-overview-list-item-title">Nenhum aniversariante neste mês</div>
-                        <div class="dashboard-overview-list-item-meta">O dashboard exibirá fotos assim que surgirem novos aniversariantes.</div>
-                    </div>
-                @endforelse
             </div>
         </div>
 
@@ -93,12 +59,8 @@
             </section>
 
             <aside class="dashboard-overview-panel">
-                <h3>Ações rápidas</h3>
-                <div class="dashboard-overview-action-list">
-                    @foreach ($actions as $action)
-                        <a href="{{ $action['url'] }}" class="dashboard-overview-action-link">{{ $action['label'] }}</a>
-                    @endforeach
-                </div>
+                <h3>Leitura estratégica</h3>
+                <p class="dashboard-overview-subtitle">Os principais números da operação com foco em atenção rápida e decisão imediata.</p>
             </aside>
         </div>
     </div>
