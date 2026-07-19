@@ -8,6 +8,7 @@ use App\Filament\Pages\BrandSettings;
 use App\Filament\Pages\Dashboard as AdminDashboard;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
+use App\Filament\Resources\ActivityLogs\ActivityLogResource;
 use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
@@ -66,6 +67,13 @@ class AdminPanelProvider extends PanelProvider
                     ->sort(1)
                     ->url(fn (): string => route(config('chatify.routes.prefix')))
                     ->visible(fn (): bool => FeedbackFamiliar::canAccess()),
+                NavigationItem::make('Auditoria')
+                    ->group(fn (): string => 'Administração e acesso')
+                    ->icon(Heroicon::OutlinedClipboardDocumentList)
+                    ->isActiveWhen(fn (): bool => request()->routeIs('filament.admin.resources.activity-logs.*'))
+                    ->sort(98)
+                    ->url(fn (): string => url('/admin/activity-logs'))
+                    ->visible(fn (): bool => ActivityLogResource::canAccess()),
 
             ])
             ->profile(Profile::class, isSimple: false)

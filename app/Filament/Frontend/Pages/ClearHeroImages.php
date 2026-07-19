@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Frontend\Pages;
 
 use App\Models\User;
 use Filament\Pages\Page;
@@ -8,9 +8,9 @@ use Filament\Pages\Page;
 class ClearHeroImages extends Page
 {
     protected static ?string $navigationLabel = 'Limpar imagens (Hero)';
-    protected static string|\UnitEnum|null $navigationGroup = 'Administração e acesso';
-    protected static ?int $navigationSort = 120;
-    protected static string $routePath = '/clear-hero-images';
+    protected static string|\UnitEnum|null $navigationGroup = 'Site público';
+    protected static ?string $title = 'Limpar imagens do carrossel';
+    protected static ?string $routePath = '/clear-hero-images';
     protected static bool $shouldRegisterNavigation = false;
     protected string $view = 'filament.pages.clear-hero-images';
 

@@ -3,8 +3,10 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Frontend\Pages\ClinicSettings;
+use App\Filament\Frontend\Pages\ClearHeroImages;
 use App\Filament\Frontend\Pages\ContactSettings;
 use App\Filament\Frontend\Pages\EditFrontendSettings;
+use App\Filament\Frontend\Pages\HeroSlideTrash;
 use App\Filament\Frontend\Pages\MediaManager;
 use App\Filament\Frontend\Pages\QuemSomos;
 use App\Filament\Frontend\Pages\SitePreview;
@@ -73,6 +75,8 @@ class FrontendPanelProvider extends PanelProvider
                 ContactSettings::class,
                 WhatsAppSettings::class,
                 MediaManager::class,
+                ClearHeroImages::class,
+                HeroSlideTrash::class,
             ])
             ->plugins([
                 FilamentShieldPlugin::make()

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Jobs\ClearHeroImagesJob;
 use App\Models\User;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -31,6 +32,19 @@ class ClearHeroImagesController extends Controller
         if ($useQueue) {
             ClearHeroImagesJob::dispatch($user->getKey(), $makeBackup);
 
+            app(ActivityLogService::class)->recordManual(
+                module: 'Site público',
+                action: 'clear_hero_images',
+                description: 'Limpeza de imagens do hero agendada em fila',
+                newValues: [
+                    'backup' => $makeBackup,
+                    'queue' => true,
+                ],
+                context: [
+                    'model_type' => 'hero_slides',
+                ],
+            );
+
             Notification::make()
                 ->title('Limpeza agendada')
                 ->success()
@@ -41,6 +55,19 @@ class ClearHeroImagesController extends Controller
 
         // run synchronously
         (new ClearHeroImagesJob($user->getKey(), $makeBackup))->handle();
+
+        app(ActivityLogService::class)->recordManual(
+            module: 'Site público',
+            action: 'clear_hero_images',
+            description: 'Limpeza de imagens do hero executada imediatamente',
+            newValues: [
+                'backup' => $makeBackup,
+                'queue' => false,
+            ],
+            context: [
+                'model_type' => 'hero_slides',
+            ],
+        );
 
         Notification::make()
             ->title('Limpeza concluída')

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use App\Models\HeroSlideTrash;
 use App\Models\FrontendMaintenanceLog;
+use App\Services\ActivityLogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
@@ -48,6 +49,15 @@ class HeroSlideTrashController extends Controller
             'result' => ['status' => 'restored'],
         ]);
 
+        app(ActivityLogService::class)->recordManual(
+            module: 'Site público',
+            action: 'restore_hero_slide',
+            description: 'Slide restaurado a partir da lixeira do carrossel',
+            model: $slide,
+            oldValues: $trash->toArray(),
+            newValues: $slide->fresh()->toArray(),
+        );
+
         $trash->delete();
 
         Notification::make()
@@ -89,6 +99,15 @@ class HeroSlideTrashController extends Controller
             'result' => ['status' => 'deleted'],
         ]);
 
+        app(ActivityLogService::class)->recordManual(
+            module: 'Site público',
+            action: 'force_delete_hero_slide_trash',
+            description: 'Item removido definitivamente da lixeira do carrossel',
+            model: $trash,
+            oldValues: $trash->toArray(),
+            newValues: [],
+        );
+
         $trash->delete();
 
         Notification::make()
@@ -125,6 +144,13 @@ class HeroSlideTrashController extends Controller
             'payload' => ['count' => $count],
             'result' => ['status' => 'emptied', 'count' => $count],
         ]);
+
+        app(ActivityLogService::class)->recordManual(
+            module: 'Site público',
+            action: 'empty_hero_slide_trash',
+            description: 'Lixeira do carrossel esvaziada',
+            newValues: ['count' => $count],
+        );
 
         Notification::make()
             ->title('Lixeira esvaziada')

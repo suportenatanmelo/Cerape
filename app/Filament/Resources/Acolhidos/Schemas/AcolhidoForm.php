@@ -1096,29 +1096,23 @@ class AcolhidoForm
 
     private static function shouldDisableAddressFields(Get $get): bool
     {
-        return self::isMoradorDeRua($get('situacao_moradia'));
+        return self::isSituacaoDeRuaSemEndereco([
+            'moradia_propria' => $get('moradia_propria'),
+            'mora_em_casa_aluguada' => $get('mora_em_casa_aluguada'),
+            'situacao_moradia' => $get('situacao_moradia'),
+        ]);
     }
 
     private static function shouldRequireAddressFieldsFromData(array $data): bool
     {
-        if (self::isYes($data['moradia_propria'] ?? false)) {
-            return true;
-        }
-
-        if (self::isYes($data['mora_em_casa_aluguada'] ?? false)) {
-            return true;
-        }
-
-        return ! self::isMoradorDeRua($data['situacao_moradia'] ?? null);
+        return ! self::isSituacaoDeRuaSemEndereco($data);
     }
 
-    private static function clearAddressFields(Set $set): void
+    private static function isSituacaoDeRuaSemEndereco(array $data): bool
     {
-        $set('CEP', null);
-        $set('endereco_paciente', null);
-        $set('bairro_do_paciente', null);
-        $set('municipio_do_paciente', null);
-        $set('uf_municipio_do_paciente', null);
+        return ! self::isYes($data['moradia_propria'] ?? false)
+            && ! self::isYes($data['mora_em_casa_aluguada'] ?? false)
+            && self::isMoradorDeRua($data['situacao_moradia'] ?? null);
     }
 
     private static function isMoradorDeRua(mixed $value): bool

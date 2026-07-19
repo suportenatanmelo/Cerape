@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Widgets\DashboardAgendaWidget;
+use App\Filament\Widgets\DashboardActivityLogsWidget;
 use App\Filament\Widgets\DashboardAlertsWidget;
 use App\Filament\Widgets\DashboardAtendimentosPorSetorChart;
 use App\Filament\Widgets\DashboardBirthdaysWidget;
@@ -49,6 +50,7 @@ class Dashboard extends \Filament\Pages\Dashboard
             DashboardAgendaWidget::class,
             DashboardAlertsWidget::class,
             DashboardLatestActivitiesWidget::class,
+            DashboardActivityLogsWidget::class,
             DashboardFinanceiroWidget::class,
             DashboardBirthdaysWidget::class,
             DashboardQuickActionsWidget::class,
