@@ -20,13 +20,22 @@ class DashboardAgendaWidget extends Widget
 
     protected function getViewData(): array
     {
-        $items = Agenda::query()
+        $query = Agenda::query()
             ->with(['acolhido', 'funcionario'])
-            ->whereDate('data', now())
+            ->whereDate('data', now());
+
+        $items = (clone $query)
             ->orderBy('hora_inicio')
             ->limit(8)
             ->get();
 
-        return ['items' => $items];
+        return [
+            'items' => $items,
+            'summary' => [
+                'total' => (clone $query)->count(),
+                'confirmados' => (clone $query)->where('status', 'Confirmado')->count(),
+                'agendados' => (clone $query)->where('status', 'Agendado')->count(),
+            ],
+        ];
     }
 }

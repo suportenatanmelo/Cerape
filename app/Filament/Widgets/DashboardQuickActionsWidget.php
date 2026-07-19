@@ -25,16 +25,16 @@ class DashboardQuickActionsWidget extends Widget
     protected function getViewData(): array
     {
         $items = [
-                ['label' => 'Novo Acolhido', 'url' => AcolhidoResource::getUrl('create'), 'icon' => 'heroicon-o-user-plus'],
-                ['label' => 'Nova Consulta', 'url' => AgendaResource::getUrl('create'), 'icon' => 'heroicon-o-calendar-days'],
-                ['label' => 'Nova Evolução', 'url' => ProntuarioEvolucaoResource::getUrl('create'), 'icon' => 'heroicon-o-document-plus'],
-                ['label' => 'Novo Agendamento', 'url' => AgendaResource::getUrl('create'), 'icon' => 'heroicon-o-clock'],
-                ['label' => 'Nova Ficha de Saúde', 'url' => SaudeResource::getUrl('create'), 'icon' => 'heroicon-o-heart'],
-                ['label' => 'Consulta de Saúde', 'url' => SaudeResource::getUrl('index'), 'icon' => 'heroicon-o-beaker'],
-                ['label' => 'Emitir Relatório', 'url' => ProntuarioEvolucaoResource::getUrl('index'), 'icon' => 'heroicon-o-printer'],
+            ['label' => 'Novo Acolhido', 'url' => AcolhidoResource::getUrl('create'), 'icon' => 'heroicon-o-user-plus'],
+            ['label' => 'Nova Consulta', 'url' => AgendaResource::getUrl('create'), 'icon' => 'heroicon-o-calendar-days'],
+            ['label' => 'Nova Evolução', 'url' => ProntuarioEvolucaoResource::getUrl('create'), 'icon' => 'heroicon-o-document-plus'],
+            ['label' => 'Novo Agendamento', 'url' => AgendaResource::getUrl('create'), 'icon' => 'heroicon-o-clock'],
+            ['label' => 'Nova Ficha de Saúde', 'url' => SaudeResource::getUrl('create'), 'icon' => 'heroicon-o-heart'],
+            ['label' => 'Consulta de Saúde', 'url' => SaudeResource::getUrl('index'), 'icon' => 'heroicon-o-beaker'],
+            ['label' => 'Emitir Relatório', 'url' => ProntuarioEvolucaoResource::getUrl('index'), 'icon' => 'heroicon-o-printer'],
         ];
 
-            $items[] = [
+        $items[] = [
             'label' => 'Funcionários',
             'url' => UserResource::getUrl('index'),
             'icon' => 'heroicon-o-briefcase',

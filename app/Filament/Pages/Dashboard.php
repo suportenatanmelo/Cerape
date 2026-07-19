@@ -2,21 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\DashboardAgendaWidget;
-use App\Filament\Widgets\DashboardActivityLogsWidget;
-use App\Filament\Widgets\DashboardAlertsWidget;
-use App\Filament\Widgets\DashboardAtendimentosPorSetorChart;
-use App\Filament\Widgets\DashboardBirthdaysWidget;
-use App\Filament\Widgets\DashboardEntradasAltasChart;
-use App\Filament\Widgets\DashboardEvolucaoAtendimentosChart;
-use App\Filament\Widgets\DashboardFaixaEtariaChart;
-use App\Filament\Widgets\DashboardFinanceiroWidget;
-use App\Filament\Widgets\DashboardGeneralIndicatorsWidget;
-use App\Filament\Widgets\DashboardLatestActivitiesWidget;
-use App\Filament\Widgets\DashboardOrigemEncaminhamentoChart;
-use App\Filament\Widgets\DashboardQuickActionsWidget;
-use App\Filament\Widgets\DashboardSituacaoAcolhidosChart;
-use App\Filament\Widgets\DashboardStatsOverviewWidget;
+use App\Filament\Widgets\DashboardOverviewWidget;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -40,21 +26,7 @@ class Dashboard extends \Filament\Pages\Dashboard
     protected function getHeaderWidgets(): array
     {
         return [
-            DashboardStatsOverviewWidget::class,
-            DashboardEntradasAltasChart::class,
-            DashboardSituacaoAcolhidosChart::class,
-            DashboardAtendimentosPorSetorChart::class,
-            DashboardEvolucaoAtendimentosChart::class,
-            DashboardFaixaEtariaChart::class,
-            DashboardOrigemEncaminhamentoChart::class,
-            DashboardAgendaWidget::class,
-            DashboardAlertsWidget::class,
-            DashboardLatestActivitiesWidget::class,
-            DashboardActivityLogsWidget::class,
-            DashboardFinanceiroWidget::class,
-            DashboardBirthdaysWidget::class,
-            DashboardQuickActionsWidget::class,
-            DashboardGeneralIndicatorsWidget::class,
+            DashboardOverviewWidget::class,
         ];
     }
 

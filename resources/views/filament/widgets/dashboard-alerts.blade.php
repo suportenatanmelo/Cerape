@@ -1,27 +1,42 @@
 <x-filament-widgets::widget>
-    <x-filament::section>
-        <x-slot name="heading">Alertas</x-slot>
+    @php
+        $alertClasses = [
+            'danger' => 'dashboard-badge--danger',
+            'warning' => 'dashboard-badge--warning',
+            'primary' => 'dashboard-badge--neutral',
+            'gray' => 'dashboard-badge--neutral',
+            'success' => 'dashboard-badge--success',
+        ];
+        $alertLabels = [
+            'danger' => 'Crítico',
+            'warning' => 'Atenção',
+            'primary' => 'Informativo',
+            'gray' => 'Neutro',
+            'success' => 'Saudável',
+        ];
+    @endphp
 
-        <div class="space-y-3">
+    <div class="dashboard-widget-shell p-5 sm:p-6">
+        <div class="dashboard-widget-header">
+            <div>
+                <div class="dashboard-widget-kicker">Sinais</div>
+                <h3 class="dashboard-widget-title">Alertas</h3>
+                <p class="dashboard-widget-subtitle">Resumo dos pontos de atenção que precisam de leitura rápida.</p>
+            </div>
+        </div>
+
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
             @foreach ($items as $item)
-                @php
-                    $alertColors = [
-                        'danger' => '#ef4444',
-                        'warning' => '#f59e0b',
-                        'primary' => '#3b82f6',
-                        'gray' => '#6b7280',
-                        'success' => '#22c55e',
-                    ];
-                    $dotColor = $alertColors[$item['color']] ?? '#6b7280';
-                @endphp
-                <div class="flex items-center justify-between rounded-xl border border-gray-200 px-4 py-3 dark:border-gray-700">
-                    <div>
-                        <div class="font-medium text-gray-950 dark:text-white">{{ $item['label'] }}</div>
-                        <div class="text-sm text-gray-500">{{ $item['value'] }}</div>
+                <div class="dashboard-summary-card flex items-start justify-between gap-4">
+                    <div class="min-w-0">
+                        <div class="dashboard-summary-label">{{ $item['label'] }}</div>
+                        <div class="dashboard-summary-value mt-2 text-[1.55rem]">{{ $item['value'] }}</div>
                     </div>
-                    <div class="h-3 w-3 rounded-full" style="background-color: {{ $dotColor }}"></div>
+                    <span class="dashboard-badge {{ $alertClasses[$item['color']] ?? 'dashboard-badge--neutral' }} shrink-0">
+                        {{ $alertLabels[$item['color']] ?? 'Info' }}
+                    </span>
                 </div>
             @endforeach
         </div>
-    </x-filament::section>
+    </div>
 </x-filament-widgets::widget>
