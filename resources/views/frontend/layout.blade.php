@@ -1,37 +1,34 @@
 @php
     $settings ??= null;
 
-    $activePalette = \App\Models\ThemePalette::query()->where('is_current', true)->first();
 
-    if ($activePalette) {
-        $headerPrimary = $activePalette->header_color ?? $settings?->header_primary_color ?? '#0f172a';
-        $headerSecondary = $activePalette->secondary_color ?? $settings?->header_secondary_color ?? '#155e75';
-        $footerPrimary = $activePalette->footer_color ?? $settings?->footer_primary_color ?? '#111827';
-        $footerSecondary = $activePalette->secondary_color ?? $settings?->footer_secondary_color ?? '#0f766e';
-        $fontColor = $activePalette->text_color ?? $settings?->font_color ?? '#e5e7eb';
-        $accent = $activePalette->accent_color ?? $settings?->accent_color ?? '#38bdf8';
-        $bg = $activePalette->background_color ?? '#faf7f2';
-        $bgSoft = $activePalette->card_color ?? '#f1ece2';
-        $surface = $activePalette->surface_color ?? 'rgba(255, 255, 255, 0.82)';
-        $surfaceStrong = $activePalette->card_color ?? '#ffffff';
-        $pine = $headerPrimary;
-        $pineLight = $headerSecondary;
-        $amber = $accent;
-        $amberSoft = $accent;
-        $sage = $footerSecondary;
-        $ink = $fontColor;
-        $inkSoft = $fontColor;
-        $line = $activePalette->border_color ?? '#e2dbcb';
-        $shadow = '0 18px 36px rgba(30, 61, 54, 0.08)';
-        $paletteName = $activePalette->name;
-    } else {
+    $headerPrimary = $settings?->header_primary_color ?? '#0f172a';
+    $headerSecondary = $settings?->header_secondary_color ?? '#155e75';
+    $footerPrimary = $settings?->footer_primary_color ?? '#111827';
+    $footerSecondary = $settings?->footer_secondary_color ?? '#0f766e';
+    $fontColor = $settings?->font_color ?? '#e5e7eb';
+    $accent = $settings?->accent_color ?? '#38bdf8';
+    $paletteName = null;
+    $bg = '#faf7f2';
+    $bgSoft = '#f1ece2';
+    $surface = 'rgba(255, 255, 255, 0.82)';
+    $surfaceStrong = '#ffffff';
+    $pine = '#1e3d36';
+    $pineLight = '#2c5a4f';
+    $amber = '#e08e4f';
+    $amberSoft = '#f2c49a';
+    $sage = '#6b8e78';
+    $ink = '#2b2823';
+    $inkSoft = '#6b6459';
+    $line = '#e2dbcb';
+    $shadow = '0 18px 36px rgba(30, 61, 54, 0.08)';
         $headerPrimary = $settings?->header_primary_color ?? '#0f172a';
         $headerSecondary = $settings?->header_secondary_color ?? '#155e75';
         $footerPrimary = $settings?->footer_primary_color ?? '#111827';
         $footerSecondary = $settings?->footer_secondary_color ?? '#0f766e';
         $fontColor = $settings?->font_color ?? '#e5e7eb';
         $accent = $settings?->accent_color ?? '#38bdf8';
-        $paletteName = $paletteName ?? null;
+        $paletteName = null;
         $bg = '#faf7f2';
         $bgSoft = '#f1ece2';
         $surface = 'rgba(255, 255, 255, 0.82)';

@@ -9,9 +9,7 @@ use App\Filament\Pages\Dashboard as AdminDashboard;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\ActivityLogs\ActivityLogResource;
-use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
-use App\Models\ThemePalette;
 use App\Support\PortalContext;
 use App\Support\SystemBranding;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -52,22 +50,7 @@ class AdminPanelProvider extends PanelProvider
                 'Administração e acesso',
             ];
 
-        $activePalette = ThemePalette::query()
-            ->where('is_current', true)
-            ->orWhere('is_active', true)
-            ->orderByDesc('is_current')
-            ->orderBy('position')
-            ->first();
-
-        $paletteColors = $activePalette ? [
-            'primary' => $activePalette->primary_color,
-            'secondary' => $activePalette->secondary_color,
-            'accent' => $activePalette->accent_color,
-            'success' => $activePalette->success_color,
-            'warning' => $activePalette->warning_color,
-            'danger' => $activePalette->danger_color,
-            'info' => $activePalette->info_color,
-        ] : [
+        $defaultColors = [
             'primary' => '#0f766e',
             'secondary' => '#155e75',
             'accent' => '#38bdf8',
@@ -119,7 +102,7 @@ class AdminPanelProvider extends PanelProvider
             //->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
-            ->colors(fn (): array => $paletteColors)
+            ->colors(fn (): array => $defaultColors)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
@@ -163,9 +146,7 @@ class AdminPanelProvider extends PanelProvider
                         'md' => 2,
                     ]),
             ])
-            ->resources([
-                ThemePaletteResource::class,
-            ])
+            ->resources([])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([

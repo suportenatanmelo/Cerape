@@ -24,7 +24,6 @@ use App\Models\Saude;
 use App\Models\SaqueFinanceiro;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\TeamMember;
-use App\Models\ThemePalette;
 use App\Models\User;
 use App\Observers\ActivityLogObserver;
 use App\Observers\AcolhidoObserver;
@@ -120,7 +119,6 @@ class AppServiceProvider extends ServiceProvider
             ArquivosDiario::class,
             Reuniao::class,
             GeradorAtividade::class,
-            ThemePalette::class,
             SaqueFinanceiro::class,
             EmpresaParceira::class,
             FrenteTrabalho::class,

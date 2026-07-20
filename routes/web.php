@@ -11,7 +11,6 @@ use App\Models\NewsletterSubscriber;
 use App\Models\ChMessage;
 use App\Models\GalleryCategory;
 use App\Models\PillarCard;
-use App\Models\ThemePalette;
 use App\Models\User;
 use App\Models\TeamMember;
 use App\Services\Cms\CmsFrontendService;
@@ -36,7 +35,6 @@ Route::get('/', function () {
                 'team' => TeamMember::query()->where('active', true)->orderBy('position')->get(),
                 'categories' => GalleryCategory::query()->where('active', true)->orderBy('position')->get(),
                 'posts' => BlogPost::query()->where('active', true)->where('show_on_home', true)->orderByDesc('published_at')->orderBy('position')->limit(5)->get(),
-                'palettes' => ThemePalette::query()->where('is_active', true)->orderBy('position')->limit(50)->get(),
                 ...app(CmsFrontendService::class)->homeData(),
             ]);
         }
@@ -216,17 +214,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/hero-slide-trash/delete/{id}', [HeroSlideTrashController::class, 'destroy'])->name('admin.hero-slide-trash.delete');
     Route::post('/admin/hero-slide-trash/empty', [HeroSlideTrashController::class, 'empty'])->name('admin.hero-slide-trash.empty');
 
-    Route::post('/admin/theme-palettes/apply-theme/{id}', function (int $id) {
-        $palette = ThemePalette::query()->findOrFail($id);
-        $palette->activate();
-
-        Notification::make()
-            ->title('Tema aplicado com sucesso.')
-            ->success()
-            ->send();
-
-        return redirect()->route('filament.admin.pages.theme-palettes');
-    })->name('filament.admin.pages.theme-palettes.apply-theme');
 });
 
 Route::middleware('auth')->get('/arquivos-upload/{record}/visualizar', function (ArquivosDiario $record) {

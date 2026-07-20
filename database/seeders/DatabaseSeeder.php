@@ -16,7 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PermissionSeeder::class,
-            ThemePaletteSeeder::class,
             FrontendContentSeeder::class,
             CmsContentSeeder::class,
         ]);

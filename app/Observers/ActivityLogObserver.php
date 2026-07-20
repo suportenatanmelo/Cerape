@@ -26,7 +26,6 @@ use App\Models\Saude;
 use App\Models\SaqueFinanceiro;
 use App\Models\SubstanciaPsicoativas;
 use App\Models\TeamMember;
-use App\Models\ThemePalette;
 use App\Models\User;
 use App\Services\ActivityLogService;
 use Illuminate\Database\Eloquent\Model;
@@ -117,7 +116,6 @@ class ActivityLogObserver
             $model instanceof ArquivosDiario => ['Documentos', 'Arquivo diário'],
             $model instanceof Reuniao => ['Reuniões', 'Reunião'],
             $model instanceof GeradorAtividade => ['Documentos', 'Gerador de atividades'],
-            $model instanceof ThemePalette => ['Identidade visual', 'Paleta'],
             default => ['Sistema', class_basename($model)],
         };
     }
