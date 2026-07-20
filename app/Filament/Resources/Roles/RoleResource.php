@@ -44,6 +44,8 @@ class RoleResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    protected static bool $shouldRegisterNavigation = false;
+
     #[Override]
     public static function form(Schema $schema): Schema
     {
@@ -269,6 +271,6 @@ class RoleResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return ! PortalContext::isFamilyUser();
+        return false;
     }
 }

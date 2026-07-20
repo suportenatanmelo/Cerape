@@ -9,9 +9,9 @@ use App\Filament\Pages\Dashboard as AdminDashboard;
 use App\Filament\Pages\FeedbackFamiliar;
 use App\Filament\Pages\Profile;
 use App\Filament\Resources\ActivityLogs\ActivityLogResource;
-use App\Filament\Resources\Roles\RoleResource;
 use App\Filament\Resources\ThemePalettes\ThemePaletteResource;
 use App\Http\Middleware\EnsureFamilyProfileIsComplete;
+use App\Models\ThemePalette;
 use App\Support\PortalContext;
 use App\Support\SystemBranding;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -51,6 +51,31 @@ class AdminPanelProvider extends PanelProvider
                 PortalContext::communicationNavigationGroup(),
                 'Administração e acesso',
             ];
+
+        $activePalette = ThemePalette::query()
+            ->where('is_current', true)
+            ->orWhere('is_active', true)
+            ->orderByDesc('is_current')
+            ->orderBy('position')
+            ->first();
+
+        $paletteColors = $activePalette ? [
+            'primary' => $activePalette->primary_color,
+            'secondary' => $activePalette->secondary_color,
+            'accent' => $activePalette->accent_color,
+            'success' => $activePalette->success_color,
+            'warning' => $activePalette->warning_color,
+            'danger' => $activePalette->danger_color,
+            'info' => $activePalette->info_color,
+        ] : [
+            'primary' => '#0f766e',
+            'secondary' => '#155e75',
+            'accent' => '#38bdf8',
+            'success' => '#16a34a',
+            'warning' => '#f59e0b',
+            'danger' => '#dc2626',
+            'info' => '#0284c7',
+        ];
 
         return $panel
             ->default()
@@ -94,9 +119,7 @@ class AdminPanelProvider extends PanelProvider
             //->topNavigation((bool) env('FILAMENT_TOPBAR', true))
             ->collapsibleNavigationGroups()
             ->sidebarCollapsibleOnDesktop((bool) env('FILAMENT_COLLAPSEBAR', true))
-            ->colors(fn (): array => [
-                'primary' => PortalContext::isFamilyUser() ? Color::Rose : Color::Teal,
-            ])
+            ->colors(fn (): array => $paletteColors)
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook(
                 PanelsRenderHook::HEAD_END,
@@ -141,7 +164,6 @@ class AdminPanelProvider extends PanelProvider
                     ]),
             ])
             ->resources([
-                RoleResource::class,
                 ThemePaletteResource::class,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')

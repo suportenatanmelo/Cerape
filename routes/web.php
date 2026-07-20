@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Route;
+use Filament\Notifications\Notification;
 use Illuminate\Validation\ValidationException;
 
 Route::get('/', function () {
@@ -214,6 +215,18 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/admin/hero-slide-trash/restore/{id}', [HeroSlideTrashController::class, 'restore'])->name('admin.hero-slide-trash.restore');
     Route::post('/admin/hero-slide-trash/delete/{id}', [HeroSlideTrashController::class, 'destroy'])->name('admin.hero-slide-trash.delete');
     Route::post('/admin/hero-slide-trash/empty', [HeroSlideTrashController::class, 'empty'])->name('admin.hero-slide-trash.empty');
+
+    Route::post('/admin/theme-palettes/apply-theme/{id}', function (int $id) {
+        $palette = ThemePalette::query()->findOrFail($id);
+        $palette->activate();
+
+        Notification::make()
+            ->title('Tema aplicado com sucesso.')
+            ->success()
+            ->send();
+
+        return redirect()->route('filament.admin.pages.theme-palettes');
+    })->name('filament.admin.pages.theme-palettes.apply-theme');
 });
 
 Route::middleware('auth')->get('/arquivos-upload/{record}/visualizar', function (ArquivosDiario $record) {

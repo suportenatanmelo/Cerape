@@ -10,57 +10,56 @@ class ThemePaletteSeeder extends Seeder
     public function run(): void
     {
         $palettes = [
-            ['Azul Corporativo', '#1d4ed8', '#0f172a', '#ffffff', '#eff6ff', '#0f172a', '#38bdf8'],
-            ['Azul Escuro', '#172554', '#1e3a8a', '#ffffff', '#dbeafe', '#0f172a', '#60a5fa'],
-            ['Verde Saúde', '#15803d', '#16a34a', '#ffffff', '#f0fdf4', '#052e16', '#86efac'],
-            ['Verde Natureza', '#166534', '#84cc16', '#ffffff', '#f7fee7', '#052e16', '#bef264'],
-            ['Roxo Moderno', '#6d28d9', '#a855f7', '#ffffff', '#faf5ff', '#1f2937', '#d8b4fe'],
-            ['Vermelho Elegante', '#991b1b', '#dc2626', '#ffffff', '#fef2f2', '#1f2937', '#fca5a5'],
-            ['Cinza Executivo', '#374151', '#6b7280', '#ffffff', '#f9fafb', '#111827', '#d1d5db'],
-            ['Dourado Premium', '#92400e', '#d97706', '#ffffff', '#fffbeb', '#1f2937', '#fbbf24'],
-            ['Preto Luxo', '#020617', '#111827', '#ffffff', '#f8fafc', '#020617', '#f59e0b'],
-            ['Branco Clean', '#0f766e', '#64748b', '#ffffff', '#ffffff', '#0f172a', '#14b8a6'],
-            ['Azul Petróleo', '#164e63', '#0e7490', '#ffffff', '#ecfeff', '#0f172a', '#22d3ee'],
-            ['Azul Céu', '#0284c7', '#38bdf8', '#ffffff', '#f0f9ff', '#0f172a', '#7dd3fc'],
-            ['Laranja Energia', '#c2410c', '#f97316', '#ffffff', '#fff7ed', '#1f2937', '#fdba74'],
-            ['Coral', '#be123c', '#fb7185', '#ffffff', '#fff1f2', '#1f2937', '#fda4af'],
-            ['Verde Esmeralda', '#047857', '#10b981', '#ffffff', '#ecfdf5', '#022c22', '#6ee7b7'],
-            ['Marrom Madeira', '#78350f', '#a16207', '#fffaf5', '#fef3c7', '#1f2937', '#fcd34d'],
-            ['Turquesa', '#0f766e', '#2dd4bf', '#ffffff', '#f0fdfa', '#134e4a', '#99f6e4'],
-            ['Índigo', '#3730a3', '#6366f1', '#ffffff', '#eef2ff', '#1e1b4b', '#a5b4fc'],
-            ['Rosa Moderno', '#be185d', '#ec4899', '#ffffff', '#fdf2f8', '#1f2937', '#f9a8d4'],
-            ['CERAPE Original', '#0f172a', '#155e75', '#ffffff', '#f8fafc', '#0f172a', '#38bdf8'],
+            ['Azul Profissional', 'azul-profissional', '#2563eb', '#1d4ed8', '#ffffff', '#eff6ff', '#0f172a', '#38bdf8'],
+            ['Verde Esmeralda', 'verde-esmeralda', '#10b981', '#047857', '#ffffff', '#ecfdf5', '#022c22', '#6ee7b7'],
+            ['Roxo Moderno', 'roxo-moderno', '#8b5cf6', '#6d28d9', '#ffffff', '#faf5ff', '#1f2937', '#d8b4fe'],
+            ['Laranja Vibrante', 'laranja-vibrante', '#f97316', '#c2410c', '#ffffff', '#fff7ed', '#1f2937', '#fdba74'],
+            ['Vermelho Elegante', 'vermelho-elegante', '#dc2626', '#991b1b', '#ffffff', '#fef2f2', '#1f2937', '#fca5a5'],
+            ['Azul Oceano', 'azul-oceano', '#0ea5e9', '#0369a1', '#ffffff', '#f0f9ff', '#0f172a', '#7dd3fc'],
+            ['Verde Natureza', 'verde-natureza', '#84cc16', '#166534', '#ffffff', '#f7fee7', '#052e16', '#bef264'],
+            ['Índigo Corporativo', 'indigo-corporativo', '#6366f1', '#3730a3', '#ffffff', '#eef2ff', '#1e1b4b', '#a5b4fc'],
+            ['Âmbar Premium', 'ambar-premium', '#f59e0b', '#92400e', '#ffffff', '#fffbeb', '#1f2937', '#fbbf24'],
+            ['Cinza Minimalista', 'cinza-minimalista', '#6b7280', '#374151', '#ffffff', '#f9fafb', '#111827', '#d1d5db'],
         ];
+
+        $activePaletteName = 'Azul Profissional';
 
         foreach ($palettes as $index => $palette) {
             ThemePalette::query()->updateOrCreate(
                 ['name' => $palette[0]],
                 [
-                    'primary_color' => $palette[1],
-                    'secondary_color' => $palette[2],
-                    'surface_color' => $palette[3],
-                    'background_color' => $palette[4],
-                    'text_color' => $palette[5],
-                    'accent_color' => $palette[6],
+                    'slug' => $palette[1],
+                    'primary_color' => $palette[2],
+                    'secondary_color' => $palette[3],
+                    'surface_color' => $palette[4],
+                    'background_color' => $palette[5],
+                    'text_color' => $palette[6],
+                    'accent_color' => $palette[7],
                     'success_color' => '#16a34a',
                     'warning_color' => '#f59e0b',
                     'danger_color' => '#dc2626',
                     'info_color' => '#0284c7',
-                    'header_color' => $palette[1],
-                    'footer_color' => $palette[2],
-                    'button_color' => $palette[1],
-                    'link_color' => $palette[2],
-                    'card_color' => $palette[3],
+                    'header_color' => $palette[2],
+                    'footer_color' => $palette[3],
+                    'button_color' => $palette[2],
+                    'link_color' => $palette[3],
+                    'card_color' => $palette[4],
                     'border_color' => '#e5e7eb',
-                    'hover_color' => $palette[2],
-                    'focus_color' => $palette[6],
+                    'hover_color' => $palette[3],
+                    'focus_color' => $palette[7],
                     'dark_background_color' => '#020617',
                     'dark_surface_color' => '#0f172a',
-                    'is_active' => true,
-                    'is_current' => $palette[0] === 'CERAPE Original',
+                    'is_active' => $palette[0] === $activePaletteName,
+                    'is_current' => $palette[0] === $activePaletteName,
                     'position' => $index + 1,
                 ]
             );
         }
+
+        ThemePalette::query()->where('name', '!=', $activePaletteName)->update([
+            'is_active' => false,
+            'is_current' => false,
+        ]);
     }
 }
+

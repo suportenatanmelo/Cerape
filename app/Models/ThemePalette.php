@@ -8,6 +8,7 @@ class ThemePalette extends Model
 {
     protected $fillable = [
         'name',
+        'slug',
         'primary_color',
         'secondary_color',
         'surface_color',
@@ -40,7 +41,10 @@ class ThemePalette extends Model
 
     public function activate(): void
     {
-        static::query()->whereKeyNot($this->getKey())->update(['is_current' => false]);
+        static::query()->whereKeyNot($this->getKey())->update([
+            'is_active' => false,
+            'is_current' => false,
+        ]);
 
         $this->forceFill([
             'is_active' => true,

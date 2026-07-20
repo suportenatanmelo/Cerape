@@ -16,7 +16,7 @@ class PermissionManager extends Page
 {
     protected string $view = 'filament.pages.permission-manager';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Controle de acesso';
+    protected static string|UnitEnum|null $navigationGroup = 'Administração e acesso';
 
     protected static ?string $navigationLabel = 'Gerenciar permissões';
 
