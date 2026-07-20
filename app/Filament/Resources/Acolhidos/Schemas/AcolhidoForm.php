@@ -302,6 +302,7 @@ class AcolhidoForm
                                 ->columnSpanFull()
                                 ->default(false)
                                 ->live()
+                                ->required()
                                 ->helperText('Marque Sim para liberar os campos de documentação.')
                                 ->afterStateUpdated(function (Set $set, mixed $state): void {
                                     if (self::isYes($state)) {
@@ -314,7 +315,7 @@ class AcolhidoForm
                                     self::clearDocumentNumberFields($set);
                                 }),
                             Section::make('Documentacao')
-                                ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                ->hidden(fn(Get $get): bool => ! self::shouldRequireDocumentationFields($get('tem_documentacao')))
                                 ->dehydratedWhenHidden()
                                 ->schema([
                                     Grid::make([
@@ -323,8 +324,8 @@ class AcolhidoForm
                                     ])->schema([
                                         TextInput::make('razao_caso_nao_tenha_documentacao')
                                             ->label('Caso nao tenha documento')
-                                            ->hidden(fn(Get $get): bool => self::isYes($get('tem_documentacao')))
-                                            ->required(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->hidden(fn(Get $get): bool => self::shouldRequireDocumentationFields($get('tem_documentacao')))
+                                            ->required(fn(Get $get): bool => self::shouldRequireDocumentationFields($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         CheckboxList::make('documentos_civis')
                                             ->label('Documentos civis')
@@ -341,7 +342,7 @@ class AcolhidoForm
                                             ->columnSpanFull()
                                             ->live()
                                             ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::civilDocumentNumberFields()))
-                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->hidden(fn(Get $get): bool => ! self::shouldRequireDocumentationFields($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_rg')
                                             ->label('Numero do RG')
@@ -385,7 +386,7 @@ class AcolhidoForm
                                             ->columnSpanFull()
                                             ->live()
                                             ->afterStateUpdated(fn(Set $set, mixed $state): bool => self::syncDocumentNumberFields($set, $state, self::otherDocumentNumberFields()))
-                                            ->hidden(fn(Get $get): bool => ! self::isYes($get('tem_documentacao')))
+                                            ->hidden(fn(Get $get): bool => ! self::shouldRequireDocumentationFields($get('tem_documentacao')))
                                             ->dehydratedWhenHidden(),
                                         TextInput::make('numero_nis')
                                             ->label('Numero do NIS/PIS')
@@ -793,6 +794,11 @@ class AcolhidoForm
     private static function shouldHideNomeDoConjuge(Get $get): bool
     {
         return in_array((string) $get('estado_civil'), ['solteiro', 'viuvo'], true);
+    }
+
+    public static function shouldRequireDocumentationFields(mixed $value): bool
+    {
+        return self::isYes($value);
     }
 
     /**
