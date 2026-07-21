@@ -123,6 +123,19 @@ class AcolhidoForm
                                             ->directory(ImageStorageNaming::directory('acolhido-avatar'))
                                             ->visibility('public')
                                             ->maxFiles(1)
+                                            ->acceptedFileTypes(['image/jpeg','image/png','image/webp','image/gif'])
+                                            ->storeFiles(false)
+                                            ->getUploadedFileUsing(function (BaseFileUpload $component, string $file, string | array | null $storedFileNames): ?array {
+                                                $uploadedFile = $component->getUploadedFile($file, $storedFileNames);
+
+                                                if ($uploadedFile === null) {
+                                                    return null;
+                                                }
+
+                                                $uploadedFile['url'] = ImageStorageNaming::previewUrl($file) ?? $uploadedFile['url'];
+
+                                                return $uploadedFile;
+                                            })
                                             ->helperText('A imagem será salva em documentos/acolhido-avatar e receberá o nome padronizado do sistema.'),
                                         DatePicker::make('data_nascimento')
                                             ->label('Data de nascimento')
@@ -578,7 +591,7 @@ class AcolhidoForm
                                                 'image/*',
                                             ])
                                             ->maxFiles(10)
-                                            ->moveFiles()
+                                            ->storeFiles(false)
                                             ->openable()
                                             ->downloadable()
                                             ->reorderable()
@@ -771,6 +784,7 @@ class AcolhidoForm
                                                 'application/msword',
                                                 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
                                             ])
+                                            ->storeFiles(false)
                                             ->helperText('Anexe o documento que comprova ou justifica a demanda.'),
                                         DateTimePicker::make('demanda_saida_prevista_em')
                                             ->label('Saida prevista')

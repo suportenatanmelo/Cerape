@@ -33,7 +33,13 @@ class BlogPostResource extends Resource
                 \Filament\Forms\Components\RichEditor::make('content')->label('Conteúdo')->required()->columnSpanFull(),
                 \Filament\Forms\Components\TextInput::make('author_name')->label('Autor')->required(),
                 \Filament\Forms\Components\DateTimePicker::make('published_at')->label('Data de publicação'),
-                \Filament\Forms\Components\FileUpload::make('image_path')->label('Imagem')->disk('public')->image()->directory(\App\Support\ImageStorageNaming::directory('blog')),
+                \Filament\Forms\Components\FileUpload::make('image_path')
+                    ->label('Imagem')
+                    ->disk('public')
+                    ->image()
+                    ->directory(\App\Support\ImageStorageNaming::directory('blog'))
+                    ->preserveFilenames()
+                    ->acceptedFileTypes(['image/jpeg','image/png','image/webp','image/gif']),
                 \Filament\Forms\Components\TagsInput::make('tags')->label('Tags'),
                 \Filament\Forms\Components\TextInput::make('position')->label('Ordem')->numeric()->default(1),
                 \Filament\Forms\Components\Toggle::make('show_on_home')->label('Mostrar no site principal')->default(true),

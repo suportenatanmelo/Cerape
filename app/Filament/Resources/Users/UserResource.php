@@ -12,6 +12,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\FileUpload;
@@ -73,6 +74,17 @@ class UserResource extends Resource
                                 ->directory(ImageStorageNaming::directory('user-avatar'))
                                 ->visibility('public')
                                 ->maxFiles(1)
+                                ->getUploadedFileUsing(function (BaseFileUpload $component, string $file, string | array | null $storedFileNames): ?array {
+                                    $uploadedFile = $component->getUploadedFile($file, $storedFileNames);
+
+                                    if ($uploadedFile === null) {
+                                        return null;
+                                    }
+
+                                    $uploadedFile['url'] = ImageStorageNaming::previewUrl($file) ?? $uploadedFile['url'];
+
+                                    return $uploadedFile;
+                                })
                                 ->helperText('A imagem será salva em documentos/user-avatar e receberá o nome padronizado do sistema.'),
                             TextInput::make('name')
                                 ->label('Nome completo')

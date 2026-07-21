@@ -33,6 +33,8 @@ class GalleryCategoryResource extends Resource
                 TextInput::make('name')->label('Nome')->required(),
                 TextInput::make('slug')->label('Slug')->required(),
                 FileUpload::make('image_path')
+                    ->preserveFilenames()
+                    ->acceptedFileTypes(['image/jpeg','image/png','image/webp','image/gif'])
                     ->label('Imagem da categoria')
                     ->disk('public')
                     ->image()

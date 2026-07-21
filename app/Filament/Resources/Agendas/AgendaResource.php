@@ -143,9 +143,9 @@ class AgendaResource extends Resource
     private static function notificationIcon(string $event): string
     {
         return match ($event) {
-            'created' => 'heroicon-o-calendar-plus',
+            'created' => 'heroicon-o-calendar-days',
             'updated' => 'heroicon-o-calendar-days',
-            'deleted' => 'heroicon-o-calendar-minus',
+            'deleted' => 'heroicon-o-calendar-days',
             default => 'heroicon-o-bell-alert',
         };
     }

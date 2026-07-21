@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use Filament\Auth\Pages\EditProfile;
+use Filament\Forms\Components\BaseFileUpload;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -74,6 +75,17 @@ class Profile extends EditProfile
                                 ->directory(ImageStorageNaming::directory('profile-avatar'))
                                 ->visibility('public')
                                 ->maxFiles(1)
+                                ->getUploadedFileUsing(function (BaseFileUpload $component, string $file, string | array | null $storedFileNames): ?array {
+                                    $uploadedFile = $component->getUploadedFile($file, $storedFileNames);
+
+                                    if ($uploadedFile === null) {
+                                        return null;
+                                    }
+
+                                    $uploadedFile['url'] = ImageStorageNaming::previewUrl($file) ?? $uploadedFile['url'];
+
+                                    return $uploadedFile;
+                                })
                                 ->helperText('A imagem será salva em documentos/profile-avatar e receberá o nome padronizado do sistema.'),
                         ]),
                     Section::make('Dados de acesso')

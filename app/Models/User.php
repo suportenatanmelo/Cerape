@@ -186,26 +186,16 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     private function resolveAvatarUrl(?string $path): ?string
     {
-        $path = $this->normalizePublicPath($path);
+        $normalizedPath = $this->normalizePublicPath($path);
 
-        if ($path === null) {
+        if ($normalizedPath === null) {
             return null;
         }
 
-        $disk = Storage::disk('public');
-        $normalizedPath = ltrim(Str::replaceFirst('/storage/', '', parse_url($path, PHP_URL_PATH) ?: $path), '/');
+        $previewUrl = ImageStorageNaming::previewUrl($normalizedPath);
 
-        $candidatePaths = array_values(array_unique(array_filter([
-            $normalizedPath,
-            'documentos/profile-avatar/' . basename($normalizedPath),
-            'documentos/user-avatar/' . basename($normalizedPath),
-            trim((string) config('chatify.user_avatar.folder'), '/') . '/' . basename($normalizedPath),
-        ])));
-
-        foreach ($candidatePaths as $candidatePath) {
-            if ($disk->exists($candidatePath)) {
-                return route('media.serve', ['path' => $candidatePath]);
-            }
+        if ($previewUrl !== null) {
+            return $previewUrl;
         }
 
         return Str::startsWith($path, ['http://', 'https://', '//', 'data:'])
@@ -228,16 +218,14 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
                 $normalized = ltrim((string) $parsed['path'], '/');
 
                 return Str::startsWith($normalized, 'storage/')
-                    ? '/' . $normalized
-                    : '/storage/' . $normalized;
+                    ? ltrim(Str::replaceFirst('storage/', '', $normalized), '/')
+                    : $normalized;
             }
 
             return $path;
         }
 
-        $path = ltrim(Str::replaceFirst('storage/', '', $path), '/');
-
-        return Storage::disk('public')->url($path);
+        return ltrim(Str::replaceFirst('storage/', '', $path), '/');
     }
 
 }

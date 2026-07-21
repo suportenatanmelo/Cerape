@@ -45,8 +45,20 @@ class HeroSlideResource extends Resource
                     TextInput::make('title')->label('Título')->required()->placeholder('Título principal do slide'),
                     TextInput::make('subtitle')->label('Subtítulo')->placeholder('Chamada curta acima do título'),
                     Textarea::make('description')->label('Texto')->rows(3)->columnSpanFull(),
-                    FileUpload::make('image_path')->label('Imagem desktop')->disk('public')->image()->directory(ImageStorageNaming::directory('galeria')),
-                    FileUpload::make('mobile_image_path')->label('Imagem mobile')->disk('public')->image()->directory(ImageStorageNaming::directory('galeria')),
+                    FileUpload::make('image_path')
+                        ->label('Imagem desktop')
+                        ->disk('public')
+                        ->image()
+                        ->directory(ImageStorageNaming::directory('galeria'))
+                        ->preserveFilenames()
+                        ->acceptedFileTypes(['image/jpeg','image/png','image/webp','image/gif']),
+                    FileUpload::make('mobile_image_path')
+                        ->label('Imagem mobile')
+                        ->disk('public')
+                        ->image()
+                        ->directory(ImageStorageNaming::directory('galeria'))
+                        ->preserveFilenames()
+                        ->acceptedFileTypes(['image/jpeg','image/png','image/webp','image/gif']),
                     TextInput::make('cta_label')->label('Botão 1')->placeholder('Agendar uma conversa'),
                     TextInput::make('cta_url')->label('URL botão 1')->placeholder('/contato'),
                     TextInput::make('secondary_cta_label')->label('Botão 2')->placeholder('Conhecer a jornada'),

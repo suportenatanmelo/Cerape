@@ -47,6 +47,7 @@ class FrontendPanelProvider extends PanelProvider
             ->id('frontend')
             ->path('frontend')
             ->login()
+            ->navigation()
             ->brandName(fn (): string => SystemBranding::brandName('CERAPE'))
             ->brandLogo(fn (): ?string => SystemBranding::logoUrl())
             ->colors([

@@ -59,6 +59,32 @@ final class ImageStorageNaming
         return self::directory($category) . '/' . self::canonicalFilename($category, $identifier, $label, $extension);
     }
 
+    public static function previewUrl(?string $path): ?string
+    {
+        $normalizedPath = self::normalizePath($path);
+
+        if ($normalizedPath === null) {
+            return null;
+        }
+
+        $disk = Storage::disk('public');
+        $candidatePaths = array_values(array_unique(array_filter([
+            $normalizedPath,
+            'documentos/profile-avatar/' . basename($normalizedPath),
+            'documentos/user-avatar/' . basename($normalizedPath),
+            'documentos/acolhido-avatar/' . basename($normalizedPath),
+            trim((string) config('chatify.user_avatar.folder'), '/') . '/' . basename($normalizedPath),
+        ])));
+
+        foreach ($candidatePaths as $candidatePath) {
+            if ($disk->exists($candidatePath)) {
+                return route('media.serve', ['path' => $candidatePath]);
+            }
+        }
+
+        return $disk->url($normalizedPath);
+    }
+
     public static function syncStoredImage(
         Model $model,
         string $attribute,
@@ -235,6 +261,11 @@ final class ImageStorageNaming
 
         if ($path === '') {
             return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '//', 'data:'])) {
+            $parsed = parse_url($path);
+            $path = $parsed['path'] ?? $path;
         }
 
         return ltrim(Str::replaceFirst('storage/', '', $path), '/');
