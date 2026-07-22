@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', $record->titulo)
 
@@ -43,3 +43,4 @@
         {!! $conteudoHtml !!}
     </div>
 @endsection
+

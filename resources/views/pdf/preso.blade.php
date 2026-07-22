@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatório do preso')
 
@@ -34,3 +34,4 @@
         </tbody>
     </table>
 @endsection
+

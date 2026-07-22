@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title')
 PLANO INDIVIDUAL DE ACOLHIMENTO
@@ -98,6 +98,5 @@ PLANO INDIVIDUAL DE ACOLHIMENTO
             </div>
         @endforeach
 
-        @include('pdf.partials.cerape-footer')
-
 @endsection
+

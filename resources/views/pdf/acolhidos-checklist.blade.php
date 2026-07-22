@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title')
 Relatório de Acolhidos
@@ -7,16 +7,16 @@ Relatório de Acolhidos
 @section('styles')
 <style>
     * { box-sizing: border-box; }
-    body { 
-        background: #ffffff; 
-        color: #1f2937; 
-        font-family: 'DejaVu Sans', Arial, sans-serif; 
-        font-size: 11px; 
-        line-height: 1.4; 
-        margin: 0; 
+    body {
+        background: #ffffff;
+        color: #1f2937;
+        font-family: 'DejaVu Sans', Arial, sans-serif;
+        font-size: 11px;
+        line-height: 1.4;
+        margin: 0;
     }
-    .page { 
-        padding: 20px 25px; 
+    .page {
+        padding: 20px 25px;
     }
     .table-wrapper {
         width: 100%;
@@ -72,8 +72,8 @@ Relatório de Acolhidos
         font-size: 24px;
         margin-bottom: 10px;
     }
-    .page-break { 
-        page-break-after: always; 
+    .page-break {
+        page-break-after: always;
     }
     .total-row {
         background: #f0f9ff !important;
@@ -123,7 +123,7 @@ Relatório de Acolhidos
                                     <td>
                                         @php
                                             $value = data_get($acolhido, $column);
-                                            
+
                                             // Formatar valores específicos
                                             if ($column === 'data_nascimento' || $column === 'created_at' || $column === 'updated_at') {
                                                 echo $value ? \Carbon\Carbon::parse($value)->format('d/m/Y') : '-';
@@ -147,6 +147,5 @@ Relatório de Acolhidos
             <p>Nenhum acolhido encontrado para os critérios selecionados.</p>
         </div>
     @endforelse
-
-    @include('pdf.partials.cerape-footer')
 @endsection
+

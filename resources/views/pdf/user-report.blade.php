@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatório do usuário')
 
@@ -35,3 +35,4 @@
         </section>
     @endforeach
 @endsection
+

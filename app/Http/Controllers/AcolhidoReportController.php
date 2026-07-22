@@ -19,9 +19,18 @@ class AcolhidoReportController extends Controller
             ->append('.pdf')
             ->toString();
 
+        $sections = $this->getReportSections($acolhido);
+        $summary = [
+            'selectedSectionsCount' => count($sections),
+            'availableSectionsCount' => count($sections),
+            'selectedSectionsLabel' => implode(', ', array_keys($sections)),
+            'formatValue' => fn (mixed $value): string => $this->formatValue($value),
+        ];
+
         return Pdf::loadView('pdf.acolhido-report', [
             'acolhido' => $acolhido,
-            'sections' => $this->getReportSections($acolhido),
+            'sections' => $sections,
+            ...$summary,
         ])
             ->setPaper('a4')
             ->download($filename);

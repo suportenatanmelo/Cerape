@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatorio de prontuario de evolucao')
 
@@ -52,3 +52,4 @@
         <div class="clinical-box">{!! $conteudoHtml !!}</div>
     </div>
 @endsection
+

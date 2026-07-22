@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Quadro semanal de atividades')
 
@@ -88,3 +88,4 @@
         {!! filled($record->observacoes) ? nl2br(e($record->observacoes)) : 'Sem observacoes adicionais.' !!}
     </div>
 @endsection
+

@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatorio consolidado de avaliacao pessoal')
 
@@ -87,3 +87,4 @@
         <div class="formula-line"><strong>Em palavras:</strong> a media de todos e a soma das medias de cada avaliador dividida pela quantidade de avaliadores.</div>
     </div>
 @endsection
+

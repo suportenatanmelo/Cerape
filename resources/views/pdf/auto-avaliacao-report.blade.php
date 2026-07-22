@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatorio de auto avaliacao')
 
@@ -53,3 +53,4 @@
         </tbody>
     </table>
 @endsection
+

@@ -1,22 +1,22 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', 'Relatorio geral do acolhido')
 
 @section('content')
     <style>
-        .report-hero { background: #ffffff; border: 1px solid #dbe4ea; border-radius: 14px; margin-bottom: 12px; overflow: hidden; }
-        .report-hero-top { background: linear-gradient(135deg, #0f766e, #134e4a); color: #fff; padding: 16px 18px; }
-        .summary { margin: 0 0 12px; width: 100%; }
-        .summary td { padding: 0 4px; vertical-align: top; width: 33.33%; }
-        .summary-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; min-height: 74px; padding: 10px 12px; }
-        .summary-label { color: #64748b; display: block; font-size: 8px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; }
-        .summary-value { color: #0f172a; display: block; font-size: 13px; font-weight: bold; margin-top: 5px; }
-        .summary-note { color: #475569; display: block; font-size: 8px; margin-top: 4px; line-height: 1.25; }
-        .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 12px; margin-bottom: 12px; overflow: hidden; page-break-inside: avoid; }
-        .section-title { background: #f8fafc; border-bottom: 1px solid #dbe4ea; color: #0f172a; font-size: 12px; font-weight: bold; margin: 0; padding: 10px 12px; text-transform: uppercase; }
+        .report-hero { background: #ffffff; border: 1px solid #dbe4ea; border-radius: 10px; margin-bottom: 8px; overflow: hidden; }
+        .report-hero-top { background: linear-gradient(135deg, #0f766e, #134e4a); color: #fff; padding: 12px 14px; }
+        .summary { margin: 0 0 10px; width: 100%; }
+        .summary td { padding: 0 3px; vertical-align: top; width: 33.33%; }
+        .summary-card { background: #fff; border: 1px solid #dbe4ea; border-radius: 10px; min-height: 60px; padding: 8px 10px; }
+        .summary-label { color: #64748b; display: block; font-size: 7.5px; font-weight: bold; letter-spacing: 0.08em; text-transform: uppercase; }
+        .summary-value { color: #0f172a; display: block; font-size: 12px; font-weight: bold; margin-top: 4px; }
+        .summary-note { color: #475569; display: block; font-size: 7.5px; margin-top: 3px; line-height: 1.2; }
+        .section { background: #fff; border: 1px solid #dbe4ea; border-radius: 10px; margin-bottom: 10px; overflow: hidden; page-break-inside: avoid; }
+        .section-title { background: #f8fafc; border-bottom: 1px solid #dbe4ea; color: #0f172a; font-size: 10px; font-weight: bold; margin: 0; padding: 8px 10px; text-transform: uppercase; }
         table { border-collapse: collapse; width: 100%; }
-        th { background: #f9fafb; color: #4b5563; font-size: 9px; text-align: left; text-transform: uppercase; width: 34%; }
-        th, td { border: 1px solid #e5e7eb; padding: 7px; vertical-align: top; }
+        th { background: #f9fafb; color: #4b5563; font-size: 8.5px; text-align: left; text-transform: uppercase; width: 34%; }
+        th, td { border: 1px solid #e5e7eb; padding: 5px 6px; vertical-align: top; }
         .inner-table th, .inner-table td { border-left: none; border-right: none; }
         .inner-table tr:first-child th, .inner-table tr:first-child td { border-top: none; }
         .inner-table tr:last-child th, .inner-table tr:last-child td { border-bottom: none; }
@@ -104,3 +104,4 @@
         </div>
     @endif
 @endsection
+

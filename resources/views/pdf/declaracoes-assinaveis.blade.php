@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('styles')
 <style>
@@ -324,3 +324,4 @@
     @endswitch
     </div>
 @endsection
+

@@ -1,4 +1,4 @@
-@extends('pdf.layout')
+@extends('pdf.layouts.cerape')
 
 @section('title', $title ?? 'Relatorio')
 
@@ -51,3 +51,4 @@
         </div>
     @endforeach
 @endsection
+
