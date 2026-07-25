@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeria — CERAPE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .gallery-hero{
+    padding:150px 0 60px;text-align:center;color:#fff;
+    background:linear-gradient(180deg, rgba(20,40,35,.8), rgba(20,40,35,.62)),
+               url('https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=1600&auto=format&fit=crop') center/cover;
+  }
+  .gallery-hero .eyebrow{color:var(--amber-soft);}
+  .gallery-hero h1{color:#fff;margin:14px 0 12px;font-size:clamp(2rem,4vw,2.7rem);}
+  .gallery-hero p{color:#EFE9DD;max-width:520px;margin:0 auto;}
+  .cat-section{padding:64px 0;border-bottom:1px solid var(--line);}
+  .cat-section:last-of-type{border-bottom:none;}
+  .cat-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:28px;}
+  .cat-head h2{font-size:1.5rem;margin:0;}
+  .cat-count{font-size:.85rem;color:var(--ink-soft);}
+  .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:190px;gap:14px;}
+  @media (max-width:880px){.cat-grid{grid-template-columns:repeat(2,1fr);}}
+  .back-link{display:inline-flex;margin:32px auto 0;}
+  .back-wrap{text-align:center;padding-bottom:60px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav wrap">
+    <a href="index.html#topo" class="logo">CER<span>APE</span></a>
+    <nav>
+      <ul class="menu" id="menu">
+        <li><a href="index.html#topo">Início</a></li>
+        <li><a href="index.html#sobre">Sobre Nós</a></li>
+        <li><a href="index.html#jornada">A Jornada</a></li>
+        <li><a href="index.html#equipe">Equipe</a></li>
+        <li><a href="galeria.html">Galeria</a></li>
+        <li><a href="index.html#blog">Blog</a></li>
+        <li><a href="index.html#contato">Contato</a></li>
+      </ul>
+    </nav>
+    <div class="nav-cta">
+      <a href="index.html#contato" class="btn btn-line">Fale Conosco</a>
+      <button class="burger" id="burger" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="gallery-hero">
+  <div class="wrap">
+    <span class="eyebrow">Nosso espaço</span>
+    <h1>Galeria completa</h1>
+    <p>Conheça cada cantinho da casa, organizado por ambiente.</p>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <!-- ÁREAS COMUNS -->
+  <section class="cat-section" id="areas-comuns" data-section>
+    <div class="cat-head">
+      <h2>Áreas Comuns</h2>
+      <span class="cat-count">4 fotos</span>
+    </div>
+    <div class="cat-grid">
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1567016432779-094069958ea5?q=80&w=900&auto=format&fit=crop" alt="Sala de estar"><span class="cap">Sala de estar</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=900&auto=format&fit=crop" alt="Refeitório"><span class="cap">Refeitório</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1582037928769-181cf1ea3201?q=80&w=900&auto=format&fit=crop" alt="Biblioteca"><span class="cap">Espaço de leitura</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505691723518-36a5ac3be353?q=80&w=900&auto=format&fit=crop" alt="Varanda"><span class="cap">Varanda de convivência</span></div>
+    </div>
+  </section>
+
+  <!-- QUARTOS -->
+  <section class="cat-section" id="quartos" data-section>
+    <div class="cat-head">
+      <h2>Quartos</h2>
+      <span class="cat-count">3 fotos</span>
+    </div>
+    <div class="cat-grid">
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=900&auto=format&fit=crop" alt="Quarto compartilhado"><span class="cap">Quartos compartilhados</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1560448075-bb485b067938?q=80&w=900&auto=format&fit=crop" alt="Quarto individual"><span class="cap">Quarto individual</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=900&auto=format&fit=crop" alt="Banheiro"><span class="cap">Banheiro compartilhado</span></div>
+    </div>
+  </section>
+
+  <!-- JARDIM -->
+  <section class="cat-section" id="jardim" data-section>
+    <div class="cat-head">
+      <h2>Jardim</h2>
+      <span class="cat-count">3 fotos</span>
+    </div>
+    <div class="cat-grid">
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=900&auto=format&fit=crop" alt="Jardim"><span class="cap">Jardim de convivência</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1521477716071-8623476a3a4e?q=80&w=900&auto=format&fit=crop" alt="Área externa"><span class="cap">Área externa</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?q=80&w=900&auto=format&fit=crop" alt="Horta"><span class="cap">Horta comunitária</span></div>
+    </div>
+  </section>
+
+  <!-- TERAPÊUTICO -->
+  <section class="cat-section" id="terapeutico" data-section>
+    <div class="cat-head">
+      <h2>Espaços Terapêuticos</h2>
+      <span class="cat-count">2 fotos</span>
+    </div>
+    <div class="cat-grid">
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?q=80&w=900&auto=format&fit=crop" alt="Sala de terapia"><span class="cap">Espaço terapêutico</span></div>
+      <div class="g-item" onclick="openLightbox(this)"><img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=900&auto=format&fit=crop" alt="Sala de grupo"><span class="cap">Sala de terapia em grupo</span></div>
+    </div>
+  </section>
+
+  <div class="back-wrap">
+    <a href="index.html#topo" class="back-link">← Voltar para o site</a>
+  </div>
+</div>
+
+<!-- Lightbox com navegação por setas (dentro de cada categoria) -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()" aria-label="Fechar">×</button>
+  <button class="lightbox-arrow prev" onclick="moveLightbox(-1)" aria-label="Foto anterior">‹</button>
+  <div class="lightbox-content">
+    <img id="lightbox-img" src="" alt="">
+    <div class="lightbox-info">
+      <span id="lightbox-cap"></span>
+      <span id="lightbox-count" class="lightbox-count"></span>
+    </div>
+  </div>
+  <button class="lightbox-arrow next" onclick="moveLightbox(1)" aria-label="Próxima foto">›</button>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="index.html#topo" class="logo" style="color:#fff;">CER<span>APE</span></a>
+        <p style="max-width:280px;font-size:.88rem;margin-top:10px;">Acolhimento e tratamento para uma nova etapa de vida.</p>
+      </div>
+      <div>
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html#sobre">Sobre Nós</a></li>
+          <li><a href="index.html#jornada">A Jornada</a></li>
+          <li><a href="galeria.html">Galeria</a></li>
+          <li><a href="index.html#blog">Blog</a></li>
+          <li><a href="index.html#contato">Contato</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          <li>(11) 0000-0000</li>
+          <li>contato@cerape.com.br</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 CERAPE. Todos os direitos reservados.</span>
+      <span>Atendimento confidencial e humanizado.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="wa-box" id="wa-box">
+  <div class="wa-box-header">
+    <div class="avatar">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.47 14.38c-.29-.15-1.71-.84-1.97-.94-.27-.1-.46-.15-.65.15-.2.29-.75.94-.92 1.13-.17.2-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.45.13-.6.15-.15.34-.39.5-.58.17-.2.22-.34.34-.56.11-.22.06-.4-.03-.56-.1-.15-.86-2.07-1.18-2.83-.31-.74-.63-.64-.86-.65-.22-.01-.48-.01-.73-.01-.25 0-.66.1-.91.37s-.97 1-.97 2.42c0 1.43 1.02 2.81 1.16 3 .15.2 2 3.05 4.91 4.16 2.91 1.1 2.91.74 3.43.69.53-.05 1.71-.7 1.95-1.37.25-.67.25-1.25.17-1.37-.07-.13-.29-.2-.58-.34z"/>
+        <path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.94.55 3.75 1.5 5.29L2 22l4.86-1.45A9.96 9.96 0 0 0 12.02 22C17.52 22 22 17.52 22 12S17.52 2 12.02 2zm0 18.18c-1.74 0-3.36-.5-4.74-1.36l-.34-.21-3.05.91.92-3-.22-.35A8.16 8.16 0 0 1 3.82 12c0-4.53 3.68-8.2 8.2-8.2 4.52 0 8.2 3.67 8.2 8.2 0 4.52-3.68 8.18-8.2 8.18z"/>
+      </svg>
+    </div>
+    <div class="who">
+      <strong>CERAPE</strong>
+      <span><span class="status-dot"></span> Online agora</span>
+    </div>
+    <button class="wa-box-close" onclick="toggleWaBox(false)" aria-label="Fechar chat">×</button>
+  </div>
+  <div class="wa-box-body">
+    <div class="wa-bubble">
+      Olá! 👋 Como podemos ajudar? Fale com a nossa equipe agora pelo WhatsApp.
+      <span class="time">Atendimento 24h</span>
+    </div>
+  </div>
+  <div class="wa-box-footer">
+    <a href="https://wa.me/5511000000000?text=Ol%C3%A1%2C%20gostaria%20de%20mais%20informa%C3%A7%C3%B5es" target="_blank" rel="noopener" class="btn btn-primary">
+      Iniciar conversa
+    </a>
+  </div>
+</div>
+
+<button class="whatsapp-float" id="wa-toggle" aria-label="Conversar no WhatsApp" onclick="toggleWaBox()">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.47 14.38c-.29-.15-1.71-.84-1.97-.94-.27-.1-.46-.15-.65.15-.2.29-.75.94-.92 1.13-.17.2-.34.22-.63.07-.29-.15-1.22-.45-2.32-1.43-.86-.77-1.44-1.71-1.61-2-.17-.29-.02-.45.13-.6.15-.15.34-.39.5-.58.17-.2.22-.34.34-.56.11-.22.06-.4-.03-.56-.1-.15-.86-2.07-1.18-2.83-.31-.74-.63-.64-.86-.65-.22-.01-.48-.01-.73-.01-.25 0-.66.1-.91.37s-.97 1-.97 2.42c0 1.43 1.02 2.81 1.16 3 .15.2 2 3.05 4.91 4.16 2.91 1.1 2.91.74 3.43.69.53-.05 1.71-.7 1.95-1.37.25-.67.25-1.25.17-1.37-.07-.13-.29-.2-.58-.34z"/>
+    <path d="M12.02 2C6.5 2 2 6.48 2 12c0 1.94.55 3.75 1.5 5.29L2 22l4.86-1.45A9.96 9.96 0 0 0 12.02 22C17.52 22 22 17.52 22 12S17.52 2 12.02 2zm0 18.18c-1.74 0-3.36-.5-4.74-1.36l-.34-.21-3.05.91.92-3-.22-.35A8.16 8.16 0 0 1 3.82 12c0-4.53 3.68-8.2 8.2-8.2 4.52 0 8.2 3.67 8.2 8.2 0 4.52-3.68 8.18-8.2 8.18z"/>
+  </svg>
+</button>
+
+<script>
+  // ---- Lightbox por categoria ----
+  let lbIndex = 0;
+  let lbItems = [];
+
+  function openLightbox(el){
+    const section = el.closest('[data-section]');
+    lbItems = Array.from(section.querySelectorAll('.g-item'));
+    lbIndex = lbItems.indexOf(el);
+    renderLightbox();
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function renderLightbox(){
+    const item = lbItems[lbIndex];
+    const img = item.querySelector('img');
+    const cap = item.querySelector('.cap');
+    document.getElementById('lightbox-img').src = img.src;
+    document.getElementById('lightbox-img').alt = img.alt;
+    document.getElementById('lightbox-cap').textContent = cap ? cap.textContent : '';
+    document.getElementById('lightbox-count').textContent = (lbIndex + 1) + ' / ' + lbItems.length;
+  }
+  function moveLightbox(dir){
+    if (!lbItems.length) return;
+    lbIndex = (lbIndex + dir + lbItems.length) % lbItems.length;
+    renderLightbox();
+  }
+  function closeLightbox(){
+    document.getElementById('lightbox').classList.remove('open');
+  }
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'ArrowRight') moveLightbox(1);
+    if (e.key === 'ArrowLeft') moveLightbox(-1);
+    if (e.key === 'Escape') closeLightbox();
+  });
+
+  // ---- WhatsApp ----
+  function toggleWaBox(force){
+    const box = document.getElementById('wa-box');
+    const toggle = document.getElementById('wa-toggle');
+    const open = typeof force === 'boolean' ? force : !box.classList.contains('open');
+    box.classList.toggle('open', open);
+    toggle.classList.toggle('has-box', open);
+  }
+  document.addEventListener('click', function(e){
+    const box = document.getElementById('wa-box');
+    const toggle = document.getElementById('wa-toggle');
+    if (box.classList.contains('open') && !box.contains(e.target) && !toggle.contains(e.target)){
+      toggleWaBox(false);
+    }
+  });
+
+  // ---- Menu mobile ----
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('menu');
+  burger.addEventListener('click', () => {
+    const open = menu.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open);
+  });
+</script>
+</body>
+</html>

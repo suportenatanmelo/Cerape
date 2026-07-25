@@ -1,0 +1,147 @@
+﻿
+  GET|HEAD  / ............................................... routes/web.php:5
+  GET|HEAD  admin filament.admin.pages.dashboard ÔÇ║ App\Filament\Pages\DashboaÔÇª
+  GET|HEAD  admin/acolhido-galerias filament.admin.resources.acolhido-galeriaÔÇª
+  GET|HEAD  admin/acolhido-galerias/{record} filament.admin.resources.acolhidÔÇª
+  GET|HEAD  admin/acolhido-videos filament.admin.resources.acolhido-videos.inÔÇª
+  GET|HEAD  admin/acolhidos filament.admin.resources.acolhidos.index ÔÇ║ App\FiÔÇª
+  GET|HEAD  admin/acolhidos-checklist filament.admin.pages.acolhidos-checklisÔÇª
+  GET|HEAD  admin/acolhidos/create filament.admin.resources.acolhidos.create ÔÇª
+  GET|HEAD  admin/acolhidos/{record} filament.admin.resources.acolhidos.view ÔÇª
+  GET|HEAD  admin/acolhidos/{record}/edit filament.admin.resources.acolhidos.ÔÇª
+  GET|HEAD  admin/activity-logs filament.admin.resources.activity-logs.index ÔÇª
+  GET|HEAD  admin/activity-logs/{record} filament.admin.resources.activity-loÔÇª
+  GET|HEAD  admin/agendas filament.admin.resources.agendas.index ÔÇ║ App\FilameÔÇª
+  GET|HEAD  admin/agendas/calendario filament.admin.pages.agendas.calendario ÔÇª
+  GET|HEAD  admin/agendas/create filament.admin.resources.agendas.create ÔÇ║ ApÔÇª
+  GET|HEAD  admin/agendas/{record} filament.admin.resources.agendas.view ÔÇ║ ApÔÇª
+  GET|HEAD  admin/agendas/{record}/edit filament.admin.resources.agendas.editÔÇª
+  GET|HEAD  admin/arquivos-upload filament.admin.resources.arquivos-upload.inÔÇª
+  GET|HEAD  admin/arquivos-upload/create filament.admin.resources.arquivos-upÔÇª
+  GET|HEAD  admin/arquivos-upload/{record} filament.admin.resources.arquivos-ÔÇª
+  GET|HEAD  admin/arquivos-upload/{record}/edit filament.admin.resources.arquÔÇª
+  GET|HEAD  admin/atividades-desenvolvidas/atividade-desenvolvidas filament.aÔÇª
+  GET|HEAD  admin/atividades-desenvolvidas/atividade-desenvolvidas/{record} fÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais filament.admin.resources.avaliacoes-pesÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais/auto-avaliacao filament.admin.resourcesÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais/create filament.admin.resources.avaliacÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais/{record} filament.admin.resources.avaliÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais/{record}/edit filament.admin.resources.ÔÇª
+  GET|HEAD  admin/avaliacoes-pessoais/{record}/relatorio filament.admin.resouÔÇª
+  GET|HEAD  admin/clear-hero-images filament.admin.pages.clear-hero-images ÔÇ║ ÔÇª
+  GET|HEAD  admin/declaracoes-assinaveis filament.admin.pages.declaracoes-assÔÇª
+  GET|HEAD  admin/demandas-acolhidos/demanda-acolhidos filament.admin.resourcÔÇª
+  GET|HEAD  admin/demandas-acolhidos/demanda-acolhidos/create filament.admin.ÔÇª
+  GET|HEAD  admin/demandas-acolhidos/demanda-acolhidos/{record} filament.admiÔÇª
+  GET|HEAD  admin/demandas-acolhidos/demanda-acolhidos/{record}/edit filamentÔÇª
+  GET|HEAD  admin/extrato-financeiro filament.admin.pages.extrato-financeiro ÔÇª
+  GET|HEAD  admin/feedback-familiar filament.admin.pages.feedback-familiar ÔÇ║ ÔÇª
+  GET|HEAD  admin/financeiro/diaria-trabalhos filament.admin.resources.financÔÇª
+  GET|HEAD  admin/financeiro/empresa-parceiras filament.admin.resources.finanÔÇª
+  GET|HEAD  admin/financeiro/frente-trabalhos filament.admin.resources.financÔÇª
+  GET|HEAD  admin/financeiro/saque-financeiros filament.admin.resources.finanÔÇª
+  GET|HEAD  admin/gerador-atividades filament.admin.resources.gerador-atividaÔÇª
+  GET|HEAD  admin/gerador-atividades/create filament.admin.resources.gerador-ÔÇª
+  GET|HEAD  admin/gerador-atividades/{record} filament.admin.resources.geradoÔÇª
+  GET|HEAD  admin/gerador-atividades/{record}/edit filament.admin.resources.gÔÇª
+  GET|HEAD  admin/hero-slide-trash filament.admin.pages.hero-slide-trash ÔÇ║ ApÔÇª
+  GET|HEAD  admin/identidade-visual filament.admin.pages.identidade-visual ÔÇ║ ÔÇª
+  GET|HEAD  admin/login .... filament.admin.auth.login ÔÇ║ Filament\Auth ÔÇ║ Login
+  POST      admin/logout filament.admin.auth.logout ÔÇ║ Filament\Auth ÔÇ║ LogoutCÔÇª
+  GET|HEAD  admin/painel-institucional filament.admin.pages.painel-institucioÔÇª
+  GET|HEAD  admin/permission-manager filament.admin.pages.permission-manager ÔÇª
+  GET|HEAD  admin/pia ...... filament.admin.pages.pia ÔÇ║ App\Filament\Pages\Pia
+  GET|HEAD  admin/profile filament.admin.auth.profile ÔÇ║ App\Filament\Pages\PrÔÇª
+  GET|HEAD  admin/prontuarios-evolucao/prontuario-evolucaos filament.admin.reÔÇª
+  GET|HEAD  admin/prontuarios-evolucao/prontuario-evolucaos/create filament.aÔÇª
+  GET|HEAD  admin/prontuarios-evolucao/prontuario-evolucaos/{record} filamentÔÇª
+  GET|HEAD  admin/prontuarios-evolucao/prontuario-evolucaos/{record}/edit filÔÇª
+  GET|HEAD  admin/reunioes/reuniaos filament.admin.resources.reunioes.reuniaoÔÇª
+  GET|HEAD  admin/reunioes/reuniaos/create filament.admin.resources.reunioes.ÔÇª
+  GET|HEAD  admin/reunioes/reuniaos/{record} filament.admin.resources.reunioeÔÇª
+  GET|HEAD  admin/reunioes/reuniaos/{record}/edit filament.admin.resources.reÔÇª
+  GET|HEAD  admin/saudes filament.admin.resources.saudes.index ÔÇ║ App\FilamentÔÇª
+  GET|HEAD  admin/saudes/create filament.admin.resources.saudes.create ÔÇ║ App\ÔÇª
+  GET|HEAD  admin/saudes/{record} filament.admin.resources.saudes.view ÔÇ║ App\ÔÇª
+  GET|HEAD  admin/shield/roles filament.admin.resources.shield.roles.index ÔÇ║ ÔÇª
+  GET|HEAD  admin/shield/roles/create filament.admin.resources.shield.roles.cÔÇª
+  GET|HEAD  admin/shield/roles/{record} filament.admin.resources.shield.rolesÔÇª
+  GET|HEAD  admin/shield/roles/{record}/edit filament.admin.resources.shield.ÔÇª
+  GET|HEAD  admin/substancia-psicoativas filament.admin.resources.substancia-ÔÇª
+  GET|HEAD  admin/substancia-psicoativas/{record} filament.admin.resources.suÔÇª
+  GET|HEAD  admin/users filament.admin.resources.users.index ÔÇ║ App\Filament\RÔÇª
+  GET|HEAD  admin/widgets filament.admin.pages.widgets ÔÇ║ App\Filament\Pages\WÔÇª
+  GET|HEAD  chatify ............... chatify ÔÇ║ Chatify\MessagesController@index
+  POST      chatify/api/chat/auth api.pusher.auth ÔÇ║ Chatify\MessagesControlleÔÇª
+  POST      chatify/api/deleteConversation api.conversation.delete ÔÇ║ Chatify\ÔÇª
+  GET|HEAD  chatify/api/download/{fileName} api.attachments.download ÔÇ║ ChatifÔÇª
+  POST      chatify/api/favorites api.favorites ÔÇ║ Chatify\MessagesController@ÔÇª
+  POST      chatify/api/fetchMessages api.fetch.messages ÔÇ║ Chatify\MessagesCoÔÇª
+  GET|HEAD  chatify/api/getContacts api.contacts.get ÔÇ║ Chatify\MessagesControÔÇª
+  POST      chatify/api/idInfo api.idInfo ÔÇ║ Chatify\MessagesController@idFetcÔÇª
+  POST      chatify/api/makeSeen api.messages.seen ÔÇ║ Chatify\MessagesControllÔÇª
+  GET|HEAD  chatify/api/search api.search ÔÇ║ Chatify\MessagesController@search
+  POST      chatify/api/sendMessage api.send.message ÔÇ║ Chatify\MessagesControÔÇª
+  POST      chatify/api/setActiveStatus api.activeStatus.set ÔÇ║ Chatify\MessagÔÇª
+  POST      chatify/api/shared api.shared ÔÇ║ Chatify\MessagesController@sharedÔÇª
+  POST      chatify/api/star .. api.star ÔÇ║ Chatify\MessagesController@favorite
+  POST      chatify/api/updateSettings api.avatar.update ÔÇ║ Chatify\MessagesCoÔÇª
+  POST      chatify/chat/auth pusher.auth ÔÇ║ Chatify\MessagesController@pusherÔÇª
+  POST      chatify/deleteConversation conversation.delete ÔÇ║ Chatify\MessagesÔÇª
+  POST      chatify/deleteMessage message.delete ÔÇ║ Chatify\MessagesControllerÔÇª
+  GET|HEAD  chatify/download/{fileName} attachments.download ÔÇ║ Chatify\MessagÔÇª
+  POST      chatify/favorites favorites ÔÇ║ Chatify\MessagesController@getFavorÔÇª
+  POST      chatify/fetchMessages fetch.messages ÔÇ║ Chatify\MessagesControllerÔÇª
+  GET|HEAD  chatify/getContacts contacts.get ÔÇ║ Chatify\MessagesController@getÔÇª
+  GET|HEAD  chatify/group/{id} ...... group ÔÇ║ Chatify\MessagesController@index
+  POST      chatify/idInfo ............ Chatify\MessagesController@idFetchData
+  POST      chatify/makeSeen . messages.seen ÔÇ║ Chatify\MessagesController@seen
+  GET|HEAD  chatify/search ........ search ÔÇ║ Chatify\MessagesController@search
+  POST      chatify/sendMessage send.message ÔÇ║ Chatify\MessagesController@send
+  POST      chatify/setActiveStatus activeStatus.set ÔÇ║ Chatify\MessagesControÔÇª
+  POST      chatify/shared .. shared ÔÇ║ Chatify\MessagesController@sharedPhotos
+  POST      chatify/star .......... star ÔÇ║ Chatify\MessagesController@favorite
+  POST      chatify/updateContacts contacts.update ÔÇ║ Chatify\MessagesControllÔÇª
+  POST      chatify/updateSettings avatar.update ÔÇ║ Chatify\MessagesControllerÔÇª
+  GET|HEAD  chatify/{id} ............. user ÔÇ║ Chatify\MessagesController@index
+  GET|HEAD  filament/exports/{export}/download filament.exports.download ÔÇ║ FiÔÇª
+  GET|HEAD  filament/imports/{import}/failed-rows/download filament.imports.fÔÇª
+  GET|HEAD  frontend filament.frontend.home ÔÇ║ Filament\Http ÔÇ║ RedirectToHomeCÔÇª
+  GET|HEAD  frontend/blog-posts filament.frontend.resources.blog-posts.index ÔÇª
+  GET|HEAD  frontend/clear-hero-images filament.frontend.pages.clear-hero-imaÔÇª
+  GET|HEAD  frontend/clinica filament.frontend.pages.clinica ÔÇ║ App\Filament\FÔÇª
+  GET|HEAD  frontend/cms-contents filament.frontend.resources.cms-contents.inÔÇª
+  GET|HEAD  frontend/configuracao-do-site filament.frontend.pages.configuracaÔÇª
+  GET|HEAD  frontend/contact-leads filament.frontend.resources.contact-leads.ÔÇª
+  GET|HEAD  frontend/contato filament.frontend.pages.contato ÔÇ║ App\Filament\FÔÇª
+  GET|HEAD  frontend/gallery-categories filament.frontend.resources.gallery-cÔÇª
+  GET|HEAD  frontend/hero-slide-trash filament.frontend.pages.hero-slide-trasÔÇª
+  GET|HEAD  frontend/hero-slides filament.frontend.resources.hero-slides.indeÔÇª
+  GET|HEAD  frontend/login filament.frontend.auth.login ÔÇ║ Filament\Auth ÔÇ║ LogÔÇª
+  POST      frontend/logout filament.frontend.auth.logout ÔÇ║ Filament\Auth ÔÇ║ LÔÇª
+  GET|HEAD  frontend/midia filament.frontend.pages.midia ÔÇ║ App\Filament\FrontÔÇª
+  GET|HEAD  frontend/newsletter-subscribers filament.frontend.resources.newslÔÇª
+  GET|HEAD  frontend/pillar-cards filament.frontend.resources.pillar-cards.inÔÇª
+  GET|HEAD  frontend/quem-somos filament.frontend.pages.quem-somos ÔÇ║ App\FilaÔÇª
+  GET|HEAD  frontend/shield/roles filament.frontend.resources.shield.roles.inÔÇª
+  GET|HEAD  frontend/shield/roles/create filament.frontend.resources.shield.rÔÇª
+  GET|HEAD  frontend/shield/roles/{record} filament.frontend.resources.shieldÔÇª
+  GET|HEAD  frontend/shield/roles/{record}/edit filament.frontend.resources.sÔÇª
+  GET|HEAD  frontend/site-preview filament.frontend.pages.site-preview ÔÇ║ App\ÔÇª
+  GET|HEAD  frontend/team-members filament.frontend.resources.team-members.inÔÇª
+  GET|HEAD  frontend/whatsapp filament.frontend.pages.whatsapp ÔÇ║ App\FilamentÔÇª
+  GET|HEAD  livewire-6a5d1060/css/{component}.css vendor/livewire/livewire/srÔÇª
+  GET|HEAD  livewire-6a5d1060/css/{component}.global.css vendor/livewire/liveÔÇª
+  GET|HEAD  livewire-6a5d1060/js/{component}.js vendor/livewire/livewire/src/ÔÇª
+  GET|HEAD  livewire-6a5d1060/livewire.csp.min.js.map Livewire\Mechanisms ÔÇ║ FÔÇª
+  GET|HEAD  livewire-6a5d1060/livewire.js Livewire\Mechanisms ÔÇ║ FrontendAssetÔÇª
+  GET|HEAD  livewire-6a5d1060/livewire.min.js.map Livewire\Mechanisms ÔÇ║ FrontÔÇª
+  GET|HEAD  livewire-6a5d1060/preview-file/{filename} livewire.preview-file  ÔÇª
+  POST      livewire-6a5d1060/update default-livewire.update ÔÇ║ Livewire\MechaÔÇª
+  POST      livewire-6a5d1060/upload-file livewire.upload-file ÔÇ║ Livewire\FeaÔÇª
+  GET|HEAD  storage/{path} storage.local ÔÇ║ vendor/laravel/framework/src/IllumÔÇª
+  PUT       storage/{path} storage.local.upload ÔÇ║ vendor/laravel/framework/srÔÇª
+  GET|HEAD  up vendor/laravel/framework/src/Illuminate/Foundation/ConfiguratiÔÇª
+
+                                                          Showing [143] routes
+
